@@ -2,7 +2,7 @@
 
 A clean Obsidian theme based on the [Base16 Default Dark](https://github.com/chriskempson/base16) color scheme.
 
-![Theme Preview](https://github.com/flowing-abyss/obsidian-base16-default-dark/blob/main/assets/theme.png)
+![Theme Preview](https://github.com/flowing-abyss/obsidian-base16-default-dark/blob/main/assets/theme-preview.png)
 
 ## Features
 
