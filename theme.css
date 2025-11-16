@@ -282,7 +282,8 @@
 
 /* Inline code */
 .theme-dark .markdown-preview-view code,
-.theme-dark .cm-inline-code {
+.theme-dark .cm-s-obsidian .cm-inline-code,
+.theme-dark .HyperMD-codeblock {
   color: var(--inline-code-color);
   background-color: var(--code-background);
 }
