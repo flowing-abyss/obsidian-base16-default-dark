@@ -348,25 +348,40 @@
   background: var(--scrollbar-active-thumb-bg);
 }
 
-/* Callouts */
+/* Callouts - minimal but visible */
 .theme-dark .callout {
   background-color: var(--background-primary-alt);
-  border-left-width: 3px;
-  border-left-style: solid;
+  border: 1.5px solid var(--background-secondary-alt);
+  border-left-width: 4px;
+  border-radius: 7px;
+  margin: 0.7em 0;
+  padding: 0.5em 1em 0.5em 1em;
 }
 
-.theme-dark .callout[data-callout='note'] {
-  border-left-color: var(--callout-note);
+.theme-dark .callout-title {
+  background-color: transparent;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.theme-dark .callout-icon {
+  display: flex;
+  align-items: center;
+}
+
+.theme-dark .callout-title-inner {
+  font-weight: normal;
+}
+
+.theme-dark .callout-content {
+  padding-left: 1.5em;
+  color: var(--text-normal);
 }
 
 .theme-dark .callout[data-callout='note'] .callout-title {
   color: var(--callout-note);
-}
-
-.theme-dark .callout[data-callout='abstract'],
-.theme-dark .callout[data-callout='summary'],
-.theme-dark .callout[data-callout='tldr'] {
-  border-left-color: var(--callout-abstract);
 }
 
 .theme-dark .callout[data-callout='abstract'] .callout-title,
@@ -375,26 +390,12 @@
   color: var(--callout-abstract);
 }
 
-.theme-dark .callout[data-callout='info'] {
-  border-left-color: var(--callout-info);
-}
-
 .theme-dark .callout[data-callout='info'] .callout-title {
   color: var(--callout-info);
 }
 
-.theme-dark .callout[data-callout='todo'] {
-  border-left-color: var(--callout-todo);
-}
-
 .theme-dark .callout[data-callout='todo'] .callout-title {
   color: var(--callout-todo);
-}
-
-.theme-dark .callout[data-callout='tip'],
-.theme-dark .callout[data-callout='hint'],
-.theme-dark .callout[data-callout='important'] {
-  border-left-color: var(--callout-tip);
 }
 
 .theme-dark .callout[data-callout='tip'] .callout-title,
@@ -403,22 +404,10 @@
   color: var(--callout-tip);
 }
 
-.theme-dark .callout[data-callout='success'],
-.theme-dark .callout[data-callout='check'],
-.theme-dark .callout[data-callout='done'] {
-  border-left-color: var(--callout-success);
-}
-
 .theme-dark .callout[data-callout='success'] .callout-title,
 .theme-dark .callout[data-callout='check'] .callout-title,
 .theme-dark .callout[data-callout='done'] .callout-title {
   color: var(--callout-success);
-}
-
-.theme-dark .callout[data-callout='question'],
-.theme-dark .callout[data-callout='help'],
-.theme-dark .callout[data-callout='faq'] {
-  border-left-color: var(--callout-question);
 }
 
 .theme-dark .callout[data-callout='question'] .callout-title,
@@ -427,22 +416,10 @@
   color: var(--callout-question);
 }
 
-.theme-dark .callout[data-callout='warning'],
-.theme-dark .callout[data-callout='caution'],
-.theme-dark .callout[data-callout='attention'] {
-  border-left-color: var(--callout-warning);
-}
-
 .theme-dark .callout[data-callout='warning'] .callout-title,
 .theme-dark .callout[data-callout='caution'] .callout-title,
 .theme-dark .callout[data-callout='attention'] .callout-title {
   color: var(--callout-warning);
-}
-
-.theme-dark .callout[data-callout='failure'],
-.theme-dark .callout[data-callout='fail'],
-.theme-dark .callout[data-callout='missing'] {
-  border-left-color: var(--callout-failure);
 }
 
 .theme-dark .callout[data-callout='failure'] .callout-title,
@@ -451,48 +428,22 @@
   color: var(--callout-failure);
 }
 
-.theme-dark .callout[data-callout='danger'],
-.theme-dark .callout[data-callout='error'] {
-  border-left-color: var(--callout-danger);
-}
-
 .theme-dark .callout[data-callout='danger'] .callout-title,
 .theme-dark .callout[data-callout='error'] .callout-title {
   color: var(--callout-danger);
-}
-
-.theme-dark .callout[data-callout='bug'] {
-  border-left-color: var(--callout-bug);
 }
 
 .theme-dark .callout[data-callout='bug'] .callout-title {
   color: var(--callout-bug);
 }
 
-.theme-dark .callout[data-callout='example'] {
-  border-left-color: var(--callout-example);
-}
-
 .theme-dark .callout[data-callout='example'] .callout-title {
   color: var(--callout-example);
-}
-
-.theme-dark .callout[data-callout='quote'],
-.theme-dark .callout[data-callout='cite'] {
-  border-left-color: var(--callout-quote);
 }
 
 .theme-dark .callout[data-callout='quote'] .callout-title,
 .theme-dark .callout[data-callout='cite'] .callout-title {
   color: var(--callout-quote);
-}
-
-.theme-dark .callout-title-inner {
-  font-weight: bold;
-}
-
-.theme-dark .callout-content {
-  color: var(--text-normal);
 }
 
 /* Bases view */
