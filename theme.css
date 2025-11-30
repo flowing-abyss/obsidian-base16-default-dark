@@ -161,6 +161,9 @@
   --callout-bug: #ab4642;
   --callout-example: #ba8baf;
   --callout-quote: #b8b8b8;
+
+  /* Misc */
+  --list-indent: 1.6em;
 }
 
 /* Syntax highlighting for code blocks */
@@ -459,4 +462,9 @@
 
 .theme-dark .bases-table-container {
   background-color: transparent;
+}
+
+/* Tabs */
+.theme-dark .workspace-tab-header {
+  border-radius: 4px !important;
 }
