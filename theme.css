@@ -13,13 +13,13 @@
 .theme-dark {
   /* Base colors */
   --background-primary: #181818;
-  --background-primary-alt: #202020;
-  --background-secondary: #202020;
-  --background-secondary-alt: #282828;
+  --background-primary-alt: #181818;
+  --background-secondary: #181818;
+  --background-secondary-alt: #181818;
   --background-modifier-border: #383838;
-  --background-modifier-form-field: #202020;
-  --background-modifier-form-field-highlighted: #282828;
-  --background-modifier-box-shadow: rgba(0, 0, 0, 0.3);
+  --background-modifier-form-field: #181818;
+  --background-modifier-form-field-highlighted: #181818;
+  --background-modifier-box-shadow: none;
   --background-modifier-success: #a1b56c;
   --background-modifier-error: #ab4642;
   --background-modifier-error-rgb: 171, 70, 66;
@@ -132,7 +132,7 @@
 
   /* Titlebar */
   --titlebar-background: #181818;
-  --titlebar-background-focused: #202020;
+  --titlebar-background-focused: var(--titlebar-background);
 
   /* Tabs */
   --tab-text-color: #b8b8b8;
@@ -223,6 +223,12 @@
 .theme-dark .token.important,
 .theme-dark .token.variable {
   color: var(--code-important);
+}
+
+/* Syntax highlighting for YAML frontmatter */
+.frontmatter.language-yaml .atrule,
+.cm-atom.cm-hmd-frontmatter {
+  color: #f39b35;
 }
 
 /* Headings */
@@ -321,7 +327,7 @@
 
 /* Horizontal rules */
 .theme-dark hr {
-  border-color: var(--divider-color);
+  border-color: #383838;
 }
 
 /* Selection */
@@ -336,23 +342,23 @@
 }
 
 .theme-dark ::-webkit-scrollbar-track {
-  background: var(--scrollbar-bg);
+  background: #181818;
 }
 
 .theme-dark ::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb-bg);
+  background: #383838;
   border-radius: 5px;
 }
 
 .theme-dark ::-webkit-scrollbar-thumb:hover {
-  background: var(--scrollbar-active-thumb-bg);
+  background: #484848;
 }
 
-/* Callouts - minimal but visible */
+/* Callouts - stylish minimalism */
 .theme-dark .callout {
-  background-color: var(--background-primary-alt);
-  border: 1.5px solid var(--background-secondary-alt);
-  border-left-width: 4px;
+  background-color: #202020;
+  border: 1px solid #282828;
+  border-left: 4px solid var(--background-modifier-border);
   border-radius: 7px;
   margin: 0.7em 0;
   padding: 0.5em 1em 0.5em 1em;
