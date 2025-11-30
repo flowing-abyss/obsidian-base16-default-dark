@@ -104,7 +104,7 @@
   /* Checkboxes */
   --checkbox-color: #7cafc2;
   --checkbox-color-hover: #86c1b9;
-  --checkbox-border-color: #383838;
+  --checkbox-border-color: #d8d8d8;
 
   /* Toggles */
   --toggle-thumb-color: #d8d8d8;
@@ -459,17 +459,4 @@
 
 .theme-dark .bases-table-container {
   background-color: transparent;
-}
-
-/* Callout checkbox contrast fix */
-.theme-dark .callout input[type='checkbox'] {
-  filter: none;
-  background: var(--background-primary-alt);
-  border: 1.5px solid var(--checkbox-color, #7cafc2);
-  box-shadow: 0 0 0 1px var(--background-secondary-alt);
-}
-
-.theme-dark .callout input[type='checkbox']:checked {
-  background: var(--checkbox-color, #7cafc2);
-  border-color: var(--checkbox-color, #7cafc2);
 }
