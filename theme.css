@@ -148,19 +148,19 @@
   --search-clear-button-color: #b8b8b8;
 
   /* Callouts */
-  --callout-note: #7cafc2;
-  --callout-abstract: #86c1b9;
-  --callout-info: #7cafc2;
-  --callout-todo: #7cafc2;
-  --callout-tip: #86c1b9;
-  --callout-success: #a1b56c;
-  --callout-question: #f7ca88;
-  --callout-warning: #f7ca88;
-  --callout-failure: #ab4642;
-  --callout-danger: #ab4642;
-  --callout-bug: #ab4642;
-  --callout-example: #ba8baf;
-  --callout-quote: #b8b8b8;
+  --callout-note: #2f4550;
+  --callout-abstract: #364d48;
+  --callout-info: #2f4550;
+  --callout-todo: #2f4550;
+  --callout-tip: #364d48;
+  --callout-success: #444a2f;
+  --callout-question: #5f5338;
+  --callout-warning: #5f5338;
+  --callout-failure: #4a2320;
+  --callout-danger: #4a2320;
+  --callout-bug: #4a2320;
+  --callout-example: #4a3846;
+  --callout-quote: #484848;
 
   /* Misc */
   --list-indent: 1.6em;
@@ -357,102 +357,96 @@
   background: #484848;
 }
 
-/* Callouts - stylish minimalism */
+/* Callouts */
 .theme-dark .callout {
-  background-color: #202020;
-  border: 1px solid #282828;
-  border-left: 4px solid var(--background-modifier-border);
-  border-radius: 7px;
-  margin: 0.7em 0;
-  padding: 0.5em 1em 0.5em 1em;
+  border: 2px solid var(--callout-color);
+  border-radius: 6px;
+  margin: 0px;
+  margin-bottom: 6px;
+  margin-top: 6px;
+  padding: 0;
+  overflow: hidden;
 }
 
 .theme-dark .callout-title {
-  background-color: transparent;
-  padding: 0;
+  padding: 6px 10px;
+  margin: 0;
   display: flex;
   align-items: center;
   gap: 0.5em;
+  background-color: var(--callout-color);
+  color: #e8e8e8;
+  font-weight: 600;
 }
 
 .theme-dark .callout-icon {
   display: flex;
   align-items: center;
-}
-
-.theme-dark .callout-title-inner {
-  font-weight: normal;
+  flex-shrink: 0;
 }
 
 .theme-dark .callout-content {
-  padding-left: 1.5em;
-  color: var(--text-normal);
+  margin: 0px;
+  padding: 0 10px;
+  background-color: var(--background-primary);
+  border-left: 1px solid var(--callout-color);
+  border-right: 1px solid var(--callout-color);
+  border-bottom: 1px solid var(--callout-color);
 }
 
-.theme-dark .callout[data-callout='note'] .callout-title {
-  color: var(--callout-note);
+/* Callout type colors */
+.theme-dark .callout[data-callout='note'] {
+  --callout-color: var(--callout-note);
 }
-
-.theme-dark .callout[data-callout='abstract'] .callout-title,
-.theme-dark .callout[data-callout='summary'] .callout-title,
-.theme-dark .callout[data-callout='tldr'] .callout-title {
-  color: var(--callout-abstract);
+.theme-dark .callout[data-callout='abstract'],
+.theme-dark .callout[data-callout='summary'],
+.theme-dark .callout[data-callout='tldr'] {
+  --callout-color: var(--callout-abstract);
 }
-
-.theme-dark .callout[data-callout='info'] .callout-title {
-  color: var(--callout-info);
+.theme-dark .callout[data-callout='info'] {
+  --callout-color: var(--callout-info);
 }
-
-.theme-dark .callout[data-callout='todo'] .callout-title {
-  color: var(--callout-todo);
+.theme-dark .callout[data-callout='todo'] {
+  --callout-color: var(--callout-todo);
 }
-
-.theme-dark .callout[data-callout='tip'] .callout-title,
-.theme-dark .callout[data-callout='hint'] .callout-title,
-.theme-dark .callout[data-callout='important'] .callout-title {
-  color: var(--callout-tip);
+.theme-dark .callout[data-callout='tip'],
+.theme-dark .callout[data-callout='hint'],
+.theme-dark .callout[data-callout='important'] {
+  --callout-color: var(--callout-tip);
 }
-
-.theme-dark .callout[data-callout='success'] .callout-title,
-.theme-dark .callout[data-callout='check'] .callout-title,
-.theme-dark .callout[data-callout='done'] .callout-title {
-  color: var(--callout-success);
+.theme-dark .callout[data-callout='success'],
+.theme-dark .callout[data-callout='check'],
+.theme-dark .callout[data-callout='done'] {
+  --callout-color: var(--callout-success);
 }
-
-.theme-dark .callout[data-callout='question'] .callout-title,
-.theme-dark .callout[data-callout='help'] .callout-title,
-.theme-dark .callout[data-callout='faq'] .callout-title {
-  color: var(--callout-question);
+.theme-dark .callout[data-callout='question'],
+.theme-dark .callout[data-callout='help'],
+.theme-dark .callout[data-callout='faq'] {
+  --callout-color: var(--callout-question);
 }
-
-.theme-dark .callout[data-callout='warning'] .callout-title,
-.theme-dark .callout[data-callout='caution'] .callout-title,
-.theme-dark .callout[data-callout='attention'] .callout-title {
-  color: var(--callout-warning);
+.theme-dark .callout[data-callout='warning'],
+.theme-dark .callout[data-callout='caution'],
+.theme-dark .callout[data-callout='attention'] {
+  --callout-color: var(--callout-warning);
 }
-
-.theme-dark .callout[data-callout='failure'] .callout-title,
-.theme-dark .callout[data-callout='fail'] .callout-title,
-.theme-dark .callout[data-callout='missing'] .callout-title {
-  color: var(--callout-failure);
+.theme-dark .callout[data-callout='failure'],
+.theme-dark .callout[data-callout='fail'],
+.theme-dark .callout[data-callout='missing'] {
+  --callout-color: var(--callout-failure);
 }
-
-.theme-dark .callout[data-callout='danger'] .callout-title,
-.theme-dark .callout[data-callout='error'] .callout-title {
-  color: var(--callout-danger);
+.theme-dark .callout[data-callout='danger'],
+.theme-dark .callout[data-callout='error'] {
+  --callout-color: var(--callout-danger);
 }
-
-.theme-dark .callout[data-callout='bug'] .callout-title {
-  color: var(--callout-bug);
+.theme-dark .callout[data-callout='bug'] {
+  --callout-color: var(--callout-bug);
 }
-
-.theme-dark .callout[data-callout='example'] .callout-title {
-  color: var(--callout-example);
+.theme-dark .callout[data-callout='example'] {
+  --callout-color: var(--callout-example);
 }
-
-.theme-dark .callout[data-callout='quote'] .callout-title,
-.theme-dark .callout[data-callout='cite'] .callout-title {
-  color: var(--callout-quote);
+.theme-dark .callout[data-callout='quote'],
+.theme-dark .callout[data-callout='cite'] {
+  --callout-color: var(--callout-quote);
 }
 
 /* Bases view */
