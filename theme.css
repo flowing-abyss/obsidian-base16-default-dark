@@ -549,28 +549,28 @@
 
 /* Annotation colors */
 .theme-dark .callout[data-callout-metadata='#ff6666'] {
-  --callout-color: rgba(123, 31, 55, 0.6);
+  --callout-color: rgba(92, 23, 41, 0.6);
 }
 .theme-dark .callout[data-callout-metadata='#5fb236'] {
-  --callout-color: rgba(68, 97, 60, 0.6);
+  --callout-color: rgba(51, 73, 45, 0.6);
 }
 .theme-dark .callout[data-callout-metadata='#2ea8e5'] {
-  --callout-color: rgba(31, 49, 153, 0.6);
+  --callout-color: rgba(23, 37, 115, 0.6);
 }
 .theme-dark .callout[data-callout-metadata='#a28ae5'] {
-  --callout-color: rgba(94, 79, 145, 0.6);
+  --callout-color: rgba(71, 59, 109, 0.6);
 }
 .theme-dark .callout[data-callout-metadata='#f19837'] {
-  --callout-color: rgba(146, 98, 58, 0.6);
+  --callout-color: rgba(110, 74, 44, 0.6);
 }
 .theme-dark .callout[data-callout-metadata='#ffd400'] {
-  --callout-color: rgba(153, 142, 0, 0.6);
+  --callout-color: rgba(115, 107, 0, 0.6);
 }
 .theme-dark .callout[data-callout-metadata='#e56eee'] {
-  --callout-color: rgba(153, 20, 153, 0.6);
+  --callout-color: rgba(115, 15, 115, 0.6);
 }
 .theme-dark .callout[data-callout-metadata='#aaaaaa'] {
-  --callout-color: rgba(91, 91, 91, 0.6);
+  --callout-color: rgba(68, 68, 68, 0.6);
 }
 
 /* Config callout task list styling */
