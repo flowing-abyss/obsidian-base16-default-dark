@@ -148,19 +148,19 @@
   --search-clear-button-color: #b8b8b8;
 
   /* Callouts */
-  --callout-note: #2f4550;
-  --callout-abstract: #364d48;
-  --callout-info: #2f4550;
-  --callout-todo: #2f4550;
-  --callout-tip: #364d48;
-  --callout-success: #444a2f;
-  --callout-question: #5f5338;
-  --callout-warning: #5f5338;
-  --callout-failure: #4a2320;
-  --callout-danger: #4a2320;
-  --callout-bug: #4a2320;
-  --callout-example: #4a3846;
-  --callout-quote: #484848;
+  --callout-note: rgba(47, 69, 80, 0.6);
+  --callout-abstract: rgba(54, 77, 72, 0.6);
+  --callout-info: rgba(47, 69, 80, 0.6);
+  --callout-todo: rgba(47, 69, 80, 0.6);
+  --callout-tip: rgba(54, 77, 72, 0.6);
+  --callout-success: rgba(68, 74, 47, 0.6);
+  --callout-question: rgba(95, 83, 56, 0.6);
+  --callout-warning: rgba(95, 83, 56, 0.6);
+  --callout-failure: rgba(74, 35, 32, 0.6);
+  --callout-danger: rgba(74, 35, 32, 0.6);
+  --callout-bug: rgba(74, 35, 32, 0.6);
+  --callout-example: rgba(74, 56, 70, 0.6);
+  --callout-quote: rgba(72, 72, 72, 0.6);
 
   /* Misc */
   --list-indent: 1.6em;
