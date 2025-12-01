@@ -359,6 +359,7 @@
 
 /* Callouts */
 .theme-dark .callout {
+  --callout-color: var(--callout-note);
   border: 2px solid var(--callout-color);
   border-radius: 6px;
   margin: 0px;
