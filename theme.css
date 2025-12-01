@@ -165,21 +165,21 @@
   /* Custom callouts */
   --callout-my: rgba(84, 5, 5, 0.6);
   --callout-link: rgba(95, 95, 95, 0.6);
-  --callout-mind: rgba(52, 17, 153, 0.6);
-  --callout-mindmap: rgba(52, 17, 153, 0.6);
+  --callout-mind: rgba(39, 13, 115, 0.6);
+  --callout-mindmap: rgba(39, 13, 115, 0.6);
   --callout-config: rgba(121, 98, 153, 0.6);
-  --callout-attachment: rgba(153, 54, 86, 0.6);
-  --callout-file: rgba(153, 54, 86, 0.6);
+  --callout-attachment: rgba(115, 41, 65, 0.6);
+  --callout-file: rgba(115, 41, 65, 0.6);
   --callout-url: rgba(115, 115, 115, 0.6);
-  --callout-contacts: rgba(148, 113, 58, 0.6);
+  --callout-contacts: rgba(111, 85, 44, 0.6);
   --callout-documentation: rgba(79, 99, 94, 0.6);
-  --callout-idea: rgba(148, 85, 15, 0.6);
-  --callout-image: rgba(148, 85, 15, 0.6);
-  --callout-img: rgba(148, 85, 15, 0.6);
-  --callout-picture: rgba(148, 85, 15, 0.6);
+  --callout-idea: rgba(111, 64, 11, 0.6);
+  --callout-image: rgba(111, 64, 11, 0.6);
+  --callout-img: rgba(111, 64, 11, 0.6);
+  --callout-picture: rgba(111, 64, 11, 0.6);
   --callout-code: rgba(38, 38, 38, 0.6);
-  --callout-ai: rgba(76, 26, 99, 0.6);
-  --callout-bot: rgba(76, 26, 99, 0.6);
+  --callout-ai: rgba(57, 20, 75, 0.6);
+  --callout-bot: rgba(57, 20, 75, 0.6);
   --callout-toc: rgba(72, 72, 72, 0.6);
 
   /* Misc */
