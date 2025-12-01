@@ -345,7 +345,7 @@
 
 /* Lists */
 .theme-dark .markdown-preview-view .list-bullet::after {
-  background-color: var(--text-accent);
+  background-color: var(--text-faint);
 }
 
 /* Horizontal rules */
@@ -1081,7 +1081,7 @@ ul > li::marker,
   font-style: italic;
 }
 
-/* inline title */
+/* INLINE TITLE */
 .inline-title:not([data-level]) {
   margin: 0;
   padding: 0;
