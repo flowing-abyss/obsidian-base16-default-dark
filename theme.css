@@ -1372,6 +1372,16 @@ h6,
   padding: 0 2px 0 0;
 }
 
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER']
+  .current-draft-path {
+  font-size: 0 !important;
+}
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER']
+  .current-draft-path::before {
+  font-size: var(--font-text-size) !important;
+  content: 'open';
+}
+
 /* Image zoom */
 .view-content img {
   max-width: 100%;
