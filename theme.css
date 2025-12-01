@@ -1200,10 +1200,6 @@ h6,
 }
 
 /* quiet outline */
-.quiet-outline * {
-  font-size: 0.8rem;
-}
-
 .quiet-outline .n-button {
   display: none !important;
 }
