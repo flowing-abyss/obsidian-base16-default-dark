@@ -1171,7 +1171,6 @@ ul > li::marker,
 .inline-title:not([data-level]) {
   margin: 0;
   padding: 0;
-  padding-bottom: 12px;
 
   text-align: left;
   color: var(--h1-color);
@@ -1180,21 +1179,7 @@ ul > li::marker,
 
   background: transparent;
 
-  border-radius: 0;
-  border: none;
-  position: relative;
-
   font-weight: 500;
-}
-
-.inline-title:not([data-level])::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 2ch;
-  height: 3px;
-  background-color: var(--color-red);
 }
 
 /* fix */
@@ -1230,15 +1215,6 @@ h6,
   color: var(--h1-color) !important;
 }
 
-/* fix heading arrows */
-:is(.style-settings-collapse-indicator, .collapse-icon)
-  > .svg-icon.svg-icon.svg-icon.svg-icon {
-  height: 0.4em;
-  width: 0.4em;
-  stroke-width: 5px;
-  margin-left: -0.35em;
-}
-
 .HyperMD-header.HyperMD-header-1,
 .HyperMD-header.HyperMD-header-2,
 .HyperMD-header.HyperMD-header-3,
@@ -1246,29 +1222,11 @@ h6,
 .HyperMD-header.HyperMD-header-5,
 .HyperMD-header.HyperMD-header-6 {
   padding: 0;
-  padding-bottom: 12px;
   text-align: left;
   font-variant-caps: small-caps;
   line-height: 0.9;
-  border: none;
-  border-radius: 0;
+  border-radius: 5px;
   background: transparent;
-  position: relative;
-}
-
-.HyperMD-header.HyperMD-header-1::after,
-.HyperMD-header.HyperMD-header-2::after,
-.HyperMD-header.HyperMD-header-3::after,
-.HyperMD-header.HyperMD-header-4::after,
-.HyperMD-header.HyperMD-header-5::after,
-.HyperMD-header.HyperMD-header-6::after {
-  content: '';
-  position: absolute;
-  bottom: -12px;
-  left: 0;
-  width: 2ch;
-  height: 3px;
-  background-color: rgba(72, 72, 72, 0.7);
 }
 
 .markdown-preview-view h1,
@@ -1280,27 +1238,9 @@ h6,
   text-align: left;
   font-variant-caps: small-caps;
   line-height: 0.9;
-  border: none;
-  border-radius: 0;
+  border-radius: 5px;
   background: transparent;
-  padding-bottom: 12px;
-  margin-bottom: 32px;
-  position: relative;
-}
-
-.markdown-preview-view h1::after,
-.markdown-preview-view h2::after,
-.markdown-preview-view h3::after,
-.markdown-preview-view h4::after,
-.markdown-preview-view h5::after,
-.markdown-preview-view h6::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 2ch;
-  height: 3px;
-  background-color: rgba(72, 72, 72, 0.7);
+  padding: 0;
 }
 
 .cm-s-obsidian .cm-line.HyperMD-header {
