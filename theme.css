@@ -1234,7 +1234,7 @@ h6,
   font-variant-caps: small-caps;
   line-height: 0.9;
   border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 0;
   background: transparent;
 }
