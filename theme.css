@@ -96,10 +96,10 @@
   --divider-color-hover: #484848;
 
   /* Tables */
-  --table-header-background: #282828;
-  --table-row-even-background: #202020;
-  --table-row-odd-background: #181818;
-  --table-row-alt-background: #202020;
+  --table-header-background: transparent;
+  --table-row-even-background: transparent;
+  --table-row-odd-background: transparent;
+  --table-row-alt-background: transparent;
 
   /* Checkboxes */
   --checkbox-color: #7cafc2;
@@ -2176,6 +2176,39 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
 .is-live-preview table {
   margin-left: auto;
   margin-right: auto;
+}
+
+/* Tables - Terminal Grid Style */
+.theme-dark .markdown-preview-view table,
+.theme-dark .markdown-rendered table {
+  border-collapse: collapse;
+  border: 1px solid #404040;
+  background: transparent;
+}
+
+.theme-dark .markdown-preview-view th,
+.theme-dark .markdown-rendered th {
+  background: transparent;
+  border: 1px solid #383838;
+  border-bottom: 2px solid #484848;
+  padding: 6px 12px;
+  text-align: left;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.8em;
+  letter-spacing: 0.08em;
+}
+
+.theme-dark .markdown-preview-view td,
+.theme-dark .markdown-rendered td {
+  border: 1px solid #303030;
+  padding: 6px 12px;
+  background: transparent;
+}
+
+.theme-dark .markdown-preview-view tr,
+.theme-dark .markdown-rendered tr {
+  background: transparent;
 }
 
 /* image border */
