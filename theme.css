@@ -2254,6 +2254,11 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
   padding: 0;
 }
 
+/* INLINE AI */
+.cm-tooltip.cm-tooltip-autocomplete > ul > li[role='option'][aria-selected] {
+  background-color: var(--background-modifier-hover) !important;
+}
+
 /* search */
 .search-result-file-matched-text {
   background-color: transparent;
