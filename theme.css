@@ -1193,7 +1193,7 @@ ul > li::marker,
   left: 0;
   width: 60px;
   height: 3px;
-  background-color: rgba(72, 72, 72, 0.8);
+  background-color: var(--color-red);
 }
 
 /* fix */
