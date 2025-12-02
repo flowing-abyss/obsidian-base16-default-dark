@@ -349,13 +349,13 @@
 
 /* Callouts */
 .theme-dark .callout {
-  border: 1px solid #383838;
   background: transparent;
-  border-radius: 6px;
-  margin: 0px;
-  margin-bottom: 6px;
-  margin-top: 6px;
-  padding: 0;
+  border: none;
+  border-left: 2px solid var(--callout-color, #383838);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 4px 12px;
+  margin: 8px 0;
   overflow: hidden;
 }
 
@@ -365,7 +365,7 @@
   display: flex;
   align-items: center;
   gap: 0.5em;
-  background: #202020;
+  background: transparent;
   color: #e8e8e8;
   font-weight: 700;
   text-transform: uppercase;
@@ -929,7 +929,7 @@
   border: 1px ridge rgba(209, 209, 209, 0.5);
 }
 
-/* Lists */
+/* LISTS */
 .markdown-source-view.mod-cm6.is-readable-line-width .cm-line {
   padding: 0px;
 }
@@ -979,10 +979,8 @@ ul > li::marker,
 /* .HyperMD-list-line-1:not(.HyperMD-task-line[data-task]):has(.cm-hmd-internal-link) { */
 .HyperMD-list-line-1:not(.HyperMD-task-line[data-task]):not(.lc-list-callout) {
   border-radius: 5px;
-  border-bottom: solid;
-  border-color: rgba(134, 134, 134, 0.4);
+  border: none;
   border-width: 1px;
-  /* font-weight: 600; */
 }
 
 .HyperMD-list-line-1:not(.HyperMD-task-line[data-task]) .cm-hmd-internal-link {
@@ -1142,10 +1140,11 @@ ul > li::marker,
   font-variant-caps: small-caps;
   line-height: 0.9;
 
-  background: var(--background-primary);
+  background: transparent;
 
-  border-radius: 5px;
-  border: 1px solid;
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
   font-weight: 500;
 }
@@ -1219,9 +1218,10 @@ h6,
   text-align: center;
   font-variant-caps: small-caps;
   line-height: 0.9;
-  border: 1px ridge rgba(209, 209, 209, 0.5);
-  border-radius: 5px;
-  background-color: var(--background-primary);
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0;
+  background: transparent;
 }
 
 .markdown-preview-view h1,
@@ -1233,9 +1233,10 @@ h6,
   text-align: center;
   font-variant-caps: small-caps;
   line-height: 0.9;
-  border: 1px ridge rgba(209, 209, 209, 0.5);
-  border-radius: 5px;
-  background-color: var(--background-primary);
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0;
+  background: transparent;
 }
 
 .cm-s-obsidian .cm-line.HyperMD-header {
