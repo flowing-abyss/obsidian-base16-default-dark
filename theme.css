@@ -1170,8 +1170,9 @@ ul > li::marker,
 .inline-title:not([data-level]) {
   margin: 0;
   padding: 0;
+  padding-bottom: 12px;
 
-  text-align: center;
+  text-align: left;
   color: var(--h1-color);
   font-variant-caps: small-caps;
   line-height: 0.9;
@@ -1180,9 +1181,19 @@ ul > li::marker,
 
   border-radius: 0;
   border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
 
   font-weight: 500;
+}
+
+.inline-title:not([data-level])::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background-color: rgba(72, 72, 72, 0.8);
 }
 
 /* fix */
@@ -1198,8 +1209,7 @@ ul > li::marker,
 .hover-popover .inline-title {
   margin-top: 0px;
   display: block;
-  text-align: center;
-  font-size: var(--font-text);
+  text-align: left;
   border-top: 0;
   border-left: 0;
   border-right: 0;
@@ -1250,14 +1260,30 @@ h6,
 .HyperMD-header.HyperMD-header-4,
 .HyperMD-header.HyperMD-header-5,
 .HyperMD-header.HyperMD-header-6 {
-  padding: 0px;
-  text-align: center;
+  padding: 0;
+  padding-bottom: 12px;
+  text-align: left;
   font-variant-caps: small-caps;
   line-height: 0.9;
   border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 0;
   background: transparent;
+  position: relative;
+}
+
+.HyperMD-header.HyperMD-header-1::after,
+.HyperMD-header.HyperMD-header-2::after,
+.HyperMD-header.HyperMD-header-3::after,
+.HyperMD-header.HyperMD-header-4::after,
+.HyperMD-header.HyperMD-header-5::after,
+.HyperMD-header.HyperMD-header-6::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background-color: rgba(72, 72, 72, 0.8);
 }
 
 .markdown-preview-view h1,
@@ -1266,13 +1292,30 @@ h6,
 .markdown-preview-view h4,
 .markdown-preview-view h5,
 .markdown-preview-view h6 {
-  text-align: center;
+  text-align: left;
   font-variant-caps: small-caps;
   line-height: 0.9;
   border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 0;
   background: transparent;
+  padding-bottom: 12px;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.markdown-preview-view h1::after,
+.markdown-preview-view h2::after,
+.markdown-preview-view h3::after,
+.markdown-preview-view h4::after,
+.markdown-preview-view h5::after,
+.markdown-preview-view h6::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background-color: rgba(72, 72, 72, 0.8);
 }
 
 .cm-s-obsidian .cm-line.HyperMD-header {
