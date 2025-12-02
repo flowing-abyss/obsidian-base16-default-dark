@@ -2218,12 +2218,47 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
   border-radius: 2px;
 }
 
-/* math block border */
-.markdown-source-view.mod-cm6 .math-block > mjx-container,
-.markdown-preview-view .math-block > mjx-container {
-  border: 1px solid #404040;
-  border-radius: 2px;
-  padding: 10px;
+/* MATH */
+/* Inline math - seamless with text */
+.theme-dark .math.math-inline,
+.theme-dark mjx-container[jax='CHTML'][display='false'] {
+  border: none !important;
+  background: transparent !important;
+  padding: 0 2px !important;
+  margin: 0 !important;
+}
+
+/* Display math (block formulas) */
+.theme-dark .math.math-block {
+  border: none;
+  border-left: 2px solid #383838;
+  background: transparent;
+  padding: 12px 0;
+  margin: 16px 0;
+  overflow-x: auto;
+}
+
+/* MathJax container inside math block */
+.theme-dark .math-block > mjx-container,
+.theme-dark .markdown-source-view.mod-cm6 .math-block > mjx-container,
+.theme-dark .markdown-preview-view .math-block > mjx-container {
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* MathJax containers */
+.theme-dark .MJX-TEX {
+  background: transparent;
+  border: none;
+}
+
+/* Formulas in edit mode */
+.theme-dark .cm-math {
+  background: rgba(255, 255, 255, 0.03);
+  border: none;
+  padding: 2px 4px;
 }
 
 /* fix modal */
