@@ -713,6 +713,7 @@
 }
 [data-callout='tabbed'] > .callout-content p {
   margin: 0;
+  font-style: normal !important;
 }
 [data-callout='tabbed'] > .callout-content label > input {
   display: none;
@@ -1191,7 +1192,7 @@ ul > li::marker,
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 60px;
+  width: 2ch;
   height: 3px;
   background-color: var(--color-red);
 }
@@ -1213,22 +1214,6 @@ ul > li::marker,
   border-top: 0;
   border-left: 0;
   border-right: 0;
-}
-
-/* inline title in mobile */
-
-.is-mobile .inline-title {
-  font-size: 1.1rem;
-}
-
-.is-mobile .mod-root .markdown-reading-view .markdown-preview-view,
-.is-mobile
-  .mod-root
-  .view-content
-  > .markdown-source-view.mod-cm6
-  > .cm-editor
-  > .cm-scroller {
-  padding-top: 10px;
 }
 
 /* Headings */
@@ -1281,9 +1266,9 @@ h6,
   position: absolute;
   bottom: -12px;
   left: 0;
-  width: 60px;
+  width: 2ch;
   height: 3px;
-  background-color: rgba(72, 72, 72, 0.8);
+  background-color: rgba(72, 72, 72, 0.7);
 }
 
 .markdown-preview-view h1,
@@ -1313,9 +1298,9 @@ h6,
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 60px;
+  width: 2ch;
   height: 3px;
-  background-color: rgba(72, 72, 72, 0.8);
+  background-color: rgba(72, 72, 72, 0.7);
 }
 
 .cm-s-obsidian .cm-line.HyperMD-header {
