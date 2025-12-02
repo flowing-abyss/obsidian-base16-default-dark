@@ -151,11 +151,28 @@
   --list-indent: 1.6em;
 }
 
+/* Clean code blocks */
+.theme-dark .markdown-preview-view pre,
+.theme-dark .markdown-rendered pre {
+  background-color: #1a1a1a;
+  border: 1px solid #282828;
+  border-radius: 2px;
+  padding: 12px;
+}
+
+.theme-dark .cm-s-obsidian pre.HyperMD-codeblock,
+.theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock {
+  background-color: #1a1a1a;
+  border: none;
+  border-radius: 2px;
+  padding: 12px;
+}
+
 /* Syntax highlighting for code blocks */
 .theme-dark code[class*='language-'],
 .theme-dark pre[class*='language-'] {
   color: var(--code-normal);
-  background: var(--code-background);
+  background: transparent;
 }
 
 .theme-dark .token.comment,
@@ -163,6 +180,7 @@
 .theme-dark .token.doctype,
 .theme-dark .token.cdata {
   color: var(--code-comment);
+  opacity: 0.6;
 }
 
 .theme-dark .token.punctuation {
@@ -275,11 +293,19 @@
 }
 
 /* Inline code */
-.theme-dark .markdown-preview-view code,
+.theme-dark .markdown-preview-view :not(pre) > code,
 .theme-dark .cm-s-obsidian .cm-inline-code,
 .theme-dark .HyperMD-codeblock {
   color: var(--inline-code-color);
-  background-color: var(--code-background);
+  background-color: #1a1a1a;
+  padding: 2px 4px;
+  border-radius: 2px;
+}
+
+/* Code inside code blocks should have transparent background */
+.theme-dark .markdown-preview-view pre code,
+.theme-dark .markdown-rendered pre code {
+  background: transparent;
 }
 
 /* Bold */
