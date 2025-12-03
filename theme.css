@@ -2237,6 +2237,13 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
   margin-top: 0px;
 }
 
+/* highlight */
+.cm-highlight,
+mark {
+  background: rgba(210, 185, 60, 0.25) !important;
+  color: var(--font-color);
+}
+
 /* omnisearch */
 .omnisearch-result__folder-path {
   display: none;
