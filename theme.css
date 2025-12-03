@@ -151,6 +151,11 @@
   --list-indent: 1.6em;
 }
 
+.is-mobile.theme-dark {
+  --background-primary: #181818 !important;
+  --background-secondary: #181818 !important;
+}
+
 /* Clean code blocks */
 .theme-dark .markdown-preview-view pre,
 .theme-dark .markdown-rendered pre {
