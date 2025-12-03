@@ -2285,10 +2285,12 @@ mark {
 }
 .tree-item-self.search-result-file-title {
   border-left: 3px solid var(--color-red);
+  font-size: 0.9rem;
 }
 .search-result-file-matches {
   border-left: 1px solid var(--color-blue);
   margin-left: 8px;
+  font-size: 0.8rem;
 }
 
 /* TABS */
