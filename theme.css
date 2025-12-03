@@ -1927,7 +1927,7 @@ body:not(.classic-inline-backlinks) .embedded-backlinks .tree-item-inner {
   opacity: 0;
 }
 
-/* ANOTHER QUICK SWITHER */
+/* ANOTHER QUICK SWITHER and MODALS */
 .another-quick-switcher__custom-search__navigation-history-header,
 .another-quick-switcher__status__search-command,
 .prompt-instructions {
@@ -1979,17 +1979,14 @@ body .another-quick-switcher__item__description {
 .prompt.another-quick-switcher__floating-prompt,
 .float-search-modal,
 .modal.task-search-modal {
-  position: absolute;
-  top: var(--header-height) !important;
-  left: 2px !important;
-  min-width: 500px;
-  max-width: 570px;
-  max-height: 96%;
   border-radius: 0;
   border-width: 2px;
   box-shadow: none;
   border: 1px solid var(--background-modifier-border);
   border-collapse: collapse;
+}
+.modal-container.mod-dim .modal {
+  box-shadow: none;
 }
 .float-search-modal {
   min-height: 96%;
