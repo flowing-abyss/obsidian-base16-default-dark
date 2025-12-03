@@ -2281,7 +2281,7 @@ mark {
 .is-flashing {
   border-bottom: 2px solid var(--color-red);
   color: var(--font-color);
-  background-color: rgba(247, 202, 136, 0.25) !important;
+  background-color: rgba(210, 185, 60, 0.25) !important;
 }
 .tree-item-self.search-result-file-title {
   border-left: 3px solid var(--color-red);
