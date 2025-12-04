@@ -693,6 +693,9 @@
 .nav-header .nav-buttons-container .clickable-icon.nav-action-button svg {
   display: none;
 }
+.tree-item-self {
+  font-size: 0.75rem;
+}
 /* search */
 .nav-header
   .nav-buttons-container
