@@ -1,6 +1,6 @@
 {
   "name": "base16-default-dark-theme",
-  "version": "3.5.3",
+  "version": "3.5.4",
   "scripts": {
     "version": "node version-bump.mjs && git add manifest.json versions.json",
     "release:patch": "npm version patch && git push && git push --tags",
