@@ -377,6 +377,7 @@
 .theme-dark ::-webkit-scrollbar-thumb {
   background: #383838;
   border-radius: 5px;
+  transition: background 0.1s ease;
 }
 
 .theme-dark ::-webkit-scrollbar-thumb:hover {
@@ -759,6 +760,7 @@ ul > li::marker,
   width: 7px;
   border-radius: 50%;
   background-color: var(--bullet-new-color);
+  contain: paint;
 }
 
 /* .HyperMD-list-line-1:not(.HyperMD-task-line[data-task]):has(.cm-hmd-internal-link) { */
@@ -1048,6 +1050,7 @@ h6,
   left: 0;
   right: 0;
   bottom: 0;
+  backface-visibility: hidden;
 }
 
 .view-content .image-embed:active img {
@@ -1063,6 +1066,7 @@ h6,
   bottom: 0;
   position: absolute;
   opacity: 1;
+  backface-visibility: hidden;
 }
 
 /* Properties */
@@ -1085,6 +1089,7 @@ body {
   opacity: 0;
   overflow: hidden;
   transition: opacity 0.15s ease, max-width 0.15s ease;
+  pointer-events: none;
 }
 
 .metadata-property:hover .metadata-property-icon,
@@ -1095,6 +1100,7 @@ body {
   .clickable-icon {
   max-width: 30px;
   opacity: 1;
+  pointer-events: auto;
 }
 
 .multi-select-container,
@@ -1214,6 +1220,7 @@ body:has(.metadata-menu)
     border-radius: 8px;
     cursor: default;
     transition: background-color 0.1s ease, border-color 0.1s ease;
+    contain: layout style;
 
     .tasks-postpone,
     .tasks-edit,
@@ -1467,7 +1474,7 @@ body:has(.metadata-menu)
 
   &:hover :is(.bases-rendered-value, .bases-metadata-value) {
     translate: min(calc(100cqw - 100%), 0%) 0%;
-    transition: translate 2s ease-out 0s;
+    transition: translate 2s linear 0s;
   }
 }
 /* font */
