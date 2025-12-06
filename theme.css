@@ -1926,12 +1926,14 @@ mark {
 }
 
 /* TABS */
+.workspace .mod-root .workspace-tab-header-inner-title {
+  color: var(--text-normal) !important;
+}
 .theme-dark .workspace-tab-header.is-active {
   border-bottom-left-radius: 0px !important;
   border-bottom-right-radius: 0px !important;
   background-color: var(--background-primary);
 }
-
 .workspace-split.mod-root .workspace-tab-header.is-active::before,
 .workspace-split.mod-root .workspace-tab-header.is-active::after {
   box-shadow: none;
