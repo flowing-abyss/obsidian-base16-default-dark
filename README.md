@@ -4,7 +4,7 @@
 
 A no-nonsense Obsidian theme built on the legendary [Base16 Default Dark](https://github.com/chriskempson/base16) color scheme. Designed for serious academic research and deep work—minimal distractions, maximum clarity, pure terminal aesthetics.
 
-![Theme Preview](https://github.com/flowing-abyss/obsidian-base16-default-dark/blob/main/assets/theme-preview.png)
+![Theme Preview](https://github.com/flowing-abyss/obsidian-base16-default-dark/blob/main/assets/theme.png)
 
 ## Maximize Your Setup
 
