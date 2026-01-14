@@ -1949,5 +1949,5 @@ mark {
 }
 .workspace-split.mod-root .workspace-tab-header.is-active::before,
 .workspace-split.mod-root .workspace-tab-header.is-active::after {
-  box-shadow: none;
+  box-shadow: none !important;
 }
