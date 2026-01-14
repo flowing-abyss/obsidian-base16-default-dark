@@ -1470,6 +1470,19 @@ body:has(.metadata-menu)
   & :is(.bases-rendered-value, .bases-metadata-value) {
     min-width: fit-content;
     width: auto;
+    white-space: nowrap;
+    display: flex;
+    gap: 4px;
+  }
+
+  & .multi-select-pill {
+    flex-shrink: 0;
+    max-width: none !important;
+  }
+
+  & .multi-select-pill-content {
+    text-overflow: clip !important;
+    overflow: visible !important;
   }
 
   &:hover :is(.bases-rendered-value, .bases-metadata-value) {
