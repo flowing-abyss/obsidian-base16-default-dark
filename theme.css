@@ -1620,6 +1620,9 @@ body .another-quick-switcher__item {
 body .another-quick-switcher__item__description {
   margin-left: 8px;
 }
+.another-quick-switcher__item__title__header1 {
+  margin-left: 6px;
+}
 
 .prompt,
 .prompt.another-quick-switcher__floating-prompt,
