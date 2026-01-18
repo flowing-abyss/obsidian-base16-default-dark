@@ -1579,11 +1579,14 @@ body:not(.classic-inline-backlinks) .embedded-backlinks .tree-item-inner {
 .prompt-instructions {
   display: none;
 }
-body .another-quick-switcher__status__count-input {
+body .another-quick-switcher__status__count-wrapper {
   top: 1rem;
   right: 1rem;
+}
+body .another-quick-switcher__status__count-input {
   color: var(--text-faint);
 }
+
 .another-quick-switcher__item__title:not(
     .another-quick-switcher__item__title__header_hit
   ) {
