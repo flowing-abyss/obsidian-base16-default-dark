@@ -327,7 +327,7 @@
 .theme-dark strong,
 .theme-dark .cm-strong {
   color: var(--bold-color);
-  font-weight: bold;
+  font-weight: 600;
 }
 
 /* Bold inside callouts - neutral color */
@@ -1088,7 +1088,9 @@ body {
   padding: 0 !important;
   opacity: 0;
   overflow: hidden;
-  transition: opacity 0.15s ease, max-width 0.15s ease;
+  transition:
+    opacity 0.15s ease,
+    max-width 0.15s ease;
   pointer-events: none;
 }
 
@@ -1147,7 +1149,9 @@ body {
   display: block;
   box-sizing: border-box;
   position: relative;
-  transition: max-height 0.2s ease, padding 0.2s ease;
+  transition:
+    max-height 0.2s ease,
+    padding 0.2s ease;
   max-height: 1.5em;
   padding: 0;
 }
@@ -1175,7 +1179,9 @@ body {
   opacity: 0;
   max-height: 0;
   overflow: hidden;
-  transition: opacity 0.15s ease, max-height 0.15s ease;
+  transition:
+    opacity 0.15s ease,
+    max-height 0.15s ease;
 }
 
 .workspace-leaf-content[data-type='markdown']
@@ -1219,13 +1225,17 @@ body:has(.metadata-menu)
     border: 1px solid var(--background-modifier-border);
     border-radius: 8px;
     cursor: default;
-    transition: background-color 0.1s ease, border-color 0.1s ease;
+    transition:
+      background-color 0.1s ease,
+      border-color 0.1s ease;
     contain: layout style;
 
     .tasks-postpone,
     .tasks-edit,
     .tasks-backlink {
-      transition: opacity 0.1s ease, max-height 0.1s ease;
+      transition:
+        opacity 0.1s ease,
+        max-height 0.1s ease;
     }
 
     &:hover {
@@ -1588,8 +1598,8 @@ body .another-quick-switcher__status__count-input {
 }
 
 .another-quick-switcher__item__title:not(
-    .another-quick-switcher__item__title__header_hit
-  ) {
+  .another-quick-switcher__item__title__header_hit
+) {
   font-weight: normal;
 }
 .another-quick-switcher__item__description.another-quick-switcher__item__description {
@@ -1735,7 +1745,9 @@ body .various-complements__suggestion-item {
 /* Sidebar */
 body:not(.show-sidebar-header-buttons) :is(.mod-left-split, .mod-right-split) {
   :is(.workspace-tab-header-container, .workspace-tab-header-container-inner) {
-    transition: opacity 0.15s ease, height 0.15s ease;
+    transition:
+      opacity 0.15s ease,
+      height 0.15s ease;
   }
 
   .workspace-tabs {
