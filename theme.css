@@ -1969,3 +1969,15 @@ mark {
 .workspace-split.mod-root .workspace-tab-header.is-active::after {
   box-shadow: none !important;
 }
+
+/* VIRTUAL LINKER */
+.virtual-link.glossary-entry a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgb(var(--color-purple-rgb), 0.6);
+  text-underline-position: under;
+}
+/* Properties of the virtual link when hovered */
+.virtual-link.glossary-entry a:hover {
+  color: var(--link-color);
+}
