@@ -1450,6 +1450,14 @@ body:has(.metadata-menu)
   }
 }
 
+/* Task Toolbar */
+.plugin-tasks-toolbar input,
+.plugin-tasks-toolbar button {
+  background-color: var(--background-primary);
+  color: var(--text-normal);
+  border: none;
+}
+
 /* fix task checkbox */
 .markdown-preview-view .task-list-item-checkbox {
   top: 3px;
