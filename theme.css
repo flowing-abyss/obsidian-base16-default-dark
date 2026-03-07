@@ -1916,6 +1916,13 @@ mark {
   margin-left: 8px;
   font-size: 0.8rem;
 }
+/* hide close button */
+.search-input-clear-button {
+  display: none;
+}
+.search-input-container input:not(:placeholder-shown) ~ .input-right-decorator {
+  inset-inline-end: var(--size-4-1);
+}
 
 /* TABS */
 .workspace .mod-root .workspace-tab-header-inner-title {
