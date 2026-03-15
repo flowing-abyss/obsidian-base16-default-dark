@@ -1116,6 +1116,10 @@ body {
   display: none;
 }
 
+.mod-header.mod-ui .metadata-container {
+  margin-bottom: 1.5rem;
+}
+
 /* metadatamenu */
 
 .field-btn-container button.property-metadata-menu,
