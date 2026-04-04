@@ -2138,6 +2138,42 @@ mark {
   padding-left: 2px !important;
 }
 
+/* BASES CHARTS */
+/* Map --color-accent (used by plugin) to the theme's interactive accent */
+.theme-dark {
+  --bases-charts-accent: var(--interactive-accent);
+}
+
+/* ECharts tooltip outer container (inline styles need !important to override).
+   ECharts injects the tooltip as a div wrapping .bases-chart-tooltip content,
+   using its light-mode color palette (neutral05 bg, neutral30 border). */
+.theme-dark div:has(> .bases-chart-tooltip) {
+  background-color: #202020 !important;
+  border-color: #383838 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Tooltip inner container */
+.theme-dark .bases-chart-tooltip {
+  color: var(--text-normal);
+}
+
+/* Replace hardcoded #999 secondary text with theme muted color */
+.theme-dark .bases-chart-tooltip-value,
+.theme-dark .bases-chart-tooltip-file-value {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+/* Replace hardcoded rgba(128,128,128,0.2) divider */
+.theme-dark .bases-chart-tooltip-divider {
+  background: #383838;
+}
+
+/* Replace hardcoded rgba(128,128,128,0.15) hover */
+.theme-dark .bases-chart-tooltip-file:hover {
+  background: #282828;
+}
 /* META BIND */
 .mb-button-group {
   --mb-border-radius: 0;
