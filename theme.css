@@ -2227,11 +2227,13 @@ mark {
   gap: 0;
 }
 
-.mv-sidebar-actions .mv-sidebar-action-btn {
+.mv-sidebar-actions .mv-sidebar-action-btn,
+.mv-vault-note-header .mv-vault-note-link {
   border-radius: 3px;
   background: transparent;
   border: 1px solid #383838;
   box-shadow: none;
+  padding-inline: 10px;
   color: var(--text-muted);
   font-size: var(--font-ui-small);
   transition:
@@ -2241,14 +2243,17 @@ mark {
 }
 
 .mv-sidebar-actions .mv-sidebar-action-btn:hover,
-.mv-sidebar-actions .mv-sidebar-action-btn:focus-visible {
+.mv-sidebar-actions .mv-sidebar-action-btn:focus-visible,
+.mv-vault-note-header .mv-vault-note-link:hover,
+.mv-vault-note-header .mv-vault-note-link:focus-visible {
   background: transparent !important;
   border-color: #484848 !important;
   color: #f8f8f8 !important;
   box-shadow: inset 2px 0 0 #7cafc2 !important;
 }
 
-.mv-sidebar-actions .mv-sidebar-action-btn:active {
+.mv-sidebar-actions .mv-sidebar-action-btn:active,
+.mv-vault-note-header .mv-vault-note-link:active {
   background: transparent !important;
   border-color: #585858 !important;
   color: #ffffff !important;
