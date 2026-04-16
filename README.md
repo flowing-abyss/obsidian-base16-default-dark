@@ -14,19 +14,18 @@ Elevate the theme with professional typefaces that enhance readability and visua
 
 ```css
 body {
-  --font-text-theme: 'Rubik', 'Noto Color Emoji', sans-serif !important;
-  --font-editor-theme: 'Rubik', 'Noto Color Emoji', sans-serif !important;
-  --font-monospace-theme: 'Roboto Mono', 'Noto Color Emoji', monospace !important;
-  --font-interface-theme: 'Inter', 'Noto Color Emoji', sans-serif !important;
-  --font-heading-theme: 'Tinos', 'Noto Color Emoji', serif !important;
+  --font-text-theme: 'IBM Plex Sans', 'Noto Color Emoji', sans-serif !important;
+  --font-editor-theme: 'IBM Plex Mono', 'Noto Color Emoji', sans-serif !important;
+  --font-monospace-theme: 'IBM Plex Mono', 'Noto Color Emoji', monospace !important;
+  --font-interface-theme: 'IBM Plex Sans', 'Noto Color Emoji', sans-serif !important;
+  --font-heading-theme: 'IBM Plex Serif', 'Noto Color Emoji', serif !important;
 }
 ```
 
 **Get the fonts:**
-- [Inter](https://fonts.google.com/specimen/Inter) — Interface
-- [Rubik](https://fonts.google.com/specimen/Rubik) — Body text
-- [Tinos](https://fonts.google.com/specimen/Tinos) — Headings
-- [Roboto Mono](https://fonts.google.com/specimen/Roboto+Mono) — Code
+- [IBM Plex Sans](https://fonts.google.com/specimen/IBM+Plex+Sans) — Interface & body text
+- [IBM Plex Serif](https://fonts.google.com/specimen/IBM+Plex+Serif) — Headings
+- [IBM Plex Mono](https://fonts.google.com/specimen/IBM+Plex+Mono) — Code & editor
 - [Noto Color Emoji](https://fonts.google.com/noto/specimen/Noto+Color+Emoji) — Emoji support
 
 Add this snippet via *Settings → Appearance → CSS snippets*.

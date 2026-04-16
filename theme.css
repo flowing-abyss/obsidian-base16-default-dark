@@ -151,6 +151,50 @@
   --list-indent: 1.6em;
 }
 
+.theme-dark {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 500;
+}
+
+.setting-item-name {
+  font-weight: bold;
+  position: relative;
+  border-left: 3px solid var(--color-red) !important;
+  padding-left: 10px !important;
+}
+
+.theme-dark .markdown-preview-view h1,
+.theme-dark .cm-header-1 {
+  font-weight: 650;
+}
+
+.theme-dark .markdown-preview-view h2,
+.theme-dark .cm-header-2 {
+  font-weight: 650;
+}
+
+.theme-dark .markdown-preview-view h3,
+.theme-dark .cm-header-3,
+.theme-dark .markdown-preview-view h4,
+.theme-dark .cm-header-4,
+.theme-dark .markdown-preview-view h5,
+.theme-dark .cm-header-5,
+.theme-dark .markdown-preview-view h6,
+.theme-dark .cm-header-6 {
+  font-weight: 600;
+}
+
+/* Modal font size — slightly smaller than body text */
+.theme-dark .prompt *,
+.theme-dark .modal *,
+.theme-dark .menu-scroll *,
+.hybrid-search-preview,
+.hybrid-search-preview-meta-panel {
+  font-size: calc(var(--font-text-size) * 0.8);
+  font-weight: 500;
+}
+
 .is-mobile.theme-dark {
   --background-primary: #181818 !important;
   --background-secondary: #181818 !important;
@@ -327,7 +371,7 @@
 .theme-dark strong,
 .theme-dark .cm-strong {
   color: var(--bold-color);
-  font-weight: 600;
+  font-weight: 700;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -699,6 +743,9 @@
 }
 
 /* TOC */
+.workspace-leaf-content[data-type='outline'] .tree-item-inner {
+  font-size: 1.1em;
+}
 .workspace-leaf-content[data-type='outline'] .clickable-icon.nav-action-button {
   width: auto !important;
   padding: 0 8px;
@@ -944,7 +991,7 @@ ul > li::marker,
 
   background: transparent;
 
-  font-weight: 500;
+  font-weight: 650;
 }
 
 /* fix */
@@ -1523,6 +1570,7 @@ body:has(.metadata-menu)
 .view-content .bases-view {
   font-family: var(--font-interface-theme);
   font-size: 1rem;
+  font-weight: 450;
 }
 
 /* less paddings on splits */
@@ -1618,7 +1666,7 @@ body .another-quick-switcher__status__count-input {
 .another-quick-switcher__item__title:not(
   .another-quick-switcher__item__title__header_hit
 ) {
-  font-weight: normal;
+  font-weight: 500;
 }
 .another-quick-switcher__item__description.another-quick-switcher__item__description {
   padding-left: 0;
@@ -1678,7 +1726,7 @@ body .another-quick-switcher__item__description {
   min-height: 96%;
 }
 .another-quick-switcher__custom__item__title {
-  font-weight: normal;
+  font-weight: 500;
 }
 
 .float-search-modal {
