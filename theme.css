@@ -1587,7 +1587,12 @@ body:has(.metadata-menu)
 .view-content .bases-view {
   font-family: var(--font-interface-theme);
   font-size: 1rem;
-  font-weight: 450;
+}
+
+.bases-table-header-name,
+.bases-group-property,
+.bases-group-value {
+  font-weight: 500;
 }
 
 /* less paddings on splits */
@@ -2157,10 +2162,17 @@ mark {
   color: #7cafc2;
 }
 /* Card title */
-.board-card .file-name {
-  font-size: var(--font-ui-small);
+.board-card .file-name,
+.board-column-headers {
+  font-size: 1.1em;
   font-weight: 600;
-  letter-spacing: 0.01em;
+}
+.board-card .file-name {
+  padding-bottom: 4px;
+}
+.board-row-header-bar {
+  font-size: 0.8em;
+  font-weight: 600;
 }
 /* New note button — invisible until hover on cell */
 .board-new-note-button {
