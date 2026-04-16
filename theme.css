@@ -196,7 +196,8 @@
 }
 
 .theme-dark .prompt .flair.mod-pop,
-.theme-dark .modal .flair.mod-pop {
+.theme-dark .modal .flair.mod-pop,
+.theme-dark .modal .mv-picker-group-type {
   font-size: 0.65em;
 }
 
