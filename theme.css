@@ -198,6 +198,12 @@
   font-weight: var(--font-weight-normal);
 }
 
+.theme-dark .prompt .another-quick-switcher__item__hot-key-guide,
+.theme-dark .prompt .another-quick-switcher__status__count-input,
+.theme-dark .prompt .another-quick-switcher__command-palette__item__key {
+  font-size: 0.75em;
+}
+
 .theme-dark .prompt .flair.mod-pop,
 .theme-dark .modal .flair.mod-pop,
 .theme-dark .modal .mv-picker-group-type {
@@ -1815,9 +1821,11 @@ body .another-quick-switcher__status__count-input {
 }
 
 .another-quick-switcher__command-palette__item__key {
-  color: var(--hotkey-color);
-  background-color: var(--bg4);
-  border: var(--thin-border);
+  color: var(--inline-code-color);
+  background-color: #1a1a1a;
+  padding: 2px 4px;
+  border-radius: 2px;
+  border: none;
 }
 
 /* VARIOUS COMPLEMENTS */
