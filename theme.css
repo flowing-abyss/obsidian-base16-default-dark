@@ -1292,7 +1292,7 @@ body:has(.metadata-menu)
     padding: 8px;
     background-color: transparent !important;
     border: 1px solid var(--background-modifier-border);
-    border-radius: 8px;
+    border-radius: 2px;
     cursor: default;
     transition:
       background-color 0.1s ease,
