@@ -810,6 +810,7 @@
   --bullet-new-color: rgb(72, 72, 72);
 }
 
+
 /* Change color for all types of markers 
    in source, editing & preview           */
 ol > li::marker,
@@ -2259,8 +2260,9 @@ mark {
       background: transparent;
       border: 1px solid #383838;
       box-shadow: none;
-      color: var(--text-muted);
+      color: var(--text-normal);
       font-size: var(--font-ui-small);
+      font-weight: 450;
       transition:
         background 0.1s ease,
         border-color 0.1s ease,
