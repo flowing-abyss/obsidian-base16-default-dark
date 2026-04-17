@@ -183,10 +183,15 @@
 /* Modal font size — slightly smaller than body text */
 .theme-dark .prompt *,
 .theme-dark .modal *,
-.theme-dark .menu-scroll *,
 .hybrid-search-preview,
 .hybrid-search-preview-meta-panel {
   font-size: calc(var(--font-text-size) * 0.8);
+  font-weight: 450;
+}
+
+/* Context menu (right-click dropdown) */
+.theme-dark .menu-scroll * {
+  font-size: calc(var(--font-text-size) * 0.72);
   font-weight: 450;
 }
 
