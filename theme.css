@@ -102,6 +102,8 @@
   --table-row-alt-background: transparent;
 
   /* Checkboxes */
+  --checkbox-radius: 0px;
+  --checkbox-border-width: 1.5px;
   --checkbox-color: #7cafc2;
   --checkbox-color-hover: #86c1b9;
   --checkbox-border-color: #585858;
@@ -1535,6 +1537,19 @@ body:has(.metadata-menu)
 
 .dataview .task-list-item-checkbox {
   top: 2px;
+}
+
+/* square-in-square checkbox */
+.task-list-item-checkbox:not(:checked) {
+  background: transparent;
+  box-shadow: none;
+}
+
+.task-list-item-checkbox:checked {
+  background-color: #a0a0a0 !important;
+  background-image: none !important;
+  border-color: var(--checkbox-border-color) !important;
+  box-shadow: inset 0 0 0 2px var(--background-primary) !important;
 }
 
 /* BASES */
