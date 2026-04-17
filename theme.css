@@ -827,10 +827,10 @@ ul > li::marker,
 /* LEVEL 1 */
 .markdown-reading-view ul > li > .list-bullet:after,
 .markdown-source-view.mod-cm6 .HyperMD-list-line-1 .list-bullet:after {
-  /* Bullet */
-  height: 7px;
-  width: 7px;
-  border-radius: 50%;
+  /* Solid Square */
+  height: 6px;
+  width: 6px;
+  border-radius: 0;
   background-color: var(--bullet-new-color);
   contain: paint;
 }
@@ -849,10 +849,10 @@ ul > li::marker,
 /* LEVEL 2 */
 .markdown-reading-view ul > li > ul > li > .list-bullet:after,
 .markdown-source-view.mod-cm6 .HyperMD-list-line-2 .list-bullet:after {
-  /* Dash */
-  height: 3px;
-  width: 7px;
-  border-radius: 0%;
+  /* Bar */
+  height: 2px;
+  width: 8px;
+  border-radius: 0;
   background-color: var(--bullet-new-color);
 }
 
@@ -863,13 +863,13 @@ ul > li::marker,
 /* LEVEL 3 */
 .markdown-reading-view ul > li > ul > li > ul > li > .list-bullet:after,
 .markdown-source-view.mod-cm6 .HyperMD-list-line-3 .list-bullet:after {
-  /* Hollow Bullet */
+  /* Hollow Square */
   height: 5px;
   width: 5px;
   background-color: transparent;
   border-color: var(--bullet-new-color);
   border-style: solid;
-  border-radius: 50%;
+  border-radius: 0;
   border-width: 1px;
 }
 
@@ -889,10 +889,10 @@ ul > li::marker,
   > li
   > .list-bullet:after,
 .markdown-source-view.mod-cm6 .HyperMD-list-line-4 .list-bullet:after {
-  /* Solid Square */
-  height: 5px;
-  width: 5px;
-  border-radius: 0%;
+  /* Solid Square small */
+  height: 4px;
+  width: 4px;
+  border-radius: 0;
   background-color: var(--bullet-new-color);
 }
 
@@ -915,10 +915,10 @@ ul > li::marker,
   > li
   > .list-bullet:after,
 .markdown-source-view.mod-cm6 .HyperMD-list-line-5 .list-bullet:after {
-  /* Dash */
+  /* Bar thin */
   height: 1px;
-  width: 7px;
-  border-radius: 0%;
+  width: 6px;
+  border-radius: 0;
   background-color: var(--bullet-new-color);
 }
 
@@ -943,13 +943,13 @@ ul > li::marker,
   > li
   > .list-bullet:after,
 .markdown-source-view.mod-cm6 .HyperMD-list-line-6 .list-bullet:after {
-  /* Hollow Square */
-  height: 4px;
-  width: 4px;
-  background-color: Transparent;
+  /* Hollow Square small */
+  height: 3px;
+  width: 3px;
+  background-color: transparent;
   border-color: var(--bullet-new-color);
   border-style: solid;
-  border-radius: 0%;
+  border-radius: 0;
   border-width: 1px;
 }
 
@@ -976,10 +976,10 @@ ul > li::marker,
   > li
   > .list-bullet:after,
 .markdown-source-view.mod-cm6 .HyperMD-list-line-7 .list-bullet:after {
-  /* Small Bullet */
+  /* Micro dot */
   height: 2px;
   width: 2px;
-  border-radius: 50%;
+  border-radius: 0;
   background-color: var(--bullet-new-color);
 }
 
