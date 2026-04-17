@@ -151,12 +151,15 @@
 
   /* Misc */
   --list-indent: 1.6em;
+
+  /* Font weights */
+  --font-weight-normal: 450;
 }
 
 .theme-dark {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-weight: 450;
+  font-weight: var(--font-weight-normal);
 }
 
 .theme-dark .markdown-preview-view h1,
@@ -186,13 +189,13 @@
 .hybrid-search-preview,
 .hybrid-search-preview-meta-panel {
   font-size: calc(var(--font-text-size) * 0.8);
-  font-weight: 450;
+  font-weight: var(--font-weight-normal);
 }
 
 /* Context menu (right-click dropdown) */
 .theme-dark .menu-scroll * {
   font-size: calc(var(--font-text-size) * 0.72);
-  font-weight: 450;
+  font-weight: var(--font-weight-normal);
 }
 
 .theme-dark .prompt .flair.mod-pop,
@@ -321,11 +324,11 @@
 .theme-dark .internal-link,
 .theme-dark .cm-hmd-internal-link {
   color: var(--link-internal-color);
-  font-weight: 450;
+  font-weight: var(--font-weight-normal);
 }
 
 .theme-dark .cm-hmd-internal-link .cm-underline {
-  font-weight: 450;
+  font-weight: var(--font-weight-normal);
 }
 
 .theme-dark .internal-link:hover {
@@ -816,7 +819,6 @@
 :root {
   --bullet-new-color: rgb(72, 72, 72);
 }
-
 
 /* Change color for all types of markers 
    in source, editing & preview           */
@@ -1410,7 +1412,7 @@ body:has(.metadata-menu)
       background-color: var(--background-modifier-form-field-highlighted);
       border: 1px solid var(--background-modifier-border);
       border-radius: 99px;
-      font-weight: 450;
+      font-weight: var(--font-weight-normal);
       height: fit-content;
       padding: 2px 6px;
       line-height: 110%;
@@ -1497,7 +1499,7 @@ body:has(.metadata-menu)
       content: 'EDIT';
       font-size: var(--font-scale-000);
       color: var(--text-muted);
-      font-weight: 450;
+      font-weight: var(--font-weight-normal);
       margin-right: 4px;
     }
     &::after {
@@ -1515,7 +1517,7 @@ body:has(.metadata-menu)
       content: 'POSTPONE';
       font-size: var(--font-scale-000);
       color: var(--text-muted);
-      font-weight: 450;
+      font-weight: var(--font-weight-normal);
       margin-right: 4px;
     }
     &::after {
@@ -1605,7 +1607,7 @@ body:has(.metadata-menu)
 .bases-table-header-name,
 .bases-group-property,
 .bases-group-value {
-  font-weight: 450;
+  font-weight: var(--font-weight-normal);
 }
 
 /* less paddings on splits */
@@ -1701,7 +1703,7 @@ body .another-quick-switcher__status__count-input {
 .another-quick-switcher__item__title:not(
   .another-quick-switcher__item__title__header_hit
 ) {
-  font-weight: 450;
+  font-weight: var(--font-weight-normal);
 }
 .another-quick-switcher__item__description.another-quick-switcher__item__description {
   padding-left: 0;
@@ -1761,7 +1763,7 @@ body .another-quick-switcher__item__description {
   min-height: 96%;
 }
 .another-quick-switcher__custom__item__title {
-  font-weight: 450;
+  font-weight: var(--font-weight-normal);
 }
 
 .theme-dark .prompt .hybrid-search-score,
@@ -2282,7 +2284,7 @@ mark {
       box-shadow: none;
       color: var(--text-normal);
       font-size: var(--font-ui-small);
-      font-weight: 450;
+      font-weight: var(--font-weight-normal);
       transition:
         background 0.1s ease,
         border-color 0.1s ease,
