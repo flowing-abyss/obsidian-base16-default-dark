@@ -337,6 +337,12 @@
   font-weight: var(--font-weight-normal);
 }
 
+.theme-dark .cm-hmd-embed.cm-hmd-internal-link {
+  color: var(--link-internal-color);
+  font-weight: var(--font-weight-normal);
+  font-family: var(--font-text);
+}
+
 .theme-dark .internal-link:hover {
   color: var(--link-internal-hover);
 }
@@ -858,7 +864,8 @@ ul > li::marker,
   border-width: 1px;
 }
 
-.HyperMD-list-line-1:not(.HyperMD-task-line[data-task]) .cm-hmd-internal-link {
+.HyperMD-list-line-1:not(.HyperMD-task-line[data-task])
+  .cm-hmd-internal-link:not(.cm-hmd-embed) {
   font-weight: 600;
 }
 
@@ -873,7 +880,7 @@ ul > li::marker,
 }
 
 .HyperMD-list-line-2 {
-  font-weight: 400;
+  font-weight: var(--font-weight-normal);
 }
 
 /* LEVEL 3 */
@@ -890,7 +897,7 @@ ul > li::marker,
 }
 
 .HyperMD-list-line-3 {
-  font-weight: 400;
+  font-weight: var(--font-weight-normal);
 }
 
 /* LEVEL 4 */
@@ -913,7 +920,7 @@ ul > li::marker,
 }
 
 .HyperMD-list-line-4 {
-  font-weight: 400;
+  font-weight: var(--font-weight-normal);
   font-style: italic;
 }
 
@@ -939,7 +946,7 @@ ul > li::marker,
 }
 
 .HyperMD-list-line-5 {
-  font-weight: 400;
+  font-weight: var(--font-weight-normal);
   font-style: italic;
 }
 
@@ -970,7 +977,7 @@ ul > li::marker,
 }
 
 .HyperMD-list-line-6 {
-  font-weight: 400;
+  font-weight: var(--font-weight-normal);
   font-style: italic;
 }
 
@@ -1000,7 +1007,7 @@ ul > li::marker,
 }
 
 .HyperMD-list-line-7 {
-  font-weight: 400;
+  font-weight: var(--font-weight-normal);
   font-style: italic;
 }
 
