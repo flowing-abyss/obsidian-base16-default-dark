@@ -159,7 +159,10 @@
 .theme-dark {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-weight: var(--font-weight-normal);
+}
+
+.theme-dark * {
+  font-weight: var(--font-weight-normal) !important;
 }
 
 .theme-dark .markdown-preview-view h1,
@@ -189,13 +192,11 @@
 .hybrid-search-preview,
 .hybrid-search-preview-meta-panel {
   font-size: calc(var(--font-text-size) * 0.8);
-  font-weight: var(--font-weight-normal);
 }
 
 /* Context menu (right-click dropdown) */
 .theme-dark .menu-scroll * {
   font-size: calc(var(--font-text-size) * 0.72);
-  font-weight: var(--font-weight-normal);
 }
 
 .theme-dark .prompt .another-quick-switcher__item__hot-key-guide,
@@ -330,16 +331,10 @@
 .theme-dark .internal-link,
 .theme-dark .cm-hmd-internal-link {
   color: var(--link-internal-color);
-  font-weight: var(--font-weight-normal);
-}
-
-.theme-dark .cm-hmd-internal-link .cm-underline {
-  font-weight: var(--font-weight-normal);
 }
 
 .theme-dark .cm-hmd-embed.cm-hmd-internal-link {
   color: var(--link-internal-color);
-  font-weight: var(--font-weight-normal);
   font-family: var(--font-text);
 }
 
@@ -821,7 +816,7 @@
   --bullet-new-color: rgb(72, 72, 72);
 }
 
-/* Change color for all types of markers 
+/* Change color for all types of markers
    in source, editing & preview           */
 ol > li::marker,
 ul > li::marker,
@@ -867,10 +862,6 @@ ul > li::marker,
   background-color: var(--bullet-new-color);
 }
 
-.HyperMD-list-line-2 {
-  font-weight: var(--font-weight-normal);
-}
-
 /* LEVEL 3 */
 .markdown-reading-view ul > li > ul > li > ul > li > .list-bullet::after,
 .markdown-source-view.mod-cm6 .HyperMD-list-line-3 .list-bullet::after {
@@ -884,10 +875,6 @@ ul > li::marker,
   border-width: 1px;
 }
 
-.HyperMD-list-line-3 {
-  font-weight: var(--font-weight-normal);
-}
-
 /* LEVEL 4 */
 .markdown-reading-view ul > li > ul > li > ul > li > ul > li > .list-bullet::after,
 .markdown-source-view.mod-cm6 .HyperMD-list-line-4 .list-bullet::after {
@@ -899,7 +886,6 @@ ul > li::marker,
 }
 
 .HyperMD-list-line-4 {
-  font-weight: var(--font-weight-normal);
   font-style: italic;
 }
 
@@ -914,7 +900,6 @@ ul > li::marker,
 }
 
 .HyperMD-list-line-5 {
-  font-weight: var(--font-weight-normal);
   font-style: italic;
 }
 
@@ -945,7 +930,6 @@ ul > li::marker,
 }
 
 .HyperMD-list-line-6 {
-  font-weight: var(--font-weight-normal);
   font-style: italic;
 }
 
@@ -975,7 +959,6 @@ ul > li::marker,
 }
 
 .HyperMD-list-line-7 {
-  font-weight: var(--font-weight-normal);
   font-style: italic;
 }
 
@@ -1373,7 +1356,6 @@ body:has(.metadata-menu)
       background-color: var(--background-modifier-form-field-highlighted);
       border: 1px solid var(--background-modifier-border);
       border-radius: 99px;
-      font-weight: var(--font-weight-normal);
       height: fit-content;
       padding: 2px 6px;
       line-height: 110%;
@@ -1460,7 +1442,6 @@ body:has(.metadata-menu)
       content: 'EDIT';
       font-size: var(--font-scale-000);
       color: var(--text-muted);
-      font-weight: var(--font-weight-normal);
       margin-right: 4px;
     }
     &::after {
@@ -1478,7 +1459,6 @@ body:has(.metadata-menu)
       content: 'POSTPONE';
       font-size: var(--font-scale-000);
       color: var(--text-muted);
-      font-weight: var(--font-weight-normal);
       margin-right: 4px;
     }
     &::after {
@@ -1563,12 +1543,6 @@ body:has(.metadata-menu)
 .view-content .bases-view {
   font-family: var(--font-interface-theme);
   font-size: 1rem;
-}
-
-.bases-table-header-name,
-.bases-group-property,
-.bases-group-value {
-  font-weight: var(--font-weight-normal);
 }
 
 /* less paddings on splits */
@@ -1660,9 +1634,6 @@ body .another-quick-switcher__status__count-input {
   color: var(--text-faint);
 }
 
-.another-quick-switcher__item__title:not(.another-quick-switcher__item__title__header_hit) {
-  font-weight: var(--font-weight-normal);
-}
 .another-quick-switcher__item__description.another-quick-switcher__item__description {
   padding-left: 0;
   margin-left: 0;
@@ -1720,10 +1691,6 @@ body .another-quick-switcher__item__description {
 .float-search-modal {
   min-height: 96%;
 }
-.another-quick-switcher__custom__item__title {
-  font-weight: var(--font-weight-normal);
-}
-
 .theme-dark .prompt .hybrid-search-score,
 .theme-dark .prompt .hybrid-search-mode-badge {
   font-size: 0.75em;
@@ -2240,7 +2207,6 @@ mark {
       box-shadow: none;
       color: var(--text-normal);
       font-size: var(--font-ui-small);
-      font-weight: var(--font-weight-normal);
       transition:
         background 0.1s ease,
         border-color 0.1s ease,
