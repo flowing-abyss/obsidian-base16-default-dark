@@ -465,7 +465,6 @@
 .theme-dark .callout {
   background: transparent;
   border: none;
-  border-left: 2px solid var(--callout-color, #383838);
   border-radius: 0;
   box-shadow: none;
   padding: 4px 12px;
@@ -1002,7 +1001,7 @@ h4,
 h5,
 h6,
 .cm-header {
-  font-family: var(--font-heading-theme) !important;
+  /* font-family: var(--font-heading-theme) !important; */
   font-variant-caps: small-caps;
   color: var(--h1-color) !important;
 }
@@ -2301,4 +2300,9 @@ mark {
 
 .mv-sidebar-actions .mv-sidebar-action-btn:not(:first-child) {
   border-top: none;
+}
+
+/* Claudian */
+.view-content.claudian-container {
+  font-size: 0.9rem !important;
 }
