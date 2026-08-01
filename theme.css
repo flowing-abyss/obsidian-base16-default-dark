@@ -1508,6 +1508,10 @@ body:has(.metadata-menu)
   background-color: transparent;
 }
 
+.bases-embed .bases-view {
+  --bases-embed-border-color: var(--background-modifier-border);
+}
+
 /* bases cell hover full content */
 .bases-td {
   container: base-cell / inline-size;
