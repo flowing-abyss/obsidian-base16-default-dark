@@ -161,6 +161,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.theme-dark,
 .theme-dark * {
   font-weight: var(--font-weight-normal) !important;
 }
@@ -1677,8 +1678,8 @@ body .another-quick-switcher__item__description {
 .float-search-modal,
 .modal.task-search-modal {
   position: absolute;
-  top: var(--header-height) !important;
-  left: 2px !important;
+  top: calc(var(--header-height) + 10px) !important;
+  left: 10px !important;
   min-width: 480px;
   max-width: 480px;
   max-height: 96%;
@@ -2172,9 +2173,11 @@ mark {
 }
 
 /* ECharts tooltip outer container (inline styles need !important to override).
-   ECharts injects the tooltip as a div wrapping .bases-chart-tooltip content,
-   using its light-mode color palette (neutral05 bg, neutral30 border). */
-.theme-dark div:has(> .bases-chart-tooltip) {
+   ECharts injects the tooltip as an unnamed div wrapping .bases-chart-tooltip,
+   always as a direct child of .bases-charts-plot-grid-item — scoping :has()
+   to that rare, chart-only container keeps the selector cheap (not a global
+   div:has() that Chromium must re-check on every DOM mutation app-wide). */
+.theme-dark .bases-charts-plot-grid-item > div:has(> .bases-chart-tooltip) {
   background-color: #202020 !important;
   border-color: #383838 !important;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5) !important;
