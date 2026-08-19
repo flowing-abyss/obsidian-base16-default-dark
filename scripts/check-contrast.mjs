@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { contrast } from "./lib/color.mjs";
+import { CONTRAST_WAIVERS } from "./contrast-waivers.mjs";
 
 // Self-check: these two pairs are the ones that decided the code-block design,
 // so a regression in the maths must fail loudly rather than silently reshape it.
@@ -41,7 +42,7 @@ const hexOf = (name) => {
 // so a later change to a surface colour can't silently escape this check.
 const surfaceHex = Object.fromEntries(SURFACES.map((s) => [s, hexOf(s)]));
 
-const waivers = JSON.parse(await readFile(".docs/waivers.json", "utf8"));
+const waivers = CONTRAST_WAIVERS;
 const waived = new Set(waivers.map((w) => `${w.token}@${w.surface}`));
 
 let failed = 0;
@@ -50,7 +51,20 @@ for (const role of ROLES) {
     const ratio = contrast(hexOf(role.token), surfaceHex[s]);
     const key = `${role.token}@${s}`;
     const ok = ratio >= role.min;
-    if (ok) continue;
+    if (ok) {
+      // A registered waiver whose pair now passes on its own is stale: the
+      // colour was fixed (or the role/surface changed) and nobody removed
+      // the waiver. That must fail loudly, the same way check-parity.mjs
+      // used to fail on a waiver whose "extra" no longer appeared in the
+      // diff — an unused exception is a hole nobody remembers opening.
+      if (waived.has(key)) {
+        console.error(
+          `FAIL ${key} ${ratio.toFixed(2)} >= ${role.min} but is still waived — remove the stale waiver from scripts/contrast-waivers.mjs`
+        );
+        failed++;
+      }
+      continue;
+    }
     if (waived.has(key)) {
       const w = waivers.find((x) => `${x.token}@${x.surface}` === key);
       console.log(`WAIVED ${key} ${ratio.toFixed(2)} < ${role.min} — ${w.reason}`);

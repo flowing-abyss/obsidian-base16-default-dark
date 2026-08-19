@@ -16,10 +16,6 @@ node_modules
 update.md
 
 .claude/
-.docs/*
+.docs/
 .superpower/
 .superpowers/
-
-# waivers.json is a tracked config file read by check:contrast at runtime
-# (including in CI), so it must survive the .docs/ ignore above.
-!.docs/waivers.json
