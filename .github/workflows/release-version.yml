@@ -14,7 +14,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Verify theme.css matches sources
+        run: |
+          npm ci
+          npm run build
+          git diff --exit-code theme.css
+
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:

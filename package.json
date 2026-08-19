@@ -7,12 +7,14 @@
     "release:minor": "npm --tag-version-prefix='' version minor && git push && git push --tags",
     "release:major": "npm --tag-version-prefix='' version major && git push && git push --tags",
     "prepare": "husky",
-    "format": "prettier --write theme.css",
-    "lint": "stylelint theme.css",
-    "lint:fix": "stylelint theme.css --fix"
+    "build": "node scripts/build.mjs",
+    "check:parity": "node scripts/check-parity.mjs",
+    "format": "prettier --write \"src/**/*.css\"",
+    "lint": "stylelint \"src/**/*.css\"",
+    "lint:fix": "stylelint \"src/**/*.css\" --fix"
   },
   "lint-staged": {
-    "*.css": [
+    "src/**/*.css": [
       "prettier --write",
       "stylelint --fix"
     ]
