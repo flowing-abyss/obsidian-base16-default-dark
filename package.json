@@ -9,6 +9,7 @@
     "prepare": "husky",
     "build": "node scripts/build.mjs",
     "check:parity": "node scripts/check-parity.mjs",
+    "test:normalize": "node scripts/test-normalize.mjs",
     "format": "prettier --write \"src/**/*.css\"",
     "lint": "stylelint \"src/**/*.css\"",
     "lint:fix": "stylelint \"src/**/*.css\" --fix"
