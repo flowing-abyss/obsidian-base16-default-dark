@@ -1,9 +1,12 @@
 /* Modal font size — slightly smaller than body text. Comma-list has a
    modal-majority owner; .hybrid-search-preview and
-   .hybrid-search-preview-meta-panel are foreign (Another Quick Switcher's
-   hybrid-search UI — see the .hybrid-search-score/-mode-badge rule below),
-   kept here rather than split out because they share this exact
-   declaration with the modal selectors. */
+   .hybrid-search-preview-meta-panel are foreign (the Hybrid Search
+   plugin's note-preview panel — see the .hybrid-search-score/-mode-badge
+   rule below; verified via app.plugins.manifests["hybrid-search"], not
+   Another Quick Switcher despite the visual resemblance to that plugin's
+   own .another-quick-switcher__* selectors elsewhere in this file), kept
+   here rather than split out because they share this exact declaration
+   with the modal selectors. */
 .theme-dark .prompt *,
 .theme-dark .modal *,
 .hybrid-search-preview,
@@ -53,9 +56,11 @@
   font-size: var(--font-text-size);
 }
 
-/* .modal.task-search-modal is foreign (Tasks plugin selector), kept here
-   because it shares this exact declaration block with the modal
-   selectors. */
+/* .modal.task-search-modal is foreign (the Task Search plugin's own
+   modal — verified via app.plugins.manifests["task-search"], not the
+   Tasks plugin / obsidian-tasks-plugin despite the name similarity),
+   kept here because it shares this exact declaration block with the
+   modal selectors. */
 .prompt,
 .prompt.another-quick-switcher__floating-prompt,
 .float-search-modal,
