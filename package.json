@@ -10,6 +10,8 @@
     "build": "node scripts/build.mjs",
     "check:parity": "node scripts/check-parity.mjs",
     "test:normalize": "node scripts/test-normalize.mjs",
+    "reload": "node scripts/reload.mjs",
+    "shots": "node scripts/shots.mjs",
     "format": "prettier --write \"src/**/*.css\"",
     "lint": "stylelint \"src/**/*.css\"",
     "lint:fix": "stylelint \"src/**/*.css\" --fix"
