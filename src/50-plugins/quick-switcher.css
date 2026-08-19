@@ -1,0 +1,80 @@
+.theme-dark .prompt .another-quick-switcher__item__hot-key-guide,
+.theme-dark .prompt .another-quick-switcher__status__count-input,
+.theme-dark .prompt .another-quick-switcher__command-palette__item__key {
+  font-size: 0.75em;
+}
+
+/* ANOTHER QUICK SWITHER and MODALS */
+.another-quick-switcher__custom-search__navigation-history-header,
+.another-quick-switcher__status__search-command,
+.prompt-instructions {
+  display: none;
+}
+body .another-quick-switcher__status__count-wrapper {
+  top: 1rem;
+  right: 1rem;
+}
+body .another-quick-switcher__status__count-input {
+  color: var(--text-faint);
+}
+
+.another-quick-switcher__item__description.another-quick-switcher__item__description {
+  padding-left: 0;
+  margin-left: 0;
+}
+.another-quick-switcher__item__descriptions {
+  padding-top: 1px;
+  line-height: 1;
+}
+.another-quick-switcher__item__description__tag,
+.another-quick-switcher__item__description__alias {
+  line-height: 1.2;
+}
+.another-quick-switcher__item__description__alias svg {
+  width: 14px;
+  margin-right: 4px;
+}
+.another-quick-switcher__phantom_item.another-quick-switcher__phantom_item {
+  color: var(--link-unresolved-color);
+  opacity: 0.85;
+}
+.is-mobile .another-quick-switcher__item__hot-key-guide,
+.another-quick-switcher__item__hot-key-guide::before,
+.another-quick-switcher__item__hot-key-guide::after {
+  display: none;
+}
+body .another-quick-switcher__item {
+  padding-left: 0;
+}
+body .another-quick-switcher__item__description {
+  margin-left: 8px;
+}
+.another-quick-switcher__item__title__header1 {
+  margin-left: 6px;
+}
+
+.another-quick-switcher__status__default-input,
+.another-quick-switcher__status__search-command,
+.another-quick-switcher__header__auto-preview-icon,
+.another-quick-switcher__command_buttons,
+.another-quick-switcher__starred_item .another-quick-switcher__item__entry::before,
+.search-input-clear-button {
+  display: none;
+}
+
+body .another-quick-switcher__status__count-input {
+  top: 1rem;
+}
+
+.another-quick-switcher__hit_word {
+  border-bottom: 2px solid var(--color-red);
+  color: var(--font-color);
+}
+
+.another-quick-switcher__command-palette__item__key {
+  color: var(--inline-code-color);
+  background-color: #1a1a1a;
+  padding: 2px 4px;
+  border-radius: 2px;
+  border: none;
+}

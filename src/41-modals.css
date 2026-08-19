@@ -1,0 +1,101 @@
+/* Modal font size — slightly smaller than body text */
+.theme-dark .prompt *,
+.theme-dark .modal *,
+.hybrid-search-preview,
+.hybrid-search-preview-meta-panel {
+  font-size: calc(var(--font-text-size) * 0.8);
+}
+
+.theme-dark .prompt .flair.mod-pop,
+.theme-dark .modal .flair.mod-pop,
+.theme-dark .modal .mv-picker-group-type {
+  font-size: 0.65em;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  line-height: 1;
+  translate: 0 -1px;
+}
+
+/* popovers */
+.theme-light,
+.theme-dark {
+  --popover-width: 600px;
+  --popover-height: 400px;
+}
+/* Border instead of shadow */
+.popover {
+  box-shadow: none;
+}
+.popover.hover-editor {
+  border: 1px ridge rgba(209, 209, 209, 0.5);
+}
+.popover-titlebar {
+  background-color: #181818 !important;
+}
+.popover-title {
+  visibility: hidden;
+}
+.popover-action,
+.popover-header-icon {
+  color: var(--text-muted) !important;
+}
+.popover-content {
+  font-size: var(--font-text-size);
+}
+
+.prompt,
+.prompt.another-quick-switcher__floating-prompt,
+.float-search-modal,
+.modal.task-search-modal {
+  position: absolute;
+  top: calc(var(--header-height) + 10px) !important;
+  left: 10px !important;
+  min-width: 480px;
+  max-width: 480px;
+  max-height: 96%;
+  box-shadow: none;
+  border-radius: 0;
+  border-width: 2px;
+  border: 1px solid var(--background-modifier-border);
+  border-collapse: collapse;
+}
+.modal-container.mod-dim .modal {
+  box-shadow: none;
+}
+.float-search-modal {
+  min-height: 96%;
+}
+.theme-dark .prompt .hybrid-search-score,
+.theme-dark .prompt .hybrid-search-mode-badge {
+  font-size: 0.75em;
+}
+
+.float-search-modal {
+  min-height: 96%;
+}
+
+.float-search-modal-instructions {
+  display: none;
+}
+
+.prompt .suggestion-item,
+.float-search-modal {
+  font-size: 100%;
+  padding: 3px;
+}
+
+input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
+  border-radius: 0;
+  border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.theme-dark .modal-bg,
+.theme-light .modal-bg {
+  background-color: transparent;
+}
+
+/* fix modal */
+.modal-content h1 {
+  margin-top: 0;
+}

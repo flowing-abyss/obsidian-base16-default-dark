@@ -1,0 +1,37 @@
+/* NAKED EMBED */
+.markdown-embed-title {
+  display: none;
+}
+.markdown-embed,
+.inline-embed,
+.inline-embed > .markdown-embed-content > .markdown-source-view,
+.inline-embed > .markdown-embed-content > .markdown-preview-view {
+  background: var(--background-primary);
+  border: none;
+  padding: 0;
+  margin: 0;
+  gap: 0;
+}
+
+.file-embed-link svg,
+.markdown-embed-link svg {
+  width: 16px;
+  opacity: 0;
+}
+
+.markdown-embed:hover .file-embed-link svg,
+.markdown-embed:hover .markdown-embed-link svg {
+  opacity: 1;
+}
+
+/* full width external embed */
+.external-embed {
+  width: 100% !important;
+}
+
+/* image border */
+.markdown-source-view.mod-cm6 .internal-embed > img,
+.markdown-preview-view .internal-embed > img {
+  border: 1px solid #404040;
+  border-radius: 2px;
+}

@@ -1,0 +1,101 @@
+/* Properties */
+body {
+  --metadata-label-width: 5em;
+  --metadata-gap: 0;
+  --metadata-padding: 0;
+}
+
+.metadata-properties-heading {
+  display: none;
+}
+
+.metadata-property-icon,
+.metadata-property-warning-icon,
+.metadata-container .metadata-property-value .clickable-icon {
+  max-width: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    opacity 0.15s ease,
+    max-width 0.15s ease;
+  pointer-events: none;
+}
+
+.metadata-property:hover .metadata-property-icon,
+.metadata-property:hover .metadata-property-warning-icon,
+.metadata-property:hover .metadata-container .metadata-property-value .clickable-icon {
+  max-width: 30px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.multi-select-container,
+.metadata-input-number {
+  padding: 0 !important;
+  margin: 0 !important;
+  gap: 0 !important;
+}
+
+.metadata-property-key-input.metadata-property-key-input {
+  margin-left: 3px;
+}
+
+.metadata-properties {
+  margin-top: 3px;
+}
+
+.is-live-preview.show-properties .metadata-container {
+  display: none;
+}
+
+.mod-header.mod-ui .metadata-container {
+  margin-bottom: 1.5rem;
+}
+
+/* properties in notes */
+.workspace-leaf-content[data-type='markdown'] .metadata-container .metadata-content,
+.workspace-leaf-content[data-type='markdown'] .frontmatter-container .metadata-content {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition:
+    opacity 0.15s ease,
+    max-height 0.15s ease;
+}
+
+.workspace-leaf-content[data-type='markdown'] .metadata-container:hover .metadata-content,
+.workspace-leaf-content[data-type='markdown'] .frontmatter-container:hover .metadata-content,
+.workspace-leaf-content[data-type='markdown']
+  .inline-title:hover
+  ~ .metadata-container
+  .metadata-content,
+body:has(.metadata-menu)
+  .workspace-leaf-content[data-type='markdown']
+  .metadata-container
+  .metadata-content {
+  opacity: 1;
+  max-height: 1000px;
+}
+.is-live-preview .metadata-container {
+  margin-bottom: 4px;
+}
+
+/* Hide block IDs on inactive lines */
+.cm-blockid {
+  opacity: 0;
+}
+/* Show block IDs on active lines */
+.cm-active .cm-blockid {
+  opacity: 1;
+}
+
+/* multi select pill fix */
+.multi-select-pill .multi-select-pill-remove-button {
+  margin-left: -3px;
+  color: var(--hover-accent);
+}
+.multi-select-pill-remove-button:not(:hover) {
+  opacity: 0;
+}

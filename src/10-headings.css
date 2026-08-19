@@ -1,0 +1,165 @@
+.theme-dark .markdown-preview-view h1,
+.theme-dark .cm-header-1 {
+  font-weight: 650 !important;
+}
+
+.theme-dark .markdown-preview-view h2,
+.theme-dark .cm-header-2 {
+  font-weight: 650 !important;
+}
+
+.theme-dark .markdown-preview-view h3,
+.theme-dark .cm-header-3,
+.theme-dark .markdown-preview-view h4,
+.theme-dark .cm-header-4,
+.theme-dark .markdown-preview-view h5,
+.theme-dark .cm-header-5,
+.theme-dark .markdown-preview-view h6,
+.theme-dark .cm-header-6 {
+  font-weight: 600 !important;
+}
+
+/* Headings */
+.theme-dark .markdown-preview-view h1,
+.theme-dark .markdown-preview-view h2,
+.theme-dark .markdown-preview-view h3,
+.theme-dark .markdown-preview-view h4,
+.theme-dark .markdown-preview-view h5,
+.theme-dark .markdown-preview-view h6,
+.theme-dark .cm-header-1,
+.theme-dark .cm-header-2,
+.theme-dark .cm-header-3,
+.theme-dark .cm-header-4,
+.theme-dark .cm-header-5,
+.theme-dark .cm-header-6 {
+  color: var(--heading-color);
+}
+
+.theme-dark .inline-title {
+  color: var(--inline-title-color);
+}
+
+/* INLINE TITLE */
+.inline-title:not([data-level]) {
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  color: var(--h1-color);
+  font-variant-caps: small-caps;
+  line-height: 0.9;
+  background: transparent;
+  font-weight: 650 !important;
+}
+
+/* fix */
+.markdown-source-view .inline-title {
+  margin-left: 0;
+}
+
+.markdown-preview-view .inline-title {
+  margin-top: 38px;
+  margin-bottom: 32px;
+}
+
+.hover-popover .inline-title {
+  margin-top: 0;
+  display: block;
+  text-align: left;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+}
+
+/* Headings */
+/* heading font fix */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.cm-header {
+  /* font-family: var(--font-heading-theme) !important; */
+  font-variant-caps: small-caps;
+  color: var(--h1-color) !important;
+}
+
+.HyperMD-header.HyperMD-header-1,
+.HyperMD-header.HyperMD-header-2,
+.HyperMD-header.HyperMD-header-3,
+.HyperMD-header.HyperMD-header-4,
+.HyperMD-header.HyperMD-header-5,
+.HyperMD-header.HyperMD-header-6 {
+  padding: 0;
+  text-align: left;
+  font-variant-caps: small-caps;
+  line-height: 0.9;
+  border-radius: 5px;
+  background: transparent;
+}
+
+.markdown-preview-view h1,
+.markdown-preview-view h2,
+.markdown-preview-view h3,
+.markdown-preview-view h4,
+.markdown-preview-view h5,
+.markdown-preview-view h6 {
+  text-align: left;
+  font-variant-caps: small-caps;
+  line-height: 0.9;
+  border-radius: 5px;
+  background: transparent;
+  padding: 0;
+}
+
+.cm-s-obsidian .cm-line.HyperMD-header {
+  padding: 0;
+}
+
+/* Vertical left border on headings — document only */
+.markdown-preview-view h1,
+.markdown-preview-view h2,
+.markdown-preview-view h3,
+.markdown-preview-view h4,
+.markdown-preview-view h5,
+.markdown-preview-view h6,
+.is-live-preview .HyperMD-header {
+  position: relative;
+  border-left: 3px solid var(--color-red) !important;
+  padding-left: 10px !important;
+}
+
+.markdown-preview-view .inline-title,
+.is-live-preview .inline-title {
+  position: relative;
+  border-left: 3px solid var(--color-red) !important;
+  padding-left: 10px !important;
+  border-radius: 5px;
+}
+
+/* Place collapse indicator to the left of the border */
+.markdown-preview-view :is(h1, h2, h3, h4, h5, h6) > .collapse-indicator.collapse-icon {
+  position: absolute;
+  left: -2px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.is-live-preview .HyperMD-header .cm-fold-indicator {
+  position: absolute;
+  left: -2px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* fix headings for tasks */
+.callout :is(h1, h2, h3, h4, h5, h6) {
+  background-color: var(--background-primary);
+  border-radius: 5px;
+  border: none;
+  text-align: left;
+}
+
+.markdown-preview-view .inline-title {
+  margin-bottom: 0 !important;
+}

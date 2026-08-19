@@ -1,0 +1,19 @@
+.theme-dark {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.theme-dark,
+.theme-dark * {
+  font-weight: var(--font-weight-normal) !important;
+}
+
+.is-mobile.theme-dark {
+  --background-primary: #181818 !important;
+  --background-secondary: #181818 !important;
+}
+
+/* Selection */
+.theme-dark ::selection {
+  background-color: var(--text-selection);
+}

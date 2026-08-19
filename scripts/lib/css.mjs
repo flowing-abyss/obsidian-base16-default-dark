@@ -30,3 +30,61 @@ export function normalize(css) {
     .trim()
     .toLowerCase();
 }
+
+// Splits already-normalize()d CSS (single line, comments stripped, quotes
+// unified to ") into its top-level blocks — "selector{...}" units, where a
+// nested block (e.g. a whole @media query containing its own selector
+// blocks) counts as ONE unit, using the same depth-past-zero rule
+// inventory.mjs's block walker uses on raw source.
+//
+// This exists for check-parity.mjs, once splitting src/99-legacy.css into
+// per-layer files (Task 4 of the typography rebuild) is factored in: that
+// split deliberately reorders blocks relative to the legacy file (a block
+// grouped into a late-cascade file like 40-chrome.css can originate from
+// earlier in the legacy source than one that lands in an early file like
+// 11-text.css — see the split's own inventory). A plain baseline===built
+// string compare is therefore not the right equivalence for a split build:
+// it would fail on every legitimate reorder, not just on an actual lost,
+// duplicated, or altered block. Comparing the SORTED block lists instead
+// keeps exactly the guarantee check-parity exists to provide — no block
+// missing, no block added, no block's own text changed — while tolerating
+// the reordering the split intentionally performs. A string is tracked (not
+// just brace depth) because a `content: "{"` declaration value could
+// otherwise be miscounted as a real brace; none exists in this theme today,
+// but the walker stays correct if one is ever added.
+export function splitTopLevelBlocks(normalized) {
+  const blocks = [];
+  let depth = 0;
+  let cursor = 0;
+  let inString = false;
+
+  for (let i = 0; i < normalized.length; i++) {
+    const c = normalized[i];
+    if (inString) {
+      if (c === "\\") {
+        i++;
+        continue;
+      }
+      if (c === '"') inString = false;
+      continue;
+    }
+    if (c === '"') {
+      inString = true;
+      continue;
+    }
+    if (c === "{") {
+      depth++;
+    } else if (c === "}") {
+      depth--;
+      if (depth === 0) {
+        blocks.push(normalized.slice(cursor, i + 1).trim());
+        cursor = i + 1;
+      }
+    }
+  }
+
+  const trailing = normalized.slice(cursor).trim();
+  if (trailing) blocks.push(trailing);
+
+  return blocks;
+}

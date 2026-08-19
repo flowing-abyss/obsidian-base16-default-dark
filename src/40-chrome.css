@@ -1,0 +1,160 @@
+/* Context menu (right-click dropdown) */
+.theme-dark .menu-scroll * {
+  font-size: calc(var(--font-text-size) * 0.72);
+}
+
+/* Scrollbars */
+.theme-dark ::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.theme-dark ::-webkit-scrollbar-track {
+  background: #181818;
+}
+
+.theme-dark ::-webkit-scrollbar-thumb {
+  background: #383838;
+  border-radius: 0;
+  transition: background 0.1s ease;
+}
+
+.theme-dark ::-webkit-scrollbar-thumb:hover {
+  background: #484848;
+}
+
+/* Ribbon menu */
+.workspace-ribbon {
+  background-color: var(--background-primary);
+}
+
+/* TOC */
+.workspace-leaf-content[data-type='outline'] .tree-item-inner {
+  font-size: 1.1em;
+}
+.workspace-leaf-content[data-type='outline'] .clickable-icon.nav-action-button {
+  width: auto !important;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.workspace-leaf-content[data-type='outline'] .clickable-icon.nav-action-button svg {
+  display: none;
+}
+.tree-item-self {
+  font-size: 0.75rem;
+}
+/* search */
+.workspace-leaf-content[data-type='outline'] .clickable-icon.nav-action-button:nth-child(1)::after {
+  content: 'search';
+}
+/* follow */
+.workspace-leaf-content[data-type='outline'] .clickable-icon.nav-action-button:nth-child(2)::after {
+  content: 'follow';
+}
+/* collapse */
+.workspace-leaf-content[data-type='outline'] .clickable-icon.nav-action-button:nth-child(3)::after {
+  content: 'collapse';
+}
+
+/* less paddings on splits */
+:is(.mod-right-split, .mod-left-split) .workspace-leaf-content .view-content {
+  padding: 4px;
+}
+
+/* Sidebar */
+body:not(.show-sidebar-header-buttons) :is(.mod-left-split, .mod-right-split) {
+  :is(.workspace-tab-header-container, .workspace-tab-header-container-inner) {
+    transition:
+      opacity 0.15s ease,
+      height 0.15s ease;
+  }
+
+  .workspace-tabs {
+    &:not(.mod-top) .workspace-tab-header-container:not(:hover) {
+      --sidebar-tabs-unhovered-height: 10px;
+
+      height: var(--sidebar-tabs-unhovered-height);
+    }
+
+    &.mod-top .workspace-tab-header-container:not(:hover) .workspace-tab-header-container-inner {
+      opacity: 0;
+    }
+
+    &.mod-top .workspace-tab-header-container-inner {
+      &:hover {
+        padding-bottom: 4px;
+        margin-top: 4px;
+      }
+
+      padding-bottom: 0;
+      margin-top: 0;
+    }
+  }
+}
+/* fix sidebar header buttons not being clickable */
+body:is(.mod-windows, .mod-linux) {
+  &:not(.show-sidebar-header-buttons) .titlebar {
+    height: 35px;
+  }
+
+  &.is-hidden-frameless:not(.is-grabbing, .is-fullscreen, .show-sidebar-header-buttons)
+    .mod-top
+    .workspace-tab-header-container {
+    -webkit-app-region: no-drag;
+  }
+}
+
+/* sync background of windows buttons with sidebar color */
+body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
+  .titlebar-button-container.mod-right {
+  background-color: transparent;
+}
+
+/* fix graph analysis */
+.scrollContainer {
+  padding: 0;
+}
+
+/* search */
+.search-result-file-matched-text {
+  background-color: transparent;
+  border-bottom: 2px solid var(--color-red);
+  color: var(--font-color);
+}
+.is-flashing {
+  border-bottom: 2px solid var(--color-red);
+  color: var(--font-color);
+  background-color: rgba(210, 185, 60, 0.25) !important;
+}
+.tree-item-self.search-result-file-title {
+  border-left: 3px solid var(--color-red);
+  font-size: 0.9rem;
+}
+.search-result-file-matches {
+  border-left: 1px solid var(--color-blue);
+  margin-left: 8px;
+  font-size: 0.8rem;
+}
+/* hide close button */
+.search-input-clear-button {
+  display: none;
+}
+.search-input-container input:not(:placeholder-shown) ~ .input-right-decorator {
+  inset-inline-end: var(--size-4-1);
+}
+
+/* TABS */
+.workspace .mod-root .workspace-tab-header-inner-title {
+  color: var(--text-normal) !important;
+}
+.theme-dark .workspace-tab-header.is-active {
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  background-color: var(--background-primary);
+}
+.workspace-split.mod-root .workspace-tab-header.is-active::before,
+.workspace-split.mod-root .workspace-tab-header.is-active::after {
+  box-shadow: none !important;
+}

@@ -1,0 +1,259 @@
+/* Bold inside callouts - neutral color */
+.theme-dark .callout strong {
+  color: inherit;
+  font-weight: bold !important;
+}
+
+/* Italic inside callouts - neutral color */
+.theme-dark .callout em {
+  color: inherit;
+  font-style: italic;
+}
+
+/* Callouts */
+.theme-dark .callout {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 4px 12px;
+  margin: 8px 0;
+  overflow: hidden;
+}
+
+.theme-dark .callout-title {
+  padding: 4px 10px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  background: transparent;
+  color: #e8e8e8;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.theme-dark .callout-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.theme-dark .callout-content {
+  margin: 0;
+  padding: 0 10px;
+  background-color: var(--background-primary);
+  border: none;
+}
+
+/* Callout type icons with subtle colors */
+.theme-dark .callout[data-callout='note'] .callout-icon,
+.theme-dark .callout[data-callout='note'] .callout-icon svg {
+  color: #81a2be;
+}
+.theme-dark .callout[data-callout='abstract'] .callout-icon,
+.theme-dark .callout[data-callout='summary'] .callout-icon,
+.theme-dark .callout[data-callout='tldr'] .callout-icon,
+.theme-dark .callout[data-callout='abstract'] .callout-icon svg,
+.theme-dark .callout[data-callout='summary'] .callout-icon svg,
+.theme-dark .callout[data-callout='tldr'] .callout-icon svg {
+  color: #8abeb7;
+}
+.theme-dark .callout[data-callout='info'] .callout-icon,
+.theme-dark .callout[data-callout='info'] .callout-icon svg {
+  color: #81a2be;
+}
+.theme-dark .callout[data-callout='todo'] .callout-icon,
+.theme-dark .callout[data-callout='todo'] .callout-icon svg {
+  color: #81a2be;
+}
+.theme-dark .callout[data-callout='tip'] .callout-icon,
+.theme-dark .callout[data-callout='hint'] .callout-icon,
+.theme-dark .callout[data-callout='important'] .callout-icon,
+.theme-dark .callout[data-callout='tip'] .callout-icon svg,
+.theme-dark .callout[data-callout='hint'] .callout-icon svg,
+.theme-dark .callout[data-callout='important'] .callout-icon svg {
+  color: #8abeb7;
+}
+.theme-dark .callout[data-callout='success'] .callout-icon,
+.theme-dark .callout[data-callout='check'] .callout-icon,
+.theme-dark .callout[data-callout='done'] .callout-icon,
+.theme-dark .callout[data-callout='success'] .callout-icon svg,
+.theme-dark .callout[data-callout='check'] .callout-icon svg,
+.theme-dark .callout[data-callout='done'] .callout-icon svg {
+  color: #b5bd68;
+}
+.theme-dark .callout[data-callout='question'] .callout-icon,
+.theme-dark .callout[data-callout='help'] .callout-icon,
+.theme-dark .callout[data-callout='faq'] .callout-icon,
+.theme-dark .callout[data-callout='question'] .callout-icon svg,
+.theme-dark .callout[data-callout='help'] .callout-icon svg,
+.theme-dark .callout[data-callout='faq'] .callout-icon svg {
+  color: #8abeb7;
+}
+.theme-dark .callout[data-callout='warning'] .callout-icon,
+.theme-dark .callout[data-callout='caution'] .callout-icon,
+.theme-dark .callout[data-callout='attention'] .callout-icon,
+.theme-dark .callout[data-callout='warning'] .callout-icon svg,
+.theme-dark .callout[data-callout='caution'] .callout-icon svg,
+.theme-dark .callout[data-callout='attention'] .callout-icon svg {
+  color: #f0c674;
+}
+.theme-dark .callout[data-callout='failure'] .callout-icon,
+.theme-dark .callout[data-callout='fail'] .callout-icon,
+.theme-dark .callout[data-callout='missing'] .callout-icon,
+.theme-dark .callout[data-callout='failure'] .callout-icon svg,
+.theme-dark .callout[data-callout='fail'] .callout-icon svg,
+.theme-dark .callout[data-callout='missing'] .callout-icon svg {
+  color: #cc6666;
+}
+.theme-dark .callout[data-callout='danger'] .callout-icon,
+.theme-dark .callout[data-callout='error'] .callout-icon,
+.theme-dark .callout[data-callout='danger'] .callout-icon svg,
+.theme-dark .callout[data-callout='error'] .callout-icon svg {
+  color: #cc6666;
+}
+.theme-dark .callout[data-callout='bug'] .callout-icon,
+.theme-dark .callout[data-callout='bug'] .callout-icon svg {
+  color: #cc6666;
+}
+.theme-dark .callout[data-callout='example'] .callout-icon,
+.theme-dark .callout[data-callout='example'] .callout-icon svg {
+  color: #b294bb;
+}
+.theme-dark .callout[data-callout='quote'] .callout-icon,
+.theme-dark .callout[data-callout='cite'] .callout-icon,
+.theme-dark .callout[data-callout='quote'] .callout-icon svg,
+.theme-dark .callout[data-callout='cite'] .callout-icon svg {
+  color: #969896;
+}
+
+/* Custom callout icon colors */
+.theme-dark .callout[data-callout='my'] {
+  --callout-icon: gem;
+}
+.theme-dark .callout[data-callout='my'] .callout-icon,
+.theme-dark .callout[data-callout='my'] .callout-icon svg {
+  color: #b294bb;
+}
+.theme-dark .callout[data-callout='link'] {
+  --callout-icon: link;
+}
+.theme-dark .callout[data-callout='link'] .callout-icon,
+.theme-dark .callout[data-callout='link'] .callout-icon svg {
+  color: #81a2be;
+}
+.theme-dark .callout[data-callout='mind'] .callout-icon,
+.theme-dark .callout[data-callout='mindmap'] .callout-icon,
+.theme-dark .callout[data-callout='mind'] .callout-icon svg,
+.theme-dark .callout[data-callout='mindmap'] .callout-icon svg {
+  color: #de935f;
+}
+.theme-dark .callout[data-callout='mind'],
+.theme-dark .callout[data-callout='mindmap'] {
+  --callout-icon: brain;
+}
+.theme-dark .callout[data-callout*='config'] {
+  --callout-icon: settings;
+}
+.theme-dark .callout[data-callout*='config'] .callout-icon,
+.theme-dark .callout[data-callout*='config'] .callout-icon svg {
+  color: #969896;
+}
+.theme-dark .callout[data-callout^='attachment'] .callout-icon,
+.theme-dark .callout[data-callout^='file'] .callout-icon,
+.theme-dark .callout[data-callout^='attachment'] .callout-icon svg,
+.theme-dark .callout[data-callout^='file'] .callout-icon svg {
+  color: #8abeb7;
+}
+.theme-dark .callout[data-callout^='attachment'],
+.theme-dark .callout[data-callout^='file'] {
+  --callout-icon: paperclip;
+}
+.theme-dark .callout[data-callout^='URL' i] {
+  --callout-icon: link;
+}
+.theme-dark .callout[data-callout^='URL' i] .callout-icon,
+.theme-dark .callout[data-callout^='URL' i] .callout-icon svg {
+  color: #81a2be;
+}
+.theme-dark .callout[data-callout='contacts'] {
+  --callout-icon: lucide-users;
+}
+.theme-dark .callout[data-callout='contacts'] .callout-icon,
+.theme-dark .callout[data-callout='contacts'] .callout-icon svg {
+  color: #b5bd68;
+}
+.theme-dark .callout[data-callout='documentation'] {
+  --callout-icon: lucide-scroll;
+}
+.theme-dark .callout[data-callout='documentation'] .callout-icon,
+.theme-dark .callout[data-callout='documentation'] .callout-icon svg {
+  color: #81a2be;
+}
+.theme-dark .callout[data-callout='idea'] {
+  --callout-icon: lucide-lightbulb;
+}
+.theme-dark .callout[data-callout='idea'] .callout-icon,
+.theme-dark .callout[data-callout='idea'] .callout-icon svg {
+  color: #f0c674;
+}
+.theme-dark .callout[data-callout='image'] .callout-icon,
+.theme-dark .callout[data-callout='img'] .callout-icon,
+.theme-dark .callout[data-callout='picture'] .callout-icon,
+.theme-dark .callout[data-callout='image'] .callout-icon svg,
+.theme-dark .callout[data-callout='img'] .callout-icon svg,
+.theme-dark .callout[data-callout='picture'] .callout-icon svg {
+  color: #b294bb;
+}
+.theme-dark .callout[data-callout='image'],
+.theme-dark .callout[data-callout='img'],
+.theme-dark .callout[data-callout='picture'] {
+  --callout-icon: lucide-image;
+}
+.theme-dark .callout[data-callout='code'] {
+  --callout-icon: lucide-code;
+}
+.theme-dark .callout[data-callout='code'] .callout-icon,
+.theme-dark .callout[data-callout='code'] .callout-icon svg {
+  color: #8abeb7;
+}
+.theme-dark .callout[data-callout='ai'] .callout-icon,
+.theme-dark .callout[data-callout='bot'] .callout-icon,
+.theme-dark .callout[data-callout='ai'] .callout-icon svg,
+.theme-dark .callout[data-callout='bot'] .callout-icon svg {
+  color: #b294bb;
+}
+.theme-dark .callout[data-callout='ai'],
+.theme-dark .callout[data-callout='bot'] {
+  --callout-icon: lucide-bot;
+}
+.theme-dark .callout[data-callout='TOC'] .callout-icon,
+.theme-dark .callout[data-callout='toc'] .callout-icon,
+.theme-dark .callout[data-callout='TOC'] .callout-icon svg,
+.theme-dark .callout[data-callout='toc'] .callout-icon svg {
+  color: #969896;
+}
+.theme-dark .callout[data-callout='TOC'],
+.theme-dark .callout[data-callout='toc'] {
+  --callout-icon: lucide-list-tree;
+}
+
+/* Config callout task list styling */
+.theme-dark .callout[data-callout*='config'] .task-list-item {
+  margin-inline-start: 3px;
+  color: var(--text-normal);
+  text-decoration: none;
+}
+.theme-dark .callout[data-callout*='config'] .task-list-item .task-list-item-checkbox {
+  margin-bottom: -3px;
+}
+.theme-dark .callout[data-callout*='config'] .task-list-item .task-list-item-checkbox::after {
+  display: none;
+}
+
+/* URL callout text transform */
+.theme-dark .callout[data-callout^='URL' i] .callout-title {
+  text-transform: uppercase;
+}

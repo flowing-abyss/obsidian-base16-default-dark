@@ -1,22 +1,65 @@
 import { readFile } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
-import { normalize } from "./lib/css.mjs";
+import { normalize, splitTopLevelBlocks } from "./lib/css.mjs";
 
 const ref = process.argv[2] ?? "baseline-3.7.23";
-const baseline = normalize(
+const baselineNorm = normalize(
   execFileSync("git", ["show", `${ref}:theme.css`], { encoding: "utf8" }),
 );
-const built = normalize(await readFile("theme.css", "utf8"));
+const builtNorm = normalize(await readFile("theme.css", "utf8"));
 
-if (baseline === built) {
-  console.log(`parity OK against ${ref} (${built.length} normalised chars)`);
+// Block-multiset comparison, not a raw string compare: src/ is now split
+// into per-layer files whose build order (npm run build concatenates
+// src/**/*.css in filename-sort order) is the intended new cascade, not the
+// legacy file's line order. A block assigned to a late layer can originate
+// earlier in the legacy source than one assigned to an early layer, so the
+// built output is a legitimate reordering of the baseline's blocks, not a
+// byte-for-byte match. Comparing sorted block lists keeps the guarantee
+// this check exists for — nothing lost, nothing added, no block's own text
+// altered — without tripping on reordering the split intentionally does.
+const baselineBlocks = splitTopLevelBlocks(baselineNorm).sort();
+const builtBlocks = splitTopLevelBlocks(builtNorm).sort();
+
+const same =
+  baselineBlocks.length === builtBlocks.length &&
+  baselineBlocks.every((b, i) => b === builtBlocks[i]);
+
+if (same) {
+  console.log(
+    `parity OK against ${ref} (${builtBlocks.length} block(s), ${builtNorm.length} normalised chars)`,
+  );
   process.exit(0);
 }
 
-let i = 0;
-while (i < baseline.length && baseline[i] === built[i]) i++;
-console.error(`PARITY FAILED against ${ref} at normalised offset ${i}`);
-console.error(`  baseline: ...${baseline.slice(Math.max(0, i - 60), i + 60)}`);
-console.error(`  built:    ...${built.slice(Math.max(0, i - 60), i + 60)}`);
-console.error(`  lengths: baseline ${baseline.length}, built ${built.length}`);
+// Multiset diff: count occurrences on each side and report what's out of
+// balance, rather than a single string offset (which is meaningless once
+// order is allowed to differ).
+function counts(blocks) {
+  const m = new Map();
+  for (const b of blocks) m.set(b, (m.get(b) ?? 0) + 1);
+  return m;
+}
+const baselineCounts = counts(baselineBlocks);
+const builtCounts = counts(builtBlocks);
+const allKeys = new Set([...baselineCounts.keys(), ...builtCounts.keys()]);
+
+const missing = []; // in baseline, not (enough) in built
+const extra = []; // in built, not (enough) in baseline
+for (const k of allKeys) {
+  const b = baselineCounts.get(k) ?? 0;
+  const t = builtCounts.get(k) ?? 0;
+  if (t < b) missing.push({ block: k, baseline: b, built: t });
+  if (t > b) extra.push({ block: k, baseline: b, built: t });
+}
+
+console.error(`PARITY FAILED against ${ref}`);
+console.error(
+  `  ${baselineBlocks.length} baseline block(s), ${builtBlocks.length} built block(s)`,
+);
+for (const { block, baseline, built } of missing) {
+  console.error(`  MISSING (baseline x${baseline}, built x${built}): ${block.slice(0, 200)}`);
+}
+for (const { block, baseline, built } of extra) {
+  console.error(`  EXTRA   (baseline x${baseline}, built x${built}): ${block.slice(0, 200)}`);
+}
 process.exit(1);

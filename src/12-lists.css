@@ -1,0 +1,194 @@
+/* Lists */
+.theme-dark .markdown-preview-view .list-bullet::after {
+  background-color: var(--text-faint);
+}
+
+/* LISTS */
+.markdown-source-view.mod-cm6.is-readable-line-width .cm-line {
+  padding: 0;
+}
+
+.markdown-rendered ul:not(.contains-task-list, .dataview-result-list-ul) {
+  padding-inline-start: 0;
+}
+.markdown-rendered ol {
+  padding-inline-start: 0;
+}
+
+/* fix foldable list in preview */
+.markdown-rendered .list-collapse-indicator {
+  margin-inline-start: -1.6em;
+  padding-inline-end: 0.3em;
+}
+
+/* Bullet color */
+:root {
+  --bullet-new-color: rgb(72, 72, 72);
+}
+
+/* Change color for all types of markers
+   in source, editing & preview           */
+ol > li::marker,
+ul > li::marker,
+.cm-s-obsidian .cm-formatting-list {
+  color: var(--bullet-new-color);
+}
+
+/* color for folded list */
+.folded-line-emphasis .markdown-preview-view .is-collapsed:not(.callout-fold),
+.folded-line-emphasis .cm-line:has(.cm-fold-indicator.is-collapsed) {
+  background: var(--background-primary);
+}
+
+/* LEVEL 1 */
+.markdown-reading-view ul > li > .list-bullet::after,
+.markdown-source-view.mod-cm6 .HyperMD-list-line-1 .list-bullet::after {
+  /* Solid Square */
+  height: 6px;
+  width: 6px;
+  border-radius: 0;
+  background-color: var(--bullet-new-color);
+  contain: paint;
+}
+
+/* .HyperMD-list-line-1:not(.HyperMD-task-line[data-task]):has(.cm-hmd-internal-link) { */
+.HyperMD-list-line-1:not(.HyperMD-task-line[data-task], .lc-list-callout) {
+  border-radius: 5px;
+  border: none;
+  border-width: 1px;
+}
+
+.HyperMD-list-line-1:not(.HyperMD-task-line[data-task]) .cm-hmd-internal-link:not(.cm-hmd-embed) {
+  font-weight: 600 !important;
+}
+
+/* LEVEL 2 */
+.markdown-reading-view ul > li > ul > li > .list-bullet::after,
+.markdown-source-view.mod-cm6 .HyperMD-list-line-2 .list-bullet::after {
+  /* Bar */
+  height: 2px;
+  width: 8px;
+  border-radius: 0;
+  background-color: var(--bullet-new-color);
+}
+
+/* LEVEL 3 */
+.markdown-reading-view ul > li > ul > li > ul > li > .list-bullet::after,
+.markdown-source-view.mod-cm6 .HyperMD-list-line-3 .list-bullet::after {
+  /* Hollow Square */
+  height: 5px;
+  width: 5px;
+  background-color: transparent;
+  border-color: var(--bullet-new-color);
+  border-style: solid;
+  border-radius: 0;
+  border-width: 1px;
+}
+
+/* LEVEL 4 */
+.markdown-reading-view ul > li > ul > li > ul > li > ul > li > .list-bullet::after,
+.markdown-source-view.mod-cm6 .HyperMD-list-line-4 .list-bullet::after {
+  /* Solid Square small */
+  height: 4px;
+  width: 4px;
+  border-radius: 0;
+  background-color: var(--bullet-new-color);
+}
+
+.HyperMD-list-line-4 {
+  font-style: italic;
+}
+
+/* LEVEL 5 */
+.markdown-reading-view ul > li > ul > li > ul > li > ul > li > ul > li > .list-bullet::after,
+.markdown-source-view.mod-cm6 .HyperMD-list-line-5 .list-bullet::after {
+  /* Bar thin */
+  height: 1px;
+  width: 6px;
+  border-radius: 0;
+  background-color: var(--bullet-new-color);
+}
+
+.HyperMD-list-line-5 {
+  font-style: italic;
+}
+
+/* LEVEL 6 */
+.markdown-reading-view
+  ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > .list-bullet::after,
+.markdown-source-view.mod-cm6 .HyperMD-list-line-6 .list-bullet::after {
+  /* Hollow Square small */
+  height: 3px;
+  width: 3px;
+  background-color: transparent;
+  border-color: var(--bullet-new-color);
+  border-style: solid;
+  border-radius: 0;
+  border-width: 1px;
+}
+
+.HyperMD-list-line-6 {
+  font-style: italic;
+}
+
+/* LEVEL 7 */
+.markdown-reading-view
+  ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > .list-bullet::after,
+.markdown-source-view.mod-cm6 .HyperMD-list-line-7 .list-bullet::after {
+  /* Micro dot */
+  height: 2px;
+  width: 2px;
+  border-radius: 0;
+  background-color: var(--bullet-new-color);
+}
+
+.HyperMD-list-line-7 {
+  font-style: italic;
+}
+
+/* fix task checkbox */
+.markdown-preview-view .task-list-item-checkbox {
+  top: 3px;
+}
+.callout .task-list-item-checkbox {
+  top: 0 !important;
+}
+
+/* square-in-square checkbox */
+.task-list-item-checkbox:not(:checked) {
+  background: transparent;
+  box-shadow: none;
+}
+
+.task-list-item-checkbox:checked {
+  background-color: #a0a0a0 !important;
+  background-image: none !important;
+  border-color: var(--checkbox-border-color) !important;
+  box-shadow: inset 0 0 0 2px var(--background-primary) !important;
+}

@@ -1,0 +1,209 @@
+.dataview .task-list-item-checkbox {
+  top: 2px;
+}
+
+/* Web Viewer change background color of website */
+.webviewer-content webview {
+  background-color: var(--background-primary) !important;
+}
+
+/* zoom colors */
+.zoom-plugin-title {
+  color: gray;
+}
+
+/* datepicker */
+.datepicker-widget {
+  background-color: transparent;
+}
+
+/* gray em text in quickadd */
+.suggestion-item.quickadd-choice-suggestion em {
+  color: gray;
+}
+
+/* VARIOUS COMPLEMENTS */
+/* remove the icon */
+.various-complements__suggestion-item.various-complements__suggestion-item::before {
+  display: none;
+}
+
+body .various-complements__suggestion-item {
+  padding: 4px 6px !important;
+}
+
+/* the alias icon */
+.various-complements__suggestion-item__content__alias::before {
+  position: relative;
+  top: -2px;
+}
+
+.various-complements__suggestion-item__description {
+  padding-top: 0;
+}
+
+.various-complements__suggestion-item__internal-link > div > div::before {
+  color: var(--text-faint);
+  content: '[[';
+}
+
+.various-complements__suggestion-item__internal-link > div > div::after {
+  color: var(--text-faint);
+  content: ']]';
+}
+
+/* editing toolbar fix */
+body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
+  margin-right: 0;
+}
+
+/* omnisearch */
+.omnisearch-result__folder-path {
+  display: none;
+}
+
+.omnisearch-result__title {
+  color: var(--link-color);
+}
+
+.suggestion-highlight.suggestion-highlight {
+  border-bottom: 2px solid var(--color-red);
+  color: var(--font-color);
+}
+
+/* copilot */
+.tw-flex.tw-items-center.tw-justify-between.tw-gap-2.tw-p-2 {
+  margin: 0;
+  padding: 0;
+}
+
+/* INLINE AI */
+.cm-tooltip.cm-tooltip-autocomplete > ul > li[role='option'][aria-selected] {
+  background-color: var(--background-modifier-hover) !important;
+}
+
+/* VIRTUAL LINKER */
+.virtual-link.glossary-entry a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgb(var(--color-purple-rgb), 0.6);
+  text-underline-position: under;
+}
+/* Properties of the virtual link when hovered */
+.virtual-link.glossary-entry a:hover {
+  color: var(--link-color);
+}
+/* OHS Workbench tabs  */
+.ohs-workbench-tab {
+  background-color: transparent !important;
+  color: var(--text-normal) !important;
+}
+/* META BIND */
+.mb-button-group {
+  --mb-border-radius: 0;
+
+  gap: 0;
+
+  & > .mb-button {
+    & > .mb-button-inner {
+      border-radius: 3px;
+      background: transparent;
+      border: 1px solid #383838;
+      box-shadow: none;
+      color: var(--text-normal);
+      font-size: var(--font-ui-small);
+      transition:
+        background 0.1s ease,
+        border-color 0.1s ease,
+        color 0.1s ease;
+
+      &:hover,
+      &:focus {
+        background: transparent !important;
+        border-color: #484848 !important;
+        color: #f8f8f8 !important;
+        box-shadow: inset 2px 0 0 #7cafc2 !important;
+      }
+
+      &:active {
+        background: transparent !important;
+        border-color: #585858 !important;
+        color: #ffffff !important;
+        box-shadow: inset 2px 0 0 #86c1b9 !important;
+      }
+    }
+
+    /* collapse adjacent borders */
+    &:not(:first-child) > .mb-button-inner {
+      border-left: none;
+    }
+
+    /* single button — full border intact */
+    &:last-child:first-child > .mb-button-inner {
+      border-radius: 3px;
+      border: 1px solid #383838;
+    }
+  }
+}
+
+/* METADATA VALIDATOR */
+/* Action buttons */
+.mv-sidebar-actions {
+  gap: 0;
+}
+
+.mv-sidebar-actions .mv-sidebar-action-btn,
+.mv-vault-note-header .mv-vault-note-link {
+  border-radius: 3px;
+  background: transparent;
+  border: 1px solid #383838;
+  box-shadow: none;
+  padding-inline: 10px;
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+  transition:
+    background 0.1s ease,
+    border-color 0.1s ease,
+    color 0.1s ease;
+}
+
+.mv-sidebar-actions .mv-sidebar-action-btn:hover,
+.mv-sidebar-actions .mv-sidebar-action-btn:focus-visible,
+.mv-vault-note-header .mv-vault-note-link:hover,
+.mv-vault-note-header .mv-vault-note-link:focus-visible {
+  background: transparent !important;
+  border-color: #484848 !important;
+  color: #f8f8f8 !important;
+  box-shadow: inset 2px 0 0 #7cafc2 !important;
+}
+
+.mv-sidebar-actions .mv-sidebar-action-btn:active,
+.mv-vault-note-header .mv-vault-note-link:active {
+  background: transparent !important;
+  border-color: #585858 !important;
+  color: #ffffff !important;
+  box-shadow: inset 2px 0 0 #86c1b9 !important;
+}
+
+.mv-sidebar-actions .mv-sidebar-action-btn:first-child {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.mv-sidebar-actions .mv-sidebar-action-btn:not(:first-child, :last-child) {
+  border-radius: 0;
+}
+
+.mv-sidebar-actions .mv-sidebar-action-btn:last-child {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.mv-sidebar-actions .mv-sidebar-action-btn:not(:first-child) {
+  border-top: none;
+}
+
+/* Claudian */
+.view-content.claudian-container {
+  font-size: 0.9rem !important;
+}

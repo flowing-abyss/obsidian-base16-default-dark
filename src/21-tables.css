@@ -1,0 +1,39 @@
+/* table center */
+.markdown-preview-view table,
+.is-live-preview table {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Tables - Terminal Grid Style */
+.theme-dark .markdown-preview-view table,
+.theme-dark .markdown-rendered table {
+  border-collapse: collapse;
+  border: 1px solid #404040;
+  background: transparent;
+}
+
+.theme-dark .markdown-preview-view th,
+.theme-dark .markdown-rendered th {
+  background: transparent;
+  border: 1px solid #383838;
+  border-bottom: 2px solid #484848;
+  padding: 6px 12px;
+  text-align: left;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  font-size: 0.8em;
+  letter-spacing: 0.08em;
+}
+
+.theme-dark .markdown-preview-view td,
+.theme-dark .markdown-rendered td {
+  border: 1px solid #303030;
+  padding: 6px 12px;
+  background: transparent;
+}
+
+.theme-dark .markdown-preview-view tr,
+.theme-dark .markdown-rendered tr {
+  background: transparent;
+}

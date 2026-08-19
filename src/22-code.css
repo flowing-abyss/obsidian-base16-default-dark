@@ -1,0 +1,117 @@
+/* Clean code blocks */
+.theme-dark .markdown-preview-view pre,
+.theme-dark .markdown-rendered pre {
+  background-color: #1a1a1a;
+  border: 1px solid #282828;
+  border-radius: 2px;
+  padding: 12px;
+}
+
+.theme-dark .cm-s-obsidian pre.HyperMD-codeblock,
+.theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock {
+  background-color: #1a1a1a;
+  border: none;
+  border-radius: 2px;
+  padding: 12px;
+}
+
+/* Syntax highlighting for code blocks */
+.theme-dark code[class*='language-'],
+.theme-dark pre[class*='language-'] {
+  color: var(--code-normal);
+  background: transparent;
+}
+
+.theme-dark .token.comment,
+.theme-dark .token.prolog,
+.theme-dark .token.doctype,
+.theme-dark .token.cdata {
+  color: var(--code-comment);
+  opacity: 0.6;
+}
+
+.theme-dark .token.punctuation {
+  color: var(--code-punctuation);
+}
+
+.theme-dark .token.property,
+.theme-dark .token.tag,
+.theme-dark .token.boolean,
+.theme-dark .token.number,
+.theme-dark .token.constant,
+.theme-dark .token.symbol,
+.theme-dark .token.deleted {
+  color: var(--code-tag);
+}
+
+.theme-dark .token.selector,
+.theme-dark .token.attr-name,
+.theme-dark .token.string,
+.theme-dark .token.char,
+.theme-dark .token.builtin,
+.theme-dark .token.inserted {
+  color: var(--code-string);
+}
+
+.theme-dark .token.operator,
+.theme-dark .token.entity,
+.theme-dark .token.url,
+.theme-dark .language-css .token.string,
+.theme-dark .style .token.string {
+  color: var(--code-operator);
+}
+
+.theme-dark .token.atrule,
+.theme-dark .token.attr-value,
+.theme-dark .token.keyword {
+  color: var(--code-keyword);
+}
+
+.theme-dark .token.function,
+.theme-dark .token.class-name {
+  color: var(--code-function);
+}
+
+.theme-dark .token.regex,
+.theme-dark .token.important,
+.theme-dark .token.variable {
+  color: var(--code-important);
+}
+
+/* Syntax highlighting for YAML frontmatter */
+.frontmatter.language-yaml .atrule,
+.cm-atom.cm-hmd-frontmatter {
+  color: #f39b35;
+}
+
+/* Inline code */
+.theme-dark .markdown-preview-view :not(pre) > code,
+.theme-dark .cm-s-obsidian .cm-inline-code,
+.theme-dark .HyperMD-codeblock {
+  color: var(--inline-code-color);
+  background-color: #1a1a1a;
+  padding: 2px 4px;
+  border-radius: 2px;
+}
+
+/* Code inside code blocks should have transparent background */
+.theme-dark .markdown-preview-view pre code,
+.theme-dark .markdown-rendered pre code {
+  background: transparent;
+}
+
+/* fix mermaid background color */
+.cluster rect {
+  fill: transparent !important;
+}
+
+/* order-sensitive: was line 797 in the legacy file. There it followed (and
+   so won a same-specificity tie against) the .HyperMD-codeblock padding
+   rule above; splitting moved that rule's source (12-lists.css) ahead of
+   this file in the build, which would otherwise let the codeblock padding
+   apply per editor line instead of just to the block, adding visible
+   vertical gaps between code lines. Duplicated here, last, to keep it
+   winning. Remove once parity is retired (see Task 4 report). */
+.markdown-source-view.mod-cm6.is-readable-line-width .cm-line {
+  padding: 0;
+}

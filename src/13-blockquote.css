@@ -1,0 +1,15 @@
+/* Blockquotes */
+.theme-dark .markdown-preview-view blockquote {
+  border-left: 3px solid #484848;
+  background: transparent;
+  padding-left: 16px;
+  margin: 12px 0;
+  font-style: italic;
+  opacity: 0.85;
+}
+
+/* Blockquotes in live preview */
+.theme-dark .HyperMD-quote.HyperMD-quote-1 {
+  font-style: italic !important;
+  opacity: 0.85;
+}

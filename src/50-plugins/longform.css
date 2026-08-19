@@ -1,0 +1,14 @@
+/* Longform */
+[data-scene-status]::after {
+  content: attr(data-scene-status);
+  opacity: 0.3;
+  padding: 0 2px 0 0;
+}
+
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .current-draft-path {
+  font-size: 0 !important;
+}
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .current-draft-path::before {
+  font-size: var(--font-text-size) !important;
+  content: 'open';
+}
