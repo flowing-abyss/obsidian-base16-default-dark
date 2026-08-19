@@ -185,6 +185,8 @@
   background-color: var(--text-selection);
 }
 
+/* pre-commit hook verification touch - removed in the next commit */
+
 /* ===== 10-headings.css ===== */
 
 .theme-dark .markdown-preview-view h1,

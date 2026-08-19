@@ -17,3 +17,5 @@
 .theme-dark ::selection {
   background-color: var(--text-selection);
 }
+
+/* pre-commit hook verification touch - removed in the next commit */

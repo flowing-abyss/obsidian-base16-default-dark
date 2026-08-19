@@ -28,6 +28,15 @@
 // explicitly ruled out in the Task-4 review follow-up. If future tasks
 // need an ongoing cascade-safety check, that is new design work scoped to
 // its own task, not an extension of this one.
+//
+// Consequently this is a ONE-SHOT acceptance test, run by hand
+// (`npm run check:cascade`) for as long as it keeps passing. It is
+// deliberately NOT part of `npm run check`, `.husky/pre-commit`, or CI —
+// wiring a one-shot test that is expected to start failing into a commit
+// gate would block every future commit once Task 5 lands, not catch a
+// regression. When it does start failing on Task 5's first intentional
+// rule edit, RETIRE it (delete it, don't try to repair or generalize it
+// to keep passing) rather than patching around the failure.
 // =====================================================================
 //
 // How the acceptance test works: splitting reorders blocks relative to the

@@ -14,17 +14,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          # check:cascade / check:parity diff against the baseline-3.7.23
-          # tag via `git show baseline-3.7.23:theme.css` - a shallow clone
-          # (the default) would not fetch that tag and both would fail.
-          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
 
-      - name: Verify theme.css matches sources and passes all gates
+      - name: Verify theme.css matches sources and passes the durable checks
         run: |
           npm ci
           npm run check

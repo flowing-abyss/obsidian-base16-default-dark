@@ -10,7 +10,7 @@
     "build": "node scripts/build.mjs",
     "check:parity": "node scripts/check-parity.mjs",
     "check:cascade": "node scripts/check-cascade.mjs",
-    "check": "npm run build && npm run check:parity && npm run check:cascade && npm run lint",
+    "check": "npm run build && npm run lint",
     "test:normalize": "node scripts/test-normalize.mjs",
     "reload": "node scripts/reload.mjs",
     "shots": "node scripts/shots.mjs",

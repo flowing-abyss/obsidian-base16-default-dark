@@ -1,3 +1,41 @@
+// Parity CHECK — a Task-4 acceptance test, NOT an ongoing guard.
+//
+// =====================================================================
+// READ THIS BEFORE relying on this script for anything past Task 4.
+//
+// What it proves: that splitting src/99-legacy.css into per-layer files
+// (Task 4) lost nothing, added nothing, and altered no block's own text -
+// i.e. it is a Task-4 ACCEPTANCE TEST for one specific mechanical
+// transform (a reorder with no rule-content changes), measured as a
+// block-multiset equality against baseline-3.7.23:theme.css.
+//
+// What it does NOT prove, and why it is expected to start failing once
+// Task 5 edits src/: the plan states outright that from Task 6 onward
+// parity is broken ON PURPOSE, because the token layer changes colours
+// deliberately. This script has no way to tell "an intentional value
+// change" apart from "a lost/altered block" - it only knows "this exact
+// normalized block no longer exists in baseline-3.7.23" (MISSING) or
+// "this exact normalized block exists more than baseline-3.7.23 plus its
+// registered waivers account for" (EXTRA/STALE WAIVER). It is NOT a live
+// content-safety guard for ongoing work, and nobody should read a later
+// failure of this script as "a task broke something" - read it as "this
+// script's premise (comparing against the pre-split, pre-recolor
+// baseline) no longer applies, which is expected."
+//
+// Do not generalize this script to survive intentional edits. If future
+// tasks need an ongoing content-safety check, that is new design work
+// scoped to its own task, not an extension of this one.
+//
+// Consequently this is a ONE-SHOT acceptance test, run by hand
+// (`npm run check:parity`) for as long as it keeps passing. It is
+// deliberately NOT part of `npm run check`, `.husky/pre-commit`, or CI -
+// wiring a one-shot test that is expected to start failing into a commit
+// gate would block every future commit once Task 5/6 lands, not catch a
+// regression. When it does start failing on an intentional token-layer
+// edit, RETIRE it (delete it, don't try to repair or generalize it to
+// keep passing) rather than patching around the failure.
+// =====================================================================
+
 import { readFile } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
 import { normalize, splitTopLevelBlocks } from "./lib/css.mjs";
