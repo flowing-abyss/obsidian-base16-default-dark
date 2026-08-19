@@ -1,12 +1,59 @@
 import { mkdir } from "node:fs/promises";
+import { readFileSync, renameSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { execFileSync } from "node:child_process";
 import { OBSIDIAN, reload } from "./reload.mjs";
 
 const NOTE = "base/notes/test syntax.md";
+const BASES_FILE = "home/databases/recent.base";
+
+// Shared in-page helpers, inlined at the top of every eval'd snippet below.
+// __settle polls a scroll position across double-requestAnimationFrame
+// until it has been unchanged for several consecutive frames, instead of
+// trusting a fixed sleep to have been long enough - the margin on a fixed
+// sleep shrinks as the document grows, so it silently gets racier over
+// time. It throws on timeout rather than returning early, so a frame that
+// never settles fails the run instead of producing a screenshot mid-scroll.
+// __waitFor polls an arbitrary condition (e.g. "does this DOM node exist
+// yet") the same way, for cases where nothing scrolls but something still
+// needs to mount (a modal, a windowed-renderer heading, Bases' table body).
+const HELPERS = `
+  async function __settle(getTop, {stableFrames=6, timeoutMs=6000}={}) {
+    const t0 = performance.now();
+    let last = null, stable = 0;
+    while (true) {
+      await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+      const cur = getTop();
+      if (cur === last) {
+        stable++;
+        if (stable >= stableFrames) return cur;
+      } else {
+        stable = 0;
+        last = cur;
+      }
+      if (performance.now() - t0 > timeoutMs) {
+        throw new Error("scroll did not settle within " + timeoutMs + "ms (stuck at " + cur + ")");
+      }
+    }
+  }
+  async function __waitFor(check, {timeoutMs=6000, intervalMs=30}={}) {
+    const t0 = performance.now();
+    while (true) {
+      const v = check();
+      if (v) return v;
+      if (performance.now() - t0 > timeoutMs) {
+        throw new Error("condition did not become true within " + timeoutMs + "ms");
+      }
+      await new Promise(r=>setTimeout(r, intervalMs));
+    }
+  }
+`;
 
 // Scroll the test note to the first line matching `anchor`. The note is the
 // project's syntax fixture, so every markdown frame is an anchor into it.
 const at = (anchor) => `(async()=>{
+  ${HELPERS}
+  await document.fonts.ready;
   const f=app.vault.getAbstractFileByPath(${JSON.stringify(NOTE)});
   const leaf=app.workspace.getLeaf(false);
   await leaf.openFile(f,{state:{mode:"source",source:false}});
@@ -26,7 +73,20 @@ const at = (anchor) => `(async()=>{
   const farLine = n<total/2 ? total-1 : 0;
   const off=v.editor.posToOffset({line:farLine,ch:0});
   v.editor.cm.dispatch({selection:{anchor:off}});
-  await new Promise(r=>setTimeout(r,700));
+  const scroller = v.editor.cm.scrollDOM;
+  await __settle(()=>scroller.scrollTop);
+  // Prove the anchor is actually where the frame claims it is, not caught
+  // mid-flight: CM6's coordsAtPos gives the anchor line's viewport
+  // position, which must land inside the scroller's visible box once
+  // settled.
+  const anchorOffset = v.editor.posToOffset({line:n,ch:0});
+  const coords = v.editor.cm.coordsAtPos(anchorOffset);
+  if (!coords) throw new Error("anchor line has no coords after settle (line "+n+")");
+  const scrollerBox = scroller.getBoundingClientRect();
+  const top = coords.top - scrollerBox.top;
+  if (top < -1 || top > scroller.clientHeight) {
+    throw new Error("anchor not in view after settle: top="+top+" viewport="+scroller.clientHeight);
+  }
   return JSON.stringify("ok");})()`;
 
 // Reading view in this vault is windowed: only headings near the current
@@ -35,20 +95,75 @@ const at = (anchor) => `(async()=>{
 // (using the heading's line from metadataCache) instead - that's the same
 // call Obsidian's own outline/TOC uses, and it renders the target window.
 const reading = (anchor) => `(async()=>{
+  ${HELPERS}
+  await document.fonts.ready;
   const f=app.vault.getAbstractFileByPath(${JSON.stringify(NOTE)});
   const leaf=app.workspace.getLeaf(false);
   await leaf.openFile(f,{state:{mode:"preview"}});
-  await new Promise(r=>setTimeout(r,500));
+  // applyScroll's line->offset map isn't reliable until the preview has had
+  // one paint cycle after openFile - calling it synchronously right away
+  // observably scrolls to a stale/wrong position (reproduced: it lands near
+  // the end of the document instead of the requested line). This waits on
+  // the browser's own paint scheduling, not a guessed duration.
+  await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
   const cache=app.metadataCache.getFileCache(f);
   const h=(cache.headings||[]).find(x=>x.heading===${JSON.stringify(anchor)});
   if(!h) throw new Error("reading anchor not found: "+${JSON.stringify(anchor)});
-  leaf.view.previewMode.applyScroll(h.position.start.line);
-  await new Promise(r=>setTimeout(r,700));
+  const contentEl = leaf.view.contentEl;
+  const findHeading = () => {
+    const els = contentEl.querySelectorAll("h1,h2,h3,h4,h5,h6");
+    for (const el of els) if (el.textContent.trim()===${JSON.stringify(anchor)}) return el;
+    return null;
+  };
+  // applyScroll's target can still be stale on the first call (observed:
+  // the windowed renderer occasionally keeps whatever window it had before
+  // this call, so the target heading never mounts). Re-issue it on every
+  // poll instead of trusting a single call, so a stale first attempt
+  // self-heals instead of waiting out the full timeout and failing.
+  const t0 = performance.now();
+  let headingEl = null;
+  while (!headingEl) {
+    leaf.view.previewMode.applyScroll(h.position.start.line);
+    await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+    headingEl = findHeading();
+    if (!headingEl && performance.now() - t0 > 6000) {
+      throw new Error("condition did not become true within 6000ms");
+    }
+  }
+  const scroller = contentEl.querySelector(".markdown-preview-view") || contentEl;
+  await __settle(()=>scroller.scrollTop);
+  // Re-find after settling: the windowed renderer can swap DOM nodes out
+  // from under a stale reference while the scroll position is still moving.
+  headingEl = await __waitFor(findHeading);
+  const rect = headingEl.getBoundingClientRect();
+  const scrollerBox = scroller.getBoundingClientRect();
+  const top = rect.top - scrollerBox.top;
+  if (top < -1 || top > scroller.clientHeight) {
+    throw new Error("reading anchor not in view after settle: top="+top+" viewport="+scroller.clientHeight);
+  }
   return JSON.stringify("ok");})()`;
 
 const cmd = (id) => `(async()=>{
+  ${HELPERS}
+  await document.fonts.ready;
   app.commands.executeCommandById(${JSON.stringify(id)});
   await new Promise(r=>setTimeout(r,800));return JSON.stringify("ok");})()`;
+
+// Opens an existing Bases view from the vault (not the syntax fixture -
+// Bases views are file-backed queries, not something that fits in a single
+// markdown note) so src/50-plugins/bases.css has a frame at all.
+const bases = (path) => `(async()=>{
+  ${HELPERS}
+  await document.fonts.ready;
+  const f=app.vault.getAbstractFileByPath(${JSON.stringify(path)});
+  if(!f) throw new Error("bases file not found: "+${JSON.stringify(path)});
+  const leaf=app.workspace.getLeaf(false);
+  await leaf.openFile(f);
+  const contentEl = leaf.view.containerEl;
+  await __waitFor(()=>contentEl.querySelector(".bases-table-container, .bases-view"));
+  await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+  await new Promise(r=>setTimeout(r,150));
+  return JSON.stringify("ok");})()`;
 
 // Verified against the fixture's actual headings (grep -n '^#' "test syntax.md").
 // "Заголовки" is an H1 ("# Заголовки"), not H2 - every other anchor below is H2.
@@ -78,6 +193,7 @@ const FRAMES = [
   { name: "30-reading-headings", setup: reading("Заголовки") },
   { name: "31-reading-code", setup: reading("Код") },
   { name: "32-reading-callouts", setup: reading("Callouts") },
+  { name: "33-bases", setup: bases(BASES_FILE) },
   // This vault has the core switcher/global-search/command-palette plugins
   // disabled in favor of community replacements (verified via
   // app.internalPlugins.plugins[...].enabled === false for all three) - the
@@ -153,6 +269,35 @@ function screenshot(path) {
   execFileSync(OBSIDIAN, ["dev:screenshot", `path=${path}`], CLI_OPTS);
 }
 
+// In-page settle checks (above) cover everything that happens inside the
+// renderer, but `dev:screenshot` is a separate OS process launched after
+// `eval` returns - a genuinely settled page can still be mid-frame of a CSS
+// transition/animation that no in-page wait could see coming. Capture twice
+// and compare bytes: if a frame is truly settled the two captures are
+// identical; if they differ, the page was still moving, so retry once and
+// then fail loudly rather than accept a possibly-bad PNG.
+function captureSettled(finalPath) {
+  const tmpA = `${tmpdir()}/shots-${process.pid}-a.png`;
+  const tmpB = `${tmpdir()}/shots-${process.pid}-b.png`;
+  try {
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      screenshot(tmpA);
+      screenshot(tmpB);
+      if (readFileSync(tmpA).equals(readFileSync(tmpB))) {
+        renameSync(tmpB, finalPath);
+        return;
+      }
+      console.error(
+        `  frame still moving (two captures differ), ${attempt === 1 ? "retrying once" : "giving up"}...`
+      );
+    }
+    throw new Error(`frame never settled across two capture attempts: ${finalPath}`);
+  } finally {
+    rmSync(tmpA, { force: true });
+    rmSync(tmpB, { force: true });
+  }
+}
+
 const label = process.argv[2];
 if (!label) throw new Error("usage: npm run shots -- <label>");
 const dir = `.docs/shots/${label}`;
@@ -162,15 +307,15 @@ reload();
 for (const f of FRAMES) {
   try {
     ev(f.setup);
-    screenshot(`${process.cwd()}/${dir}/${f.name}.png`);
+    captureSettled(`${process.cwd()}/${dir}/${f.name}.png`);
   } finally {
     // Obsidian is a live, human-owned workspace. If setup or the screenshot
-    // throws (bad anchor, or the documented intermittent CLI hang getting
-    // SIGKILLed at the timeout), teardown must still run so a stray modal or
-    // a mid-scroll editor is never left behind. Best-effort: if teardown
-    // itself throws, swallow that secondary error and let the original
-    // failure (if any) propagate - a broken teardown must not mask the real
-    // cause.
+    // throws (bad anchor, a settle timeout, or the documented intermittent
+    // CLI hang getting SIGKILLed at the timeout), teardown must still run so
+    // a stray modal or a mid-scroll editor is never left behind. Best-effort:
+    // if teardown itself throws, swallow that secondary error and let the
+    // original failure (if any) propagate - a broken teardown must not mask
+    // the real cause.
     try {
       ev(TEARDOWN);
     } catch (teardownErr) {

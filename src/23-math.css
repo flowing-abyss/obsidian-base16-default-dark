@@ -36,7 +36,9 @@
 
 /* Formulas in edit mode */
 .theme-dark .cm-math {
-  background: var(--b16-border-faint);
+  /* A fill, not an edge: was a 3% white wash (~surface-1's distance from
+     surface-0), not a border token borrowed for its alpha. */
+  background: var(--b16-surface-1);
   border: none;
   padding: 2px 4px;
 }

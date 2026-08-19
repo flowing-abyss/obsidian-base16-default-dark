@@ -20,7 +20,7 @@
 }
 
 .theme-dark ::-webkit-scrollbar-thumb:hover {
-  background: var(--b16-border-strong);
+  background: var(--b16-surface-4);
 }
 
 /* Ribbon menu */

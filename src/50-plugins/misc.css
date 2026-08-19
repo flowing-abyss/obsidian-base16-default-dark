@@ -9,7 +9,7 @@
 
 /* zoom colors */
 .zoom-plugin-title {
-  color: gray;
+  color: var(--b16-text-faint);
 }
 
 /* datepicker */
@@ -19,7 +19,7 @@
 
 /* gray em text in quickadd */
 .suggestion-item.quickadd-choice-suggestion em {
-  color: gray;
+  color: var(--b16-text-faint);
 }
 
 /* VARIOUS COMPLEMENTS */
@@ -86,7 +86,7 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
 .virtual-link.glossary-entry a {
   color: inherit;
   text-decoration-thickness: 1px;
-  text-decoration-color: color-mix(in srgb, var(--b16-accent-link-ext) 60%, transparent);
+  text-decoration-color: color-mix(in srgb, var(--b16-accent-link) 60%, transparent);
   text-underline-position: under;
 }
 /* Properties of the virtual link when hovered */
@@ -125,9 +125,12 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
         box-shadow: inset 2px 0 0 var(--b16-accent-link) !important;
       }
 
+      /* One border step lighter than :hover's border-strong, matching the
+         original design (#585858 active vs #484848 hover) rather than the
+         accidental extra lift a text token's revised value would add. */
       &:active {
         background: transparent !important;
-        border-color: var(--b16-text-faint) !important;
+        border-color: var(--b16-surface-4) !important;
         color: var(--b16-text-strong) !important;
         box-shadow: inset 2px 0 0 var(--b16-accent-tag) !important;
       }
@@ -177,10 +180,12 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
   box-shadow: inset 2px 0 0 var(--b16-accent-link) !important;
 }
 
+/* One border step lighter than :hover's border-strong; see .mb-button-inner
+   :active above. */
 .mv-sidebar-actions .mv-sidebar-action-btn:active,
 .mv-vault-note-header .mv-vault-note-link:active {
   background: transparent !important;
-  border-color: var(--b16-text-faint) !important;
+  border-color: var(--b16-surface-4) !important;
   color: var(--b16-text-strong) !important;
   box-shadow: inset 2px 0 0 var(--b16-accent-tag) !important;
 }

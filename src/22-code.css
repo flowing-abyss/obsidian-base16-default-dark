@@ -1,15 +1,15 @@
 /* Clean code blocks */
 .theme-dark .markdown-preview-view pre,
 .theme-dark .markdown-rendered pre {
-  background-color: var(--b16-surface-0);
-  border: 1px solid var(--b16-border-faint);
+  background-color: var(--code-background);
+  border: 1px solid var(--b16-border-normal);
   border-radius: 2px;
   padding: 12px;
 }
 
 .theme-dark .cm-s-obsidian pre.HyperMD-codeblock,
 .theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock {
-  background-color: var(--b16-surface-0);
+  background-color: var(--code-background);
   border: none;
   border-radius: 2px;
   padding: 12px;
@@ -81,7 +81,7 @@
 /* Syntax highlighting for YAML frontmatter */
 .frontmatter.language-yaml .atrule,
 .cm-atom.cm-hmd-frontmatter {
-  color: var(--b16-accent-code);
+  color: var(--code-property);
 }
 
 /* Inline code */
@@ -89,7 +89,7 @@
 .theme-dark .cm-s-obsidian .cm-inline-code,
 .theme-dark .HyperMD-codeblock {
   color: var(--inline-code-color);
-  background-color: var(--b16-surface-0);
+  background-color: var(--code-background);
   padding: 2px 4px;
   border-radius: 2px;
 }

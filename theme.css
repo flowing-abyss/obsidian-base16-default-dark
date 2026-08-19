@@ -74,16 +74,28 @@
   --b16-status-ok: #a1b56c; /* green */
   --b16-status-warn: #f7ca88; /* yellow */
 
-  /* Surfaces — four steps of dark, lightest last. */
+  /* Surfaces — five steps of dark, lightest last. surface-4 exists for
+     fills that need to read as lighter than surface-3 (a hovered/active
+     scrollbar thumb, an inline-math chip) without borrowing a border or
+     text token to get there — see the surfaces/borders/text rule below. */
   --b16-surface-0: #181818;
   --b16-surface-1: #202020;
   --b16-surface-2: #282828;
   --b16-surface-3: #383838;
+  --b16-surface-4: #454545;
 
   /* Alpha, not hex: a border token has to sit on any of the four surfaces. */
   --b16-border-faint: rgba(216, 216, 216, 0.07);
   --b16-border-normal: rgba(216, 216, 216, 0.12);
   --b16-border-strong: rgba(216, 216, 216, 0.24);
+
+  /* Surfaces fill, borders draw edges, text tokens colour glyphs. A rule
+     that needs something lighter than the surface it is on reaches for the
+     next --b16-surface-N step, never for a --b16-border-* or --b16-text-*
+     token — those are alpha/role values sized for edges and glyphs, and
+     borrowing one as a fill (or a border) changes its apparent strength
+     wherever else it's reused. If no surface step is light enough, add one
+     rather than reach across the boundary. */
 
   /* Translucent backgrounds — alpha for the same reason borders are: a
      highlight or tag chip has to sit on any surface, an opaque fill only
@@ -149,7 +161,7 @@
   /* Scrollbar */
   --scrollbar-bg: transparent;
   --scrollbar-thumb-bg: var(--b16-surface-3);
-  --scrollbar-active-thumb-bg: var(--b16-border-strong);
+  --scrollbar-active-thumb-bg: var(--b16-surface-4);
 
   /* Syntax highlighting */
   --code-normal: var(--b16-text-normal);
@@ -175,7 +187,7 @@
   --link-external-color: var(--b16-accent-link-ext);
   --link-color: var(--b16-accent-link);
   --link-color-hover: var(--b16-accent-tag);
-  --link-unresolved-color: #888888;
+  --link-unresolved-color: var(--b16-text-faint);
 
   /* Text formatting */
   --bold-color: var(--b16-status-error);
@@ -1056,15 +1068,15 @@ ul > li::marker,
 /* Clean code blocks */
 .theme-dark .markdown-preview-view pre,
 .theme-dark .markdown-rendered pre {
-  background-color: var(--b16-surface-0);
-  border: 1px solid var(--b16-border-faint);
+  background-color: var(--code-background);
+  border: 1px solid var(--b16-border-normal);
   border-radius: 2px;
   padding: 12px;
 }
 
 .theme-dark .cm-s-obsidian pre.HyperMD-codeblock,
 .theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock {
-  background-color: var(--b16-surface-0);
+  background-color: var(--code-background);
   border: none;
   border-radius: 2px;
   padding: 12px;
@@ -1136,7 +1148,7 @@ ul > li::marker,
 /* Syntax highlighting for YAML frontmatter */
 .frontmatter.language-yaml .atrule,
 .cm-atom.cm-hmd-frontmatter {
-  color: var(--b16-accent-code);
+  color: var(--code-property);
 }
 
 /* Inline code */
@@ -1144,7 +1156,7 @@ ul > li::marker,
 .theme-dark .cm-s-obsidian .cm-inline-code,
 .theme-dark .HyperMD-codeblock {
   color: var(--inline-code-color);
-  background-color: var(--b16-surface-0);
+  background-color: var(--code-background);
   padding: 2px 4px;
   border-radius: 2px;
 }
@@ -1211,7 +1223,9 @@ ul > li::marker,
 
 /* Formulas in edit mode */
 .theme-dark .cm-math {
-  background: var(--b16-border-faint);
+  /* A fill, not an edge: was a 3% white wash (~surface-1's distance from
+     surface-0), not a border token borrowed for its alpha. */
+  background: var(--b16-surface-1);
   border: none;
   padding: 2px 4px;
 }
@@ -1384,7 +1398,7 @@ body:has(.metadata-menu)
 }
 
 .theme-dark ::-webkit-scrollbar-thumb:hover {
-  background: var(--b16-border-strong);
+  background: var(--b16-surface-4);
 }
 
 /* Ribbon menu */
@@ -1898,7 +1912,7 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
 .field-btn-container button.property-metadata-menu,
 .metadata-content .action-container .fileclass-btn-container .add-field-button {
   background: transparent;
-  color: gray;
+  color: var(--b16-text-faint);
   padding: 0;
   margin: 0;
   height: calc(var(--input-height));
@@ -1954,7 +1968,7 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
 
 /* zoom colors */
 .zoom-plugin-title {
-  color: gray;
+  color: var(--b16-text-faint);
 }
 
 /* datepicker */
@@ -1964,7 +1978,7 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
 
 /* gray em text in quickadd */
 .suggestion-item.quickadd-choice-suggestion em {
-  color: gray;
+  color: var(--b16-text-faint);
 }
 
 /* VARIOUS COMPLEMENTS */
@@ -2031,7 +2045,7 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
 .virtual-link.glossary-entry a {
   color: inherit;
   text-decoration-thickness: 1px;
-  text-decoration-color: color-mix(in srgb, var(--b16-accent-link-ext) 60%, transparent);
+  text-decoration-color: color-mix(in srgb, var(--b16-accent-link) 60%, transparent);
   text-underline-position: under;
 }
 /* Properties of the virtual link when hovered */
@@ -2070,9 +2084,12 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
         box-shadow: inset 2px 0 0 var(--b16-accent-link) !important;
       }
 
+      /* One border step lighter than :hover's border-strong, matching the
+         original design (#585858 active vs #484848 hover) rather than the
+         accidental extra lift a text token's revised value would add. */
       &:active {
         background: transparent !important;
-        border-color: var(--b16-text-faint) !important;
+        border-color: var(--b16-surface-4) !important;
         color: var(--b16-text-strong) !important;
         box-shadow: inset 2px 0 0 var(--b16-accent-tag) !important;
       }
@@ -2122,10 +2139,12 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
   box-shadow: inset 2px 0 0 var(--b16-accent-link) !important;
 }
 
+/* One border step lighter than :hover's border-strong; see .mb-button-inner
+   :active above. */
 .mv-sidebar-actions .mv-sidebar-action-btn:active,
 .mv-vault-note-header .mv-vault-note-link:active {
   background: transparent !important;
-  border-color: var(--b16-text-faint) !important;
+  border-color: var(--b16-surface-4) !important;
   color: var(--b16-text-strong) !important;
   box-shadow: inset 2px 0 0 var(--b16-accent-tag) !important;
 }
@@ -2283,7 +2302,10 @@ body .another-quick-switcher__status__count-input {
       }
     }
 
-    /* Priority Colors */
+    /* Priority Colors — status roles for urgency (a-c), neutral text steps
+       for the two lowest priorities (d-e). No accent hue is spent here:
+       accent-code/link/link-ext each already mean one specific kind of
+       markup elsewhere, and this scale is decoration, not that kind. */
     &:has(a.tag[href$='#priority/a']):not([data-task='x']) {
       background-color: transparent !important;
       border-color: color-mix(in srgb, var(--b16-status-error) 35%, transparent);
@@ -2295,28 +2317,28 @@ body .another-quick-switcher__status__count-input {
 
     &:has(a.tag[href$='#priority/b']):not([data-task='x']) {
       background-color: transparent !important;
-      border-color: color-mix(in srgb, var(--b16-accent-code) 35%, transparent);
+      border-color: color-mix(in srgb, var(--b16-status-warn) 35%, transparent);
 
       .task-description {
-        color: color-mix(in srgb, var(--b16-accent-code) 90%, transparent);
+        color: color-mix(in srgb, var(--b16-status-warn) 90%, transparent);
       }
     }
 
     &:has(a.tag[href$='#priority/c']):not([data-task='x']) {
       background-color: transparent !important;
-      border-color: color-mix(in srgb, var(--b16-accent-link) 35%, transparent);
+      border-color: color-mix(in srgb, var(--b16-status-ok) 35%, transparent);
 
       .task-description {
-        color: color-mix(in srgb, var(--b16-accent-link) 90%, transparent);
+        color: color-mix(in srgb, var(--b16-status-ok) 90%, transparent);
       }
     }
 
     &:has(a.tag[href$='#priority/d']):not([data-task='x']) {
       background-color: transparent !important;
-      border-color: color-mix(in srgb, var(--b16-accent-link-ext) 35%, transparent);
+      border-color: color-mix(in srgb, var(--b16-text-muted) 35%, transparent);
 
       .task-description {
-        color: color-mix(in srgb, var(--b16-accent-link-ext) 90%, transparent);
+        color: color-mix(in srgb, var(--b16-text-muted) 90%, transparent);
       }
     }
 
@@ -2411,25 +2433,28 @@ body .another-quick-switcher__status__count-input {
   a.tag[href$='#priority/a'] {
     background-color: var(--b16-status-error) !important;
     border-color: var(--b16-status-error) !important;
+    /* status-error is dark and saturated: text-on-accent (near-black) only
+       clears 3.12:1 on it, worse than text-strong's 5.36:1 — the "text on
+       filled accent" role picks whichever of the two clears 4.5:1 here. */
     color: var(--b16-text-strong) !important;
   }
 
   a.tag[href$='#priority/b'] {
-    background-color: var(--b16-accent-code) !important;
-    border-color: var(--b16-accent-code) !important;
-    color: var(--b16-text-strong) !important;
+    background-color: var(--b16-status-warn) !important;
+    border-color: var(--b16-status-warn) !important;
+    color: var(--text-on-accent) !important;
   }
 
   a.tag[href$='#priority/c'] {
-    background-color: var(--b16-accent-link) !important;
-    border-color: var(--b16-accent-link) !important;
-    color: var(--b16-text-strong) !important;
+    background-color: var(--b16-status-ok) !important;
+    border-color: var(--b16-status-ok) !important;
+    color: var(--text-on-accent) !important;
   }
 
   a.tag[href$='#priority/d'] {
-    background-color: var(--b16-accent-link-ext) !important;
-    border-color: var(--b16-accent-link-ext) !important;
-    color: var(--b16-text-strong) !important;
+    background-color: var(--b16-text-muted) !important;
+    border-color: var(--b16-text-muted) !important;
+    color: var(--text-on-accent) !important;
   }
 
   a.tag[href$='#priority/e'] {

@@ -32,16 +32,28 @@
   --b16-status-ok: #a1b56c; /* green */
   --b16-status-warn: #f7ca88; /* yellow */
 
-  /* Surfaces — four steps of dark, lightest last. */
+  /* Surfaces — five steps of dark, lightest last. surface-4 exists for
+     fills that need to read as lighter than surface-3 (a hovered/active
+     scrollbar thumb, an inline-math chip) without borrowing a border or
+     text token to get there — see the surfaces/borders/text rule below. */
   --b16-surface-0: #181818;
   --b16-surface-1: #202020;
   --b16-surface-2: #282828;
   --b16-surface-3: #383838;
+  --b16-surface-4: #454545;
 
   /* Alpha, not hex: a border token has to sit on any of the four surfaces. */
   --b16-border-faint: rgba(216, 216, 216, 0.07);
   --b16-border-normal: rgba(216, 216, 216, 0.12);
   --b16-border-strong: rgba(216, 216, 216, 0.24);
+
+  /* Surfaces fill, borders draw edges, text tokens colour glyphs. A rule
+     that needs something lighter than the surface it is on reaches for the
+     next --b16-surface-N step, never for a --b16-border-* or --b16-text-*
+     token — those are alpha/role values sized for edges and glyphs, and
+     borrowing one as a fill (or a border) changes its apparent strength
+     wherever else it's reused. If no surface step is light enough, add one
+     rather than reach across the boundary. */
 
   /* Translucent backgrounds — alpha for the same reason borders are: a
      highlight or tag chip has to sit on any surface, an opaque fill only
@@ -107,7 +119,7 @@
   /* Scrollbar */
   --scrollbar-bg: transparent;
   --scrollbar-thumb-bg: var(--b16-surface-3);
-  --scrollbar-active-thumb-bg: var(--b16-border-strong);
+  --scrollbar-active-thumb-bg: var(--b16-surface-4);
 
   /* Syntax highlighting */
   --code-normal: var(--b16-text-normal);
@@ -133,7 +145,7 @@
   --link-external-color: var(--b16-accent-link-ext);
   --link-color: var(--b16-accent-link);
   --link-color-hover: var(--b16-accent-tag);
-  --link-unresolved-color: #888888;
+  --link-unresolved-color: var(--b16-text-faint);
 
   /* Text formatting */
   --bold-color: var(--b16-status-error);

@@ -3,7 +3,7 @@
 .field-btn-container button.property-metadata-menu,
 .metadata-content .action-container .fileclass-btn-container .add-field-button {
   background: transparent;
-  color: gray;
+  color: var(--b16-text-faint);
   padding: 0;
   margin: 0;
   height: calc(var(--input-height));

@@ -43,7 +43,10 @@
       }
     }
 
-    /* Priority Colors */
+    /* Priority Colors — status roles for urgency (a-c), neutral text steps
+       for the two lowest priorities (d-e). No accent hue is spent here:
+       accent-code/link/link-ext each already mean one specific kind of
+       markup elsewhere, and this scale is decoration, not that kind. */
     &:has(a.tag[href$='#priority/a']):not([data-task='x']) {
       background-color: transparent !important;
       border-color: color-mix(in srgb, var(--b16-status-error) 35%, transparent);
@@ -55,28 +58,28 @@
 
     &:has(a.tag[href$='#priority/b']):not([data-task='x']) {
       background-color: transparent !important;
-      border-color: color-mix(in srgb, var(--b16-accent-code) 35%, transparent);
+      border-color: color-mix(in srgb, var(--b16-status-warn) 35%, transparent);
 
       .task-description {
-        color: color-mix(in srgb, var(--b16-accent-code) 90%, transparent);
+        color: color-mix(in srgb, var(--b16-status-warn) 90%, transparent);
       }
     }
 
     &:has(a.tag[href$='#priority/c']):not([data-task='x']) {
       background-color: transparent !important;
-      border-color: color-mix(in srgb, var(--b16-accent-link) 35%, transparent);
+      border-color: color-mix(in srgb, var(--b16-status-ok) 35%, transparent);
 
       .task-description {
-        color: color-mix(in srgb, var(--b16-accent-link) 90%, transparent);
+        color: color-mix(in srgb, var(--b16-status-ok) 90%, transparent);
       }
     }
 
     &:has(a.tag[href$='#priority/d']):not([data-task='x']) {
       background-color: transparent !important;
-      border-color: color-mix(in srgb, var(--b16-accent-link-ext) 35%, transparent);
+      border-color: color-mix(in srgb, var(--b16-text-muted) 35%, transparent);
 
       .task-description {
-        color: color-mix(in srgb, var(--b16-accent-link-ext) 90%, transparent);
+        color: color-mix(in srgb, var(--b16-text-muted) 90%, transparent);
       }
     }
 
@@ -171,25 +174,28 @@
   a.tag[href$='#priority/a'] {
     background-color: var(--b16-status-error) !important;
     border-color: var(--b16-status-error) !important;
+    /* status-error is dark and saturated: text-on-accent (near-black) only
+       clears 3.12:1 on it, worse than text-strong's 5.36:1 — the "text on
+       filled accent" role picks whichever of the two clears 4.5:1 here. */
     color: var(--b16-text-strong) !important;
   }
 
   a.tag[href$='#priority/b'] {
-    background-color: var(--b16-accent-code) !important;
-    border-color: var(--b16-accent-code) !important;
-    color: var(--b16-text-strong) !important;
+    background-color: var(--b16-status-warn) !important;
+    border-color: var(--b16-status-warn) !important;
+    color: var(--text-on-accent) !important;
   }
 
   a.tag[href$='#priority/c'] {
-    background-color: var(--b16-accent-link) !important;
-    border-color: var(--b16-accent-link) !important;
-    color: var(--b16-text-strong) !important;
+    background-color: var(--b16-status-ok) !important;
+    border-color: var(--b16-status-ok) !important;
+    color: var(--text-on-accent) !important;
   }
 
   a.tag[href$='#priority/d'] {
-    background-color: var(--b16-accent-link-ext) !important;
-    border-color: var(--b16-accent-link-ext) !important;
-    color: var(--b16-text-strong) !important;
+    background-color: var(--b16-text-muted) !important;
+    border-color: var(--b16-text-muted) !important;
+    color: var(--text-on-accent) !important;
   }
 
   a.tag[href$='#priority/e'] {
