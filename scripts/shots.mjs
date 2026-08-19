@@ -91,6 +91,16 @@ const FRAMES = [
   // dev:screenshot` cannot capture.
   { name: "40-command-palette", setup: cmd("obsidian-another-quick-switcher:command-palette") },
   { name: "41-file-search", setup: cmd("obsidian-another-quick-switcher:search-command_file-search") },
+  // Core switcher/global-search internal plugins were re-enabled by the user
+  // after the baseline capture above was designed (they were disabled then,
+  // which is why every other UI-chrome frame targets a community
+  // replacement instead). Placed last: global-search:open renders into the
+  // already-visible sidebar rather than a modal, so unlike the other frames
+  // teardown does not restore the sidebar's previously-active tab - keeping
+  // these two frames last means no later frame's screenshot is affected by
+  // that leftover state.
+  { name: "42-quick-switcher", setup: cmd("switcher:open") },
+  { name: "43-global-search", setup: cmd("global-search:open") },
 ];
 
 const TEARDOWN = `(async()=>{
