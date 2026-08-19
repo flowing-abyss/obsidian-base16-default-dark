@@ -14,8 +14,18 @@ const at = (anchor) => `(async()=>{
   const lines=v.editor.getValue().split("\\n");
   const n=lines.findIndex(l=>l.startsWith(${JSON.stringify(anchor)}));
   if(n<0) throw new Error("anchor not found: "+${JSON.stringify(anchor)});
-  v.editor.setCursor(n,0);
   v.editor.scrollIntoView({from:{line:n,ch:0},to:{line:n,ch:0}},true);
+  // This vault runs vim mode, whose normal-mode block cursor is drawn by its
+  // own overlay independent of DOM focus - editor.blur() does not hide it.
+  // Park the caret on whichever document end is farther from the anchor
+  // instead, so it lands off-screen. editor.setCursor() itself would scroll
+  // the view back to reveal the new cursor line, undoing the scroll above -
+  // dispatching the selection change directly on the underlying CodeMirror
+  // instance moves the caret without any implicit scrollIntoView.
+  const total=lines.length;
+  const farLine = n<total/2 ? total-1 : 0;
+  const off=v.editor.posToOffset({line:farLine,ch:0});
+  v.editor.cm.dispatch({selection:{anchor:off}});
   await new Promise(r=>setTimeout(r,700));
   return JSON.stringify("ok");})()`;
 
@@ -140,12 +150,23 @@ await mkdir(dir, { recursive: true });
 
 reload();
 for (const f of FRAMES) {
-  ev(f.setup);
-  screenshot(`${process.cwd()}/${dir}/${f.name}.png`);
-  // Reset between frames too, not just at the end: the UI frames (command
-  // palette, file search) open modals that would otherwise leak into the
-  // next frame's screenshot.
-  ev(TEARDOWN);
+  try {
+    ev(f.setup);
+    screenshot(`${process.cwd()}/${dir}/${f.name}.png`);
+  } finally {
+    // Obsidian is a live, human-owned workspace. If setup or the screenshot
+    // throws (bad anchor, or the documented intermittent CLI hang getting
+    // SIGKILLed at the timeout), teardown must still run so a stray modal or
+    // a mid-scroll editor is never left behind. Best-effort: if teardown
+    // itself throws, swallow that secondary error and let the original
+    // failure (if any) propagate - a broken teardown must not mask the real
+    // cause.
+    try {
+      ev(TEARDOWN);
+    } catch (teardownErr) {
+      console.error(`teardown after ${f.name} also failed: ${teardownErr.message}`);
+    }
+  }
   console.log(`captured ${f.name}`);
 }
 
