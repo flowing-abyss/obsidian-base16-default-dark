@@ -44,10 +44,16 @@ const surfaceHex = Object.fromEntries(SURFACES.map((s) => [s, hexOf(s)]));
 
 const waivers = CONTRAST_WAIVERS;
 const waived = new Set(waivers.map((w) => `${w.token}@${w.surface}`));
+// Every (role, surface) pair the main loop actually visits, so a dangling
+// waiver -- one naming a token/surface combination that was never a real
+// pair (a typo, or a role/surface renamed out from under it) -- can be
+// told apart from one that's merely stale.
+const seenPairs = new Set();
 
 let failed = 0;
 for (const role of ROLES) {
   for (const s of role.on) {
+    seenPairs.add(`${role.token}@${s}`);
     const ratio = contrast(hexOf(role.token), surfaceHex[s]);
     const key = `${role.token}@${s}`;
     const ok = ratio >= role.min;
@@ -74,5 +80,20 @@ for (const role of ROLES) {
     }
   }
 }
+// A waiver that never matches any (role, surface) pair guards nothing --
+// it reads like a considered decision but was never actually consulted.
+// Distinct wording from the stale-waiver message on purpose: "stale" means
+// it stopped being needed, "dangling" means it never applied in the first
+// place, and whoever reads the output shouldn't have to work out which.
+for (const w of waivers) {
+  const key = `${w.token}@${w.surface}`;
+  if (!seenPairs.has(key)) {
+    console.error(
+      `FAIL waiver ${key} is dangling — matches no known token/surface combination in ROLES, remove it from scripts/contrast-waivers.mjs`
+    );
+    failed++;
+  }
+}
+
 console.log(failed === 0 ? "contrast OK" : `${failed} contrast failure(s)`);
 process.exit(failed === 0 ? 0 : 1);
