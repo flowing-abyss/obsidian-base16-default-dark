@@ -1,0 +1,64 @@
+import { readFile } from "node:fs/promises";
+import { contrast } from "./lib/color.mjs";
+
+// Self-check: these two pairs are the ones that decided the code-block design,
+// so a regression in the maths must fail loudly rather than silently reshape it.
+const expect = (a, b, want) => {
+  const got = contrast(a, b);
+  if (Math.abs(got - want) > 0.02) {
+    throw new Error(`contrast(${a},${b}) = ${got.toFixed(3)}, expected ${want}`);
+  }
+};
+expect("#ab4642", "#181818", 3.12);
+expect("#ab4642", "#282828", 2.59);
+expect("#585858", "#282828", 2.07);
+expect("#ffffff", "#000000", 21);
+
+const SURFACES = ["surface-0", "surface-2", "surface-3"];
+
+const ROLES = [
+  { token: "text-strong",    min: 4.5, on: ["surface-0", "surface-2", "surface-3"] },
+  { token: "text-normal",    min: 4.5, on: ["surface-0", "surface-2", "surface-3"] },
+  { token: "text-muted",     min: 4.5, on: ["surface-0", "surface-2", "surface-3"] },
+  { token: "text-faint",     min: 3,   on: ["surface-0", "surface-2"] },
+  { token: "accent-link",    min: 3,   on: ["surface-0", "surface-2"] },
+  { token: "accent-link-ext",min: 3,   on: ["surface-0", "surface-2"] },
+  { token: "accent-tag",     min: 3,   on: ["surface-0", "surface-2"] },
+  { token: "accent-code",    min: 3,   on: ["surface-0", "surface-2"] },
+  { token: "status-error",   min: 3,   on: ["surface-0", "surface-2"] },
+  { token: "status-ok",      min: 3,   on: ["surface-0", "surface-2"] },
+  { token: "status-warn",    min: 3,   on: ["surface-0", "surface-2"] },
+];
+
+const tokens = await readFile("src/01-tokens.css", "utf8");
+const hexOf = (name) => {
+  const m = tokens.match(new RegExp(`--b16-${name}:\\s*(#[0-9a-fA-F]{6})`));
+  if (!m) throw new Error(`token --b16-${name} is not defined in src/01-tokens.css`);
+  return m[1].toLowerCase();
+};
+
+// Surfaces are read from the same tokens file as the roles, not hardcoded,
+// so a later change to a surface colour can't silently escape this check.
+const surfaceHex = Object.fromEntries(SURFACES.map((s) => [s, hexOf(s)]));
+
+const waivers = JSON.parse(await readFile(".docs/waivers.json", "utf8"));
+const waived = new Set(waivers.map((w) => `${w.token}@${w.surface}`));
+
+let failed = 0;
+for (const role of ROLES) {
+  for (const s of role.on) {
+    const ratio = contrast(hexOf(role.token), surfaceHex[s]);
+    const key = `${role.token}@${s}`;
+    const ok = ratio >= role.min;
+    if (ok) continue;
+    if (waived.has(key)) {
+      const w = waivers.find((x) => `${x.token}@${x.surface}` === key);
+      console.log(`WAIVED ${key} ${ratio.toFixed(2)} < ${role.min} — ${w.reason}`);
+    } else {
+      console.error(`FAIL ${key} ${ratio.toFixed(2)} < ${role.min}`);
+      failed++;
+    }
+  }
+}
+console.log(failed === 0 ? "contrast OK" : `${failed} contrast failure(s)`);
+process.exit(failed === 0 ? 0 : 1);
