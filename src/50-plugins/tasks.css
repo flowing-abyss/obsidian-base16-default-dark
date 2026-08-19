@@ -46,46 +46,46 @@
     /* Priority Colors */
     &:has(a.tag[href$='#priority/a']):not([data-task='x']) {
       background-color: transparent !important;
-      border-color: hsla(358deg, 70%, 58%, 0.35);
+      border-color: color-mix(in srgb, var(--b16-status-error) 35%, transparent);
 
       .task-description {
-        color: hsla(358deg, 70%, 63%, 0.8);
+        color: color-mix(in srgb, var(--b16-status-error) 80%, transparent);
       }
     }
 
     &:has(a.tag[href$='#priority/b']):not([data-task='x']) {
       background-color: transparent !important;
-      border-color: hsla(35deg, 75%, 60%, 0.35);
+      border-color: color-mix(in srgb, var(--b16-accent-code) 35%, transparent);
 
       .task-description {
-        color: hsla(35deg, 75%, 65%, 0.9);
+        color: color-mix(in srgb, var(--b16-accent-code) 90%, transparent);
       }
     }
 
     &:has(a.tag[href$='#priority/c']):not([data-task='x']) {
       background-color: transparent !important;
-      border-color: hsla(218deg, 70%, 57%, 0.35);
+      border-color: color-mix(in srgb, var(--b16-accent-link) 35%, transparent);
 
       .task-description {
-        color: hsla(218deg, 70%, 62%, 0.9);
+        color: color-mix(in srgb, var(--b16-accent-link) 90%, transparent);
       }
     }
 
     &:has(a.tag[href$='#priority/d']):not([data-task='x']) {
       background-color: transparent !important;
-      border-color: hsla(262deg, 48%, 62%, 0.35);
+      border-color: color-mix(in srgb, var(--b16-accent-link-ext) 35%, transparent);
 
       .task-description {
-        color: hsla(262deg, 48%, 67%, 0.9);
+        color: color-mix(in srgb, var(--b16-accent-link-ext) 90%, transparent);
       }
     }
 
     &:has(a.tag[href$='#priority/e']):not([data-task='x']) {
       background-color: transparent !important;
-      border-color: hsla(215deg, 20%, 42%, 0.35);
+      border-color: color-mix(in srgb, var(--b16-text-faint) 35%, transparent);
 
       .task-description {
-        color: hsla(215deg, 20%, 50%, 0.85);
+        color: color-mix(in srgb, var(--b16-text-faint) 85%, transparent);
       }
     }
 
@@ -169,33 +169,33 @@
 /* Task Priority Tags Styling */
 .contains-task-list.plugin-tasks-query-result .tasks-list-text {
   a.tag[href$='#priority/a'] {
-    background-color: hsla(358deg, 70%, 58%, 1) !important;
-    border-color: hsla(358deg, 70%, 58%, 1) !important;
-    color: white !important;
+    background-color: var(--b16-status-error) !important;
+    border-color: var(--b16-status-error) !important;
+    color: var(--b16-text-strong) !important;
   }
 
   a.tag[href$='#priority/b'] {
-    background-color: hsla(35deg, 75%, 60%, 1) !important;
-    border-color: hsla(35deg, 75%, 60%, 1) !important;
-    color: white !important;
+    background-color: var(--b16-accent-code) !important;
+    border-color: var(--b16-accent-code) !important;
+    color: var(--b16-text-strong) !important;
   }
 
   a.tag[href$='#priority/c'] {
-    background-color: hsla(218deg, 70%, 57%, 1) !important;
-    border-color: hsla(218deg, 70%, 57%, 1) !important;
-    color: white !important;
+    background-color: var(--b16-accent-link) !important;
+    border-color: var(--b16-accent-link) !important;
+    color: var(--b16-text-strong) !important;
   }
 
   a.tag[href$='#priority/d'] {
-    background-color: hsla(262deg, 48%, 62%, 1) !important;
-    border-color: hsla(262deg, 48%, 62%, 1) !important;
-    color: white !important;
+    background-color: var(--b16-accent-link-ext) !important;
+    border-color: var(--b16-accent-link-ext) !important;
+    color: var(--b16-text-strong) !important;
   }
 
   a.tag[href$='#priority/e'] {
-    background-color: hsla(215deg, 20%, 42%, 1) !important;
-    border-color: hsla(215deg, 20%, 42%, 1) !important;
-    color: white !important;
+    background-color: var(--b16-text-faint) !important;
+    border-color: var(--b16-text-faint) !important;
+    color: var(--b16-text-strong) !important;
   }
 }
 

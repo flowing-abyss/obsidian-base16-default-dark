@@ -86,7 +86,7 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
 .virtual-link.glossary-entry a {
   color: inherit;
   text-decoration-thickness: 1px;
-  text-decoration-color: rgb(var(--color-purple-rgb), 0.6);
+  text-decoration-color: color-mix(in srgb, var(--b16-accent-link-ext) 60%, transparent);
   text-underline-position: under;
 }
 /* Properties of the virtual link when hovered */
@@ -108,7 +108,7 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
     & > .mb-button-inner {
       border-radius: 3px;
       background: transparent;
-      border: 1px solid #383838;
+      border: 1px solid var(--b16-border-normal);
       box-shadow: none;
       color: var(--text-normal);
       font-size: var(--font-ui-small);
@@ -120,16 +120,16 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
       &:hover,
       &:focus {
         background: transparent !important;
-        border-color: #484848 !important;
-        color: #f8f8f8 !important;
-        box-shadow: inset 2px 0 0 #7cafc2 !important;
+        border-color: var(--b16-border-strong) !important;
+        color: var(--b16-text-strong) !important;
+        box-shadow: inset 2px 0 0 var(--b16-accent-link) !important;
       }
 
       &:active {
         background: transparent !important;
-        border-color: #585858 !important;
-        color: #ffffff !important;
-        box-shadow: inset 2px 0 0 #86c1b9 !important;
+        border-color: var(--b16-text-faint) !important;
+        color: var(--b16-text-strong) !important;
+        box-shadow: inset 2px 0 0 var(--b16-accent-tag) !important;
       }
     }
 
@@ -141,7 +141,7 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
     /* single button — full border intact */
     &:last-child:first-child > .mb-button-inner {
       border-radius: 3px;
-      border: 1px solid #383838;
+      border: 1px solid var(--b16-border-normal);
     }
   }
 }
@@ -156,7 +156,7 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
 .mv-vault-note-header .mv-vault-note-link {
   border-radius: 3px;
   background: transparent;
-  border: 1px solid #383838;
+  border: 1px solid var(--b16-border-normal);
   box-shadow: none;
   padding-inline: 10px;
   color: var(--text-muted);
@@ -172,17 +172,17 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
 .mv-vault-note-header .mv-vault-note-link:hover,
 .mv-vault-note-header .mv-vault-note-link:focus-visible {
   background: transparent !important;
-  border-color: #484848 !important;
-  color: #f8f8f8 !important;
-  box-shadow: inset 2px 0 0 #7cafc2 !important;
+  border-color: var(--b16-border-strong) !important;
+  color: var(--b16-text-strong) !important;
+  box-shadow: inset 2px 0 0 var(--b16-accent-link) !important;
 }
 
 .mv-sidebar-actions .mv-sidebar-action-btn:active,
 .mv-vault-note-header .mv-vault-note-link:active {
   background: transparent !important;
-  border-color: #585858 !important;
-  color: #ffffff !important;
-  box-shadow: inset 2px 0 0 #86c1b9 !important;
+  border-color: var(--b16-text-faint) !important;
+  color: var(--b16-text-strong) !important;
+  box-shadow: inset 2px 0 0 var(--b16-accent-tag) !important;
 }
 
 .mv-sidebar-actions .mv-sidebar-action-btn:first-child {

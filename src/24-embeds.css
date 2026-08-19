@@ -32,6 +32,6 @@
 /* image border */
 .markdown-source-view.mod-cm6 .internal-embed > img,
 .markdown-preview-view .internal-embed > img {
-  border: 1px solid #404040;
+  border: 1px solid var(--b16-border-strong);
   border-radius: 2px;
 }

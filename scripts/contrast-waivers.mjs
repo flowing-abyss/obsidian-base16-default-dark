@@ -19,4 +19,11 @@
 //   - surface: the --b16-{surface} name it's checked against (e.g.
 //     "surface-2").
 //   - reason: why the shortfall is accepted (in one line).
-export const CONTRAST_WAIVERS = [];
+export const CONTRAST_WAIVERS = [
+  {
+    token: "status-error",
+    surface: "surface-2",
+    reason:
+      "base16 base08 is inherently dark; error text inside blocks is rendered on surface-0 instead, and on surface-2 the colour is used only for rails and icons adjacent to a high-contrast label",
+  },
+];

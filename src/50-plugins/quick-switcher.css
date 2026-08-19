@@ -73,7 +73,7 @@ body .another-quick-switcher__status__count-input {
 
 .another-quick-switcher__command-palette__item__key {
   color: var(--inline-code-color);
-  background-color: #1a1a1a;
+  background-color: var(--b16-surface-0);
   padding: 2px 4px;
   border-radius: 2px;
   border: none;

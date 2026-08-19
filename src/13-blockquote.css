@@ -1,6 +1,6 @@
 /* Blockquotes */
 .theme-dark .markdown-preview-view blockquote {
-  border-left: 3px solid #484848;
+  border-left: 3px solid var(--b16-border-strong);
   background: transparent;
   padding-left: 16px;
   margin: 12px 0;

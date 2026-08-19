@@ -10,17 +10,17 @@
 }
 
 .theme-dark ::-webkit-scrollbar-track {
-  background: #181818;
+  background: var(--b16-surface-0);
 }
 
 .theme-dark ::-webkit-scrollbar-thumb {
-  background: #383838;
+  background: var(--b16-surface-3);
   border-radius: 0;
   transition: background 0.1s ease;
 }
 
 .theme-dark ::-webkit-scrollbar-thumb:hover {
-  background: #484848;
+  background: var(--b16-border-strong);
 }
 
 /* Ribbon menu */
@@ -126,7 +126,7 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
 .is-flashing {
   border-bottom: 2px solid var(--color-red);
   color: var(--font-color);
-  background-color: rgba(210, 185, 60, 0.25) !important;
+  background-color: var(--b16-highlight-bg) !important;
 }
 .tree-item-self.search-result-file-title {
   border-left: 3px solid var(--color-red);

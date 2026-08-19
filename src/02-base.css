@@ -9,8 +9,8 @@
 }
 
 .is-mobile.theme-dark {
-  --background-primary: #181818 !important;
-  --background-secondary: #181818 !important;
+  --background-primary: var(--b16-surface-0) !important;
+  --background-secondary: var(--b16-surface-0) !important;
 }
 
 /* Selection */

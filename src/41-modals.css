@@ -40,10 +40,10 @@
   box-shadow: none;
 }
 .popover.hover-editor {
-  border: 1px ridge rgba(209, 209, 209, 0.5);
+  border: 1px ridge var(--b16-border-strong);
 }
 .popover-titlebar {
-  background-color: #181818 !important;
+  background-color: var(--b16-surface-0) !important;
 }
 .popover-title {
   visibility: hidden;
