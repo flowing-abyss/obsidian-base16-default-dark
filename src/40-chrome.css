@@ -21,6 +21,28 @@ body.theme-dark {
   font-weight: var(--b16-chrome-weight);
 }
 
+/* Radii. This theme draws hard edges everywhere — code blocks, callouts,
+   quotes, tables, checkboxes — and Obsidian's own chrome does not: the
+   search field carries a hardcoded `border-radius: 100px` (measured), which
+   lands a lone stadium-shaped pill in the middle of an otherwise square
+   interface, in the sidebar search, in the in-document search bar and in
+   every plugin pane that reuses .search-input-container. Setting the native
+   radius inputs handles the inputs and buttons that read them; the search
+   field needs its own rule because its 100px is written directly on the
+   element rather than taken from a variable. */
+.theme-dark {
+  --radius-s: var(--b16-radius-s);
+  --radius-m: var(--b16-radius-m);
+  --input-radius: var(--b16-radius-s);
+}
+
+.theme-dark .search-input-container input,
+.theme-dark .search-input-container,
+.theme-dark input.document-search-input,
+.theme-dark .prompt-input {
+  border-radius: var(--b16-radius-s);
+}
+
 /* Context menu (right-click dropdown) */
 .theme-dark .menu-scroll * {
   font-size: var(--b16-font-ui-s);

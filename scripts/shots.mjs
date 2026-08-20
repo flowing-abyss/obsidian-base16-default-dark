@@ -338,12 +338,19 @@ function captureSettled(finalPath) {
 }
 
 const label = process.argv[2];
-if (!label) throw new Error("usage: npm run shots -- <label>");
+if (!label) throw new Error("usage: npm run shots -- <label> [frame-name-regex]");
+// Optional second argument: capture only the frames whose name matches. The
+// CLI hangs intermittently (documented in captureSettled below) and a hang
+// aborts the run, so a full sweep can end half-finished; without a filter
+// the only way to finish it is to re-shoot every frame already captured.
+const filter = process.argv[3] ? new RegExp(process.argv[3]) : null;
+const frames = filter ? FRAMES.filter((f) => filter.test(f.name)) : FRAMES;
+if (frames.length === 0) throw new Error(`no frame matches /${process.argv[3]}/`);
 const dir = `.docs/shots/${label}`;
 await mkdir(dir, { recursive: true });
 
 reload();
-for (const f of FRAMES) {
+for (const f of frames) {
   try {
     ev(f.setup);
     captureSettled(`${process.cwd()}/${dir}/${f.name}.png`);
@@ -373,4 +380,4 @@ if (active !== NOTE) {
   console.error(`TEARDOWN FAILED: active file is ${active}, expected ${NOTE}`);
   process.exit(1);
 }
-console.log(`\n${FRAMES.length} frames -> ${dir}, workspace restored`);
+console.log(`\n${frames.length} frame(s) -> ${dir}, workspace restored`);

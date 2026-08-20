@@ -15,6 +15,30 @@
   padding: 12px;
 }
 
+/* Live preview has no block element to frame: CodeMirror emits one sibling
+   .cm-line per row, so `border: none` above left the body with no boundary
+   at all — the block opened with a header band and then simply dissolved
+   into the page, with nothing marking where the code ended. A frame IS
+   expressible here, just not in one declaration: the side edges go on every
+   line, and CM6 does label the fence rows (.HyperMD-codeblock-begin /
+   -end), which carry the top and bottom edges. Border-strong rather than
+   border-normal because the body shares base00 with the page behind it —
+   the frame is the only thing separating them, so it has to be visible on
+   its own. */
+.theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock {
+  border-left: 1px solid var(--b16-border-strong);
+  border-right: 1px solid var(--b16-border-strong);
+  border-radius: 0;
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin {
+  border-top: 1px solid var(--b16-border-strong);
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
+  border-bottom: 1px solid var(--b16-border-strong);
+}
+
 /* base16 specifies its syntax colours against base00. On base01 the red drops
    from 3.12 to 2.59 and comments from 2.50 to 2.07, so a block that actually
    has tokens takes base00 for its body and is separated by the frame instead.
@@ -38,8 +62,8 @@
    bug. */
 .theme-dark .markdown-rendered pre[class^='language-'] {
   background-color: var(--b16-surface-0);
-  border: 1px solid var(--b16-border-normal);
-  border-radius: var(--b16-radius-m);
+  border: 1px solid var(--b16-border-strong);
+  border-radius: var(--b16-radius-s);
 }
 
 .theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock {
@@ -50,6 +74,31 @@
   .markdown-source-view.mod-cm6
   .HyperMD-codeblock-begin:not(:has(.code-block-flair > svg)) {
   background-color: var(--b16-surface-2);
+}
+
+/* The language label. Obsidian ships it as an absolutely positioned chip in
+   the top-right corner of the block (app.css: `position: absolute; right:
+   6px; top: 6px`), which reads as a sticker dropped onto the code rather
+   than as a header — and it drifts visibly out of alignment with the band
+   behind it. Since the begin line already carries the band's own surface,
+   the label belongs at its left edge, where a file header would be: same
+   inline start as the first line of code, sitting in the band rather than
+   on top of it. */
+.theme-dark .markdown-source-view.mod-cm6 .code-block-flair {
+  right: auto;
+  left: 12px;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .code-block-flair:hover {
+  background: transparent;
+  color: var(--b16-text-normal);
 }
 
 .theme-dark .code-block-flair {
@@ -150,6 +199,25 @@
 .theme-dark .token.important,
 .theme-dark .token.variable {
   color: var(--code-important);
+}
+
+/* A comment inside a fenced block is code, not an Obsidian comment.
+   CodeMirror gives both the same `.cm-comment` class, so a rule written for
+   `%%obsidian comments%%` reaches into every code block too. The Virtual
+   Linker plugin's alt style does exactly that — it collapses `.cm-comment`
+   to `font-size: 0; color: transparent` and substitutes a bullet, which
+   turned `// theme configuration` into a lone blue dot inside a JavaScript
+   block. `.cm-hmd-codeblock` is CodeMirror's own marker for "this token is
+   inside a fenced block", so restoring on it is exact: it cannot affect a
+   real markdown comment, which never carries that class. */
+.theme-dark .cm-line .cm-comment.cm-hmd-codeblock {
+  color: var(--code-comment);
+  font-size: inherit;
+}
+
+.theme-dark .cm-line .cm-comment.cm-hmd-codeblock::before {
+  content: none;
+  display: none;
 }
 
 /* Syntax highlighting for YAML frontmatter */

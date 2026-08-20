@@ -7,7 +7,14 @@ const FORBIDDEN = [
   "#cc6666", "#b294bb", "#de935f", "#969896",
 ];
 const COLOUR_FILES = new Set(["00-palette.css", "01-tokens.css"]);
-const IMPORTANT_BASELINE = 95;
+// Raised 95 -> 107 when src/25-mermaid.css was added. Mermaid writes a
+// <style> block inside each generated SVG whose rules are scoped by the
+// SVG's element id, so every one of them carries an ID in its selector.
+// Specificity compares ID count before class count, which means no author
+// selector without an important flag can override them at any length. The
+// twelve flags in that file are the whole of the increase; the ratchet is
+// otherwise unchanged and still refuses a thirteenth.
+const IMPORTANT_BASELINE = 107;
 
 // Matches #hex literals and rgb()/rgba()/hsl()/hsla() function literals.
 // Outside the colour-definition files, every colour must come from a

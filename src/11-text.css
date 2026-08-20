@@ -36,10 +36,47 @@
   background-color: var(--b16-tag-bg);
 }
 
-/* Inline code */
-.theme-dark :is(.markdown-rendered :not(pre) > code, .cm-inline-code) {
+/* Tag chip geometry. Obsidian builds the chip out of two halves: app.css
+   puts the left radius and left padding on .cm-hashtag-begin (the `#`) and
+   the right pair on .cm-hashtag-end (the word). Off the cursor line the
+   sigil is swallowed by a widget and the begin half is never emitted at
+   all — measured: the word span is the only .cm-hashtag on the line — so
+   the chip renders with a flat, unpadded left edge and a right cap whose
+   2em radius clamps to a full semicircle against the 32px line box. It
+   reads as sliced off. Give every tag one symmetric chip, then split it
+   back across the pair on the line being edited, where both halves exist.
+
+   Specificity note: app.css addresses these as `.cm-s-obsidian
+   span.cm-hashtag-end` (0,2,1), so a plain `.theme-dark .cm-hashtag`
+   (0,2,0) loses. Matching its shape and winning on source order keeps the
+   override honest instead of reaching for !important. */
+.theme-dark .cm-s-obsidian span.cm-hashtag,
+.theme-dark .markdown-rendered a.tag {
+  border-radius: var(--b16-radius-s);
+  padding: 0.1em 0.4em;
+}
+
+.theme-dark .cm-s-obsidian span.cm-hashtag-begin {
+  padding-right: 0;
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+
+.theme-dark .cm-s-obsidian span.cm-hashtag-begin + span.cm-hashtag-end {
+  padding-left: 0;
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+
+/* Inline code. Surface-1 rather than surface-2: an inline chip interrupts a
+   line of prose, so it has to be quiet enough not to speckle a paragraph
+   while still reading as a distinct box. The `.cm-s-obsidian` half is
+   needed for the same reason as the tag rule above — app.css addresses
+   live preview's chip at (0,2,1). */
+.theme-dark .markdown-rendered :not(pre) > code,
+.theme-dark .cm-s-obsidian span.cm-inline-code {
   color: var(--b16-accent-code);
-  background-color: var(--b16-surface-2);
+  background-color: var(--b16-surface-1);
   border-radius: var(--b16-radius-s);
   padding: 0.1em 0.3em;
 }
@@ -132,8 +169,27 @@
   color: var(--b16-text-strong);
   background-color: var(--b16-highlight-bg);
   border: none;
+}
+
+/* Reading mode renders the whole run as one <mark>, so inline padding and a
+   radius describe one band and nested emphasis changes nothing.
+   box-decoration-break keeps that true when the band wraps across lines. */
+.theme-dark mark {
   border-radius: var(--b16-radius-s);
   padding: 0.05em 0.2em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* Live preview does not: `==text with **bold** inside==` becomes three
+   sibling .cm-highlight spans, and inline padding on each opens a gap
+   either side of the bold while the radius rounds off four interior
+   corners — one highlight rendered as three chips. Vertical padding
+   composes across siblings, inline padding does not, so live preview keeps
+   only the former and the band stays monolithic. */
+.theme-dark span.cm-highlight {
+  border-radius: 0;
+  padding: 0.05em 0;
 }
 
 /* Horizontal rules */

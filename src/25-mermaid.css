@@ -1,0 +1,84 @@
+/* Mermaid diagrams.
+
+   Obsidian does not theme mermaid. It renders mermaid's stock light palette
+   and then flips the whole drawing with a CSS filter:
+
+     .theme-dark .mermaid > svg {
+       filter: invert(100%) hue-rotate(180deg) saturate(1.25);
+     }
+
+   That is where the navy fills and violet strokes come from — they are
+   mermaid's lavender defaults (#ECECFF on #9370DB) rotated through 180
+   degrees, which no palette can predict and this one certainly does not
+   contain. It also costs real performance: a filter promotes the SVG to its
+   own composited layer and forces a re-rasterisation of the entire drawing
+   on every repaint, which is why a note holding a few simple diagrams
+   scrolls badly.
+
+   So the filter is switched off and the drawing is coloured directly.
+
+   `!important` is unavoidable here, and this is the one place in the theme
+   where that is true rather than convenient: mermaid emits a \3c style> block
+   *inside* each SVG whose rules are scoped by the generated element id
+   (`#mermaid-1234 .node rect { ... }`), giving them an ID in the selector.
+   Specificity compares ID count first, so no author selector without an
+   important flag can reach these declarations at all. */
+
+.theme-dark .mermaid > svg {
+  filter: none;
+}
+
+.theme-dark .mermaid {
+  font-family: var(--font-mermaid);
+}
+
+/* Boxes: flowchart nodes, class boxes, state boxes, sequence actors, notes.
+   Surface-1 is the theme's inset-block fill, the same one callouts, quotes
+   and the inline-code chip use — a diagram node is the same kind of object,
+   a small block set apart from the page. */
+.theme-dark .mermaid :is(.node, .cluster) :is(rect, circle, ellipse, polygon, path),
+.theme-dark .mermaid :is(.actor, .labelBox, .note, .task, .section),
+.theme-dark .mermaid :is(.classGroup, .stateGroup) rect {
+  fill: var(--b16-surface-1) !important;
+  stroke: var(--b16-border-strong) !important;
+  stroke-width: 1px !important;
+}
+
+/* A cluster is a grouping frame, not a box of its own: it holds nodes that
+   already carry surface-1, so it stays unfilled and is drawn by its edge
+   alone — the same reason display math and code bodies avoid a box inside a
+   box elsewhere in this theme. */
+.theme-dark .mermaid .cluster rect {
+  fill: transparent !important;
+  stroke: var(--b16-border-normal) !important;
+}
+
+/* Glyphs. Diagram labels are prose-weight content, so they take the body
+   lightness rather than a chrome step. */
+.theme-dark .mermaid :is(.nodeLabel, .edgeLabel, .label, .titleText, .classTitle),
+.theme-dark .mermaid :is(text, .messageText, .noteText, .loopText, .labelText),
+.theme-dark .mermaid :is(.actor > tspan, .sectionTitle, .taskText) {
+  fill: var(--b16-text-normal) !important;
+  color: var(--b16-text-normal) !important;
+}
+
+/* Connectors read as structure, not content, so they sit one lightness step
+   below the labels they join. */
+.theme-dark .mermaid :is(.edgePath .path, .flowchart-link, .relation),
+.theme-dark .mermaid :is(.messageLine0, .messageLine1, .actor-line, .transition) {
+  stroke: var(--b16-text-muted) !important;
+}
+
+.theme-dark .mermaid :is(marker, .marker, .arrowheadPath, #arrowhead path) {
+  fill: var(--b16-text-muted) !important;
+  stroke: var(--b16-text-muted) !important;
+}
+
+/* An edge label sits on top of its own connector, so it needs the page
+   behind it rather than the node surface — otherwise it reads as a tiny
+   node of its own hanging off the line. */
+.theme-dark .mermaid .edgeLabel :is(rect, .labelBkg),
+.theme-dark .mermaid .edgeLabel foreignObject > div {
+  fill: var(--b16-surface-0) !important;
+  background-color: var(--b16-surface-0) !important;
+}

@@ -112,6 +112,17 @@
   --b16-radius-s: 4px;
   --b16-radius-m: 7px;
 
+  /* One label size for every block's title bar — a callout's type label, a
+     code block's language band, a table's header row. They stack in the
+     same document and reading at three different sizes made them look like
+     three unrelated systems rather than one. */
+  --b16-label-size: 0.85em;
+
+  /* One table cell padding, consumed by both modes — reading mode puts it on
+     the cell, live preview on the .table-cell-wrapper inside it, because
+     app.css zeroes the cell there. See src/21-tables.css. */
+  --b16-table-cell-padding: 0.45em 0.7em;
+
   /* UI chrome size ramp — one scale for every "smaller than body" UI text
      size (modals, menus, panel headers, plugin chrome), replacing a scatter
      of unrelated ad-hoc multipliers (0.8 in modals, 0.72 in the context
@@ -120,6 +131,21 @@
   --b16-font-ui-l: calc(var(--font-text-size) * 0.85);
   --b16-font-ui-m: calc(var(--font-text-size) * 0.78);
   --b16-font-ui-s: calc(var(--font-text-size) * 0.72);
+
+  /* Obsidian's own UI ramp is absolute pixels (12/13/15px) fixed against a
+     16px assumption, so it does not move when the reader raises the text
+     size. At a 20px reading size that leaves every surface the theme does
+     not name explicitly — sidebar panels, Bases tables, the graph, the
+     footer panes, plugin chrome — stranded two-thirds the size of prose and
+     genuinely hard to read. Rebasing the native variables on the ramp above
+     fixes all of them at the input rather than chasing each panel with its
+     own font-size override. Kept strictly below --font-text-size: chrome
+     must still read as chrome. */
+  --font-ui-smallest: calc(var(--font-text-size) * 0.68);
+  --font-ui-smaller: var(--b16-font-ui-s);
+  --font-ui-small: var(--b16-font-ui-m);
+  --font-ui-medium: var(--b16-font-ui-l);
+  --font-ui-larger: var(--font-text-size);
 
   /* Obsidian ships a 1.10 step, which leaves h1 and h6 nearly the same size. */
   --h1-size: 1.75em;
@@ -576,10 +602,47 @@
   background-color: var(--b16-tag-bg);
 }
 
-/* Inline code */
-.theme-dark :is(.markdown-rendered :not(pre) > code, .cm-inline-code) {
+/* Tag chip geometry. Obsidian builds the chip out of two halves: app.css
+   puts the left radius and left padding on .cm-hashtag-begin (the `#`) and
+   the right pair on .cm-hashtag-end (the word). Off the cursor line the
+   sigil is swallowed by a widget and the begin half is never emitted at
+   all — measured: the word span is the only .cm-hashtag on the line — so
+   the chip renders with a flat, unpadded left edge and a right cap whose
+   2em radius clamps to a full semicircle against the 32px line box. It
+   reads as sliced off. Give every tag one symmetric chip, then split it
+   back across the pair on the line being edited, where both halves exist.
+
+   Specificity note: app.css addresses these as `.cm-s-obsidian
+   span.cm-hashtag-end` (0,2,1), so a plain `.theme-dark .cm-hashtag`
+   (0,2,0) loses. Matching its shape and winning on source order keeps the
+   override honest instead of reaching for !important. */
+.theme-dark .cm-s-obsidian span.cm-hashtag,
+.theme-dark .markdown-rendered a.tag {
+  border-radius: var(--b16-radius-s);
+  padding: 0.1em 0.4em;
+}
+
+.theme-dark .cm-s-obsidian span.cm-hashtag-begin {
+  padding-right: 0;
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+
+.theme-dark .cm-s-obsidian span.cm-hashtag-begin + span.cm-hashtag-end {
+  padding-left: 0;
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+
+/* Inline code. Surface-1 rather than surface-2: an inline chip interrupts a
+   line of prose, so it has to be quiet enough not to speckle a paragraph
+   while still reading as a distinct box. The `.cm-s-obsidian` half is
+   needed for the same reason as the tag rule above — app.css addresses
+   live preview's chip at (0,2,1). */
+.theme-dark .markdown-rendered :not(pre) > code,
+.theme-dark .cm-s-obsidian span.cm-inline-code {
   color: var(--b16-accent-code);
-  background-color: var(--b16-surface-2);
+  background-color: var(--b16-surface-1);
   border-radius: var(--b16-radius-s);
   padding: 0.1em 0.3em;
 }
@@ -672,8 +735,27 @@
   color: var(--b16-text-strong);
   background-color: var(--b16-highlight-bg);
   border: none;
+}
+
+/* Reading mode renders the whole run as one <mark>, so inline padding and a
+   radius describe one band and nested emphasis changes nothing.
+   box-decoration-break keeps that true when the band wraps across lines. */
+.theme-dark mark {
   border-radius: var(--b16-radius-s);
   padding: 0.05em 0.2em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* Live preview does not: `==text with **bold** inside==` becomes three
+   sibling .cm-highlight spans, and inline padding on each opens a gap
+   either side of the bold while the radius rounds off four interior
+   corners — one highlight rendered as three chips. Vertical padding
+   composes across siblings, inline padding does not, so live preview keeps
+   only the former and the band stays monolithic. */
+.theme-dark span.cm-highlight {
+  border-radius: 0;
+  padding: 0.05em 0;
 }
 
 /* Horizontal rules */
@@ -1040,20 +1122,49 @@ ul > li::marker,
    must not be. Redirecting them keeps live preview in sync with the rule
    below instead of fighting it. */
 .theme-dark {
-  --blockquote-background-color: var(--b16-surface-2);
+  --blockquote-background-color: var(--b16-surface-1);
   --blockquote-border-color: var(--b16-border-strong);
   --blockquote-style: normal;
 }
 
 /* A quotation is another voice, not disabled text. Full contrast, upright, and
-   a neutral rail: hue stays reserved for callouts, where it encodes a type. */
-.theme-dark .markdown-rendered blockquote,
+   a neutral rail: hue stays reserved for callouts, where it encodes a type.
+   Surface-1 is the theme's single "inset block" fill, shared with callouts
+   and the inline-code chip; what separates a quote from a callout is that
+   its rail and title carry no hue. */
+.theme-dark .markdown-rendered blockquote {
+  color: var(--b16-text-normal);
+  background-color: var(--b16-surface-1);
+  border-left: 3px solid var(--b16-border-strong);
+  border-radius: 0;
+  padding: 0.9em 1.1em;
+  font-style: normal;
+  opacity: 1;
+}
+
+/* Live preview has no blockquote element at all: CodeMirror renders every
+   quoted line as its own .cm-line.HyperMD-quote sibling. Block padding and
+   a border radius therefore repeat once per line — the radius stacking into
+   a visible sawtooth down the right edge, the padding pushing consecutive
+   lines apart — which is exactly what the previous shared rule produced.
+   Only inline padding composes correctly across sibling line boxes, so that
+   is all this rule sets at full strength; the square corners are the same
+   ones the rest of the theme uses, so dropping the radius costs nothing.
+
+   The small block padding that remains is deliberate and behaves
+   differently from the inline kind: sibling line boxes stack with no margin
+   between them, so their padded backgrounds stay contiguous — no gap
+   appears, the quoted lines simply sit a few pixels further apart, and the
+   block as a whole gains that breathing room at its top and bottom edge.
+   0.25em is the largest value where the added interior leading still reads
+   as line spacing rather than as separation. */
 .theme-dark .HyperMD-quote {
   color: var(--b16-text-normal);
-  background-color: var(--b16-surface-2);
+  background-color: var(--b16-surface-1);
   border-left: 3px solid var(--b16-border-strong);
-  border-radius: 0 var(--b16-radius-m) var(--b16-radius-m) 0;
-  padding: 0.7em 1em;
+  border-radius: 0;
+  padding-block: 0.25em;
+  padding-inline: 1.1em;
   font-style: normal;
   opacity: 1;
 }
@@ -1074,40 +1185,60 @@ ul > li::marker,
    colour as any other paragraph, so bold and italic compose normally here
    too, same as everywhere else. No override needed. */
 
-/* Callouts — one shell shared by every type. Colour finally means type here;
-   that is what freeing the hues elsewhere in this theme was for. Obsidian's
-   own callout rules already read `--callout-color` for the icon fill
-   (`.callout-icon .svg-icon`) and for `.callout-title`'s default colour, so
-   the type table below only needs to set that one input per type — setting
-   the input beats overriding each output. The title is then pulled back to
-   a neutral strong colour, because in this system only the rail and the
-   icon carry the type's hue; the label reads the same weight as any other
-   heading. */
+/* Callouts — one shell shared by every type, "classic" model: the type's
+   hue lives on the rail and on a tinted title band, and the body carries no
+   fill at all.
+
+   The body is deliberately transparent rather than a surface step. A filled
+   body is what made the previous shell pull harder than the prose it
+   annotates: it put a second background under text that already sits on the
+   page, so a link, an inline-code chip or a highlight inside a callout had
+   to work against two competing fills at once and read as muddy. With the
+   body on the page itself, everything inside a callout looks exactly like
+   it does outside one, and the block is bounded by the rail and the band —
+   the only two parts that actually carry meaning.
+
+   Obsidian's own callout rules already read `--callout-color` for the icon
+   fill and for `.callout-title`, so the type table below only needs to set
+   that one input per type — setting the input beats overriding each
+   output. */
 .theme-dark .callout {
-  background-color: var(--b16-surface-2);
-  border: 1px solid var(--b16-border-normal);
+  background-color: transparent;
+  border: none;
   border-left: 3px solid var(--callout-color);
-  border-radius: var(--b16-radius-m);
+  border-radius: 0;
   mix-blend-mode: normal;
-  padding: 4px 12px;
-  margin: 8px 0;
+  padding: 0;
+  margin: 1em 0;
   overflow: hidden;
 }
 
+/* The title band is the only tinted surface. color-mix against the type's
+   own hue rather than a fixed grey, so the band and the rail are visibly
+   the same colour at two strengths; 12% is the point where the band still
+   reads as tinted on base00 without the label losing contrast against it. */
 .theme-dark .callout-title {
-  padding: 4px 10px;
-  margin: 0;
   display: flex;
   align-items: center;
   gap: 0.5em;
-  background: transparent;
-  color: var(--b16-text-strong);
+  margin: 0;
+  padding: 0.4em 0.9em;
+  background-color: color-mix(in srgb, var(--callout-color) 12%, transparent);
+  color: var(--callout-color);
+  font-size: var(--b16-label-size);
   font-weight: 700 !important;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-.theme-dark .callout-icon {
+/* Obsidian paints the icon from `--callout-color` already, but several
+   builds route it through `rgb(var(--callout-color))`, which is invalid
+   against the full colour values this theme assigns. Setting `color` on the
+   icon directly makes the rail, the label and the glyph agree in every
+   build rather than in some of them. */
+.theme-dark .callout-icon,
+.theme-dark .callout-icon .svg-icon {
+  color: var(--callout-color);
   display: flex;
   align-items: center;
   flex-shrink: 0;
@@ -1115,9 +1246,20 @@ ul > li::marker,
 
 .theme-dark .callout-content {
   margin: 0;
-  padding: 0 10px;
+  padding: 0.7em 0.9em;
   background: transparent;
   border: none;
+}
+
+/* The band and the body each own their padding, so the paragraphs inside
+   must not add their own on top of it — otherwise the first line sits too
+   far from the label and the block reads as loosely packed. */
+.theme-dark .callout-content > :first-child {
+  margin-top: 0;
+}
+
+.theme-dark .callout-content > :last-child {
+  margin-bottom: 0;
 }
 
 /* Type → colour table. The palette is closed to seven hues plus the
@@ -1281,7 +1423,7 @@ ul > li::marker,
    radius possible — with `collapse` the border box ignores border-radius. */
 .theme-dark .markdown-rendered table {
   border: 1px solid var(--b16-border-normal);
-  border-radius: var(--b16-radius-m);
+  border-radius: var(--b16-radius-s);
   border-collapse: separate;
   border-spacing: 0;
   /* `separate` does not clip children to the radius on its own — without
@@ -1305,8 +1447,20 @@ ul > li::marker,
 .theme-dark .markdown-rendered :is(th, td) {
   border: 0;
   border-bottom: 1px solid var(--b16-border-normal);
-  padding: 0.5em 0.7em;
+  padding: var(--b16-table-cell-padding);
   font-variant-numeric: tabular-nums;
+}
+
+/* Live preview does not put the padding on the cell. Its table is a widget:
+   app.css zeroes `th, td { padding: 0 }` at (0,3,1) — which the rule above
+   cannot reach — and pads an inner .table-cell-wrapper with a fixed
+   `4px 8px` instead. The two modes therefore rendered the same table at two
+   different sizes, tight while editing and roomy while reading. Feeding the
+   wrapper the same token restores one table. It stays in px-equivalent em
+   here for the same reason the rest of the theme does: the cell has to
+   breathe in proportion to the text inside it, not to a 16px assumption. */
+.theme-dark .markdown-source-view.mod-cm6 .cm-table-widget .table-cell-wrapper {
+  padding: var(--b16-table-cell-padding);
 }
 
 /* Column rules are deliberately fainter than row rules: they guide the eye
@@ -1324,7 +1478,7 @@ ul > li::marker,
   background-color: var(--b16-surface-2);
 }
 
-/* A table inside a callout sits on an already-surface-2 ambient (see
+/* A table inside a callout sits on an already-surface-1 ambient (see
    20-callouts.css), so the header fill and the hover fill above would be
    the same colour as their surroundings and vanish. One more surface step
    keeps both readable without touching the frame or the row/column rules,
@@ -1333,11 +1487,11 @@ ul > li::marker,
    here, not the other way round, so it alone is enough to select on; this
    ties the specificity of the two rules above and wins on source order. */
 .theme-dark .callout thead {
-  background-color: var(--b16-surface-3);
+  background-color: var(--b16-surface-2);
 }
 
 .theme-dark .callout tbody tr:hover {
-  background-color: var(--b16-surface-3);
+  background-color: var(--b16-surface-2);
 }
 
 /* ===== 22-code.css ===== */
@@ -1357,6 +1511,30 @@ ul > li::marker,
   border: none;
   border-radius: 2px;
   padding: 12px;
+}
+
+/* Live preview has no block element to frame: CodeMirror emits one sibling
+   .cm-line per row, so `border: none` above left the body with no boundary
+   at all — the block opened with a header band and then simply dissolved
+   into the page, with nothing marking where the code ended. A frame IS
+   expressible here, just not in one declaration: the side edges go on every
+   line, and CM6 does label the fence rows (.HyperMD-codeblock-begin /
+   -end), which carry the top and bottom edges. Border-strong rather than
+   border-normal because the body shares base00 with the page behind it —
+   the frame is the only thing separating them, so it has to be visible on
+   its own. */
+.theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock {
+  border-left: 1px solid var(--b16-border-strong);
+  border-right: 1px solid var(--b16-border-strong);
+  border-radius: 0;
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin {
+  border-top: 1px solid var(--b16-border-strong);
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
+  border-bottom: 1px solid var(--b16-border-strong);
 }
 
 /* base16 specifies its syntax colours against base00. On base01 the red drops
@@ -1382,8 +1560,8 @@ ul > li::marker,
    bug. */
 .theme-dark .markdown-rendered pre[class^='language-'] {
   background-color: var(--b16-surface-0);
-  border: 1px solid var(--b16-border-normal);
-  border-radius: var(--b16-radius-m);
+  border: 1px solid var(--b16-border-strong);
+  border-radius: var(--b16-radius-s);
 }
 
 .theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock {
@@ -1394,6 +1572,31 @@ ul > li::marker,
   .markdown-source-view.mod-cm6
   .HyperMD-codeblock-begin:not(:has(.code-block-flair > svg)) {
   background-color: var(--b16-surface-2);
+}
+
+/* The language label. Obsidian ships it as an absolutely positioned chip in
+   the top-right corner of the block (app.css: `position: absolute; right:
+   6px; top: 6px`), which reads as a sticker dropped onto the code rather
+   than as a header — and it drifts visibly out of alignment with the band
+   behind it. Since the begin line already carries the band's own surface,
+   the label belongs at its left edge, where a file header would be: same
+   inline start as the first line of code, sitting in the band rather than
+   on top of it. */
+.theme-dark .markdown-source-view.mod-cm6 .code-block-flair {
+  right: auto;
+  left: 12px;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .code-block-flair:hover {
+  background: transparent;
+  color: var(--b16-text-normal);
 }
 
 .theme-dark .code-block-flair {
@@ -1496,6 +1699,25 @@ ul > li::marker,
   color: var(--code-important);
 }
 
+/* A comment inside a fenced block is code, not an Obsidian comment.
+   CodeMirror gives both the same `.cm-comment` class, so a rule written for
+   `%%obsidian comments%%` reaches into every code block too. The Virtual
+   Linker plugin's alt style does exactly that — it collapses `.cm-comment`
+   to `font-size: 0; color: transparent` and substitutes a bullet, which
+   turned `// theme configuration` into a lone blue dot inside a JavaScript
+   block. `.cm-hmd-codeblock` is CodeMirror's own marker for "this token is
+   inside a fenced block", so restoring on it is exact: it cannot affect a
+   real markdown comment, which never carries that class. */
+.theme-dark .cm-line .cm-comment.cm-hmd-codeblock {
+  color: var(--code-comment);
+  font-size: inherit;
+}
+
+.theme-dark .cm-line .cm-comment.cm-hmd-codeblock::before {
+  content: none;
+  display: none;
+}
+
 /* Syntax highlighting for YAML frontmatter */
 .frontmatter.language-yaml .atrule,
 .cm-atom.cm-hmd-frontmatter {
@@ -1554,7 +1776,16 @@ ul > li::marker,
   background: transparent;
   padding: 12px 0;
   margin: 16px 0;
+  /* A formula wider than the column has to scroll, so overflow-x is auto.
+     But CSS forces the other axis: when one axis is not `visible`, a
+     `visible` value on the other computes to `auto`. MathJax containers
+     routinely exceed their own box by a sub-pixel (fraction bars,
+     superscripts), so that inherited `auto` put a vertical scrollbar beside
+     every display formula that fit perfectly well. The 12px block padding
+     above is already more than any such overshoot, so pinning the vertical
+     axis clips nothing. */
   overflow-x: auto;
+  overflow-y: hidden;
 }
 
 /* MathJax container inside math block */
@@ -1623,6 +1854,93 @@ ul > li::marker,
 .markdown-preview-view .internal-embed img {
   border: 1px solid var(--b16-border-strong);
   border-radius: var(--b16-radius-s);
+}
+
+/* ===== 25-mermaid.css ===== */
+
+/* Mermaid diagrams.
+
+   Obsidian does not theme mermaid. It renders mermaid's stock light palette
+   and then flips the whole drawing with a CSS filter:
+
+     .theme-dark .mermaid > svg {
+       filter: invert(100%) hue-rotate(180deg) saturate(1.25);
+     }
+
+   That is where the navy fills and violet strokes come from — they are
+   mermaid's lavender defaults (#ECECFF on #9370DB) rotated through 180
+   degrees, which no palette can predict and this one certainly does not
+   contain. It also costs real performance: a filter promotes the SVG to its
+   own composited layer and forces a re-rasterisation of the entire drawing
+   on every repaint, which is why a note holding a few simple diagrams
+   scrolls badly.
+
+   So the filter is switched off and the drawing is coloured directly.
+
+   `!important` is unavoidable here, and this is the one place in the theme
+   where that is true rather than convenient: mermaid emits a \3c style> block
+   *inside* each SVG whose rules are scoped by the generated element id
+   (`#mermaid-1234 .node rect { ... }`), giving them an ID in the selector.
+   Specificity compares ID count first, so no author selector without an
+   important flag can reach these declarations at all. */
+
+.theme-dark .mermaid > svg {
+  filter: none;
+}
+
+.theme-dark .mermaid {
+  font-family: var(--font-mermaid);
+}
+
+/* Boxes: flowchart nodes, class boxes, state boxes, sequence actors, notes.
+   Surface-1 is the theme's inset-block fill, the same one callouts, quotes
+   and the inline-code chip use — a diagram node is the same kind of object,
+   a small block set apart from the page. */
+.theme-dark .mermaid :is(.node, .cluster) :is(rect, circle, ellipse, polygon, path),
+.theme-dark .mermaid :is(.actor, .labelBox, .note, .task, .section),
+.theme-dark .mermaid :is(.classGroup, .stateGroup) rect {
+  fill: var(--b16-surface-1) !important;
+  stroke: var(--b16-border-strong) !important;
+  stroke-width: 1px !important;
+}
+
+/* A cluster is a grouping frame, not a box of its own: it holds nodes that
+   already carry surface-1, so it stays unfilled and is drawn by its edge
+   alone — the same reason display math and code bodies avoid a box inside a
+   box elsewhere in this theme. */
+.theme-dark .mermaid .cluster rect {
+  fill: transparent !important;
+  stroke: var(--b16-border-normal) !important;
+}
+
+/* Glyphs. Diagram labels are prose-weight content, so they take the body
+   lightness rather than a chrome step. */
+.theme-dark .mermaid :is(.nodeLabel, .edgeLabel, .label, .titleText, .classTitle),
+.theme-dark .mermaid :is(text, .messageText, .noteText, .loopText, .labelText),
+.theme-dark .mermaid :is(.actor > tspan, .sectionTitle, .taskText) {
+  fill: var(--b16-text-normal) !important;
+  color: var(--b16-text-normal) !important;
+}
+
+/* Connectors read as structure, not content, so they sit one lightness step
+   below the labels they join. */
+.theme-dark .mermaid :is(.edgePath .path, .flowchart-link, .relation),
+.theme-dark .mermaid :is(.messageLine0, .messageLine1, .actor-line, .transition) {
+  stroke: var(--b16-text-muted) !important;
+}
+
+.theme-dark .mermaid :is(marker, .marker, .arrowheadPath, #arrowhead path) {
+  fill: var(--b16-text-muted) !important;
+  stroke: var(--b16-text-muted) !important;
+}
+
+/* An edge label sits on top of its own connector, so it needs the page
+   behind it rather than the node surface — otherwise it reads as a tiny
+   node of its own hanging off the line. */
+.theme-dark .mermaid .edgeLabel :is(rect, .labelBkg),
+.theme-dark .mermaid .edgeLabel foreignObject > div {
+  fill: var(--b16-surface-0) !important;
+  background-color: var(--b16-surface-0) !important;
 }
 
 /* ===== 30-editor.css ===== */
@@ -1700,7 +2018,13 @@ body {
   .inline-title:hover
   ~ .metadata-container
   .metadata-content,
-body:has(.metadata-menu)
+/* Child-scoped :has, deliberately. An unscoped `body:has(.metadata-menu)`
+   asks Chromium to re-check the entire document on every DOM mutation
+   anywhere in the app — the same document-wide cost src/50-plugins/bases.css
+   avoids for its tooltip rule. MetadataMenu's popup is appended at body
+   level like every other Obsidian popup, so `> ` narrows the invalidation
+   to body's direct children at no change in behaviour. */
+body:has(> .metadata-menu)
   .workspace-leaf-content[data-type='markdown']
   .metadata-container
   .metadata-content {
@@ -1752,6 +2076,28 @@ body:has(.metadata-menu)
    See --b16-chrome-weight in 01-tokens.css for the before/after measurement. */
 body.theme-dark {
   font-weight: var(--b16-chrome-weight);
+}
+
+/* Radii. This theme draws hard edges everywhere — code blocks, callouts,
+   quotes, tables, checkboxes — and Obsidian's own chrome does not: the
+   search field carries a hardcoded `border-radius: 100px` (measured), which
+   lands a lone stadium-shaped pill in the middle of an otherwise square
+   interface, in the sidebar search, in the in-document search bar and in
+   every plugin pane that reuses .search-input-container. Setting the native
+   radius inputs handles the inputs and buttons that read them; the search
+   field needs its own rule because its 100px is written directly on the
+   element rather than taken from a variable. */
+.theme-dark {
+  --radius-s: var(--b16-radius-s);
+  --radius-m: var(--b16-radius-m);
+  --input-radius: var(--b16-radius-s);
+}
+
+.theme-dark .search-input-container input,
+.theme-dark .search-input-container,
+.theme-dark input.document-search-input,
+.theme-dark .prompt-input {
+  border-radius: var(--b16-radius-s);
 }
 
 /* Context menu (right-click dropdown) */
@@ -2113,6 +2459,24 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
   font-size: var(--b16-font-ui-l);
 }
 
+/* Bases' own inputs. Two of these ship values that only work against
+   Obsidian's default sizing and default surfaces, and both were visible
+   defects in this vault:
+
+   --bases-group-heading-property-size resolved to 0.72 of the reading size
+   (14.4px against 20px prose), which is the theme's UI *floor* — a size
+   meant for a status bar, not for the heading that names a group of rows.
+
+   --bases-table-group-background resolved to --background-primary, i.e. the
+   page itself, so a group heading row had no surface at all and the bands
+   it is supposed to separate ran together. Surface-2 rather than surface-1:
+   the group row sits inside a table that already uses surface-1 for its own
+   fills, so it needs the next step up to read as a divider above them. */
+.theme-dark {
+  --bases-group-heading-property-size: var(--b16-font-ui-l);
+  --bases-table-group-background: var(--b16-surface-2);
+}
+
 /* BASES BOARD */
 .board-board-wrapper {
   padding: 12px;
@@ -2295,19 +2659,191 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
 
 /* ===== 50-plugins/longform.css ===== */
 
-/* Longform */
+/* Longform.
+
+   The plugin ships its own Svelte-scoped styles and reads almost nothing
+   from the theme, so its panel arrived at whatever size the sidebar
+   happened to inherit — a 44px project dropdown at full reading size next
+   to 12px chrome — and spent the error hue on an ordinary "remove step"
+   button. Everything below routes it through the same UI ramp, surfaces and
+   radii as the rest of the chrome, and takes red back.
+
+   Scoped to the explorer's own leaf rather than to bare plugin class names:
+   these are generic-sounding selectors (.select, .tabs, .tab-button) and
+   several other plugins use the same words. */
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] {
+  --longform-panel-gap: var(--size-4-2);
+}
+
+/* Project picker and workflow picker. Both are bare <select>s the plugin
+   never sized, so they inherited the reading size. */
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] select,
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] input,
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] textarea {
+  font-size: var(--b16-font-ui-m);
+  background-color: var(--b16-surface-1);
+  border: 1px solid var(--b16-border-normal);
+  border-radius: var(--b16-radius-s);
+  padding: 0.35em 0.6em;
+  width: 100%;
+}
+
+/* The draft path is replaced with a single word: the full path is long,
+   already visible in the picker above it, and the only thing the reader
+   wants from this line is a way into the folder. Zeroing the font size and
+   printing the label from ::before is the only way to substitute text the
+   plugin renders itself. Sized and coloured as the affordance it is —
+   previously it printed at full reading size in body grey, which read as a
+   stray lowercase word floating under the dropdown. */
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .current-draft-path {
+  font-size: 0 !important;
+  margin: 0.35em 0 0.6em;
+  cursor: pointer;
+}
+
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .current-draft-path::before {
+  content: 'open';
+  font-size: var(--b16-font-ui-s) !important;
+  color: var(--b16-accent-link);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .current-draft-path:hover::before {
+  text-decoration: underline;
+}
+
+/* Tabs: the selected one is marked by lightness plus a rail, not by a fill.
+   Same move as the callout title — the marker sits on the label, and the
+   surface stays out of it. */
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .tab-button {
+  font-size: var(--b16-font-ui-m);
+  color: var(--b16-text-muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0.4em 0.7em;
+}
+
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .tab-button:hover {
+  color: var(--b16-text-normal);
+  background: transparent;
+}
+
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .tab-button.selected {
+  color: var(--b16-text-strong);
+  background: transparent;
+  border-bottom-color: var(--b16-accent-link);
+}
+
+/* Scenes. Longform marks the open scene itself, with `.selected` on the
+   row — its only signal for it is a one-step lightness lift (measured:
+   rgb(216,216,216) against rgb(184,184,184)), which is too quiet to find in
+   a list and is the same difference two adjacent lightness roles carry
+   everywhere else in this theme. Given a real class to hang it on, the
+   marker becomes the one this theme already uses for "you are here": a rail
+   in the link hue plus the inset surface, matching the active-file
+   treatment in the other panes. */
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .scene-container {
+  font-size: var(--b16-font-ui-m);
+  border-radius: var(--b16-radius-s);
+  padding-block: 0.3em;
+  cursor: pointer;
+}
+
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .scene-container:hover {
+  background-color: var(--b16-surface-1);
+}
+
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .scene-container.selected {
+  background-color: var(--b16-surface-1);
+  box-shadow: inset 2px 0 0 var(--b16-accent-link);
+  color: var(--b16-text-strong);
+}
+
+/* Scene status glyph, emitted from the data attribute the plugin sets. */
 [data-scene-status]::after {
   content: attr(data-scene-status);
-  opacity: 0.3;
+  opacity: 0.55;
   padding: 0 2px 0 0;
 }
 
-.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .current-draft-path {
-  font-size: 0 !important;
+/* Compile steps: one card each, on the theme's inset-block surface, framed
+   by an edge rather than separated by a fill. */
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .longform-compile-step {
+  background-color: var(--b16-surface-1);
+  border: 1px solid var(--b16-border-normal);
+  border-radius: var(--b16-radius-s);
+  padding: 0.6em 0.8em;
+  margin-bottom: var(--longform-panel-gap);
 }
-.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .current-draft-path::before {
-  font-size: var(--font-text-size) !important;
-  content: 'open';
+
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .longform-compile-step h4 {
+  font-size: var(--b16-font-ui-l);
+  color: var(--b16-text-strong);
+  margin: 0;
+}
+
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .longform-compile-step-number {
+  color: var(--b16-text-faint);
+  font-variant-numeric: tabular-nums;
+  padding-right: 0.5em;
+}
+
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER']
+  .longform-compile-step-description {
+  font-size: var(--b16-font-ui-s);
+  color: var(--b16-text-muted);
+  margin: 0.4em 0 0;
+}
+
+/* A step's kind is a category, not a status: neutral chip, same shape as
+   the tag chip elsewhere in the theme. */
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .longform-step-kind-pill {
+  font-size: var(--b16-font-ui-s);
+  color: var(--b16-text-muted);
+  background-color: var(--b16-surface-2);
+  border: none;
+  border-radius: var(--b16-radius-s);
+  padding: 0.1em 0.45em;
+}
+
+/* Removing a step is destructive, but it is not an error, and a permanently
+   red button in a list of eight steps makes the panel read as eight
+   problems. Red arrives on intent (hover/focus), which is the same rule the
+   rest of the theme follows: the error hue marks something wrong, not
+   something available. */
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .longform-remove-step-button,
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .options-button {
+  font-size: var(--b16-font-ui-s);
+  color: var(--b16-text-faint);
+  background: transparent;
+  border: none;
+  border-radius: var(--b16-radius-s);
+  box-shadow: none;
+  padding: 0.2em 0.5em;
+  width: auto;
+}
+
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER']
+  .longform-remove-step-button:hover {
+  color: var(--b16-status-error);
+  background-color: var(--b16-surface-2);
+}
+
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .options-button:hover {
+  color: var(--b16-text-normal);
+  background-color: var(--b16-surface-2);
+}
+
+/* The workflow description's autosizing <pre>/<textarea> pair: the <pre> is
+   the hidden sizer, so both must agree exactly or the box jumps. */
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .longform-compile-container pre {
+  font-size: var(--b16-font-ui-m);
+  color: var(--b16-text-muted);
+  padding: 0.35em 0.6em;
 }
 
 /* ===== 50-plugins/metadatamenu.css ===== */

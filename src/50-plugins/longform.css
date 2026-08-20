@@ -1,14 +1,186 @@
-/* Longform */
+/* Longform.
+
+   The plugin ships its own Svelte-scoped styles and reads almost nothing
+   from the theme, so its panel arrived at whatever size the sidebar
+   happened to inherit — a 44px project dropdown at full reading size next
+   to 12px chrome — and spent the error hue on an ordinary "remove step"
+   button. Everything below routes it through the same UI ramp, surfaces and
+   radii as the rest of the chrome, and takes red back.
+
+   Scoped to the explorer's own leaf rather than to bare plugin class names:
+   these are generic-sounding selectors (.select, .tabs, .tab-button) and
+   several other plugins use the same words. */
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] {
+  --longform-panel-gap: var(--size-4-2);
+}
+
+/* Project picker and workflow picker. Both are bare <select>s the plugin
+   never sized, so they inherited the reading size. */
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] select,
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] input,
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] textarea {
+  font-size: var(--b16-font-ui-m);
+  background-color: var(--b16-surface-1);
+  border: 1px solid var(--b16-border-normal);
+  border-radius: var(--b16-radius-s);
+  padding: 0.35em 0.6em;
+  width: 100%;
+}
+
+/* The draft path is replaced with a single word: the full path is long,
+   already visible in the picker above it, and the only thing the reader
+   wants from this line is a way into the folder. Zeroing the font size and
+   printing the label from ::before is the only way to substitute text the
+   plugin renders itself. Sized and coloured as the affordance it is —
+   previously it printed at full reading size in body grey, which read as a
+   stray lowercase word floating under the dropdown. */
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .current-draft-path {
+  font-size: 0 !important;
+  margin: 0.35em 0 0.6em;
+  cursor: pointer;
+}
+
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .current-draft-path::before {
+  content: 'open';
+  font-size: var(--b16-font-ui-s) !important;
+  color: var(--b16-accent-link);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .current-draft-path:hover::before {
+  text-decoration: underline;
+}
+
+/* Tabs: the selected one is marked by lightness plus a rail, not by a fill.
+   Same move as the callout title — the marker sits on the label, and the
+   surface stays out of it. */
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .tab-button {
+  font-size: var(--b16-font-ui-m);
+  color: var(--b16-text-muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0.4em 0.7em;
+}
+
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .tab-button:hover {
+  color: var(--b16-text-normal);
+  background: transparent;
+}
+
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .tab-button.selected {
+  color: var(--b16-text-strong);
+  background: transparent;
+  border-bottom-color: var(--b16-accent-link);
+}
+
+/* Scenes. Longform marks the open scene itself, with `.selected` on the
+   row — its only signal for it is a one-step lightness lift (measured:
+   rgb(216,216,216) against rgb(184,184,184)), which is too quiet to find in
+   a list and is the same difference two adjacent lightness roles carry
+   everywhere else in this theme. Given a real class to hang it on, the
+   marker becomes the one this theme already uses for "you are here": a rail
+   in the link hue plus the inset surface, matching the active-file
+   treatment in the other panes. */
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .scene-container {
+  font-size: var(--b16-font-ui-m);
+  border-radius: var(--b16-radius-s);
+  padding-block: 0.3em;
+  cursor: pointer;
+}
+
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .scene-container:hover {
+  background-color: var(--b16-surface-1);
+}
+
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .scene-container.selected {
+  background-color: var(--b16-surface-1);
+  box-shadow: inset 2px 0 0 var(--b16-accent-link);
+  color: var(--b16-text-strong);
+}
+
+/* Scene status glyph, emitted from the data attribute the plugin sets. */
 [data-scene-status]::after {
   content: attr(data-scene-status);
-  opacity: 0.3;
+  opacity: 0.55;
   padding: 0 2px 0 0;
 }
 
-.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .current-draft-path {
-  font-size: 0 !important;
+/* Compile steps: one card each, on the theme's inset-block surface, framed
+   by an edge rather than separated by a fill. */
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .longform-compile-step {
+  background-color: var(--b16-surface-1);
+  border: 1px solid var(--b16-border-normal);
+  border-radius: var(--b16-radius-s);
+  padding: 0.6em 0.8em;
+  margin-bottom: var(--longform-panel-gap);
 }
-.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .current-draft-path::before {
-  font-size: var(--font-text-size) !important;
-  content: 'open';
+
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .longform-compile-step h4 {
+  font-size: var(--b16-font-ui-l);
+  color: var(--b16-text-strong);
+  margin: 0;
+}
+
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .longform-compile-step-number {
+  color: var(--b16-text-faint);
+  font-variant-numeric: tabular-nums;
+  padding-right: 0.5em;
+}
+
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER']
+  .longform-compile-step-description {
+  font-size: var(--b16-font-ui-s);
+  color: var(--b16-text-muted);
+  margin: 0.4em 0 0;
+}
+
+/* A step's kind is a category, not a status: neutral chip, same shape as
+   the tag chip elsewhere in the theme. */
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .longform-step-kind-pill {
+  font-size: var(--b16-font-ui-s);
+  color: var(--b16-text-muted);
+  background-color: var(--b16-surface-2);
+  border: none;
+  border-radius: var(--b16-radius-s);
+  padding: 0.1em 0.45em;
+}
+
+/* Removing a step is destructive, but it is not an error, and a permanently
+   red button in a list of eight steps makes the panel read as eight
+   problems. Red arrives on intent (hover/focus), which is the same rule the
+   rest of the theme follows: the error hue marks something wrong, not
+   something available. */
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .longform-remove-step-button,
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .options-button {
+  font-size: var(--b16-font-ui-s);
+  color: var(--b16-text-faint);
+  background: transparent;
+  border: none;
+  border-radius: var(--b16-radius-s);
+  box-shadow: none;
+  padding: 0.2em 0.5em;
+  width: auto;
+}
+
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER']
+  .longform-remove-step-button:hover {
+  color: var(--b16-status-error);
+  background-color: var(--b16-surface-2);
+}
+
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .options-button:hover {
+  color: var(--b16-text-normal);
+  background-color: var(--b16-surface-2);
+}
+
+/* The workflow description's autosizing <pre>/<textarea> pair: the <pre> is
+   the hidden sizer, so both must agree exactly or the box jumps. */
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .longform-compile-container pre {
+  font-size: var(--b16-font-ui-m);
+  color: var(--b16-text-muted);
+  padding: 0.35em 0.6em;
 }

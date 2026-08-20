@@ -70,6 +70,17 @@
   --b16-radius-s: 4px;
   --b16-radius-m: 7px;
 
+  /* One label size for every block's title bar — a callout's type label, a
+     code block's language band, a table's header row. They stack in the
+     same document and reading at three different sizes made them look like
+     three unrelated systems rather than one. */
+  --b16-label-size: 0.85em;
+
+  /* One table cell padding, consumed by both modes — reading mode puts it on
+     the cell, live preview on the .table-cell-wrapper inside it, because
+     app.css zeroes the cell there. See src/21-tables.css. */
+  --b16-table-cell-padding: 0.45em 0.7em;
+
   /* UI chrome size ramp — one scale for every "smaller than body" UI text
      size (modals, menus, panel headers, plugin chrome), replacing a scatter
      of unrelated ad-hoc multipliers (0.8 in modals, 0.72 in the context
@@ -78,6 +89,21 @@
   --b16-font-ui-l: calc(var(--font-text-size) * 0.85);
   --b16-font-ui-m: calc(var(--font-text-size) * 0.78);
   --b16-font-ui-s: calc(var(--font-text-size) * 0.72);
+
+  /* Obsidian's own UI ramp is absolute pixels (12/13/15px) fixed against a
+     16px assumption, so it does not move when the reader raises the text
+     size. At a 20px reading size that leaves every surface the theme does
+     not name explicitly — sidebar panels, Bases tables, the graph, the
+     footer panes, plugin chrome — stranded two-thirds the size of prose and
+     genuinely hard to read. Rebasing the native variables on the ramp above
+     fixes all of them at the input rather than chasing each panel with its
+     own font-size override. Kept strictly below --font-text-size: chrome
+     must still read as chrome. */
+  --font-ui-smallest: calc(var(--font-text-size) * 0.68);
+  --font-ui-smaller: var(--b16-font-ui-s);
+  --font-ui-small: var(--b16-font-ui-m);
+  --font-ui-medium: var(--b16-font-ui-l);
+  --font-ui-larger: var(--font-text-size);
 
   /* Obsidian ships a 1.10 step, which leaves h1 and h6 nearly the same size. */
   --h1-size: 1.75em;

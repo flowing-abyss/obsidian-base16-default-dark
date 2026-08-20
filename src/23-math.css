@@ -15,7 +15,16 @@
   background: transparent;
   padding: 12px 0;
   margin: 16px 0;
+  /* A formula wider than the column has to scroll, so overflow-x is auto.
+     But CSS forces the other axis: when one axis is not `visible`, a
+     `visible` value on the other computes to `auto`. MathJax containers
+     routinely exceed their own box by a sub-pixel (fraction bars,
+     superscripts), so that inherited `auto` put a vertical scrollbar beside
+     every display formula that fit perfectly well. The 12px block padding
+     above is already more than any such overshoot, so pinning the vertical
+     axis clips nothing. */
   overflow-x: auto;
+  overflow-y: hidden;
 }
 
 /* MathJax container inside math block */

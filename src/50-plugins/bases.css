@@ -47,6 +47,24 @@
   font-size: var(--b16-font-ui-l);
 }
 
+/* Bases' own inputs. Two of these ship values that only work against
+   Obsidian's default sizing and default surfaces, and both were visible
+   defects in this vault:
+
+   --bases-group-heading-property-size resolved to 0.72 of the reading size
+   (14.4px against 20px prose), which is the theme's UI *floor* — a size
+   meant for a status bar, not for the heading that names a group of rows.
+
+   --bases-table-group-background resolved to --background-primary, i.e. the
+   page itself, so a group heading row had no surface at all and the bands
+   it is supposed to separate ran together. Surface-2 rather than surface-1:
+   the group row sits inside a table that already uses surface-1 for its own
+   fills, so it needs the next step up to read as a divider above them. */
+.theme-dark {
+  --bases-group-heading-property-size: var(--b16-font-ui-l);
+  --bases-table-group-background: var(--b16-surface-2);
+}
+
 /* BASES BOARD */
 .board-board-wrapper {
   padding: 12px;

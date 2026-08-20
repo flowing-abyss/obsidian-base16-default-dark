@@ -8,20 +8,49 @@
    must not be. Redirecting them keeps live preview in sync with the rule
    below instead of fighting it. */
 .theme-dark {
-  --blockquote-background-color: var(--b16-surface-2);
+  --blockquote-background-color: var(--b16-surface-1);
   --blockquote-border-color: var(--b16-border-strong);
   --blockquote-style: normal;
 }
 
 /* A quotation is another voice, not disabled text. Full contrast, upright, and
-   a neutral rail: hue stays reserved for callouts, where it encodes a type. */
-.theme-dark .markdown-rendered blockquote,
+   a neutral rail: hue stays reserved for callouts, where it encodes a type.
+   Surface-1 is the theme's single "inset block" fill, shared with callouts
+   and the inline-code chip; what separates a quote from a callout is that
+   its rail and title carry no hue. */
+.theme-dark .markdown-rendered blockquote {
+  color: var(--b16-text-normal);
+  background-color: var(--b16-surface-1);
+  border-left: 3px solid var(--b16-border-strong);
+  border-radius: 0;
+  padding: 0.9em 1.1em;
+  font-style: normal;
+  opacity: 1;
+}
+
+/* Live preview has no blockquote element at all: CodeMirror renders every
+   quoted line as its own .cm-line.HyperMD-quote sibling. Block padding and
+   a border radius therefore repeat once per line — the radius stacking into
+   a visible sawtooth down the right edge, the padding pushing consecutive
+   lines apart — which is exactly what the previous shared rule produced.
+   Only inline padding composes correctly across sibling line boxes, so that
+   is all this rule sets at full strength; the square corners are the same
+   ones the rest of the theme uses, so dropping the radius costs nothing.
+
+   The small block padding that remains is deliberate and behaves
+   differently from the inline kind: sibling line boxes stack with no margin
+   between them, so their padded backgrounds stay contiguous — no gap
+   appears, the quoted lines simply sit a few pixels further apart, and the
+   block as a whole gains that breathing room at its top and bottom edge.
+   0.25em is the largest value where the added interior leading still reads
+   as line spacing rather than as separation. */
 .theme-dark .HyperMD-quote {
   color: var(--b16-text-normal);
-  background-color: var(--b16-surface-2);
+  background-color: var(--b16-surface-1);
   border-left: 3px solid var(--b16-border-strong);
-  border-radius: 0 var(--b16-radius-m) var(--b16-radius-m) 0;
-  padding: 0.7em 1em;
+  border-radius: 0;
+  padding-block: 0.25em;
+  padding-inline: 1.1em;
   font-style: normal;
   opacity: 1;
 }

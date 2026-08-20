@@ -5,40 +5,60 @@
    colour as any other paragraph, so bold and italic compose normally here
    too, same as everywhere else. No override needed. */
 
-/* Callouts — one shell shared by every type. Colour finally means type here;
-   that is what freeing the hues elsewhere in this theme was for. Obsidian's
-   own callout rules already read `--callout-color` for the icon fill
-   (`.callout-icon .svg-icon`) and for `.callout-title`'s default colour, so
-   the type table below only needs to set that one input per type — setting
-   the input beats overriding each output. The title is then pulled back to
-   a neutral strong colour, because in this system only the rail and the
-   icon carry the type's hue; the label reads the same weight as any other
-   heading. */
+/* Callouts — one shell shared by every type, "classic" model: the type's
+   hue lives on the rail and on a tinted title band, and the body carries no
+   fill at all.
+
+   The body is deliberately transparent rather than a surface step. A filled
+   body is what made the previous shell pull harder than the prose it
+   annotates: it put a second background under text that already sits on the
+   page, so a link, an inline-code chip or a highlight inside a callout had
+   to work against two competing fills at once and read as muddy. With the
+   body on the page itself, everything inside a callout looks exactly like
+   it does outside one, and the block is bounded by the rail and the band —
+   the only two parts that actually carry meaning.
+
+   Obsidian's own callout rules already read `--callout-color` for the icon
+   fill and for `.callout-title`, so the type table below only needs to set
+   that one input per type — setting the input beats overriding each
+   output. */
 .theme-dark .callout {
-  background-color: var(--b16-surface-2);
-  border: 1px solid var(--b16-border-normal);
+  background-color: transparent;
+  border: none;
   border-left: 3px solid var(--callout-color);
-  border-radius: var(--b16-radius-m);
+  border-radius: 0;
   mix-blend-mode: normal;
-  padding: 4px 12px;
-  margin: 8px 0;
+  padding: 0;
+  margin: 1em 0;
   overflow: hidden;
 }
 
+/* The title band is the only tinted surface. color-mix against the type's
+   own hue rather than a fixed grey, so the band and the rail are visibly
+   the same colour at two strengths; 12% is the point where the band still
+   reads as tinted on base00 without the label losing contrast against it. */
 .theme-dark .callout-title {
-  padding: 4px 10px;
-  margin: 0;
   display: flex;
   align-items: center;
   gap: 0.5em;
-  background: transparent;
-  color: var(--b16-text-strong);
+  margin: 0;
+  padding: 0.4em 0.9em;
+  background-color: color-mix(in srgb, var(--callout-color) 12%, transparent);
+  color: var(--callout-color);
+  font-size: var(--b16-label-size);
   font-weight: 700 !important;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-.theme-dark .callout-icon {
+/* Obsidian paints the icon from `--callout-color` already, but several
+   builds route it through `rgb(var(--callout-color))`, which is invalid
+   against the full colour values this theme assigns. Setting `color` on the
+   icon directly makes the rail, the label and the glyph agree in every
+   build rather than in some of them. */
+.theme-dark .callout-icon,
+.theme-dark .callout-icon .svg-icon {
+  color: var(--callout-color);
   display: flex;
   align-items: center;
   flex-shrink: 0;
@@ -46,9 +66,20 @@
 
 .theme-dark .callout-content {
   margin: 0;
-  padding: 0 10px;
+  padding: 0.7em 0.9em;
   background: transparent;
   border: none;
+}
+
+/* The band and the body each own their padding, so the paragraphs inside
+   must not add their own on top of it — otherwise the first line sits too
+   far from the label and the block reads as loosely packed. */
+.theme-dark .callout-content > :first-child {
+  margin-top: 0;
+}
+
+.theme-dark .callout-content > :last-child {
+  margin-bottom: 0;
 }
 
 /* Type → colour table. The palette is closed to seven hues plus the
