@@ -641,6 +641,25 @@
   color: var(--b16-accent-tag);
 }
 
+/* Italic tag and struck-through tag: the same tie as the bold case above,
+   just against the italic and strikethrough rules instead of bold. Reading
+   mode already gets this right for free — `<em><a class="tag">` and `<del><a
+   class="tag">` both put the tag rule's direct match on the `<a>` ahead of
+   whatever colour `em`/`del` would otherwise inherit down — so only live
+   preview's flattened `.cm-em.cm-hashtag` / `.cm-strikethrough.cm-hashtag`
+   nodes need the override, to stop source order from deciding.
+   Strikethrough could plausibly dominate here the way it dominates bold's
+   colour above (a state overriding emphasis), but a tag isn't emphasis, it's
+   a content kind — the same reasoning that makes bold yield to it above —
+   and the chip background stays cyan regardless, so a faded tag glyph on a
+   cyan chip would itself be a second, conflicting colour code. Keeping the
+   tag cyan through strikethrough (matching reading mode, which already does
+   this unprompted) avoids introducing that new inconsistency instead of
+   trading one mode-divergence for another. */
+.theme-dark :is(.cm-em.cm-hashtag, .cm-strikethrough.cm-hashtag) {
+  color: var(--b16-accent-tag);
+}
+
 /* Highlight. Two separate fixes, both required: Obsidian's own CM6 rule
    (.cm-s-obsidian span.cm-highlight) reads --text-highlight-bg directly, so
    01-tokens.css points that var at --b16-highlight-bg to fix the background;
