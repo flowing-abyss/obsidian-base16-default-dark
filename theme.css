@@ -1332,7 +1332,81 @@ ul > li::marker,
   padding: 12px;
 }
 
-/* Syntax highlighting for code blocks */
+/* base16 specifies its syntax colours against base00. On base01 the red drops
+   from 3.12 to 2.59 and comments from 2.50 to 2.07, so a block that actually
+   has tokens takes base00 for its body and is separated by the frame instead.
+   base01 goes to the header band, which is what base16 reserves it for.
+
+   Reading mode expresses the full two-surface split below. Live preview
+   cannot: CodeMirror renders every line as a sibling .cm-line, so there is no
+   selector for "the lines between this begin line and its end line" — a `~`
+   general-sibling selector matches every later `.HyperMD-codeblock` line in
+   the document too, not just the ones belonging to the current block, which
+   would recolour every subsequent code block once one earlier block matched.
+   (Confirmed empirically: an earlier draft of this rule used `~` here and it
+   leaked exactly that way.) Live preview therefore applies the distinction
+   only where it is genuinely expressible — on the begin line itself, with no
+   combinator — and every code BODY (the unconditional .HyperMD-codeblock
+   rule above) stays on --b16-surface-0 regardless of language, since live
+   preview does highlight syntax and the tokens need base00 under them. A
+   languageless block will consequently read darker in live preview than in
+   reading mode (its body has no header band to sit under, but still shares
+   base00 with every other body); that is an accepted, deliberate gap, not a
+   bug. */
+.theme-dark .markdown-rendered pre[class^='language-'] {
+  background-color: var(--b16-surface-0);
+  border: 1px solid var(--b16-border-normal);
+  border-radius: var(--b16-radius-m);
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock {
+  background-color: var(--b16-surface-0);
+}
+
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin:not(:has(.code-block-flair > svg)) {
+  background-color: var(--b16-surface-2);
+}
+
+.theme-dark .code-block-flair {
+  color: var(--b16-text-muted);
+  font-size: 0.75em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* A fenced block with no language has no grammar and therefore no tokens:
+   there is no contrast to protect. Semantically it is verbatim text rather
+   than code, so it takes the ordinary block surface, like a quote or a
+   callout — not the darker, framed treatment reserved for blocks that
+   actually carry highlighted tokens. */
+.theme-dark .markdown-rendered pre:not([class]) {
+  background-color: var(--b16-surface-2);
+  border: 1px solid var(--b16-border-normal);
+  border-radius: var(--b16-radius-m);
+}
+
+/* Live preview's begin line for a languageless block takes the same block
+   surface as reading mode's whole block — which happens to be the same
+   value the header band above uses (both are base01), so a languageless
+   block's begin line is visually identical to a language-tagged one's; the
+   label text (present vs. copy-button-only) is what actually communicates
+   the difference. The body stays on --b16-surface-0 via the unconditional
+   rule above, same as every other block — see the comment above for why. */
+.theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin:has(.code-block-flair > svg) {
+  background-color: var(--b16-surface-2);
+}
+
+/* Syntax highlighting for code blocks. `pre[class*='language-']` here used to
+   quietly win the background for every language-tagged block over the fill
+   rules above it in this cascade (equal specificity, later source), which is
+   why reading-mode code blocks used to be held together only by their
+   border. The two-surface rules above now select on `[class^=...]` inside
+   `.markdown-rendered`, which is strictly more specific, so they win instead
+   and this transparent declaration on `pre` is inert there — kept anyway
+   because code[class*='language-'] (the inner element, not this pre) still
+   needs it, to stop it painting its own background over the pre's fill. */
 .theme-dark code[class*='language-'],
 .theme-dark pre[class*='language-'] {
   color: var(--code-normal);
