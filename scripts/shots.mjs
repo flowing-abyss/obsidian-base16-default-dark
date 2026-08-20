@@ -238,7 +238,18 @@ const TEARDOWN = `(async()=>{
 // (still exit code 0), which fails the "=> " match below and is surfaced as a
 // loud error rather than silently treated as success.
 function parseEvalOutput(raw) {
-  const trimmed = raw.trimEnd();
+  // The Obsidian CLI's renderer occasionally interleaves its own console
+  // warnings (e.g. "[warn] Backlink `dom` is undefined. Initializing default
+  // properties.") ahead of eval's "=> <value>" line, on stdout, with exit
+  // code 0. Strip only lines that look like that specific kind of noise -
+  // `[<level>] ...` - before looking for the return line, so a real missing
+  // return (the snippet threw and printed "Error: ..." instead, or produced
+  // no output at all) still fails loudly.
+  const kept = raw
+    .split("\n")
+    .filter((line) => !/^\[\w+\]\s/.test(line))
+    .join("\n");
+  const trimmed = kept.trimEnd();
   const m = trimmed.match(/^=>\s*([\s\S]*)$/);
   if (!m) {
     throw new Error(`obsidian eval did not return a value:\n${raw}`);
