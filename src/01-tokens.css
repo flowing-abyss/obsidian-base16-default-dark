@@ -77,6 +77,13 @@
   --h4-size: 1em;
   --h5-size: 0.92em;
   --h6-size: 0.92em;
+  /* h5/h6 are sans by design (labels, not prose) — set the input Obsidian
+     already reads (--h5-font/--h6-font) instead of overriding the computed
+     font-family on the heading rule itself. .theme-dark (0,1,0) also has to
+     beat the Local Fonts plugin's own "html body" (0,0,2) rule, which sets
+     every --hN-font to the heading (serif) role uniformly. */
+  --h5-font: var(--font-interface-theme, var(--font-text));
+  --h6-font: var(--font-interface-theme, var(--font-text));
   --line-height-normal: 1.62;
   --p-spacing: 0.85em;
   --font-weight: 450;
@@ -223,7 +230,4 @@
 
   /* Misc */
   --list-indent: 1.6em;
-
-  /* Font weights */
-  --font-weight-normal: 450;
 }

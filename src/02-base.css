@@ -3,9 +3,16 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.theme-dark,
-.theme-dark * {
-  font-weight: var(--font-weight-normal) !important;
+/* Obsidian's own reading/editing surfaces do not consume --font-weight
+   anywhere, so without an explicit rule body text falls back to the
+   browser default (400) instead of the token's 450. Set it on the two
+   body-text containers rather than reaching for `.theme-dark *` again —
+   headings carry their own font-weight on a selector that includes the
+   element name (e.g. `.cm-header-1`, `h1`), which is higher specificity
+   than either rule here, so they are unaffected. */
+.markdown-preview-view,
+.markdown-source-view.mod-cm6 .cm-content {
+  font-weight: var(--font-weight);
 }
 
 .is-mobile.theme-dark {

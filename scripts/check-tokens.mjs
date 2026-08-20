@@ -7,7 +7,7 @@ const FORBIDDEN = [
   "#cc6666", "#b294bb", "#de935f", "#969896",
 ];
 const COLOUR_FILES = new Set(["00-palette.css", "01-tokens.css"]);
-const IMPORTANT_BASELINE = 111;
+const IMPORTANT_BASELINE = 102;
 
 // Matches #hex literals and rgb()/rgba()/hsl()/hsla() function literals.
 // Outside the colour-definition files, every colour must come from a
