@@ -40,11 +40,28 @@
     transition: translate 2s linear 0s;
   }
 }
-/* font */
-.view-content .bases-header,
-.view-content .bases-view {
+/* Sizing. A Bases view is content, not chrome: its rows are note titles and
+   property values, the same material a table in a note holds, and it is
+   read the same way. So the rows take the reading size and only the
+   surrounding controls — the toolbar, the view tabs, the column header —
+   step down. Previously the whole view sat at 0.85 of the reading size,
+   which made a pinned Bases panel read smaller than the prose beside it
+   for no reason the reader could infer.
+
+   The header row takes the shared label size, the same one a callout's type
+   label and a code block's language band use. */
+.view-content .bases-header {
   font-family: var(--font-interface-theme);
   font-size: var(--b16-font-ui-l);
+}
+
+.view-content .bases-view {
+  font-family: var(--font-interface-theme);
+  font-size: var(--font-text-size);
+}
+
+.view-content .bases-view :is(.bases-thead, .bases-th) {
+  font-size: var(--b16-label-size);
 }
 
 /* Bases' own inputs. Two of these ship values that only work against

@@ -1,3 +1,25 @@
+/* CALENDAR PLUGIN (obsidian-calendar-plugin)
+
+   Its header row lays the month title, the quarter list and the "today"
+   control out as one non-wrapping flex line sized in em. Raising the UI
+   ramp so the sidebar became readable pushed that row past the pane's
+   width — measured 349px of content in a 324px container — and the
+   resulting horizontal scrollbar reads as a stray border under the
+   calendar while its track eats a band of the pane. That band is the "empty
+   space" that appeared below the calendar.
+
+   The row wraps instead of overflowing, and takes the UI ramp so its parts
+   stay in proportion to the rest of the sidebar. */
+.workspace-leaf-content[data-type='calendar'] .nav {
+  flex-wrap: wrap;
+  row-gap: 0.3em;
+  font-size: var(--b16-font-ui-m);
+}
+
+.workspace-leaf-content[data-type='calendar'] .view-content {
+  overflow-x: hidden;
+}
+
 /* CALENDAR BASES */
 .bases-calendar-container .fc-scrollgrid {
   border: 1px solid var(--background-modifier-border);
