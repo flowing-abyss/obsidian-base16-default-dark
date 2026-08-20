@@ -66,8 +66,10 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
   color: var(--link-color);
 }
 
+/* Match affordance, not a content kind — see 40-chrome.css's search rules
+   for the same reasoning: no kind hue for a transient "you searched this". */
 .suggestion-highlight.suggestion-highlight {
-  border-bottom: 2px solid var(--color-red);
+  border-bottom: 2px solid var(--b16-border-strong);
   color: var(--text-normal);
 }
 

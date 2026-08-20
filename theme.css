@@ -563,8 +563,13 @@
   color: var(--link-color-hover);
 }
 
-/* Tags */
-.theme-dark .tag {
+/* Tags. `.cm-hashtag` is live preview's flattened equivalent of `.tag` —
+   without it here a bolded tag (`.cm-strong.cm-hashtag`) had no live-preview
+   colour rule of its own, lost to app.css at ≤ (0,2,0), and read as plain
+   bold white instead of cyan: different from reading mode, and exactly the
+   "two colour codes read as damage" case this file's bold/strikethrough
+   rules exist to avoid. */
+.theme-dark :is(.tag, .cm-hashtag) {
   color: var(--b16-accent-tag);
   background-color: var(--b16-tag-bg);
 }
@@ -621,6 +626,17 @@
 .theme-dark :is(del strong, s strong, .cm-strikethrough.cm-strong) {
   color: var(--b16-text-faint);
   font-weight: 700;
+}
+
+/* Bold tag: reading mode nests <strong><a class="tag">, so the tag rule
+   above already applies straight to the <a> and needs no help. Live preview
+   flattens both into one .cm-strong.cm-hashtag element, where the tag rule
+   and the bold rule above tie on specificity — same mechanism as the
+   struck-through case above, only here the tag's hue must win, not lose,
+   because a tag is a content kind (colour says "not prose") and bold is
+   only weight, not a competing kind. */
+.theme-dark .cm-strong.cm-hashtag {
+  color: var(--b16-accent-tag);
 }
 
 /* Highlight. Two separate fixes, both required: Obsidian's own CM6 rule
@@ -1465,15 +1481,16 @@ ul > li::marker,
   color: var(--code-property);
 }
 
-/* Inline code */
-.theme-dark .markdown-preview-view :not(pre) > code,
-.theme-dark .cm-s-obsidian .cm-inline-code,
-.theme-dark .HyperMD-codeblock {
-  color: var(--inline-code-color);
-  background-color: var(--code-background);
-  padding: 2px 4px;
-  border-radius: 2px;
-}
+/* Inline code chip: owned by 11-text.css (:35), alongside the theme's other
+   inline marks — tags, bold, links — and built from the token layer
+   (--b16-radius-s, --b16-surface-2) rather than hardcoded pixels. This rule
+   used to duplicate and outrank that one on specificity in both reading
+   mode and live preview (tie broken by source order in reading mode,
+   outright in live preview via the extra .cm-s-obsidian class), so nothing
+   11-text.css declared for inline code ever took effect. Removed here
+   rather than there so there is exactly one owner. `.HyperMD-codeblock`
+   in this same selector was independently dead: color/background/padding
+   were already lost to other rules elsewhere in this file and in app.css. */
 
 /* Code inside code blocks should have transparent background */
 .theme-dark .markdown-preview-view pre code,
@@ -1835,23 +1852,26 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
   padding: 0;
 }
 
-/* search */
+/* search: a match is a transient affordance ("you are looking for this
+   right now"), not a content kind, so it must not spend a kind hue (red,
+   blue) — that belongs to error/danger/deletion and links respectively.
+   A neutral border token marks the match without claiming either meaning. */
 .search-result-file-matched-text {
   background-color: transparent;
-  border-bottom: 2px solid var(--color-red);
+  border-bottom: 2px solid var(--b16-border-strong);
   color: var(--text-normal);
 }
 .is-flashing {
-  border-bottom: 2px solid var(--color-red);
+  border-bottom: 2px solid var(--b16-border-strong);
   color: var(--text-normal);
   background-color: var(--b16-highlight-bg) !important;
 }
 .tree-item-self.search-result-file-title {
-  border-left: 3px solid var(--color-red);
+  border-left: 3px solid var(--b16-border-strong);
   font-size: 0.9rem;
 }
 .search-result-file-matches {
-  border-left: 1px solid var(--color-blue);
+  border-left: 1px solid var(--b16-border-strong);
   margin-left: 8px;
   font-size: 0.8rem;
 }
@@ -2393,8 +2413,10 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
   color: var(--link-color);
 }
 
+/* Match affordance, not a content kind — see 40-chrome.css's search rules
+   for the same reasoning: no kind hue for a transient "you searched this". */
 .suggestion-highlight.suggestion-highlight {
-  border-bottom: 2px solid var(--color-red);
+  border-bottom: 2px solid var(--b16-border-strong);
   color: var(--text-normal);
 }
 
@@ -2610,8 +2632,10 @@ body .another-quick-switcher__status__count-input {
   top: 1rem;
 }
 
+/* Match affordance, not a content kind — see 40-chrome.css's search rules
+   for the same reasoning: no kind hue for a transient "you searched this". */
 .another-quick-switcher__hit_word {
-  border-bottom: 2px solid var(--color-red);
+  border-bottom: 2px solid var(--b16-border-strong);
   color: var(--text-normal);
 }
 

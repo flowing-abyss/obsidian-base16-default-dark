@@ -66,8 +66,10 @@ body .another-quick-switcher__status__count-input {
   top: 1rem;
 }
 
+/* Match affordance, not a content kind — see 40-chrome.css's search rules
+   for the same reasoning: no kind hue for a transient "you searched this". */
 .another-quick-switcher__hit_word {
-  border-bottom: 2px solid var(--color-red);
+  border-bottom: 2px solid var(--b16-border-strong);
   color: var(--text-normal);
 }
 

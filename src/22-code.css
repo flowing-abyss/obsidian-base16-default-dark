@@ -158,15 +158,16 @@
   color: var(--code-property);
 }
 
-/* Inline code */
-.theme-dark .markdown-preview-view :not(pre) > code,
-.theme-dark .cm-s-obsidian .cm-inline-code,
-.theme-dark .HyperMD-codeblock {
-  color: var(--inline-code-color);
-  background-color: var(--code-background);
-  padding: 2px 4px;
-  border-radius: 2px;
-}
+/* Inline code chip: owned by 11-text.css (:35), alongside the theme's other
+   inline marks — tags, bold, links — and built from the token layer
+   (--b16-radius-s, --b16-surface-2) rather than hardcoded pixels. This rule
+   used to duplicate and outrank that one on specificity in both reading
+   mode and live preview (tie broken by source order in reading mode,
+   outright in live preview via the extra .cm-s-obsidian class), so nothing
+   11-text.css declared for inline code ever took effect. Removed here
+   rather than there so there is exactly one owner. `.HyperMD-codeblock`
+   in this same selector was independently dead: color/background/padding
+   were already lost to other rules elsewhere in this file and in app.css. */
 
 /* Code inside code blocks should have transparent background */
 .theme-dark .markdown-preview-view pre code,

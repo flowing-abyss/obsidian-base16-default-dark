@@ -25,8 +25,13 @@
   color: var(--link-color-hover);
 }
 
-/* Tags */
-.theme-dark .tag {
+/* Tags. `.cm-hashtag` is live preview's flattened equivalent of `.tag` —
+   without it here a bolded tag (`.cm-strong.cm-hashtag`) had no live-preview
+   colour rule of its own, lost to app.css at ≤ (0,2,0), and read as plain
+   bold white instead of cyan: different from reading mode, and exactly the
+   "two colour codes read as damage" case this file's bold/strikethrough
+   rules exist to avoid. */
+.theme-dark :is(.tag, .cm-hashtag) {
   color: var(--b16-accent-tag);
   background-color: var(--b16-tag-bg);
 }
@@ -83,6 +88,17 @@
 .theme-dark :is(del strong, s strong, .cm-strikethrough.cm-strong) {
   color: var(--b16-text-faint);
   font-weight: 700;
+}
+
+/* Bold tag: reading mode nests <strong><a class="tag">, so the tag rule
+   above already applies straight to the <a> and needs no help. Live preview
+   flattens both into one .cm-strong.cm-hashtag element, where the tag rule
+   and the bold rule above tie on specificity — same mechanism as the
+   struck-through case above, only here the tag's hue must win, not lose,
+   because a tag is a content kind (colour says "not prose") and bold is
+   only weight, not a competing kind. */
+.theme-dark .cm-strong.cm-hashtag {
+  color: var(--b16-accent-tag);
 }
 
 /* Highlight. Two separate fixes, both required: Obsidian's own CM6 rule

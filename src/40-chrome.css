@@ -140,23 +140,26 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
   padding: 0;
 }
 
-/* search */
+/* search: a match is a transient affordance ("you are looking for this
+   right now"), not a content kind, so it must not spend a kind hue (red,
+   blue) — that belongs to error/danger/deletion and links respectively.
+   A neutral border token marks the match without claiming either meaning. */
 .search-result-file-matched-text {
   background-color: transparent;
-  border-bottom: 2px solid var(--color-red);
+  border-bottom: 2px solid var(--b16-border-strong);
   color: var(--text-normal);
 }
 .is-flashing {
-  border-bottom: 2px solid var(--color-red);
+  border-bottom: 2px solid var(--b16-border-strong);
   color: var(--text-normal);
   background-color: var(--b16-highlight-bg) !important;
 }
 .tree-item-self.search-result-file-title {
-  border-left: 3px solid var(--color-red);
+  border-left: 3px solid var(--b16-border-strong);
   font-size: 0.9rem;
 }
 .search-result-file-matches {
-  border-left: 1px solid var(--color-blue);
+  border-left: 1px solid var(--b16-border-strong);
   margin-left: 8px;
   font-size: 0.8rem;
 }
