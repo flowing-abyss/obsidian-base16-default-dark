@@ -214,9 +214,11 @@
   --link-unresolved-color: var(--b16-text-faint);
 
   /* Text formatting */
-  --bold-color: var(--b16-status-error);
-  --italic-color: var(--b16-status-ok);
   --inline-code-color: var(--b16-accent-code);
+  /* Obsidian's own CM6 rule (.cm-s-obsidian span.cm-highlight) reads this
+     var directly; setting it here means the live-preview highlight
+     background is correct even before 11-text.css's own rule applies. */
+  --text-highlight-bg: var(--b16-highlight-bg);
 
   /* Tags — dedicated cyan, not borrowed from links. */
   --tag-color: var(--b16-accent-tag);
@@ -522,13 +524,12 @@ h6,
 /* ===== 11-text.css ===== */
 
 /* Links */
-.theme-dark .internal-link,
-.theme-dark .cm-hmd-internal-link {
-  color: var(--link-internal-color);
+.theme-dark :is(.internal-link, .cm-hmd-internal-link) {
+  color: var(--b16-accent-link);
 }
 
 .theme-dark .cm-hmd-embed.cm-hmd-internal-link {
-  color: var(--link-internal-color);
+  color: var(--b16-accent-link);
   font-family: var(--font-text);
 }
 
@@ -536,9 +537,17 @@ h6,
   color: var(--link-internal-hover);
 }
 
-.theme-dark .external-link,
-.theme-dark a.external-link {
-  color: var(--link-external-color);
+/* An unresolved link is not a working link in a duller grey: the dashed rule
+   says "this target does not exist" without needing to be read. */
+.theme-dark .internal-link.is-unresolved {
+  color: var(--b16-text-faint);
+  text-decoration: underline dashed;
+  text-decoration-color: var(--b16-text-faint);
+  text-underline-offset: 0.2em;
+}
+
+.theme-dark :is(.external-link, a.external-link) {
+  color: var(--b16-accent-link-ext);
 }
 
 .theme-dark a,
@@ -552,23 +561,57 @@ h6,
 
 /* Tags */
 .theme-dark .tag {
-  color: var(--tag-color);
-  background-color: var(--tag-background);
+  color: var(--b16-accent-tag);
+  background-color: var(--b16-tag-bg);
 }
 
-/* Bold */
-.theme-dark strong,
-.theme-dark .cm-strong {
-  color: var(--bold-color);
-  font-weight: 700 !important;
+/* Inline code */
+.theme-dark :is(.markdown-rendered :not(pre) > code, .cm-inline-code) {
+  color: var(--b16-accent-code);
+  background-color: var(--b16-surface-2);
+  border-radius: var(--b16-radius-s);
+  padding: 0.1em 0.3em;
+}
+
+/* Bold: weight and lightness carry the signal, not colour. */
+.theme-dark :is(strong, .cm-strong) {
+  color: var(--b16-text-strong);
+  font-weight: 700;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Italic */
-.theme-dark em,
-.theme-dark .cm-em {
-  color: var(--italic-color);
+/* Italic: slant carries the signal; colour is muted, not accented. */
+.theme-dark :is(em, .cm-em) {
+  color: var(--b16-text-muted);
   font-style: italic;
+  font-weight: inherit;
+}
+
+/* Bold and italic now compose: weight comes from one, slant from the other and
+   lightness from the stronger of the two. Colour-coded markup could not do this
+   — whichever rule won took the other's signal with it. */
+.theme-dark :is(strong em, em strong, .cm-strong.cm-em) {
+  color: var(--b16-text-strong);
+  font-weight: 700;
+  font-style: italic;
+}
+
+/* Strikethrough: a line through the text, not under it. */
+.theme-dark :is(del, s, .cm-strikethrough) {
+  color: var(--b16-text-faint);
+  text-decoration: line-through;
+  text-decoration-color: var(--b16-text-faint);
+}
+
+/* Highlight. `span.cm-highlight` (not just `.cm-highlight`) matches the
+   specificity of Obsidian's own `.cm-s-obsidian span.cm-highlight` rule so
+   this one wins on source order instead of losing color to --text-normal. */
+.theme-dark :is(mark, span.cm-highlight) {
+  color: var(--b16-text-strong);
+  background-color: var(--b16-highlight-bg);
+  border: none;
+  border-radius: var(--b16-radius-s);
+  padding: 0.05em 0.2em;
 }
 
 /* Horizontal rules */
@@ -593,14 +636,46 @@ body:not(.classic-inline-backlinks) .embedded-backlinks .tree-item-inner {
   padding-right: 0;
 }
 
-/* highlight */
-.cm-highlight,
-mark {
-  background: var(--b16-highlight-bg) !important;
-  border: 1px solid var(--b16-highlight-bg) !important;
-  border-radius: 3px;
-  padding: 0.05em 0.25em;
-  color: var(--font-color);
+/* Micro-syntax: another-dynamic-highlights plugin classes, coloured a notch
+   quieter than the accents so numbers and punctuation stay texture for
+   scanning prose, never a competing signal. Its own rules use !important,
+   so these must too; the plugin config itself is left alone.
+   `:not(.token)` excludes Prism's own `.token.punctuation` inside code
+   blocks (22-code.css) — same class name, unrelated system, must not
+   inherit the prose micro-syntax colour. */
+.theme-dark :is(.punctuation, .exclamation):not(.token) {
+  color: var(--b16-micro-punct) !important;
+}
+.theme-dark .digits:not(.token) {
+  color: var(--b16-micro-digit) !important;
+}
+
+/* Where an element already carries a semantic colour, micro-syntax stands down:
+   two colour codes on one element read as damage, not as information. Reading
+   mode and live preview use different class names for the same elements
+   (e.g. .internal-link vs .cm-hmd-internal-link), so both must be listed or
+   the stand-down silently breaks in whichever mode is missing its class. */
+.theme-dark
+  :is(
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .cm-header,
+    .inline-title,
+    .callout-title,
+    a,
+    .internal-link,
+    .external-link,
+    .cm-hmd-internal-link,
+    .cm-link,
+    strong,
+    .cm-strong
+  )
+  :is(.digits, .punctuation, .exclamation) {
+  color: inherit !important;
 }
 
 /* ===== 12-lists.css ===== */
@@ -820,17 +895,12 @@ ul > li::marker,
 
 /* ===== 20-callouts.css ===== */
 
-/* Bold inside callouts - neutral color */
-.theme-dark .callout strong {
-  color: inherit;
-  font-weight: bold !important;
-}
-
-/* Italic inside callouts - neutral color */
-.theme-dark .callout em {
-  color: inherit;
-  font-style: italic;
-}
+/* Bold and italic inside callouts used to be forced to `inherit` because the
+   old red/green emphasis colours clashed with the callout's own accent. Now
+   that emphasis is lightness-coded (11-text.css) rather than colour-coded,
+   there is nothing to clash with — callout body text uses the same default
+   colour as any other paragraph, so bold and italic compose normally here
+   too, same as everywhere else. No override needed. */
 
 /* Callouts */
 .theme-dark .callout {

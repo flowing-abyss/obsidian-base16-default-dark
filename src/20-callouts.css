@@ -1,14 +1,9 @@
-/* Bold inside callouts - neutral color */
-.theme-dark .callout strong {
-  color: inherit;
-  font-weight: bold !important;
-}
-
-/* Italic inside callouts - neutral color */
-.theme-dark .callout em {
-  color: inherit;
-  font-style: italic;
-}
+/* Bold and italic inside callouts used to be forced to `inherit` because the
+   old red/green emphasis colours clashed with the callout's own accent. Now
+   that emphasis is lightness-coded (11-text.css) rather than colour-coded,
+   there is nothing to clash with — callout body text uses the same default
+   colour as any other paragraph, so bold and italic compose normally here
+   too, same as everywhere else. No override needed. */
 
 /* Callouts */
 .theme-dark .callout {

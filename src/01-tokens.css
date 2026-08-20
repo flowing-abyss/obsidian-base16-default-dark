@@ -172,9 +172,11 @@
   --link-unresolved-color: var(--b16-text-faint);
 
   /* Text formatting */
-  --bold-color: var(--b16-status-error);
-  --italic-color: var(--b16-status-ok);
   --inline-code-color: var(--b16-accent-code);
+  /* Obsidian's own CM6 rule (.cm-s-obsidian span.cm-highlight) reads this
+     var directly; setting it here means the live-preview highlight
+     background is correct even before 11-text.css's own rule applies. */
+  --text-highlight-bg: var(--b16-highlight-bg);
 
   /* Tags — dedicated cyan, not borrowed from links. */
   --tag-color: var(--b16-accent-tag);
