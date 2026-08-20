@@ -1491,15 +1491,25 @@ ul > li::marker,
   font-variant-numeric: tabular-nums;
 }
 
-/* Live preview does not put the padding on the cell. Its table is a widget:
-   app.css zeroes `th, td { padding: 0 }` at (0,3,1) — which the rule above
-   cannot reach — and pads an inner .table-cell-wrapper with a fixed
-   `4px 8px` instead. The two modes therefore rendered the same table at two
-   different sizes, tight while editing and roomy while reading. Feeding the
-   wrapper the same token restores one table. It stays in px-equivalent em
-   here for the same reason the rest of the theme does: the cell has to
-   breathe in proportion to the text inside it, not to a 16px assumption. */
-.theme-dark .markdown-source-view.mod-cm6 .cm-table-widget .table-cell-wrapper {
+/* Neither mode puts the padding on the cell. Both wrap a cell's content in a
+   .table-cell-wrapper and zero `th, td { padding: 0 }` from a selector the
+   rule above cannot outrank (measured: computed cell padding is 0px in
+   reading mode and in live preview alike), so the declaration above is
+   inert on padding and survives only for the borders it also sets. The
+   wrapper is where the padding actually lands, in both modes.
+
+   Each mode needs its own selector rather than one shared `.table-cell-wrapper`:
+   app.css addresses live preview's wrapper at (0,4,0), so a (0,2,0) rule loses
+   to it and the editor silently falls back to Obsidian's fixed `4px 8px`
+   (measured). Both selectors below match or beat the native rule in their own
+   mode.
+
+   em rather than px so a cell breathes in proportion to the text inside it:
+   a header cell carries the label size and a body cell the reading size, so
+   the same token yields a tighter header and a roomier row without a second
+   value. */
+.theme-dark .markdown-source-view.mod-cm6 .cm-table-widget .table-cell-wrapper,
+.theme-dark .markdown-preview-view .table-cell-wrapper {
   padding: var(--b16-table-cell-padding);
 }
 
