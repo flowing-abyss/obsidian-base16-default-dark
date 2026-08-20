@@ -2090,9 +2090,18 @@ ul > li::marker,
    it paints nothing; the connector passing under a glyph is a far smaller
    cost than a wrong-coloured box on every label. */
 .theme-dark .mermaid .edgeLabel :is(rect, .labelBkg),
-.theme-dark .mermaid .edgeLabel foreignObject > div {
+.theme-dark .mermaid .edgeLabel :is(foreignObject > div, span, p) {
   fill: none !important;
   background-color: transparent !important;
+}
+
+/* The label's text lives in a <p> inside the foreignObject, and Mermaid
+   colours that <p> from its own id-scoped rule — so the colour set on the
+   .edgeLabel ancestor never reached it and the glyphs stayed at Mermaid's
+   near-black default, invisible on this theme's surfaces. Named here
+   explicitly rather than relying on inheritance. */
+.theme-dark .mermaid .edgeLabel :is(span, p) {
+  color: var(--b16-text-muted) !important;
 }
 
 /* ===== 30-editor.css ===== */

@@ -13,8 +13,14 @@ const COLOUR_FILES = new Set(["00-palette.css", "01-tokens.css"]);
 // Specificity compares ID count before class count, which means no author
 // selector without an important flag can override them at any length. The
 // twelve flags in that file are the whole of the increase; the ratchet is
-// otherwise unchanged and still refuses a thirteenth.
-const IMPORTANT_BASELINE = 107;
+// otherwise unchanged.
+//
+// Raised again 107 -> 108 for one more flag in the same file: Mermaid colours
+// an edge label's <p> from its own id-scoped rule, so the colour set on the
+// .edgeLabel ancestor never reaches the glyphs and the text renders at
+// Mermaid's near-black default. Same root cause as the other twelve — an ID
+// in the selector, which no author rule can outrank without a flag.
+const IMPORTANT_BASELINE = 108;
 
 // Matches #hex literals and rgb()/rgba()/hsl()/hsla() function literals.
 // Outside the colour-definition files, every colour must come from a
