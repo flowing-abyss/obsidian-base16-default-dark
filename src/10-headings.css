@@ -12,6 +12,10 @@
   --h4-weight: 700;
   --h5-weight: 650;
   --h6-weight: 650;
+  /* Inline title is the document's name, not a section heading — it gets
+     its own weight input rather than inheriting from --h1-weight through
+     Obsidian's --inline-title-weight -> --h1-weight fallback chain. */
+  --inline-title-weight: 700;
 }
 
 /* Headings */
@@ -165,9 +169,13 @@ h6,
 .inline-title {
   /* font-family intentionally unset: --inline-title-font already resolves
      to Serif via the Local Fonts plugin / theme heading font setting. */
+  /* font-weight intentionally unset: --inline-title-weight (700, set above)
+     already resolves here via Obsidian's own
+     .inline-title:not([data-level]) rule, which outranks a plain
+     .inline-title rule on specificity. Do not "restore" a literal
+     font-weight here — that would silently detach this from the token. */
   color: var(--b16-text-strong);
   font-size: 2em;
-  font-weight: 700;
   line-height: 1.2;
 }
 
