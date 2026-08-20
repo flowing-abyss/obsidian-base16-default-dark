@@ -8,10 +8,10 @@
   margin: 0 !important;
 }
 
-/* Display math (block formulas) */
+/* Display math (block formulas) — a formula is already its own figure, with
+   boundaries of its own; a border around it would be a box around a box. */
 .theme-dark .math.math-block {
   border: none;
-  border-left: 2px solid var(--b16-border-normal);
   background: transparent;
   padding: 12px 0;
   margin: 16px 0;

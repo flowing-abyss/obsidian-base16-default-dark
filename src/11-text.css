@@ -104,6 +104,7 @@
 /* Horizontal rules */
 .theme-dark hr {
   border-color: var(--b16-border-normal);
+  margin-block: 2em;
 }
 
 /* remove underline from internal links */

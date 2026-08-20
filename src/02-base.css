@@ -24,3 +24,25 @@
 .theme-dark ::selection {
   background-color: var(--text-selection);
 }
+
+/* Footnotes — a reference is a wayfinding mark, not content: small, in the
+   link accent so it reads as navigable. The back-reference arrow is quieter
+   still, because you only look for it once you are already down there. */
+.theme-dark .footnote-ref a {
+  color: var(--b16-accent-link);
+  font-size: 0.75em;
+}
+
+.theme-dark .footnote-backref {
+  color: var(--b16-text-faint);
+}
+
+/* Live preview never turns [^1] into reading mode's <sup class="footnote-
+   ref"><a>: CM6 keeps the raw syntax as span.cm-footref.cm-hmd-barelink
+   (colour var(--text-muted) by Obsidian's own rule) for the digit, and a
+   separate .cm-formatting span for the [^ / ] brackets, which stays faint
+   on its own and is deliberately left alone here. Only the digit gets the
+   same link-accent treatment as the reading-mode reference. */
+.theme-dark span.cm-footref.cm-hmd-barelink:not(.cm-formatting) {
+  color: var(--b16-accent-link);
+}

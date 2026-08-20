@@ -29,9 +29,12 @@
   width: 100% !important;
 }
 
-/* image border */
-.markdown-source-view.mod-cm6 .internal-embed > img,
-.markdown-preview-view .internal-embed > img {
+/* Image border. Descendant, not child, combinator: reading mode nests the
+   <img> directly under .internal-embed, but live preview (CM6) wraps it in
+   an extra .image-wrapper div first — the `>` combinator this used to have
+   matched reading mode only and silently did nothing in live preview. */
+.markdown-source-view.mod-cm6 .internal-embed img,
+.markdown-preview-view .internal-embed img {
   border: 1px solid var(--b16-border-strong);
-  border-radius: 2px;
+  border-radius: var(--b16-radius-s);
 }

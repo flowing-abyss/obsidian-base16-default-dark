@@ -322,6 +322,28 @@
   background-color: var(--text-selection);
 }
 
+/* Footnotes — a reference is a wayfinding mark, not content: small, in the
+   link accent so it reads as navigable. The back-reference arrow is quieter
+   still, because you only look for it once you are already down there. */
+.theme-dark .footnote-ref a {
+  color: var(--b16-accent-link);
+  font-size: 0.75em;
+}
+
+.theme-dark .footnote-backref {
+  color: var(--b16-text-faint);
+}
+
+/* Live preview never turns [^1] into reading mode's <sup class="footnote-
+   ref"><a>: CM6 keeps the raw syntax as span.cm-footref.cm-hmd-barelink
+   (colour var(--text-muted) by Obsidian's own rule) for the digit, and a
+   separate .cm-formatting span for the [^ / ] brackets, which stays faint
+   on its own and is deliberately left alone here. Only the digit gets the
+   same link-accent treatment as the reading-mode reference. */
+.theme-dark span.cm-footref.cm-hmd-barelink:not(.cm-formatting) {
+  color: var(--b16-accent-link);
+}
+
 /* ===== 10-headings.css ===== */
 
 /* Heading weight: set Obsidian's own --hN-weight variables rather than
@@ -629,6 +651,7 @@ h6,
 /* Horizontal rules */
 .theme-dark hr {
   border-color: var(--b16-border-normal);
+  margin-block: 2em;
 }
 
 /* remove underline from internal links */
@@ -1225,37 +1248,68 @@ ul > li::marker,
   margin-right: auto;
 }
 
-/* Tables - Terminal Grid Style */
-.theme-dark .markdown-preview-view table,
+/* Frame: a rounded rectangle around the whole table, not a per-cell grid.
+   `border-collapse: separate` + `border-spacing: 0` is what makes the outer
+   radius possible — with `collapse` the border box ignores border-radius. */
 .theme-dark .markdown-rendered table {
-  border-collapse: collapse;
-  border: 1px solid var(--b16-border-strong);
-  background: transparent;
-}
-
-.theme-dark .markdown-preview-view th,
-.theme-dark .markdown-rendered th {
-  background: transparent;
   border: 1px solid var(--b16-border-normal);
-  border-bottom: 2px solid var(--b16-border-strong);
-  padding: 6px 12px;
-  text-align: left;
-  font-weight: 700 !important;
-  text-transform: uppercase;
-  font-size: 0.8em;
-  letter-spacing: 0.08em;
+  border-radius: var(--b16-radius-m);
+  border-collapse: separate;
+  border-spacing: 0;
+  /* `separate` does not clip children to the radius on its own — without
+     this the header row's surface-2 fill squares off the top corners. */
+  overflow: hidden;
 }
 
-.theme-dark .markdown-preview-view td,
-.theme-dark .markdown-rendered td {
-  border: 1px solid var(--b16-border-faint);
-  padding: 6px 12px;
-  background: transparent;
+.theme-dark .markdown-rendered thead {
+  color: var(--b16-text-strong);
+  background-color: var(--b16-surface-2);
+  font-weight: 600;
 }
 
-.theme-dark .markdown-preview-view tr,
-.theme-dark .markdown-rendered tr {
-  background: transparent;
+/* Obsidian's own `.markdown-rendered th, .markdown-rendered td` rule ships a
+   4-sided `border: var(--table-border-width) solid var(--table-border-color)`
+   shorthand. Reset every side to 0 first so only the row/column rules below
+   (which target one side each) draw an edge — otherwise the native top and
+   inline-start sides would keep leaking through at --table-border-color
+   (mapped to --b16-border-normal via --background-modifier-border), doubling
+   up against both the frame and the column rule's own faint colour. */
+.theme-dark .markdown-rendered :is(th, td) {
+  border: 0;
+  border-bottom: 1px solid var(--b16-border-normal);
+  padding: 0.5em 0.7em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Column rules are deliberately fainter than row rules: they guide the eye
+   along a row, they are not there to draw a grid. */
+.theme-dark .markdown-rendered :is(th, td):not(:last-child) {
+  border-inline-end: 1px solid var(--b16-border-faint);
+}
+
+/* Otherwise it doubles up with the frame's own bottom edge. */
+.theme-dark .markdown-rendered tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.theme-dark .markdown-rendered tbody tr:hover {
+  background-color: var(--b16-surface-2);
+}
+
+/* A table inside a callout sits on an already-surface-2 ambient (see
+   20-callouts.css), so the header fill and the hover fill above would be
+   the same colour as their surroundings and vanish. One more surface step
+   keeps both readable without touching the frame or the row/column rules,
+   whose alpha-based border colours already scale correctly with whatever
+   surface they land on. The callout is the descendant of .markdown-rendered
+   here, not the other way round, so it alone is enough to select on; this
+   ties the specificity of the two rules above and wins on source order. */
+.theme-dark .callout thead {
+  background-color: var(--b16-surface-3);
+}
+
+.theme-dark .callout tbody tr:hover {
+  background-color: var(--b16-surface-3);
 }
 
 /* ===== 22-code.css ===== */
@@ -1464,10 +1518,10 @@ ul > li::marker,
   margin: 0 !important;
 }
 
-/* Display math (block formulas) */
+/* Display math (block formulas) — a formula is already its own figure, with
+   boundaries of its own; a border around it would be a box around a box. */
 .theme-dark .math.math-block {
   border: none;
-  border-left: 2px solid var(--b16-border-normal);
   background: transparent;
   padding: 12px 0;
   margin: 16px 0;
@@ -1532,11 +1586,14 @@ ul > li::marker,
   width: 100% !important;
 }
 
-/* image border */
-.markdown-source-view.mod-cm6 .internal-embed > img,
-.markdown-preview-view .internal-embed > img {
+/* Image border. Descendant, not child, combinator: reading mode nests the
+   <img> directly under .internal-embed, but live preview (CM6) wraps it in
+   an extra .image-wrapper div first — the `>` combinator this used to have
+   matched reading mode only and silently did nothing in live preview. */
+.markdown-source-view.mod-cm6 .internal-embed img,
+.markdown-preview-view .internal-embed img {
   border: 1px solid var(--b16-border-strong);
-  border-radius: 2px;
+  border-radius: var(--b16-radius-s);
 }
 
 /* ===== 30-editor.css ===== */
