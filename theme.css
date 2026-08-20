@@ -537,15 +537,6 @@ h6,
   color: var(--link-internal-hover);
 }
 
-/* An unresolved link is not a working link in a duller grey: the dashed rule
-   says "this target does not exist" without needing to be read. */
-.theme-dark .internal-link.is-unresolved {
-  color: var(--b16-text-faint);
-  text-decoration: underline dashed;
-  text-decoration-color: var(--b16-text-faint);
-  text-underline-offset: 0.2em;
-}
-
 .theme-dark :is(.external-link, a.external-link) {
   color: var(--b16-accent-link-ext);
 }
@@ -603,9 +594,30 @@ h6,
   text-decoration-color: var(--b16-text-faint);
 }
 
-/* Highlight. `span.cm-highlight` (not just `.cm-highlight`) matches the
-   specificity of Obsidian's own `.cm-s-obsidian span.cm-highlight` rule so
-   this one wins on source order instead of losing color to --text-normal. */
+/* Struck-through bold: strikethrough is not emphasis, it is a state — the
+   text no longer applies — and a state dominates emphasis, because
+   emphasising something that has been deleted is not a live signal. So the
+   bold keeps its weight (structure survives) but yields its colour to the
+   faint strikethrough colour, not the other way round.
+   Reading mode nests <strong> inside <del>; without this rule strong's own
+   colour rule above would override the inherited faint colour, since it
+   targets the <strong> element directly rather than inheriting. Live preview
+   merges both into one .cm-strikethrough.cm-strong element, where the two
+   individual rules above tie on specificity and only source order would
+   decide — this rule outranks both instead of leaving it to chance. */
+.theme-dark :is(del strong, s strong, .cm-strikethrough.cm-strong) {
+  color: var(--b16-text-faint);
+  font-weight: 700;
+}
+
+/* Highlight. Two separate fixes, both required: Obsidian's own CM6 rule
+   (.cm-s-obsidian span.cm-highlight) reads --text-highlight-bg directly, so
+   01-tokens.css points that var at --b16-highlight-bg to fix the background;
+   that same built-in rule also sets color: var(--text-normal) at a
+   specificity `.theme-dark .cm-highlight` alone cannot beat, so `span.cm-
+   highlight` (not just `.cm-highlight`) matches its specificity here to win
+   the text colour on source order. Removing either half regresses one of
+   the two live-preview properties. */
 .theme-dark :is(mark, span.cm-highlight) {
   color: var(--b16-text-strong);
   background-color: var(--b16-highlight-bg);
@@ -628,6 +640,20 @@ body:not(.classic-inline-backlinks) .embedded-backlinks .tree-item-inner {
   text-decoration: none;
 }
 
+/* An unresolved link is not a working link in a duller grey: the dashed rule
+   says "this target does not exist" without needing to be read. Placed after
+   the underline-removal block above: that block's
+   `.markdown-preview-view .internal-link:not(...)` selector ties this rule's
+   specificity exactly (0,3,0), so source order is what decides in reading
+   mode — this has to come later or the reset silently wins and the dashes
+   never show where they matter most. */
+.theme-dark .internal-link.is-unresolved {
+  color: var(--b16-text-faint);
+  text-decoration: underline dashed;
+  text-decoration-color: var(--b16-text-faint);
+  text-underline-offset: 0.2em;
+}
+
 .cm-formatting.cm-formatting-link-string.cm-string.cm-url.external-link {
   display: none;
 }
@@ -642,7 +668,9 @@ body:not(.classic-inline-backlinks) .embedded-backlinks .tree-item-inner {
    so these must too; the plugin config itself is left alone.
    `:not(.token)` excludes Prism's own `.token.punctuation` inside code
    blocks (22-code.css) — same class name, unrelated system, must not
-   inherit the prose micro-syntax colour. */
+   inherit the prose micro-syntax colour. That guard only covers reading
+   mode's Prism tokens; live-preview code has no `.token` class at all, so
+   the ancestor stand-down rule below carries the equivalent fix for CodeMirror. */
 .theme-dark :is(.punctuation, .exclamation):not(.token) {
   color: var(--b16-micro-punct) !important;
 }
@@ -654,7 +682,16 @@ body:not(.classic-inline-backlinks) .embedded-backlinks .tree-item-inner {
    two colour codes on one element read as damage, not as information. Reading
    mode and live preview use different class names for the same elements
    (e.g. .internal-link vs .cm-hmd-internal-link), so both must be listed or
-   the stand-down silently breaks in whichever mode is missing its class. */
+   the stand-down silently breaks in whichever mode is missing its class.
+   Tags (.tag / .cm-hashtag) are included explicitly rather than relying on
+   the bare `a` reading-mode rule to catch `a.tag` by accident — without it
+   a tag's `#` sigil is micro-punct while the word is accent-tag, a two-tone
+   object in live preview. Code (.HyperMD-codeblock, .cm-inline-code, code,
+   pre) is included for the same reason as the Prism `:not(.token)` guard
+   above: syntax highlighting is already a complete colour system, and
+   micro-syntax painting a digit or punctuation mark orange/cyan inside it
+   is the doubled-meaning problem this rule exists to prevent, just via
+   CodeMirror instead of Prism. */
 .theme-dark
   :is(
     h1,
@@ -672,7 +709,13 @@ body:not(.classic-inline-backlinks) .embedded-backlinks .tree-item-inner {
     .cm-hmd-internal-link,
     .cm-link,
     strong,
-    .cm-strong
+    .cm-strong,
+    .tag,
+    .cm-hashtag,
+    code,
+    pre,
+    .cm-inline-code,
+    .HyperMD-codeblock
   )
   :is(.digits, .punctuation, .exclamation) {
   color: inherit !important;
