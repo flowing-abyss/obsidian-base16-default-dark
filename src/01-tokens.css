@@ -87,6 +87,23 @@
   --line-height-normal: 1.62;
   --p-spacing: 0.85em;
   --font-weight: 450;
+  /* Obsidian's own app.css sets a handful of chrome surfaces to explicit
+     font-weight vars, each defaulting to 400 on <body>. An explicit
+     declaration — even a non-important one — wins over an inherited value
+     regardless of selector specificity, so the plain-inheritance chrome fix
+     in 40-chrome.css does not reach these on its own; they need their own
+     input set, same move as --font-weight itself.
+     --file-header-font-weight: tab titles (.view-header-title-container)
+     and the settings modal's title bar.
+     --input-font-weight: button, select/dropdown, and .text-icon-button
+     label text — every button and dropdown in Settings, modals, toolbars.
+     --tab-stacked-font-weight / --slider-value-font-weight: same pattern,
+     lower-visibility surfaces (stacked-tabs mode, a settings slider's live
+     value readout) included for completeness. */
+  --file-header-font-weight: var(--font-weight);
+  --input-font-weight: var(--font-weight);
+  --tab-stacked-font-weight: var(--font-weight);
+  --slider-value-font-weight: var(--font-weight);
 }
 
 .theme-dark {

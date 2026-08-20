@@ -129,6 +129,23 @@
   --line-height-normal: 1.62;
   --p-spacing: 0.85em;
   --font-weight: 450;
+  /* Obsidian's own app.css sets a handful of chrome surfaces to explicit
+     font-weight vars, each defaulting to 400 on <body>. An explicit
+     declaration — even a non-important one — wins over an inherited value
+     regardless of selector specificity, so the plain-inheritance chrome fix
+     in 40-chrome.css does not reach these on its own; they need their own
+     input set, same move as --font-weight itself.
+     --file-header-font-weight: tab titles (.view-header-title-container)
+     and the settings modal's title bar.
+     --input-font-weight: button, select/dropdown, and .text-icon-button
+     label text — every button and dropdown in Settings, modals, toolbars.
+     --tab-stacked-font-weight / --slider-value-font-weight: same pattern,
+     lower-visibility surfaces (stacked-tabs mode, a settings slider's live
+     value readout) included for completeness. */
+  --file-header-font-weight: var(--font-weight);
+  --input-font-weight: var(--font-weight);
+  --tab-stacked-font-weight: var(--font-weight);
+  --slider-value-font-weight: var(--font-weight);
 }
 
 .theme-dark {
@@ -307,14 +324,18 @@
 
 /* Heading weight: set Obsidian's own --hN-weight variables rather than
    fighting the theme with !important, same move the token layer already
-   made for heading sizes. */
+   made for heading sizes. These values must stay reconciled with the literal
+   font-weight below in the h1–h4 / h5–h6 rules: those rules win on source
+   order (equal specificity, later wins), so a mismatch here is invisible
+   until the literal is removed. Do not "restore" a literal font-weight on
+   the heading rules — that would silently re-detach this block again. */
 .theme-dark {
-  --h1-weight: 650;
-  --h2-weight: 650;
-  --h3-weight: 600;
-  --h4-weight: 600;
-  --h5-weight: 600;
-  --h6-weight: 600;
+  --h1-weight: 700;
+  --h2-weight: 700;
+  --h3-weight: 700;
+  --h4-weight: 700;
+  --h5-weight: 650;
+  --h6-weight: 650;
 }
 
 /* Headings */
@@ -417,7 +438,8 @@ h6,
      (populated by the Local Fonts plugin, or the theme's heading font
      setting) already resolve to Serif and must not be overridden here. */
   color: var(--b16-text-strong);
-  font-weight: 700;
+  /* font-weight intentionally unset: --h1-weight … --h4-weight (700, set
+     above) already resolve here — see the reconciliation note above. */
   line-height: 1.22;
   letter-spacing: -0.012em;
   text-wrap: balance;
@@ -430,7 +452,8 @@ h6,
   /* font-family intentionally unset here too: --h5-font/--h6-font are set to
      the interface (sans) font in the token layer, keeping the same
      "set the input, not the result" mechanism as h1–h4. */
-  font-weight: 650;
+  /* font-weight intentionally unset: --h5-weight / --h6-weight (650, set
+     above) already resolve here — see the reconciliation note above. */
   line-height: 1.3;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -1403,6 +1426,25 @@ body:has(.metadata-menu)
 }
 
 /* ===== 40-chrome.css ===== */
+
+/* Chrome text weight: removing the old `.theme-dark, .theme-dark * { font-weight:
+   var(--font-weight-normal) !important }` hammer (see 02-base.css) dropped every
+   chrome surface — sidebar tree items, tab titles, status bar, ribbon icons,
+   menus, tooltips, view headers, command palette / quick switcher / search
+   suggestions, plugin panes — to the browser default of 400. IBM Plex has no
+   variable weight axis, so 400 vs. 450 is not a subpixel nuance: 450 resolves
+   to the 500 Medium static cut while 400 resolves to Regular, a full step
+   apart. Setting it once here, on the root chrome element with no `!important`
+   and no `*`, lets it inherit down to every chrome surface exactly as the
+   hammer did, while anything with its own explicit font-weight (headings,
+   bold text, table headers, …) still wins on ordinary cascade rules, because
+   an explicit declaration always beats an inherited value regardless of
+   selector specificity. This is a deliberate restoration of the pre-Task-7
+   chrome weight, not a decision that chrome should be this weight forever —
+   that decision belongs to Task 13. */
+body.theme-dark {
+  font-weight: var(--font-weight);
+}
 
 /* Context menu (right-click dropdown) */
 .theme-dark .menu-scroll * {

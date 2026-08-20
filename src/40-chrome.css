@@ -1,3 +1,22 @@
+/* Chrome text weight: removing the old `.theme-dark, .theme-dark * { font-weight:
+   var(--font-weight-normal) !important }` hammer (see 02-base.css) dropped every
+   chrome surface — sidebar tree items, tab titles, status bar, ribbon icons,
+   menus, tooltips, view headers, command palette / quick switcher / search
+   suggestions, plugin panes — to the browser default of 400. IBM Plex has no
+   variable weight axis, so 400 vs. 450 is not a subpixel nuance: 450 resolves
+   to the 500 Medium static cut while 400 resolves to Regular, a full step
+   apart. Setting it once here, on the root chrome element with no `!important`
+   and no `*`, lets it inherit down to every chrome surface exactly as the
+   hammer did, while anything with its own explicit font-weight (headings,
+   bold text, table headers, …) still wins on ordinary cascade rules, because
+   an explicit declaration always beats an inherited value regardless of
+   selector specificity. This is a deliberate restoration of the pre-Task-7
+   chrome weight, not a decision that chrome should be this weight forever —
+   that decision belongs to Task 13. */
+body.theme-dark {
+  font-weight: var(--font-weight);
+}
+
 /* Context menu (right-click dropdown) */
 .theme-dark .menu-scroll * {
   font-size: calc(var(--font-text-size) * 0.72);
