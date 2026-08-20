@@ -32,8 +32,10 @@
 }
 
 .markdown-preview-view .inline-title {
+  /* margin-bottom intentionally unset: :160-162 below sets it to 0
+     !important on this identical selector and always wins regardless of
+     source order, so a value here was dead weight. */
   margin-top: 38px;
-  margin-bottom: 32px;
 }
 
 .hover-popover .inline-title {
@@ -149,10 +151,10 @@
    itself, so the indicator falls back to Obsidian's own default gutter
    position, which already matches the heading's un-shifted left edge. */
 
-/* fix headings for tasks */
+/* A heading inside a callout keeps the callout's own surface — painting
+   --background-primary behind it drew a dark band, a box inside a box,
+   the same thing 23-math.css argues against for display formulas. */
 .callout :is(h1, h2, h3, h4, h5, h6) {
-  background-color: var(--background-primary);
-  border-radius: 5px;
   border: none;
   text-align: left;
 }

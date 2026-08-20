@@ -405,8 +405,10 @@
 }
 
 .markdown-preview-view .inline-title {
+  /* margin-bottom intentionally unset: :160-162 below sets it to 0
+     !important on this identical selector and always wins regardless of
+     source order, so a value here was dead weight. */
   margin-top: 38px;
-  margin-bottom: 32px;
 }
 
 .hover-popover .inline-title {
@@ -522,10 +524,10 @@
    itself, so the indicator falls back to Obsidian's own default gutter
    position, which already matches the heading's un-shifted left edge. */
 
-/* fix headings for tasks */
+/* A heading inside a callout keeps the callout's own surface — painting
+   --background-primary behind it drew a dark band, a box inside a box,
+   the same thing 23-math.css argues against for display formulas. */
 .callout :is(h1, h2, h3, h4, h5, h6) {
-  background-color: var(--background-primary);
-  border-radius: 5px;
   border: none;
   text-align: left;
 }
@@ -1778,7 +1780,7 @@ body.theme-dark {
   display: none;
 }
 .tree-item-self {
-  font-size: 0.75rem;
+  font-size: var(--b16-font-ui-m);
 }
 /* search */
 .workspace-leaf-content[data-type='outline'] .clickable-icon.nav-action-button:nth-child(1)::after {
@@ -1868,12 +1870,12 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
 }
 .tree-item-self.search-result-file-title {
   border-left: 3px solid var(--b16-border-strong);
-  font-size: 0.9rem;
+  font-size: var(--b16-font-ui-l);
 }
 .search-result-file-matches {
   border-left: 1px solid var(--b16-border-strong);
   margin-left: 8px;
-  font-size: 0.8rem;
+  font-size: var(--b16-font-ui-m);
 }
 /* hide close button */
 .search-input-clear-button {
@@ -1949,7 +1951,7 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
 .theme-dark .prompt .flair.mod-pop,
 .theme-dark .modal .flair.mod-pop,
 .theme-dark .modal .mv-picker-group-type {
-  font-size: 0.65em;
+  font-size: var(--b16-font-ui-s);
   display: inline-flex;
   align-items: center;
   vertical-align: middle;
@@ -2013,11 +2015,7 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
 }
 .theme-dark .prompt .hybrid-search-score,
 .theme-dark .prompt .hybrid-search-mode-badge {
-  font-size: 0.75em;
-}
-
-.float-search-modal {
-  min-height: 96%;
+  font-size: var(--b16-font-ui-m);
 }
 
 .float-search-modal-instructions {

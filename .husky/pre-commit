@@ -1,3 +1,22 @@
 npx lint-staged
+
+# `npm run check` rebuilds theme.css from the working tree, not from what is
+# staged for this commit. Without care, an unstaged src/ edit gets silently
+# baked into the committed theme.css by the unconditional `git add` below.
+# Stash anything not staged (keeping the index intact) so the build/check
+# below sees exactly the staged tree, then always restore it afterwards,
+# even if the check fails.
+STASH_REF_BEFORE=$(git rev-parse -q --verify refs/stash)
+git stash push --keep-index --include-untracked -q -m "pre-commit: build from index only"
+STASH_REF_AFTER=$(git rev-parse -q --verify refs/stash)
+
 npm run check
+STATUS=$?
+
 git add theme.css
+
+if [ "$STASH_REF_AFTER" != "$STASH_REF_BEFORE" ]; then
+  git stash pop -q
+fi
+
+exit $STATUS

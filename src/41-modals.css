@@ -21,7 +21,7 @@
 .theme-dark .prompt .flair.mod-pop,
 .theme-dark .modal .flair.mod-pop,
 .theme-dark .modal .mv-picker-group-type {
-  font-size: 0.65em;
+  font-size: var(--b16-font-ui-s);
   display: inline-flex;
   align-items: center;
   vertical-align: middle;
@@ -85,11 +85,7 @@
 }
 .theme-dark .prompt .hybrid-search-score,
 .theme-dark .prompt .hybrid-search-mode-badge {
-  font-size: 0.75em;
-}
-
-.float-search-modal {
-  min-height: 96%;
+  font-size: var(--b16-font-ui-m);
 }
 
 .float-search-modal-instructions {
