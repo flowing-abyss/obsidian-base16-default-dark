@@ -1,22 +1,39 @@
 npx lint-staged
 
-# `npm run check` rebuilds theme.css from the working tree, not from what is
-# staged for this commit. Without care, an unstaged src/ edit gets silently
-# baked into the committed theme.css by the unconditional `git add` below.
-# Stash anything not staged (keeping the index intact) so the build/check
-# below sees exactly the staged tree, then always restore it afterwards,
-# even if the check fails.
-STASH_REF_BEFORE=$(git rev-parse -q --verify refs/stash)
-git stash push --keep-index --include-untracked -q -m "pre-commit: build from index only"
-STASH_REF_AFTER=$(git rev-parse -q --verify refs/stash)
+# `npm run check` rebuilds theme.css by reading src/ off the working tree, not
+# off what's staged for this commit. If any src/ file's working-tree copy
+# differs from what's actually staged — a partial `git add -p` followed by
+# more (unstaged) edits to the same file, or a brand-new untracked file — the
+# build would bake content into theme.css that this commit does not actually
+# contain, and the unstaged edits would appear "committed" without ever being
+# staged.
+#
+# An earlier version of this hook tried to reconcile that by `git stash push
+# --keep-index`-ing the unstaged bits out of the way and popping them back
+# after the build. That reconciliation can itself conflict — `git stash pop`
+# has no safe fallback, so a conflict writes `<<<<<<<` markers straight into
+# the source file and aborts, leaving `UU` files and an orphaned stash. That
+# failure mode is worse than the hole it closed, and `git add -p` followed by
+# more editing is an everyday workflow, so it's reachable on a normal day.
+#
+# Refuse instead: if src/ isn't fully staged, stop and say so, rather than
+# trying to be clever about reconciling working tree and index.
+UNSTAGED_SRC=$(git diff --name-only -- src/)
+UNTRACKED_SRC=$(git status --porcelain -- src/ | grep '^??' || true)
+if [ -n "$UNSTAGED_SRC" ] || [ -n "$UNTRACKED_SRC" ]; then
+  echo "pre-commit: src/ has changes that are not staged for this commit:" >&2
+  [ -n "$UNSTAGED_SRC" ] && echo "$UNSTAGED_SRC" | sed 's/^/  modified (unstaged): /' >&2
+  [ -n "$UNTRACKED_SRC" ] && echo "$UNTRACKED_SRC" | sed 's/^?? /  untracked: /' >&2
+  echo "theme.css is built from the working tree, so it would not match what this commit actually contains." >&2
+  echo "Stage the rest of the change (git add), or stash the unstaged part yourself, then commit again." >&2
+  exit 1
+fi
 
 npm run check
 STATUS=$?
 
-git add theme.css
-
-if [ "$STASH_REF_AFTER" != "$STASH_REF_BEFORE" ]; then
-  git stash pop -q
+if [ "$STATUS" -eq 0 ]; then
+  git add theme.css
 fi
 
 exit $STATUS
