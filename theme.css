@@ -112,6 +112,15 @@
   --b16-radius-s: 4px;
   --b16-radius-m: 7px;
 
+  /* UI chrome size ramp — one scale for every "smaller than body" UI text
+     size (modals, menus, panel headers, plugin chrome), replacing a scatter
+     of unrelated ad-hoc multipliers (0.8 in modals, 0.72 in the context
+     menu, 1rem in Bases, 0.9rem in Claudian, plus more found during Task 13
+     recon) with three deliberate steps below --font-text-size. */
+  --b16-font-ui-l: calc(var(--font-text-size) * 0.85);
+  --b16-font-ui-m: calc(var(--font-text-size) * 0.78);
+  --b16-font-ui-s: calc(var(--font-text-size) * 0.72);
+
   /* Obsidian ships a 1.10 step, which leaves h1 and h6 nearly the same size. */
   --h1-size: 1.75em;
   --h2-size: 1.42em;
@@ -129,6 +138,21 @@
   --line-height-normal: 1.62;
   --p-spacing: 0.85em;
   --font-weight: 450;
+  /* Task 13 decision: chrome is one deliberate step lighter than body.
+     Body/headings keep --font-weight (450) untouched — this token is
+     consumed only by chrome surfaces (see 40-chrome.css and the four
+     Obsidian input vars below), never by anything inside the note.
+     Reasoning: --font-weight (450) and this token used to be the same
+     value, so with a static (non-variable-axis) UI face the two would
+     resolve to the *same* rendered weight — chrome and body indistinguishable,
+     which contradicts this rebuild's own principle (see 40-chrome.css) that
+     the note, not the chrome, is entitled to full visual weight. Measured
+     live (getComputedStyle, before this change): body 450, .tree-item-inner
+     450, .workspace-tab-header-inner-title 450, .status-bar 450, button 450
+     — chrome and body identical. After: chrome surfaces compute 400, body
+     stays 450 — a real, deliberate half-step down, not an accident like the
+     one Task 7/Ruling 24 reverted. */
+  --b16-chrome-weight: 400;
   /* Obsidian's own app.css sets a handful of chrome surfaces to explicit
      font-weight vars, each defaulting to 400 on <body>. An explicit
      declaration — even a non-important one — wins over an inherited value
@@ -141,11 +165,12 @@
      label text — every button and dropdown in Settings, modals, toolbars.
      --tab-stacked-font-weight / --slider-value-font-weight: same pattern,
      lower-visibility surfaces (stacked-tabs mode, a settings slider's live
-     value readout) included for completeness. */
-  --file-header-font-weight: var(--font-weight);
-  --input-font-weight: var(--font-weight);
-  --tab-stacked-font-weight: var(--font-weight);
-  --slider-value-font-weight: var(--font-weight);
+     value readout) included for completeness. All four now follow the
+     chrome weight, not the body weight — see --b16-chrome-weight above. */
+  --file-header-font-weight: var(--b16-chrome-weight);
+  --input-font-weight: var(--b16-chrome-weight);
+  --tab-stacked-font-weight: var(--b16-chrome-weight);
+  --slider-value-font-weight: var(--b16-chrome-weight);
 }
 
 .theme-dark {
@@ -1702,28 +1727,32 @@ body:has(.metadata-menu)
 
 /* ===== 40-chrome.css ===== */
 
-/* Chrome text weight: removing the old `.theme-dark, .theme-dark * { font-weight:
+/* Chrome text weight — Task 13 decision, made deliberately.
+   Removing the old `.theme-dark, .theme-dark * { font-weight:
    var(--font-weight-normal) !important }` hammer (see 02-base.css) dropped every
    chrome surface — sidebar tree items, tab titles, status bar, ribbon icons,
    menus, tooltips, view headers, command palette / quick switcher / search
-   suggestions, plugin panes — to the browser default of 400. IBM Plex has no
-   variable weight axis, so 400 vs. 450 is not a subpixel nuance: 450 resolves
-   to the 500 Medium static cut while 400 resolves to Regular, a full step
-   apart. Setting it once here, on the root chrome element with no `!important`
-   and no `*`, lets it inherit down to every chrome surface exactly as the
-   hammer did, while anything with its own explicit font-weight (headings,
-   bold text, table headers, …) still wins on ordinary cascade rules, because
-   an explicit declaration always beats an inherited value regardless of
-   selector specificity. This is a deliberate restoration of the pre-Task-7
-   chrome weight, not a decision that chrome should be this weight forever —
-   that decision belongs to Task 13. */
+   suggestions, plugin panes — to the browser default of 400. Task 7 restored
+   it to 450 (the pre-hammer value) on purpose, specifically so this task
+   could decide the weight deliberately rather than inherit an accident.
+
+   The decision: lighten chrome to 400, one deliberate step below body's 450.
+   The note is the only thing entitled to full contrast/weight; chrome sits a
+   step below so the eye returns to the centre rather than being pulled to
+   the edges (see the colour version of the same principle below). Keeping
+   chrome at 450 would leave it at the *same* weight as the note body — with
+   a static (non-variable-axis) UI face, 450 and 400 render as genuinely
+   different cuts, so 450-for-both was chrome not actually receding at all.
+   400 makes chrome recede for real, without touching a single token that
+   reaches inside the note (headings, body — --font-weight stays 450).
+   See --b16-chrome-weight in 01-tokens.css for the before/after measurement. */
 body.theme-dark {
-  font-weight: var(--font-weight);
+  font-weight: var(--b16-chrome-weight);
 }
 
 /* Context menu (right-click dropdown) */
 .theme-dark .menu-scroll * {
-  font-size: calc(var(--font-text-size) * 0.72);
+  font-size: var(--b16-font-ui-s);
 }
 
 /* Scrollbars */
@@ -1869,9 +1898,36 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
 }
 
 /* TABS */
-.workspace .mod-root .workspace-tab-header-inner-title {
-  color: var(--text-normal) !important;
+/* Step 3 (quieter chrome): the note is the only thing entitled to full
+   contrast; chrome sits a step below so the eye returns to the centre
+   instead of being pulled to the edges. This replaces a pre-existing
+   `.workspace .mod-root .workspace-tab-header-inner-title { color:
+   var(--text-normal) !important; }` rule that forced every open-document
+   tab title to full contrast regardless of active state, with !important —
+   which unconditionally beat the rule below and made the is-active
+   distinction a no-op for the main tab strip. Removed rather than kept
+   alongside, because keeping it would have silently exempted the main tab
+   area from the exact rule this step exists to add. Sidebar tabs
+   (Outline, Backlinks, …) were never covered by that legacy selector, so
+   this is not a net-new change there — only the main split's tab titles
+   change behaviour (now muted-by-default, normal-when-active, matching
+   every other tab strip and the sidebar tree). */
+.theme-dark
+  :is(
+    .nav-file-title,
+    .nav-folder-title,
+    .workspace-tab-header-inner-title,
+    .status-bar-item,
+    .tree-item-inner
+  ) {
+  color: var(--b16-text-muted);
+  font-size: var(--b16-font-ui-m);
 }
+
+.theme-dark .workspace-tab-header.is-active .workspace-tab-header-inner-title {
+  color: var(--b16-text-normal);
+}
+
 .theme-dark .workspace-tab-header.is-active {
   border-bottom-left-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
@@ -1897,7 +1953,7 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
 .theme-dark .modal *,
 .hybrid-search-preview,
 .hybrid-search-preview-meta-panel {
-  font-size: calc(var(--font-text-size) * 0.8);
+  font-size: var(--b16-font-ui-m);
 }
 
 /* .theme-dark .modal .mv-picker-group-type is foreign (Metadata Validator
@@ -2051,7 +2107,7 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
 .view-content .bases-header,
 .view-content .bases-view {
   font-family: var(--font-interface-theme);
-  font-size: 1rem;
+  font-size: var(--b16-font-ui-l);
 }
 
 /* BASES BOARD */
@@ -2514,7 +2570,7 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
 
 /* Claudian */
 .view-content.claudian-container {
-  font-size: 0.9rem !important;
+  font-size: var(--b16-font-ui-l) !important;
 }
 
 /* ===== 50-plugins/quick-switcher.css ===== */
@@ -2603,6 +2659,15 @@ body .another-quick-switcher__status__count-input {
 /* ===== 50-plugins/tasks.css ===== */
 
 /* TASKS */
+/* Task 13 fix: `--font-scale-000`/`--font-scale-00`/`--font-scale-0` are not
+   defined by this theme or by Obsidian — measured live via getComputedStyle,
+   all three resolve to the empty string. With no fallback, every
+   `font-size: var(--font-scale-*)` below was invalid at computed-value time,
+   so the element silently fell back to inherited size instead of the
+   smaller size these rules stated. Mapped onto the real ramp instead:
+   --font-scale-000 (badges, edit/postpone labels, backlink text) ->
+   --b16-font-ui-s (smallest step); --font-scale-00 (task-extras container,
+   one size up) -> --b16-font-ui-m. */
 .contains-task-list.plugin-tasks-query-result {
   padding: 1px;
 
@@ -2735,7 +2800,7 @@ body .another-quick-switcher__status__count-input {
       height: fit-content;
       padding: 2px 6px;
       line-height: 110%;
-      font-size: var(--font-scale-000);
+      font-size: var(--b16-font-ui-s);
       opacity: 0.85;
     }
   }
@@ -2753,7 +2818,7 @@ body .another-quick-switcher__status__count-input {
     justify-content: center;
     width: 100%;
     overflow: hidden;
-    font-size: var(--font-scale-00);
+    font-size: var(--b16-font-ui-m);
   }
 
   .tasks-backlink {
@@ -2768,7 +2833,7 @@ body .another-quick-switcher__status__count-input {
     a {
       margin-left: -6px;
       color: var(--link-color);
-      font-size: var(--font-scale-000);
+      font-size: var(--b16-font-ui-s);
     }
   }
 }
@@ -2819,7 +2884,7 @@ body .another-quick-switcher__status__count-input {
 
     &::before {
       content: 'EDIT';
-      font-size: var(--font-scale-000);
+      font-size: var(--b16-font-ui-s);
       color: var(--text-muted);
       margin-right: 4px;
     }
@@ -2836,7 +2901,7 @@ body .another-quick-switcher__status__count-input {
 
     &::before {
       content: 'POSTPONE';
-      font-size: var(--font-scale-000);
+      font-size: var(--b16-font-ui-s);
       color: var(--text-muted);
       margin-right: 4px;
     }

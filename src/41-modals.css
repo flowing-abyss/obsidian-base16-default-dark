@@ -11,7 +11,7 @@
 .theme-dark .modal *,
 .hybrid-search-preview,
 .hybrid-search-preview-meta-panel {
-  font-size: calc(var(--font-text-size) * 0.8);
+  font-size: var(--b16-font-ui-m);
 }
 
 /* .theme-dark .modal .mv-picker-group-type is foreign (Metadata Validator

@@ -1,4 +1,13 @@
 /* TASKS */
+/* Task 13 fix: `--font-scale-000`/`--font-scale-00`/`--font-scale-0` are not
+   defined by this theme or by Obsidian — measured live via getComputedStyle,
+   all three resolve to the empty string. With no fallback, every
+   `font-size: var(--font-scale-*)` below was invalid at computed-value time,
+   so the element silently fell back to inherited size instead of the
+   smaller size these rules stated. Mapped onto the real ramp instead:
+   --font-scale-000 (badges, edit/postpone labels, backlink text) ->
+   --b16-font-ui-s (smallest step); --font-scale-00 (task-extras container,
+   one size up) -> --b16-font-ui-m. */
 .contains-task-list.plugin-tasks-query-result {
   padding: 1px;
 
@@ -131,7 +140,7 @@
       height: fit-content;
       padding: 2px 6px;
       line-height: 110%;
-      font-size: var(--font-scale-000);
+      font-size: var(--b16-font-ui-s);
       opacity: 0.85;
     }
   }
@@ -149,7 +158,7 @@
     justify-content: center;
     width: 100%;
     overflow: hidden;
-    font-size: var(--font-scale-00);
+    font-size: var(--b16-font-ui-m);
   }
 
   .tasks-backlink {
@@ -164,7 +173,7 @@
     a {
       margin-left: -6px;
       color: var(--link-color);
-      font-size: var(--font-scale-000);
+      font-size: var(--b16-font-ui-s);
     }
   }
 }
@@ -215,7 +224,7 @@
 
     &::before {
       content: 'EDIT';
-      font-size: var(--font-scale-000);
+      font-size: var(--b16-font-ui-s);
       color: var(--text-muted);
       margin-right: 4px;
     }
@@ -232,7 +241,7 @@
 
     &::before {
       content: 'POSTPONE';
-      font-size: var(--font-scale-000);
+      font-size: var(--b16-font-ui-s);
       color: var(--text-muted);
       margin-right: 4px;
     }

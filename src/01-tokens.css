@@ -70,6 +70,15 @@
   --b16-radius-s: 4px;
   --b16-radius-m: 7px;
 
+  /* UI chrome size ramp — one scale for every "smaller than body" UI text
+     size (modals, menus, panel headers, plugin chrome), replacing a scatter
+     of unrelated ad-hoc multipliers (0.8 in modals, 0.72 in the context
+     menu, 1rem in Bases, 0.9rem in Claudian, plus more found during Task 13
+     recon) with three deliberate steps below --font-text-size. */
+  --b16-font-ui-l: calc(var(--font-text-size) * 0.85);
+  --b16-font-ui-m: calc(var(--font-text-size) * 0.78);
+  --b16-font-ui-s: calc(var(--font-text-size) * 0.72);
+
   /* Obsidian ships a 1.10 step, which leaves h1 and h6 nearly the same size. */
   --h1-size: 1.75em;
   --h2-size: 1.42em;
@@ -87,6 +96,21 @@
   --line-height-normal: 1.62;
   --p-spacing: 0.85em;
   --font-weight: 450;
+  /* Task 13 decision: chrome is one deliberate step lighter than body.
+     Body/headings keep --font-weight (450) untouched — this token is
+     consumed only by chrome surfaces (see 40-chrome.css and the four
+     Obsidian input vars below), never by anything inside the note.
+     Reasoning: --font-weight (450) and this token used to be the same
+     value, so with a static (non-variable-axis) UI face the two would
+     resolve to the *same* rendered weight — chrome and body indistinguishable,
+     which contradicts this rebuild's own principle (see 40-chrome.css) that
+     the note, not the chrome, is entitled to full visual weight. Measured
+     live (getComputedStyle, before this change): body 450, .tree-item-inner
+     450, .workspace-tab-header-inner-title 450, .status-bar 450, button 450
+     — chrome and body identical. After: chrome surfaces compute 400, body
+     stays 450 — a real, deliberate half-step down, not an accident like the
+     one Task 7/Ruling 24 reverted. */
+  --b16-chrome-weight: 400;
   /* Obsidian's own app.css sets a handful of chrome surfaces to explicit
      font-weight vars, each defaulting to 400 on <body>. An explicit
      declaration — even a non-important one — wins over an inherited value
@@ -99,11 +123,12 @@
      label text — every button and dropdown in Settings, modals, toolbars.
      --tab-stacked-font-weight / --slider-value-font-weight: same pattern,
      lower-visibility surfaces (stacked-tabs mode, a settings slider's live
-     value readout) included for completeness. */
-  --file-header-font-weight: var(--font-weight);
-  --input-font-weight: var(--font-weight);
-  --tab-stacked-font-weight: var(--font-weight);
-  --slider-value-font-weight: var(--font-weight);
+     value readout) included for completeness. All four now follow the
+     chrome weight, not the body weight — see --b16-chrome-weight above. */
+  --file-header-font-weight: var(--b16-chrome-weight);
+  --input-font-weight: var(--b16-chrome-weight);
+  --tab-stacked-font-weight: var(--b16-chrome-weight);
+  --slider-value-font-weight: var(--b16-chrome-weight);
 }
 
 .theme-dark {

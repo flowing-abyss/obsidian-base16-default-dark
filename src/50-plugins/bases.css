@@ -44,7 +44,7 @@
 .view-content .bases-header,
 .view-content .bases-view {
   font-family: var(--font-interface-theme);
-  font-size: 1rem;
+  font-size: var(--b16-font-ui-l);
 }
 
 /* BASES BOARD */

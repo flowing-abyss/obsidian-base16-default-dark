@@ -210,5 +210,5 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
 
 /* Claudian */
 .view-content.claudian-container {
-  font-size: 0.9rem !important;
+  font-size: var(--b16-font-ui-l) !important;
 }
