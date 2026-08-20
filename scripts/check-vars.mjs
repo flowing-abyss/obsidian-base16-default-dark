@@ -35,21 +35,29 @@ const declared = new Set();
 const references = []; // { name, file, line }
 
 const DECLARE_RE = /(--[a-zA-Z0-9-]+)\s*:/g;
-const VAR_REF_RE = /var\(\s*(--[a-zA-Z0-9-]+)/g;
+// Matched over the whole file text (not per line, see below) and
+// case-insensitively: `var(` is legal as `VAR(` per the CSS spec, and
+// prettier is free to wrap a long declaration so the `var(--name` pair no
+// longer shares a line — e.g.
+//   box-shadow: 0 0 0 1px
+//       var(
+//         --b16-border-strong-…
+//       );
+// A per-line regex misses that reference entirely, silently. Matching over
+// the full text (with comments already stripped above) survives the wrap.
+const VAR_REF_RE = /var\(\s*(--[\w-]+)/gi;
 
 for (const f of files) {
   const rel = relative(".", f);
   const raw = await readFile(f, "utf8");
   const bare = raw.replace(/\/\*[\s\S]*?\*\//g, "");
-  const lines = bare.split("\n");
 
   for (const m of bare.matchAll(DECLARE_RE)) declared.add(m[1]);
 
-  lines.forEach((line, i) => {
-    for (const m of line.matchAll(VAR_REF_RE)) {
-      references.push({ name: m[1], file: rel, line: i + 1 });
-    }
-  });
+  for (const m of bare.matchAll(VAR_REF_RE)) {
+    const line = bare.slice(0, m.index).split("\n").length;
+    references.push({ name: m[1], file: rel, line });
+  }
 }
 
 const known = new Set([...declared, ...OBSIDIAN_VARS]);
