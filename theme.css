@@ -1023,12 +1023,21 @@ ul > li::marker,
    colour as any other paragraph, so bold and italic compose normally here
    too, same as everywhere else. No override needed. */
 
-/* Callouts */
+/* Callouts — one shell shared by every type. Colour finally means type here;
+   that is what freeing the hues elsewhere in this theme was for. Obsidian's
+   own callout rules already read `--callout-color` for the icon fill
+   (`.callout-icon .svg-icon`) and for `.callout-title`'s default colour, so
+   the type table below only needs to set that one input per type — setting
+   the input beats overriding each output. The title is then pulled back to
+   a neutral strong colour, because in this system only the rail and the
+   icon carry the type's hue; the label reads the same weight as any other
+   heading. */
 .theme-dark .callout {
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
+  background-color: var(--b16-surface-2);
+  border: 1px solid var(--b16-border-normal);
+  border-left: 3px solid var(--callout-color);
+  border-radius: var(--b16-radius-m);
+  mix-blend-mode: normal;
   padding: 4px 12px;
   margin: 8px 0;
   overflow: hidden;
@@ -1056,201 +1065,137 @@ ul > li::marker,
 .theme-dark .callout-content {
   margin: 0;
   padding: 0 10px;
-  background-color: var(--background-primary);
+  background: transparent;
   border: none;
 }
 
-/* Callout type icons with subtle colors */
-.theme-dark .callout[data-callout='note'] .callout-icon,
-.theme-dark .callout[data-callout='note'] .callout-icon svg {
-  color: var(--b16-accent-link);
-}
-.theme-dark .callout[data-callout='abstract'] .callout-icon,
-.theme-dark .callout[data-callout='summary'] .callout-icon,
-.theme-dark .callout[data-callout='tldr'] .callout-icon,
-.theme-dark .callout[data-callout='abstract'] .callout-icon svg,
-.theme-dark .callout[data-callout='summary'] .callout-icon svg,
-.theme-dark .callout[data-callout='tldr'] .callout-icon svg {
-  color: var(--b16-accent-tag);
-}
-.theme-dark .callout[data-callout='info'] .callout-icon,
-.theme-dark .callout[data-callout='info'] .callout-icon svg {
-  color: var(--b16-accent-link);
-}
-.theme-dark .callout[data-callout='todo'] .callout-icon,
-.theme-dark .callout[data-callout='todo'] .callout-icon svg {
-  color: var(--b16-accent-link);
-}
-.theme-dark .callout[data-callout='tip'] .callout-icon,
-.theme-dark .callout[data-callout='hint'] .callout-icon,
-.theme-dark .callout[data-callout='important'] .callout-icon,
-.theme-dark .callout[data-callout='tip'] .callout-icon svg,
-.theme-dark .callout[data-callout='hint'] .callout-icon svg,
-.theme-dark .callout[data-callout='important'] .callout-icon svg {
-  color: var(--b16-accent-tag);
-}
-.theme-dark .callout[data-callout='success'] .callout-icon,
-.theme-dark .callout[data-callout='check'] .callout-icon,
-.theme-dark .callout[data-callout='done'] .callout-icon,
-.theme-dark .callout[data-callout='success'] .callout-icon svg,
-.theme-dark .callout[data-callout='check'] .callout-icon svg,
-.theme-dark .callout[data-callout='done'] .callout-icon svg {
-  color: var(--b16-status-ok);
-}
-.theme-dark .callout[data-callout='question'] .callout-icon,
-.theme-dark .callout[data-callout='help'] .callout-icon,
-.theme-dark .callout[data-callout='faq'] .callout-icon,
-.theme-dark .callout[data-callout='question'] .callout-icon svg,
-.theme-dark .callout[data-callout='help'] .callout-icon svg,
-.theme-dark .callout[data-callout='faq'] .callout-icon svg {
-  color: var(--b16-accent-tag);
-}
-.theme-dark .callout[data-callout='warning'] .callout-icon,
-.theme-dark .callout[data-callout='caution'] .callout-icon,
-.theme-dark .callout[data-callout='attention'] .callout-icon,
-.theme-dark .callout[data-callout='warning'] .callout-icon svg,
-.theme-dark .callout[data-callout='caution'] .callout-icon svg,
-.theme-dark .callout[data-callout='attention'] .callout-icon svg {
-  color: var(--b16-status-warn);
-}
-.theme-dark .callout[data-callout='failure'] .callout-icon,
-.theme-dark .callout[data-callout='fail'] .callout-icon,
-.theme-dark .callout[data-callout='missing'] .callout-icon,
-.theme-dark .callout[data-callout='failure'] .callout-icon svg,
-.theme-dark .callout[data-callout='fail'] .callout-icon svg,
-.theme-dark .callout[data-callout='missing'] .callout-icon svg {
-  color: var(--b16-status-error);
-}
-.theme-dark .callout[data-callout='danger'] .callout-icon,
-.theme-dark .callout[data-callout='error'] .callout-icon,
-.theme-dark .callout[data-callout='danger'] .callout-icon svg,
-.theme-dark .callout[data-callout='error'] .callout-icon svg {
-  color: var(--b16-status-error);
-}
-.theme-dark .callout[data-callout='bug'] .callout-icon,
-.theme-dark .callout[data-callout='bug'] .callout-icon svg {
-  color: var(--b16-status-error);
-}
-.theme-dark .callout[data-callout='example'] .callout-icon,
-.theme-dark .callout[data-callout='example'] .callout-icon svg {
-  color: var(--b16-accent-link-ext);
-}
-.theme-dark .callout[data-callout='quote'] .callout-icon,
-.theme-dark .callout[data-callout='cite'] .callout-icon,
-.theme-dark .callout[data-callout='quote'] .callout-icon svg,
-.theme-dark .callout[data-callout='cite'] .callout-icon svg {
-  color: var(--b16-text-muted);
+/* Type → colour table. The palette is closed to seven hues plus the
+   neutrals, and there are far more callout types than hues, so types are
+   grouped by what the reader needs to do, not by vocabulary:
+   - error hue: danger/error/bug/failure/fail/missing all mean "something is
+     wrong" — no reason to tell them apart by colour.
+   - warning hue: warning/caution/attention are all "be careful".
+   - success hue: success/check/done are all "this worked".
+   - blue (link hue): note/info/todo — the highest-frequency, lowest-urgency
+     "FYI" types get the most legible hue.
+   - cyan (tag hue): tip/hint/important — advice, one step up from FYI.
+   - magenta (external-link hue): question/help/faq/example — the rarer
+     aside types share, since they seldom appear next to each other.
+   - orange (code hue): abstract/summary/tldr — structural/meta content,
+     paired with the hue already used for inline code elsewhere.
+   - quote/cite stay neutral grey, matching the blockquote rail elsewhere in
+     the theme, which was deliberately left uncoloured for the same reason. */
+.theme-dark .callout[data-callout='danger'],
+.theme-dark .callout[data-callout='error'],
+.theme-dark .callout[data-callout='bug'],
+.theme-dark .callout[data-callout='failure'],
+.theme-dark .callout[data-callout='fail'],
+.theme-dark .callout[data-callout='missing'] {
+  --callout-color: var(--b16-status-error);
 }
 
-/* Custom callout icon colors */
+.theme-dark .callout[data-callout='warning'],
+.theme-dark .callout[data-callout='caution'],
+.theme-dark .callout[data-callout='attention'] {
+  --callout-color: var(--b16-status-warn);
+}
+
+.theme-dark .callout[data-callout='success'],
+.theme-dark .callout[data-callout='check'],
+.theme-dark .callout[data-callout='done'] {
+  --callout-color: var(--b16-status-ok);
+}
+
+.theme-dark .callout[data-callout='note'],
+.theme-dark .callout[data-callout='info'],
+.theme-dark .callout[data-callout='todo'] {
+  --callout-color: var(--b16-accent-link);
+}
+
+.theme-dark .callout[data-callout='tip'],
+.theme-dark .callout[data-callout='hint'],
+.theme-dark .callout[data-callout='important'] {
+  --callout-color: var(--b16-accent-tag);
+}
+
+.theme-dark .callout[data-callout='question'],
+.theme-dark .callout[data-callout='help'],
+.theme-dark .callout[data-callout='faq'],
+.theme-dark .callout[data-callout='example'] {
+  --callout-color: var(--b16-accent-link-ext);
+}
+
+.theme-dark .callout[data-callout='abstract'],
+.theme-dark .callout[data-callout='summary'],
+.theme-dark .callout[data-callout='tldr'] {
+  --callout-color: var(--b16-accent-code);
+}
+
+.theme-dark .callout[data-callout='quote'],
+.theme-dark .callout[data-callout='cite'] {
+  --callout-color: var(--b16-text-muted);
+}
+
+/* Custom callout types (not part of Obsidian's built-in set). Icon glyphs
+   are unrelated to colour and stay as-is; colour reuses the same seven-hue
+   table above rather than inventing new meanings. */
 .theme-dark .callout[data-callout='my'] {
   --callout-icon: gem;
-}
-.theme-dark .callout[data-callout='my'] .callout-icon,
-.theme-dark .callout[data-callout='my'] .callout-icon svg {
-  color: var(--b16-accent-link-ext);
+  --callout-color: var(--b16-accent-link-ext);
 }
 .theme-dark .callout[data-callout='link'] {
   --callout-icon: link;
-}
-.theme-dark .callout[data-callout='link'] .callout-icon,
-.theme-dark .callout[data-callout='link'] .callout-icon svg {
-  color: var(--b16-accent-link);
-}
-.theme-dark .callout[data-callout='mind'] .callout-icon,
-.theme-dark .callout[data-callout='mindmap'] .callout-icon,
-.theme-dark .callout[data-callout='mind'] .callout-icon svg,
-.theme-dark .callout[data-callout='mindmap'] .callout-icon svg {
-  color: var(--b16-accent-code);
+  --callout-color: var(--b16-accent-link);
 }
 .theme-dark .callout[data-callout='mind'],
 .theme-dark .callout[data-callout='mindmap'] {
   --callout-icon: brain;
+  --callout-color: var(--b16-accent-code);
 }
 .theme-dark .callout[data-callout*='config'] {
   --callout-icon: settings;
-}
-.theme-dark .callout[data-callout*='config'] .callout-icon,
-.theme-dark .callout[data-callout*='config'] .callout-icon svg {
-  color: var(--b16-text-muted);
-}
-.theme-dark .callout[data-callout^='attachment'] .callout-icon,
-.theme-dark .callout[data-callout^='file'] .callout-icon,
-.theme-dark .callout[data-callout^='attachment'] .callout-icon svg,
-.theme-dark .callout[data-callout^='file'] .callout-icon svg {
-  color: var(--b16-accent-tag);
+  --callout-color: var(--b16-text-muted);
 }
 .theme-dark .callout[data-callout^='attachment'],
 .theme-dark .callout[data-callout^='file'] {
   --callout-icon: paperclip;
+  --callout-color: var(--b16-accent-tag);
 }
 .theme-dark .callout[data-callout^='URL' i] {
   --callout-icon: link;
-}
-.theme-dark .callout[data-callout^='URL' i] .callout-icon,
-.theme-dark .callout[data-callout^='URL' i] .callout-icon svg {
-  color: var(--b16-accent-link);
+  --callout-color: var(--b16-accent-link);
 }
 .theme-dark .callout[data-callout='contacts'] {
   --callout-icon: lucide-users;
-}
-.theme-dark .callout[data-callout='contacts'] .callout-icon,
-.theme-dark .callout[data-callout='contacts'] .callout-icon svg {
-  color: var(--b16-status-ok);
+  --callout-color: var(--b16-status-ok);
 }
 .theme-dark .callout[data-callout='documentation'] {
   --callout-icon: lucide-scroll;
-}
-.theme-dark .callout[data-callout='documentation'] .callout-icon,
-.theme-dark .callout[data-callout='documentation'] .callout-icon svg {
-  color: var(--b16-accent-link);
+  --callout-color: var(--b16-accent-link);
 }
 .theme-dark .callout[data-callout='idea'] {
   --callout-icon: lucide-lightbulb;
-}
-.theme-dark .callout[data-callout='idea'] .callout-icon,
-.theme-dark .callout[data-callout='idea'] .callout-icon svg {
-  color: var(--b16-status-warn);
-}
-.theme-dark .callout[data-callout='image'] .callout-icon,
-.theme-dark .callout[data-callout='img'] .callout-icon,
-.theme-dark .callout[data-callout='picture'] .callout-icon,
-.theme-dark .callout[data-callout='image'] .callout-icon svg,
-.theme-dark .callout[data-callout='img'] .callout-icon svg,
-.theme-dark .callout[data-callout='picture'] .callout-icon svg {
-  color: var(--b16-accent-link-ext);
+  --callout-color: var(--b16-status-warn);
 }
 .theme-dark .callout[data-callout='image'],
 .theme-dark .callout[data-callout='img'],
 .theme-dark .callout[data-callout='picture'] {
   --callout-icon: lucide-image;
+  --callout-color: var(--b16-accent-link-ext);
 }
 .theme-dark .callout[data-callout='code'] {
   --callout-icon: lucide-code;
-}
-.theme-dark .callout[data-callout='code'] .callout-icon,
-.theme-dark .callout[data-callout='code'] .callout-icon svg {
-  color: var(--b16-accent-tag);
-}
-.theme-dark .callout[data-callout='ai'] .callout-icon,
-.theme-dark .callout[data-callout='bot'] .callout-icon,
-.theme-dark .callout[data-callout='ai'] .callout-icon svg,
-.theme-dark .callout[data-callout='bot'] .callout-icon svg {
-  color: var(--b16-accent-link-ext);
+  --callout-color: var(--b16-accent-tag);
 }
 .theme-dark .callout[data-callout='ai'],
 .theme-dark .callout[data-callout='bot'] {
   --callout-icon: lucide-bot;
-}
-.theme-dark .callout[data-callout='TOC'] .callout-icon,
-.theme-dark .callout[data-callout='toc'] .callout-icon,
-.theme-dark .callout[data-callout='TOC'] .callout-icon svg,
-.theme-dark .callout[data-callout='toc'] .callout-icon svg {
-  color: var(--b16-text-muted);
+  --callout-color: var(--b16-accent-link-ext);
 }
 .theme-dark .callout[data-callout='TOC'],
 .theme-dark .callout[data-callout='toc'] {
   --callout-icon: lucide-list-tree;
+  --callout-color: var(--b16-text-muted);
 }
 
 /* Config callout task list styling */
