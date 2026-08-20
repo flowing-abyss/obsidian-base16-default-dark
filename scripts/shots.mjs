@@ -6,6 +6,11 @@ import { OBSIDIAN, reload } from "./reload.mjs";
 
 const NOTE = "base/notes/test syntax.md";
 const BASES_FILE = "home/databases/recent.base";
+// Distinct from BASES_FILE: recent.base has no board view, and tasks.base's
+// board is the only board (Kanban) view in the vault - opening it is the
+// only way to give src/50-plugins/bases.css's board rules a frame at all.
+const BASES_BOARD_FILE = "home/databases/tasks.base";
+const BASES_BOARD_VIEW = "📋 Workflow: Kanban (h)";
 
 // Shared in-page helpers, inlined at the top of every eval'd snippet below.
 // __settle polls a scroll position across double-requestAnimationFrame
@@ -165,6 +170,28 @@ const bases = (path) => `(async()=>{
   await new Promise(r=>setTimeout(r,150));
   return JSON.stringify("ok");})()`;
 
+// Same idea as bases() above, but for a board (Kanban) view specifically -
+// the table view opened by bases() never exercises src/50-plugins/bases.css's
+// board rules (columns, cards, group headers) at all. Bases view.setState()
+// with {file, viewName} is the same call the view-switcher dropdown makes;
+// it re-runs the query and swaps the rendered view type in place, in the
+// same leaf bases() already uses. viewName must match a "board-view" entry's
+// `name:` in the .base file's YAML exactly (verified via
+// getLeavesOfType("bases").map(l=>l.view.getState())).
+const basesBoard = (path, viewName) => `(async()=>{
+  ${HELPERS}
+  await document.fonts.ready;
+  const f=app.vault.getAbstractFileByPath(${JSON.stringify(path)});
+  if(!f) throw new Error("bases file not found: "+${JSON.stringify(path)});
+  const leaf=app.workspace.getLeaf(false);
+  await leaf.openFile(f);
+  await leaf.view.setState({file: ${JSON.stringify(path)}, viewName: ${JSON.stringify(viewName)}}, {});
+  const contentEl = leaf.view.containerEl;
+  await __waitFor(()=>contentEl.querySelector(".board-board-container, .bases-view"));
+  await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+  await new Promise(r=>setTimeout(r,150));
+  return JSON.stringify("ok");})()`;
+
 // Verified against the fixture's actual headings (grep -n '^#' "test syntax.md").
 // "Заголовки" is an H1 ("# Заголовки"), not H2 - every other anchor below is H2.
 const FRAMES = [
@@ -194,6 +221,7 @@ const FRAMES = [
   { name: "31-reading-code", setup: reading("Код") },
   { name: "32-reading-callouts", setup: reading("Callouts") },
   { name: "33-bases", setup: bases(BASES_FILE) },
+  { name: "34-bases-board", setup: basesBoard(BASES_BOARD_FILE, BASES_BOARD_VIEW) },
   // This vault has the core switcher/global-search/command-palette plugins
   // disabled in favor of community replacements (verified via
   // app.internalPlugins.plugins[...].enabled === false for all three) - the
