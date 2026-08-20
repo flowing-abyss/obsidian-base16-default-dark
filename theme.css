@@ -691,7 +691,22 @@ body:not(.classic-inline-backlinks) .embedded-backlinks .tree-item-inner {
    above: syntax highlighting is already a complete colour system, and
    micro-syntax painting a digit or punctuation mark orange/cyan inside it
    is the doubled-meaning problem this rule exists to prevent, just via
-   CodeMirror instead of Prism. */
+   CodeMirror instead of Prism. List markers (.cm-formatting-list, covering
+   both -ol and -ul) are included for a different reason than the rest of
+   this list: a marker isn't semantic content to protect, it's structure —
+   findable, not loud — and a digit's ordinal position is already derivable
+   from where it sits, so colouring it is texture with no information behind
+   it. Without this, live preview's ordered-list "1." wraps the digit in
+   .digits and the dot in .punctuation, painting the marker micro-digit
+   orange / micro-punct teal instead of the faint colour every other marker
+   (12-lists.css) already uses; the unordered bullet's dash is wrapped in
+   .punctuation the same way, so it needs the same stand-down to stay
+   consistent with it. Reading mode needs no equivalent rule: its list
+   numbers are native ::marker pseudo-elements (12-lists.css sets their
+   colour directly), and this plugin only wraps real DOM text nodes, so it
+   never reaches into ::marker content to begin with — confirmed by
+   inspecting the rendered reading-mode <li>, which carries no .digits/
+   .punctuation spans at all. */
 .theme-dark
   :is(
     h1,
@@ -715,7 +730,8 @@ body:not(.classic-inline-backlinks) .embedded-backlinks .tree-item-inner {
     code,
     pre,
     .cm-inline-code,
-    .HyperMD-codeblock
+    .HyperMD-codeblock,
+    .cm-formatting-list
   )
   :is(.digits, .punctuation, .exclamation) {
   color: inherit !important;
