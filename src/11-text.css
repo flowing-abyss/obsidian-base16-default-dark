@@ -182,14 +182,37 @@
 }
 
 /* Live preview does not: `==text with **bold** inside==` becomes three
-   sibling .cm-highlight spans, and inline padding on each opens a gap
-   either side of the bold while the radius rounds off four interior
-   corners — one highlight rendered as three chips. Vertical padding
-   composes across siblings, inline padding does not, so live preview keeps
-   only the former and the band stays monolithic. */
+   sibling .cm-highlight spans. Inline padding on each opens a gap either
+   side of the bold and the radius rounds off four interior corners — one
+   highlight rendered as three chips. Dropping the inline padding outright
+   fixed that but cost the run its outer breathing room, so the band ran
+   flush into the first and last glyph and read as cut off at both ends.
+
+   Only the run's two outer edges should carry padding. The general sibling
+   combinator, not the adjacent one: CodeMirror interleaves a
+   `img.cm-widgetBuffer` and an empty span for each hidden `**` marker
+   between the pieces (verified in the live DOM), so the highlight spans are
+   never actually adjacent and `+` matched nothing. `~` is scoped by the
+   .cm-line the spans share, so it is a per-line run.
+
+   Known limit: two separate `==...==` runs on one line collapse into a
+   single run for this purpose — the second gets no left pad and the first
+   no right pad. That is a cosmetic loss on a rare construction, and the
+   alternative was every highlight cut flush at both ends on every line.
+
+   The :has() is cheap: it is anchored on .cm-highlight, which exists only
+   where the reader wrote a highlight, not on every line in the document. */
 .theme-dark span.cm-highlight {
   border-radius: 0;
-  padding: 0.05em 0;
+  padding: 0.05em 0.25em;
+}
+
+.theme-dark span.cm-highlight ~ span.cm-highlight {
+  padding-left: 0;
+}
+
+.theme-dark span.cm-highlight:has(~ span.cm-highlight) {
+  padding-right: 0;
 }
 
 /* Horizontal rules */

@@ -74,11 +74,18 @@
   stroke: var(--b16-text-muted) !important;
 }
 
-/* An edge label sits on top of its own connector, so it needs the page
-   behind it rather than the node surface — otherwise it reads as a tiny
-   node of its own hanging off the line. */
+/* An edge label gets no plate of its own. Mermaid backs each one with a
+   .labelBkg div so the text is not crossed by its own connector, and an
+   earlier version of this rule filled that div with surface-0 — which is
+   right only when the label happens to sit on the page. Inside a subgraph,
+   or on any diagram whose author set a background with classDef, the same
+   fill lands on a surface it does not match and the label reads as a small
+   grey plate stuck to the arrow, which is exactly what it looked like on
+   labels holding a single emoji. The div cannot know what is behind it, so
+   it paints nothing; the connector passing under a glyph is a far smaller
+   cost than a wrong-coloured box on every label. */
 .theme-dark .mermaid .edgeLabel :is(rect, .labelBkg),
 .theme-dark .mermaid .edgeLabel foreignObject > div {
-  fill: var(--b16-surface-0) !important;
-  background-color: var(--b16-surface-0) !important;
+  fill: none !important;
+  background-color: transparent !important;
 }

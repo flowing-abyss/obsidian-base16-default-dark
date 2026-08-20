@@ -115,8 +115,13 @@
   /* One label size for every block's title bar — a callout's type label, a
      code block's language band, a table's header row. They stack in the
      same document and reading at three different sizes made them look like
-     three unrelated systems rather than one. */
-  --b16-label-size: 0.85em;
+     three unrelated systems rather than one.
+
+     Resolved against --font-text-size rather than written as `em`: the code
+     band lives inside a block whose own font-size is already reduced, so
+     `0.85em` there and `0.85em` in a callout are two different pixel sizes.
+     Anchoring to the reading size makes all three literally equal. */
+  --b16-label-size: calc(var(--font-text-size) * 0.85);
 
   /* One table cell padding, consumed by both modes — reading mode puts it on
      the cell, live preview on the .table-cell-wrapper inside it, because
@@ -748,14 +753,37 @@
 }
 
 /* Live preview does not: `==text with **bold** inside==` becomes three
-   sibling .cm-highlight spans, and inline padding on each opens a gap
-   either side of the bold while the radius rounds off four interior
-   corners — one highlight rendered as three chips. Vertical padding
-   composes across siblings, inline padding does not, so live preview keeps
-   only the former and the band stays monolithic. */
+   sibling .cm-highlight spans. Inline padding on each opens a gap either
+   side of the bold and the radius rounds off four interior corners — one
+   highlight rendered as three chips. Dropping the inline padding outright
+   fixed that but cost the run its outer breathing room, so the band ran
+   flush into the first and last glyph and read as cut off at both ends.
+
+   Only the run's two outer edges should carry padding. The general sibling
+   combinator, not the adjacent one: CodeMirror interleaves a
+   `img.cm-widgetBuffer` and an empty span for each hidden `**` marker
+   between the pieces (verified in the live DOM), so the highlight spans are
+   never actually adjacent and `+` matched nothing. `~` is scoped by the
+   .cm-line the spans share, so it is a per-line run.
+
+   Known limit: two separate `==...==` runs on one line collapse into a
+   single run for this purpose — the second gets no left pad and the first
+   no right pad. That is a cosmetic loss on a rare construction, and the
+   alternative was every highlight cut flush at both ends on every line.
+
+   The :has() is cheap: it is anchored on .cm-highlight, which exists only
+   where the reader wrote a highlight, not on every line in the document. */
 .theme-dark span.cm-highlight {
   border-radius: 0;
-  padding: 0.05em 0;
+  padding: 0.05em 0.25em;
+}
+
+.theme-dark span.cm-highlight ~ span.cm-highlight {
+  padding-left: 0;
+}
+
+.theme-dark span.cm-highlight:has(~ span.cm-highlight) {
+  padding-right: 0;
 }
 
 /* Horizontal rules */
@@ -1431,10 +1459,22 @@ ul > li::marker,
   overflow: hidden;
 }
 
+/* The header row is this block's title bar, so it takes the shared label
+   size — the same one a callout's type label and a code block's language
+   band use. Three blocks that stack in one document previously titled
+   themselves at three unrelated sizes. */
 .theme-dark .markdown-rendered thead {
   color: var(--b16-text-strong);
   background-color: var(--b16-surface-2);
   font-weight: 600;
+}
+
+/* On `thead` the size does not reach the cell: Obsidian declares its own
+   font-size on `.markdown-rendered th` (measured — the header stayed 20px
+   while thead computed 17px), and an explicit declaration on the child
+   beats an inherited value regardless of the parent's specificity. */
+.theme-dark .markdown-rendered thead th {
+  font-size: var(--b16-label-size);
 }
 
 /* Obsidian's own `.markdown-rendered th, .markdown-rendered td` rule ships a
@@ -1537,6 +1577,34 @@ ul > li::marker,
   border-bottom: 1px solid var(--b16-border-strong);
 }
 
+/* Vertical rhythm. Measured before this rule: the header band was 29px, every
+   body line 28px with no padding at all, and the closing fence a full empty
+   28px row. So the block opened with its first line jammed against the band
+   and closed with a whole blank line of slack — 0px above, 28px below.
+
+   The first body line is reachable as the band's adjacent sibling, and the
+   closing fence is already empty, so shrinking its line box turns it from a
+   stray row into the matching bottom pad. Restored to full height while the
+   caret is on it, because at that point it is a line being edited and needs
+   room for the ``` it shows. */
+.theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin + .HyperMD-codeblock {
+  padding-top: 0.7em;
+}
+
+/* Both the line-height and the font-size have to come down: an empty line's
+   height is driven by its font's strut, so line-height alone left a 19px
+   row against the 8.75px pad above (measured). At 0.6em/0.8 the strut lands
+   at ~9px, which matches. */
+.theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
+  font-size: 0.6em;
+  line-height: 0.8;
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .cm-active.HyperMD-codeblock-end {
+  font-size: var(--b16-label-size);
+  line-height: var(--line-height-normal);
+}
+
 /* base16 specifies its syntax colours against base00. On base01 the red drops
    from 3.12 to 2.59 and comments from 2.50 to 2.07, so a block that actually
    has tokens takes base00 for its body and is separated by the frame instead.
@@ -1592,6 +1660,12 @@ ul > li::marker,
   padding: 0;
   border-radius: 0;
   background: transparent;
+  /* app.css sizes this at `--font-ui-smaller` from a (0,2,1) selector, which
+     a plain `.theme-dark .code-block-flair` (0,2,0) cannot outrank —
+     measured 14.4px where the shared label size is 17px. Declared here, on
+     the rule that already matches app.css's shape, so the band's label is
+     the same size as a callout's and a table's. */
+  font-size: var(--b16-label-size);
 }
 
 .theme-dark .markdown-source-view.mod-cm6 .code-block-flair:hover {
@@ -1601,7 +1675,7 @@ ul > li::marker,
 
 .theme-dark .code-block-flair {
   color: var(--b16-text-muted);
-  font-size: 0.75em;
+  font-size: var(--b16-label-size);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -1934,13 +2008,20 @@ ul > li::marker,
   stroke: var(--b16-text-muted) !important;
 }
 
-/* An edge label sits on top of its own connector, so it needs the page
-   behind it rather than the node surface — otherwise it reads as a tiny
-   node of its own hanging off the line. */
+/* An edge label gets no plate of its own. Mermaid backs each one with a
+   .labelBkg div so the text is not crossed by its own connector, and an
+   earlier version of this rule filled that div with surface-0 — which is
+   right only when the label happens to sit on the page. Inside a subgraph,
+   or on any diagram whose author set a background with classDef, the same
+   fill lands on a surface it does not match and the label reads as a small
+   grey plate stuck to the arrow, which is exactly what it looked like on
+   labels holding a single emoji. The div cannot know what is behind it, so
+   it paints nothing; the connector passing under a glyph is a far smaller
+   cost than a wrong-coloured box on every label. */
 .theme-dark .mermaid .edgeLabel :is(rect, .labelBkg),
 .theme-dark .mermaid .edgeLabel foreignObject > div {
-  fill: var(--b16-surface-0) !important;
-  background-color: var(--b16-surface-0) !important;
+  fill: none !important;
+  background-color: transparent !important;
 }
 
 /* ===== 30-editor.css ===== */

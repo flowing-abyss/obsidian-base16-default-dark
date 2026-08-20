@@ -39,6 +39,34 @@
   border-bottom: 1px solid var(--b16-border-strong);
 }
 
+/* Vertical rhythm. Measured before this rule: the header band was 29px, every
+   body line 28px with no padding at all, and the closing fence a full empty
+   28px row. So the block opened with its first line jammed against the band
+   and closed with a whole blank line of slack — 0px above, 28px below.
+
+   The first body line is reachable as the band's adjacent sibling, and the
+   closing fence is already empty, so shrinking its line box turns it from a
+   stray row into the matching bottom pad. Restored to full height while the
+   caret is on it, because at that point it is a line being edited and needs
+   room for the ``` it shows. */
+.theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin + .HyperMD-codeblock {
+  padding-top: 0.7em;
+}
+
+/* Both the line-height and the font-size have to come down: an empty line's
+   height is driven by its font's strut, so line-height alone left a 19px
+   row against the 8.75px pad above (measured). At 0.6em/0.8 the strut lands
+   at ~9px, which matches. */
+.theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
+  font-size: 0.6em;
+  line-height: 0.8;
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .cm-active.HyperMD-codeblock-end {
+  font-size: var(--b16-label-size);
+  line-height: var(--line-height-normal);
+}
+
 /* base16 specifies its syntax colours against base00. On base01 the red drops
    from 3.12 to 2.59 and comments from 2.50 to 2.07, so a block that actually
    has tokens takes base00 for its body and is separated by the frame instead.
@@ -94,6 +122,12 @@
   padding: 0;
   border-radius: 0;
   background: transparent;
+  /* app.css sizes this at `--font-ui-smaller` from a (0,2,1) selector, which
+     a plain `.theme-dark .code-block-flair` (0,2,0) cannot outrank —
+     measured 14.4px where the shared label size is 17px. Declared here, on
+     the rule that already matches app.css's shape, so the band's label is
+     the same size as a callout's and a table's. */
+  font-size: var(--b16-label-size);
 }
 
 .theme-dark .markdown-source-view.mod-cm6 .code-block-flair:hover {
@@ -103,7 +137,7 @@
 
 .theme-dark .code-block-flair {
   color: var(--b16-text-muted);
-  font-size: 0.75em;
+  font-size: var(--b16-label-size);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }

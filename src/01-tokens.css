@@ -73,8 +73,13 @@
   /* One label size for every block's title bar — a callout's type label, a
      code block's language band, a table's header row. They stack in the
      same document and reading at three different sizes made them look like
-     three unrelated systems rather than one. */
-  --b16-label-size: 0.85em;
+     three unrelated systems rather than one.
+
+     Resolved against --font-text-size rather than written as `em`: the code
+     band lives inside a block whose own font-size is already reduced, so
+     `0.85em` there and `0.85em` in a callout are two different pixel sizes.
+     Anchoring to the reading size makes all three literally equal. */
+  --b16-label-size: calc(var(--font-text-size) * 0.85);
 
   /* One table cell padding, consumed by both modes — reading mode puts it on
      the cell, live preview on the .table-cell-wrapper inside it, because
