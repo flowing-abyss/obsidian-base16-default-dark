@@ -58,7 +58,7 @@
   border-bottom: 1px solid var(--b16-border-strong);
   background: transparent;
   padding: 6px 8px;
-  font-size: 0.72em;
+  font-size: var(--b16-font-ui-s);
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -70,17 +70,22 @@
 .board-header-color-circle {
   display: none;
 }
-/* Row headers — tight, uppercase, bottom line */
+/* Row headers — tight, uppercase, bottom line.
+   font-size below was previously declared twice at different sizes
+   (0.7em here, 0.8em further down at the same specificity); the later
+   declaration always won, making the 0.7em dead. Consolidated into one
+   declaration on the theme's UI floor token. */
 .board-row-header-bar {
   padding: 6px 0;
   border-bottom: 1px solid var(--b16-border-strong);
   margin-bottom: 10px;
-  font-size: 0.7em;
+  font-size: var(--b16-font-ui-s);
+  font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 .board-row-title {
-  font-size: 1em;
+  font-size: var(--b16-font-ui-s);
 }
 /* Cells — no background, no border */
 .board-cell {
@@ -118,15 +123,11 @@
 /* Card title */
 .board-card .file-name,
 .board-column-headers {
-  font-size: 1.1em;
-  font-weight: 600 !important;
+  font-size: var(--b16-font-ui-s);
+  font-weight: 600;
 }
 .board-card .file-name {
   padding-bottom: 4px;
-}
-.board-row-header-bar {
-  font-size: 0.8em;
-  font-weight: 600 !important;
 }
 /* New note button — invisible until hover on cell */
 .board-new-note-button {
@@ -134,7 +135,7 @@
   border: 1px dashed transparent;
   background: transparent;
   color: transparent;
-  font-size: 0.65em;
+  font-size: var(--b16-font-ui-s);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   padding: 5px 8px;
@@ -200,7 +201,7 @@
 .theme-dark .bases-chart-tooltip-value,
 .theme-dark .bases-chart-tooltip-file-value {
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: var(--b16-font-ui-s);
 }
 
 /* Replace hardcoded rgba(128,128,128,0.2) divider */

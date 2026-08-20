@@ -1,7 +1,7 @@
 .theme-dark .prompt .another-quick-switcher__item__hot-key-guide,
 .theme-dark .prompt .another-quick-switcher__status__count-input,
 .theme-dark .prompt .another-quick-switcher__command-palette__item__key {
-  font-size: 0.75em;
+  font-size: var(--b16-font-ui-s);
 }
 
 /* ANOTHER QUICK SWITHER and MODALS */
