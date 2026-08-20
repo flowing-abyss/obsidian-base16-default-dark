@@ -18,32 +18,11 @@
   --inline-title-weight: 700;
 }
 
-/* Headings */
-.theme-dark .markdown-preview-view h1,
-.theme-dark .markdown-preview-view h2,
-.theme-dark .markdown-preview-view h3,
-.theme-dark .markdown-preview-view h4,
-.theme-dark .markdown-preview-view h5,
-.theme-dark .markdown-preview-view h6,
-.theme-dark .cm-header-1,
-.theme-dark .cm-header-2,
-.theme-dark .cm-header-3,
-.theme-dark .cm-header-4,
-.theme-dark .cm-header-5,
-.theme-dark .cm-header-6 {
-  color: var(--heading-color);
-}
-
-.theme-dark .inline-title {
-  color: var(--inline-title-color);
-}
-
 /* INLINE TITLE */
 .inline-title:not([data-level]) {
   margin: 0;
   padding: 0;
   text-align: left;
-  color: var(--h1-color);
   background: transparent;
 }
 
@@ -64,19 +43,6 @@
   border-top: 0;
   border-left: 0;
   border-right: 0;
-}
-
-/* Headings */
-/* heading font fix */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-.cm-header {
-  /* font-family: var(--font-heading-theme) !important; */
-  color: var(--h1-color) !important;
 }
 
 .HyperMD-header.HyperMD-header-1,

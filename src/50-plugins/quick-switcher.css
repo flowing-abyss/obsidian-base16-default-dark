@@ -68,7 +68,7 @@ body .another-quick-switcher__status__count-input {
 
 .another-quick-switcher__hit_word {
   border-bottom: 2px solid var(--color-red);
-  color: var(--font-color);
+  color: var(--text-normal);
 }
 
 .another-quick-switcher__command-palette__item__key {

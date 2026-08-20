@@ -94,7 +94,7 @@ body:has(.metadata-menu)
 /* multi select pill fix */
 .multi-select-pill .multi-select-pill-remove-button {
   margin-left: -3px;
-  color: var(--hover-accent);
+  color: var(--color-red);
 }
 .multi-select-pill-remove-button:not(:hover) {
   opacity: 0;

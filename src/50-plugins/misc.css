@@ -68,7 +68,7 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
 
 .suggestion-highlight.suggestion-highlight {
   border-bottom: 2px solid var(--color-red);
-  color: var(--font-color);
+  color: var(--text-normal);
 }
 
 /* copilot */

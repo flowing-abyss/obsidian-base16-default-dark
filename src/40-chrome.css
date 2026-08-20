@@ -144,11 +144,11 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
 .search-result-file-matched-text {
   background-color: transparent;
   border-bottom: 2px solid var(--color-red);
-  color: var(--font-color);
+  color: var(--text-normal);
 }
 .is-flashing {
   border-bottom: 2px solid var(--color-red);
-  color: var(--font-color);
+  color: var(--text-normal);
   background-color: var(--b16-highlight-bg) !important;
 }
 .tree-item-self.search-result-file-title {
