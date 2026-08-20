@@ -1,15 +1,34 @@
 /* Blockquotes */
-.theme-dark .markdown-preview-view blockquote {
-  border-left: 3px solid var(--b16-border-strong);
-  background: transparent;
-  padding-left: 16px;
-  margin: 12px 0;
-  font-style: italic;
-  opacity: 0.85;
+
+/* Live preview paints its own background and rail for .HyperMD-quote from
+   these native variables (app.css: .markdown-source-view.mod-cm6.is-live-preview
+   .HyperMD-quote), at higher specificity than a plain .HyperMD-quote rule.
+   Left at their defaults, that background stays transparent and the rail
+   renders a hardcoded blue (#7cafc2) - a hue, which is exactly what the rail
+   must not be. Redirecting them keeps live preview in sync with the rule
+   below instead of fighting it. */
+.theme-dark {
+  --blockquote-background-color: var(--b16-surface-2);
+  --blockquote-border-color: var(--b16-border-strong);
+  --blockquote-style: normal;
 }
 
-/* Blockquotes in live preview */
-.theme-dark .HyperMD-quote.HyperMD-quote-1 {
-  font-style: italic !important;
-  opacity: 0.85;
+/* A quotation is another voice, not disabled text. Full contrast, upright, and
+   a neutral rail: hue stays reserved for callouts, where it encodes a type. */
+.theme-dark .markdown-rendered blockquote,
+.theme-dark .HyperMD-quote {
+  color: var(--b16-text-normal);
+  background-color: var(--b16-surface-2);
+  border-left: 3px solid var(--b16-border-strong);
+  border-radius: 0 var(--b16-radius-m) var(--b16-radius-m) 0;
+  padding: 0.7em 1em;
+  font-style: normal;
+  opacity: 1;
+}
+
+.theme-dark .markdown-rendered blockquote > :first-child {
+  margin-top: 0;
+}
+.theme-dark .markdown-rendered blockquote > :last-child {
+  margin-bottom: 0;
 }

@@ -21,9 +21,11 @@
   padding-inline-end: 0.3em;
 }
 
-/* Bullet color */
+/* Bullet color: markers are structure, not content — findable, not loud.
+   This drives every level's bullet/number colour below, in both reading
+   and live preview, so the two modes cannot drift apart. */
 .theme-dark {
-  --bullet-new-color: var(--b16-border-strong);
+  --bullet-new-color: var(--b16-text-faint);
 }
 
 /* Change color for all types of markers
@@ -32,6 +34,47 @@ ol > li::marker,
 ul > li::marker,
 .cm-s-obsidian .cm-formatting-list {
   color: var(--bullet-new-color);
+}
+
+/* NOTE: the per-level bullet shapes below already resolve to --bullet-new-color
+   (now text-faint), so no separate .list-bullet::after override is added here —
+   one would out-specificity the levels' "background: transparent" on the hollow
+   (outline) markers at level 3/6 and fill them in by mistake. */
+.theme-dark .markdown-rendered :is(ol, ul) > li::marker {
+  color: var(--b16-text-faint);
+}
+
+/* The checkbox is already the row's marker; a bullet beside it says the same
+   thing twice. */
+.theme-dark .markdown-rendered li.task-list-item {
+  list-style: none;
+}
+.theme-dark .markdown-rendered li.task-list-item .list-bullet {
+  display: none;
+}
+
+.theme-dark .markdown-rendered li.task-list-item.is-checked {
+  color: var(--b16-text-faint);
+  text-decoration: line-through;
+}
+
+/* Live preview's own completed-task rule (app.css:
+   .markdown-source-view.mod-cm6 .HyperMD-task-line[data-task="x"]) reads
+   --checklist-done-color at higher specificity than a plain .HyperMD-task-line
+   rule can beat - same trap as the blockquote background above. Redirecting
+   the variable keeps live preview's checked colour in sync with .is-checked
+   above instead of losing to it. */
+.theme-dark {
+  --checklist-done-color: var(--b16-text-faint);
+}
+
+/* A completed task is a state, like strikethrough - it dominates emphasis,
+   so bold inside it yields its colour to the faint/done colour but keeps
+   its weight (see 11-text.css's del/s strong rule for the same composition). */
+.theme-dark .markdown-rendered li.task-list-item.is-checked :is(strong, .cm-strong),
+.theme-dark .HyperMD-task-line[data-task='x'] .cm-strong {
+  color: var(--b16-text-faint);
+  font-weight: 700;
 }
 
 /* color for folded list */
