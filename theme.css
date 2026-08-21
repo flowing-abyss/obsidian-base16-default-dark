@@ -2014,6 +2014,27 @@ ul > li::marker,
   line-height: var(--b16-label-line-height);
 }
 
+/* Once the wrapper becomes flex, the th's text-align no longer positions its
+   flex item. Carry Markdown's alignment markers onto the flex axis so header
+   labels stay over the data they describe in wider columns as well. */
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .cm-table-widget
+  thead
+  th[align='center']
+  > .table-cell-wrapper {
+  justify-content: center;
+}
+
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .cm-table-widget
+  thead
+  th[align='right']
+  > .table-cell-wrapper {
+  justify-content: flex-end;
+}
+
 /* Reading mode has no wrapper to carry that geometry. The table's own 1px top
    frame plus this 35px row resolve to the same 36px visible header as code and
    callout blocks. Padding stays zero only on the block axis; the shared 10px
@@ -2022,6 +2043,7 @@ ul > li::marker,
   height: calc(var(--b16-block-header-height) - 1px);
   padding-block: 0;
   line-height: var(--b16-label-line-height);
+  vertical-align: middle;
 }
 
 /* Column rules are deliberately fainter than row rules: they guide the eye
