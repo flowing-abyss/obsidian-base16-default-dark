@@ -49,10 +49,12 @@ body.theme-dark {
    the workspace — the same construction used by the theme's other floating
    panels. Notices take the medium UI step; tooltips stay one step smaller. */
 .theme-dark:not(.is-phone) .notice-container {
-  /* Obsidian already places the container 22px below the viewport and then
-     adds 10px of inner padding, but leaves its inline edge at zero. Mirror
-     that 22px inset on the right so the visible notice lands 32px from both
-     edges. Keep the native padding: it clips notice motion and spaces stacks. */
+  /* Obsidian places the container 22px below the window, but the 30px macOS
+     titlebar consumes nearly all of that space. Measure the block from the
+     usable workspace instead: native 10px container padding then puts the
+     visible notice exactly 32px below the titlebar and 32px from the inline
+     edge. The variable becomes zero where no titlebar is present. */
+  top: calc(var(--titlebar-height) + 22px);
   inset-inline-end: 22px;
 }
 
