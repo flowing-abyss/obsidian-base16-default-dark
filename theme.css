@@ -3235,6 +3235,32 @@ ul > li::marker,
   background-color: var(--b16-surface-2);
 }
 
+/* ===== 27-graph.css ===== */
+
+/* The graph itself is a dense semantic map; its configured node colours must
+   remain the only strong accents. Keep the small settings panel precise and
+   consistent with Canvas chrome instead of floating it on a large shadow. */
+.theme-dark .graph-controls {
+  background-color: var(--b16-surface-0);
+  border-color: var(--b16-border-normal);
+  border-radius: var(--b16-radius-s);
+  box-shadow: none;
+}
+
+.theme-dark .graph-control-section {
+  border-color: var(--b16-border-faint);
+}
+
+.theme-dark .graph-controls-button {
+  color: var(--b16-text-muted);
+  border-radius: var(--b16-radius-s);
+}
+
+.theme-dark .graph-controls-button:hover {
+  color: var(--b16-text-strong);
+  background-color: var(--b16-surface-2);
+}
+
 /* ===== 30-editor.css ===== */
 
 /* Optional line numbers are structural metadata, not document content. CM6
