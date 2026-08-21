@@ -26,8 +26,8 @@
    the frame is the only thing separating them, so it has to be visible on
    its own. */
 .theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock {
-  border-left: 1px solid var(--b16-border-strong);
-  border-right: 1px solid var(--b16-border-strong);
+  border-left: 1px solid var(--b16-border-normal);
+  border-right: 1px solid var(--b16-border-normal);
   border-radius: 0;
 }
 
@@ -35,13 +35,13 @@
    corners too — otherwise live preview draws a square block beside reading
    mode's rounded one. */
 .theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin {
-  border-top: 1px solid var(--b16-border-strong);
+  border-top: 1px solid var(--b16-border-normal);
   border-start-start-radius: var(--b16-radius-s);
   border-start-end-radius: var(--b16-radius-s);
 }
 
 .theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
-  border-bottom: 1px solid var(--b16-border-strong);
+  border-bottom: 1px solid var(--b16-border-normal);
   border-end-start-radius: var(--b16-radius-s);
   border-end-end-radius: var(--b16-radius-s);
 }
@@ -97,7 +97,12 @@
    bug. */
 .theme-dark .markdown-rendered pre[class^='language-'] {
   background-color: var(--b16-surface-0);
-  border: 1px solid var(--b16-border-strong);
+  /* The frame separates a base00 body from a base00 page, so it has to be
+     visible — but border-strong made it the brightest edge in the document,
+     louder than a heading rule. The header band above the body already does
+     most of the separating, so the frame can step down to the normal
+     border weight and stop shouting. */
+  border: 1px solid var(--b16-border-normal);
   border-radius: var(--b16-radius-s);
 }
 
@@ -154,10 +159,20 @@
    than code, so it takes the ordinary block surface, like a quote or a
    callout — not the darker, framed treatment reserved for blocks that
    actually carry highlighted tokens. */
+/* A fence with no language is not a code block, it is verbatim text: it
+   gets no grammar, no tokens and no syntax colours, so there is nothing for
+   a frame to protect and nothing for a header band to name. The ChatGPT
+   theme this palette comes from makes exactly this distinction — a
+   language-tagged block is a framed card with a header on base00, a bare
+   fence is a plain base01 fill — and the reason is the same in both: a
+   frame around content that carries no structure is decoration.
+
+   So: surface-1 fill, no border, the shared radius. Same shape as an inline
+   code chip, one size up, which is what a bare fence actually is. */
 .theme-dark .markdown-rendered pre:not([class]) {
-  background-color: var(--b16-surface-2);
-  border: 1px solid var(--b16-border-normal);
-  border-radius: var(--b16-radius-m);
+  background-color: var(--b16-surface-1);
+  border: none;
+  border-radius: var(--b16-radius-s);
 }
 
 /* Live preview's begin line for a languageless block takes the same block

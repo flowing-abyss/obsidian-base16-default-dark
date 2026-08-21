@@ -1596,8 +1596,8 @@ ul > li::marker,
    the frame is the only thing separating them, so it has to be visible on
    its own. */
 .theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock {
-  border-left: 1px solid var(--b16-border-strong);
-  border-right: 1px solid var(--b16-border-strong);
+  border-left: 1px solid var(--b16-border-normal);
+  border-right: 1px solid var(--b16-border-normal);
   border-radius: 0;
 }
 
@@ -1605,13 +1605,13 @@ ul > li::marker,
    corners too — otherwise live preview draws a square block beside reading
    mode's rounded one. */
 .theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin {
-  border-top: 1px solid var(--b16-border-strong);
+  border-top: 1px solid var(--b16-border-normal);
   border-start-start-radius: var(--b16-radius-s);
   border-start-end-radius: var(--b16-radius-s);
 }
 
 .theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
-  border-bottom: 1px solid var(--b16-border-strong);
+  border-bottom: 1px solid var(--b16-border-normal);
   border-end-start-radius: var(--b16-radius-s);
   border-end-end-radius: var(--b16-radius-s);
 }
@@ -1667,7 +1667,12 @@ ul > li::marker,
    bug. */
 .theme-dark .markdown-rendered pre[class^='language-'] {
   background-color: var(--b16-surface-0);
-  border: 1px solid var(--b16-border-strong);
+  /* The frame separates a base00 body from a base00 page, so it has to be
+     visible — but border-strong made it the brightest edge in the document,
+     louder than a heading rule. The header band above the body already does
+     most of the separating, so the frame can step down to the normal
+     border weight and stop shouting. */
+  border: 1px solid var(--b16-border-normal);
   border-radius: var(--b16-radius-s);
 }
 
@@ -1724,10 +1729,20 @@ ul > li::marker,
    than code, so it takes the ordinary block surface, like a quote or a
    callout — not the darker, framed treatment reserved for blocks that
    actually carry highlighted tokens. */
+/* A fence with no language is not a code block, it is verbatim text: it
+   gets no grammar, no tokens and no syntax colours, so there is nothing for
+   a frame to protect and nothing for a header band to name. The ChatGPT
+   theme this palette comes from makes exactly this distinction — a
+   language-tagged block is a framed card with a header on base00, a bare
+   fence is a plain base01 fill — and the reason is the same in both: a
+   frame around content that carries no structure is decoration.
+
+   So: surface-1 fill, no border, the shared radius. Same shape as an inline
+   code chip, one size up, which is what a bare fence actually is. */
 .theme-dark .markdown-rendered pre:not([class]) {
-  background-color: var(--b16-surface-2);
-  border: 1px solid var(--b16-border-normal);
-  border-radius: var(--b16-radius-m);
+  background-color: var(--b16-surface-1);
+  border: none;
+  border-radius: var(--b16-radius-s);
 }
 
 /* Live preview's begin line for a languageless block takes the same block
@@ -2397,6 +2412,16 @@ body.theme-dark {
   padding: 4px;
 }
 
+/* Note for anyone tempted to restyle `hr.workspace-leaf-resize-handle`:
+   don't reset its border with the `border` shorthand. app.css sets that
+   handle's border-bottom STYLE and WIDTH from a higher-specificity selector
+   (`.workspace-split.mod-horizontal > * > .workspace-leaf-resize-handle`)
+   but takes its COLOUR from `--divider-color` on the base rule. A shorthand
+   here wipes the colour, the specific rule puts the line back, and it
+   renders in the UA default grey for an <hr> — measured rgb(128,128,128),
+   a bright line where a 12%-alpha divider belongs. The divider is correct
+   as Obsidian draws it; nothing to override. */
+
 /* Sidebar */
 body:not(.show-sidebar-header-buttons) :is(.mod-left-split, .mod-right-split) {
   :is(.workspace-tab-header-container, .workspace-tab-header-container-inner) {
@@ -2410,6 +2435,21 @@ body:not(.show-sidebar-header-buttons) :is(.mod-left-split, .mod-right-split) {
       --sidebar-tabs-unhovered-height: 10px;
 
       height: var(--sidebar-tabs-unhovered-height);
+    }
+
+    /* A .mod-top group only faded its contents and kept its full height,
+       while every other group collapsed to 10px. Measured in the left
+       sidebar: the first container stayed 40px tall with a 1px bottom
+       border while the second sat at 10px — so the top pane of every
+       sidebar carried a 40px empty band with a stray horizontal line under
+       it, and it read as a broken panel rather than as a hidden control.
+
+       On macOS the strip holds nothing else, so it collapses like the rest.
+       It is left alone on Windows and Linux, where this same strip is the
+       window's drag region — see the -webkit-app-region rule below, which
+       exists precisely because that platform needs it clickable. */
+    &.mod-top .workspace-tab-header-container:not(:hover) .workspace-tab-header-container-inner {
+      opacity: 0;
     }
 
     &.mod-top .workspace-tab-header-container:not(:hover) .workspace-tab-header-container-inner {
@@ -2941,12 +2981,38 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
    step and fits again. The middle step was tried first and measured 291px
    against a 278px pane — still short — which is how the value was chosen
    rather than guessed. */
-/* The pane's own 4px block padding is dead space around a grid that already
-   pads its cells, and reclaiming it is what finally closed the last few
-   pixels: the content needed 282px in a 278px pane. */
+/* Sizing only. Raising the UI ramp so the sidebar became readable also grew
+   this grid — its cells are em-based — and the header row stopped fitting on
+   one line, which is the only thing here that needed fixing. The middle step
+   is within a fraction of a pixel of the size this pane had before the ramp
+   moved (Obsidian's own --font-ui-medium was a fixed 15px), so the pane keeps
+   the proportions it always had.
+
+   Nothing here stretches the grid to fill its leaf. I tried that, and it put
+   the last week underneath Obsidian's own pane divider. A pane's spare height
+   belongs to the reader's drag. */
 .workspace-leaf-content[data-type='calendar'] .view-content {
-  font-size: var(--b16-font-ui-s);
-  padding-block: 0;
+  font-size: var(--b16-font-ui-m);
+}
+
+/* The month title and the "today" control sat on two different lines even
+   with the row centred. The cause is a `margin-bottom: 14.4px` the plugin
+   puts on the title container: `align-items: center` centres the MARGIN
+   box, so the title's glyphs end up half that margin above the control's.
+   Zeroing it and moving the same space to the row itself keeps the gap
+   above the grid while letting the two halves line up. */
+.workspace-leaf-content[data-type='calendar'] .nav,
+.workspace-leaf-content[data-type='calendar'] .nav > * {
+  display: flex;
+  align-items: center;
+}
+
+.workspace-leaf-content[data-type='calendar'] .nav > .title-container {
+  margin-bottom: 0;
+}
+
+.workspace-leaf-content[data-type='calendar'] .nav {
+  margin-bottom: 0.5em;
 }
 
 .workspace-leaf-content[data-type='calendar'] .nav {
@@ -3469,7 +3535,10 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
 .theme-dark
   :is(.embedded-backlinks, .embedded-similar-notes)
   :is(.tree-item-flair, .search-result-count, .hybrid-search-score) {
-  font-size: var(--b16-label-size);
+  /* The label size is for a block's title bar. A relevance score is neither
+     a title nor content — it annotates the row it sits on, and at 17px it
+     read as loud as the note title beside it. Bottom of the UI ramp. */
+  font-size: var(--b16-font-ui-s);
 }
 
 /* ===== 50-plugins/quick-switcher.css ===== */

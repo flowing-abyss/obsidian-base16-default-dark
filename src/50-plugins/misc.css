@@ -235,5 +235,8 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
 .theme-dark
   :is(.embedded-backlinks, .embedded-similar-notes)
   :is(.tree-item-flair, .search-result-count, .hybrid-search-score) {
-  font-size: var(--b16-label-size);
+  /* The label size is for a block's title bar. A relevance score is neither
+     a title nor content — it annotates the row it sits on, and at 17px it
+     read as loud as the note title beside it. Bottom of the UI ramp. */
+  font-size: var(--b16-font-ui-s);
 }

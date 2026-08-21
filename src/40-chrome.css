@@ -108,6 +108,16 @@ body.theme-dark {
   padding: 4px;
 }
 
+/* Note for anyone tempted to restyle `hr.workspace-leaf-resize-handle`:
+   don't reset its border with the `border` shorthand. app.css sets that
+   handle's border-bottom STYLE and WIDTH from a higher-specificity selector
+   (`.workspace-split.mod-horizontal > * > .workspace-leaf-resize-handle`)
+   but takes its COLOUR from `--divider-color` on the base rule. A shorthand
+   here wipes the colour, the specific rule puts the line back, and it
+   renders in the UA default grey for an <hr> — measured rgb(128,128,128),
+   a bright line where a 12%-alpha divider belongs. The divider is correct
+   as Obsidian draws it; nothing to override. */
+
 /* Sidebar */
 body:not(.show-sidebar-header-buttons) :is(.mod-left-split, .mod-right-split) {
   :is(.workspace-tab-header-container, .workspace-tab-header-container-inner) {
@@ -121,6 +131,21 @@ body:not(.show-sidebar-header-buttons) :is(.mod-left-split, .mod-right-split) {
       --sidebar-tabs-unhovered-height: 10px;
 
       height: var(--sidebar-tabs-unhovered-height);
+    }
+
+    /* A .mod-top group only faded its contents and kept its full height,
+       while every other group collapsed to 10px. Measured in the left
+       sidebar: the first container stayed 40px tall with a 1px bottom
+       border while the second sat at 10px — so the top pane of every
+       sidebar carried a 40px empty band with a stray horizontal line under
+       it, and it read as a broken panel rather than as a hidden control.
+
+       On macOS the strip holds nothing else, so it collapses like the rest.
+       It is left alone on Windows and Linux, where this same strip is the
+       window's drag region — see the -webkit-app-region rule below, which
+       exists precisely because that platform needs it clickable. */
+    &.mod-top .workspace-tab-header-container:not(:hover) .workspace-tab-header-container-inner {
+      opacity: 0;
     }
 
     &.mod-top .workspace-tab-header-container:not(:hover) .workspace-tab-header-container-inner {
