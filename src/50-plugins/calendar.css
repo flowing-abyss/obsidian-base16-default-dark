@@ -101,12 +101,9 @@
   padding-left: 4px;
 }
 
-/* The month title and the "today" control sat on two different lines even
-   with the row centred. The cause is a `margin-bottom: 14.4px` the plugin
-   puts on the title container: `align-items: center` centres the MARGIN
-   box, so the title's glyphs end up half that margin above the control's.
-   Zeroing it and moving the same space to the row itself keeps the gap
-   above the grid while letting the two halves line up. */
+/* Treat the navigation as one compact typographic line. Its own block margins
+   are already equal above and below; the children need one shared optical
+   centre and must never wrap independently. */
 .workspace-leaf-content[data-type='calendar'] .nav,
 .workspace-leaf-content[data-type='calendar'] .nav > * {
   display: flex;
@@ -119,12 +116,21 @@
 
 .workspace-leaf-content[data-type='calendar'] .nav {
   font-size: var(--b16-font-ui-s);
-  margin-bottom: 0;
-  padding-bottom: 0;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+/* The plugin gives the quarters a one-sided 4px top margin. Half that value
+   is their exact visual displacement from the row centre. */
+#calendar-container .nav .quarters {
+  position: relative;
+  top: -2px;
 }
 
 #calendar-container .reset-button {
-  margin: 3px 0 0;
+  display: flex;
+  align-items: center;
+  margin: 0;
   padding: 0;
 }
 
