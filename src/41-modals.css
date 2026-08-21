@@ -46,7 +46,7 @@
    outline is quieter than a second accent and stays equally clear against
    the darker red and the lighter green states. */
 .theme-dark .modal.mod-settings .checkbox-container::after {
-  box-shadow: 0 0 0 1px var(--b16-surface-0);
+  box-shadow: 0 0 0 1px var(--b16-surface-3);
 }
 
 .theme-dark .modal.mod-settings .checkbox-container:not(.is-enabled, .is-disabled) {
