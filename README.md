@@ -30,6 +30,17 @@ The theme pairs well with the IBM Plex family, IBM Plex Sans, IBM Plex Serif, an
 
 Fonts load straight from your vault through the plugin's own settings, instead of a CSS snippet or `!important` hack.
 
+### Heading level gutter
+
+Hover a heading to reveal its exact `H1`–`H6` level in the left gutter. For a persistent structural gutter in long-form notes, add the `heading-levels` CSS class to the note properties:
+
+```yaml
+cssclasses:
+  - heading-levels
+```
+
+The labels stay outside the text column and behave identically in Live Preview and Reading view.
+
 ## Installation
 
 Available in Obsidian's [Community Themes](https://community.obsidian.md/themes/base16-default-dark).

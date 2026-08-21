@@ -125,6 +125,94 @@
   color: var(--b16-text-faint);
 }
 
+/* Structural gutter. Typographic scale answers "is this a heading?"; this
+   quiet utility label answers the less perceptual question "which exact
+   level?" without making H1–H6 part of the prose. The inline pseudo-element
+   has a net width of zero, so the heading and every wrapped continuation keep
+   the same left edge. Its negative margin places it before Obsidian's native
+   20px fold control instead of replacing or overlapping that control.
+
+   Labels are available on hover in every note. Long documents can keep the
+   complete structural gutter visible by adding `heading-levels` to their
+   `cssclasses` property. Reading and Live Preview deliberately share the same
+   geometry and literal labels. Headings inside callouts and embeds are
+   excluded: their local container, not the document gutter, owns them. */
+.markdown-preview-view h1,
+.markdown-source-view.mod-cm6 .HyperMD-header-1 {
+  --b16-heading-level: 'H1';
+}
+
+.markdown-preview-view h2,
+.markdown-source-view.mod-cm6 .HyperMD-header-2 {
+  --b16-heading-level: 'H2';
+}
+
+.markdown-preview-view h3,
+.markdown-source-view.mod-cm6 .HyperMD-header-3 {
+  --b16-heading-level: 'H3';
+}
+
+.markdown-preview-view h4,
+.markdown-source-view.mod-cm6 .HyperMD-header-4 {
+  --b16-heading-level: 'H4';
+}
+
+.markdown-preview-view h5,
+.markdown-source-view.mod-cm6 .HyperMD-header-5 {
+  --b16-heading-level: 'H5';
+}
+
+.markdown-preview-view h6,
+.markdown-source-view.mod-cm6 .HyperMD-header-6 {
+  --b16-heading-level: 'H6';
+}
+
+.theme-dark
+  .markdown-preview-view
+  :is(h1, h2, h3, h4, h5, h6):not(.callout *, .markdown-embed *)::before,
+.theme-dark .markdown-source-view.mod-cm6 .cm-line.HyperMD-header:not(.HyperMD-quote)::before {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 2.4ch;
+  margin-left: calc(-2.4ch - var(--b16-heading-level-gutter));
+  margin-right: var(--b16-heading-level-gutter);
+  color: var(--b16-text-faint);
+  content: var(--b16-heading-level);
+  font-family: var(--font-monospace);
+  font-size: var(--b16-heading-level-size);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-align: right;
+  text-transform: uppercase;
+  vertical-align: middle;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Hover is an inspection state, so its single label can be easier to read.
+   Persistent labels stay at --b16-text-faint: a full page of them remains a
+   gutter, not a second column competing with the document. */
+.theme-dark
+  .markdown-preview-view
+  :is(h1, h2, h3, h4, h5, h6):not(.callout *, .markdown-embed *):hover::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .cm-line.HyperMD-header:not(.HyperMD-quote):hover::before {
+  color: var(--b16-text-muted);
+  opacity: 1;
+}
+
+.theme-dark
+  .markdown-preview-view.heading-levels
+  :is(h1, h2, h3, h4, h5, h6):not(.callout *, .markdown-embed *)::before,
+.theme-dark
+  .markdown-source-view.mod-cm6.heading-levels
+  .cm-line.HyperMD-header:not(.HyperMD-quote)::before {
+  opacity: 1;
+}
+
 /* Reading-mode rhythm. The upper gap encodes section rank; the lower gap is
    stable so every heading groups with the content it introduces. */
 .markdown-preview-view h1 {

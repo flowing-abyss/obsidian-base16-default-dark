@@ -169,6 +169,11 @@
   --b16-heading-gap-h3: calc(var(--font-text-size) * 2.1);
   --b16-heading-gap-h4: calc(var(--font-text-size) * 1.7);
   --b16-heading-gap-h5: calc(var(--font-text-size) * 1.5);
+  /* Heading depth is utility metadata, comparable to an IDE's line numbers:
+     legible when requested, subordinate to both the heading and body text.
+     The gutter offset leaves the native 20px fold control untouched. */
+  --b16-heading-level-size: calc(var(--font-text-size) * 0.55);
+  --b16-heading-level-gutter: calc(var(--font-text-size) * 1.4);
   /* h5/h6 are sans by design (labels, not prose) — set the input Obsidian
      already reads (--h5-font/--h6-font) instead of overriding the computed
      font-family on the heading rule itself. .theme-dark (0,1,0) also has to
