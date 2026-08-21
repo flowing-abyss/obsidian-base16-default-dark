@@ -3805,6 +3805,21 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
   max-width: max(250px, calc(var(--font-text-size) * 10.5));
 }
 
+/* Settings toggles communicate a binary state, not the theme accent. Use the
+   restrained semantic pair already present in Base16 while keeping disabled
+   controls neutral so “off” and “unavailable” remain distinct meanings. */
+.theme-dark .modal.mod-settings .checkbox-container {
+  box-shadow: none;
+}
+
+.theme-dark .modal.mod-settings .checkbox-container:not(.is-enabled, .is-disabled) {
+  background-color: var(--b16-status-error);
+}
+
+.theme-dark .modal.mod-settings .checkbox-container.is-enabled:not(.is-disabled) {
+  background-color: var(--b16-status-ok);
+}
+
 /* .theme-dark .modal .mv-picker-group-type is foreign (Metadata Validator
    plugin selector — the mv-* classes, distinct from Metadata Menu), kept
    here because it shares this exact declaration block with the modal
