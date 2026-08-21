@@ -1717,22 +1717,19 @@ ul > li::marker,
   overflow: hidden;
 }
 
-/* The header row is this block's title bar, so it takes the shared label
-   size — the same one a callout's type label and a code block's language
-   band use. Three blocks that stack in one document previously titled
-   themselves at three unrelated sizes. */
+/* A table header is data at the head of a column, not UI chrome. Keep it on
+   the same type size and line box as the body so labels and values form one
+   coherent grid; weight and the quiet surface shift provide the hierarchy. */
 .theme-dark .markdown-rendered thead {
   color: var(--b16-text-strong);
   background-color: var(--b16-surface-2);
   font-weight: 600;
 }
 
-/* On `thead` the size does not reach the cell: Obsidian declares its own
-   font-size on `.markdown-rendered th` (measured — the header stayed 20px
-   while thead computed 17px), and an explicit declaration on the child
-   beats an inherited value regardless of the parent's specificity. */
+/* Declare the body size on the cell itself because Obsidian also assigns th
+   an explicit size; inheritance from thead cannot override that declaration. */
 .theme-dark .markdown-rendered thead th {
-  font-size: var(--b16-label-size);
+  font-size: var(--font-text-size);
 }
 
 /* Obsidian's own `.markdown-rendered th, .markdown-rendered td` rule ships a
