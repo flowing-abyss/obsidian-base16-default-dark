@@ -74,7 +74,15 @@
   stroke-width: 1.5px !important;
 }
 
-.theme-dark .mermaid :is(marker, .marker, .arrowheadPath, #arrowhead path) {
+/* Arrowheads. Setting fill/stroke on the <marker> itself does nothing: SVG
+   presentation attributes on the children win, and Mermaid writes them.
+   Measured in a sequence diagram, whose markers carry no class at all —
+   `#…-arrowhead > path` came out rgb(51,51,51) and the stick heads
+   rgb(0,0,0), i.e. invisible on this theme's surfaces, while the flowchart's
+   classed markers were already correct. Targeting the shapes inside every
+   marker covers both, and needs no knowledge of Mermaid's id scheme. */
+.theme-dark .mermaid marker :is(path, circle, polygon, rect),
+.theme-dark .mermaid :is(.arrowheadPath, .arrowMarkerPath) {
   fill: var(--b16-text-normal) !important;
   stroke: var(--b16-text-normal) !important;
 }

@@ -8,16 +8,38 @@
    calendar while its track eats a band of the pane. That band is the "empty
    space" that appeared below the calendar.
 
-   The row wraps instead of overflowing, and takes the UI ramp so its parts
-   stay in proportion to the rest of the sidebar. That removes the cause, so
-   no `overflow-x: hidden` is needed here — and it should not be added: CSS
-   forces the other axis, so hiding the horizontal overflow would silently
-   turn the vertical axis into `auto` and put a scrollbar on a pane that
-   simply needs to be taller. */
+   Letting it wrap was the wrong fix and I made it: the row stopped
+   overflowing but the "today" control dropped onto a second line, which is
+   why the header looked knocked out of place, and the extra 34px of height
+   pushed the pane into a vertical scrollbar instead. Measured, the row is
+   only ~4px too wide for the pane, so one step down the UI ramp is enough
+   for it to sit on a single line at the sidebar widths this vault uses.
+
+   No `overflow-x: hidden` here either — that was also mine, and it was a
+   mask rather than a fix: CSS forces the other axis, so hiding the
+   horizontal overflow silently turns the vertical one into `auto` and puts
+   a scrollbar on a pane that merely needs to be taller. */
+/* The whole pane, not just the header. Raising the UI ramp so the sidebar
+   became readable also grew the date grid — its cells are em-based, so a
+   17px container gave 35px rows and a 233px table — and the pane stopped
+   fitting the height it had been dragged to, which is what put a scrollbar
+   down its side. A calendar is dense numeric data, the one surface in the
+   sidebar that legitimately sits lower on the ramp, so it takes the bottom
+   step and fits again. The middle step was tried first and measured 291px
+   against a 278px pane — still short — which is how the value was chosen
+   rather than guessed. */
+/* The pane's own 4px block padding is dead space around a grid that already
+   pads its cells, and reclaiming it is what finally closed the last few
+   pixels: the content needed 282px in a 278px pane. */
+.workspace-leaf-content[data-type='calendar'] .view-content {
+  font-size: var(--b16-font-ui-s);
+  padding-block: 0;
+}
+
 .workspace-leaf-content[data-type='calendar'] .nav {
-  flex-wrap: wrap;
-  row-gap: 0.3em;
-  font-size: var(--b16-font-ui-m);
+  font-size: var(--b16-font-ui-s);
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 
 /* CALENDAR BASES */

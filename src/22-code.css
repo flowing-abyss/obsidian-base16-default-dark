@@ -31,12 +31,19 @@
   border-radius: 0;
 }
 
+/* The fence rows carry the frame's top and bottom edges, so they carry its
+   corners too — otherwise live preview draws a square block beside reading
+   mode's rounded one. */
 .theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin {
   border-top: 1px solid var(--b16-border-strong);
+  border-start-start-radius: var(--b16-radius-s);
+  border-start-end-radius: var(--b16-radius-s);
 }
 
 .theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
   border-bottom: 1px solid var(--b16-border-strong);
+  border-end-start-radius: var(--b16-radius-s);
+  border-end-end-radius: var(--b16-radius-s);
 }
 
 /* Vertical rhythm. Measured before this rule: the header band was 29px, every
@@ -184,8 +191,14 @@
    A title, when present, replaces the language: if the author bothered to
    name the block, the name is the more useful label, and the language is
    still legible from the syntax colouring. */
+/* overflow: hidden is load-bearing, not tidiness. The header band is a
+   ::before with its own square corners painted on top of the pre's rounded
+   ones, so without clipping the block's two top corners render square while
+   the bottom two are rounded — which reads as "the code block has no
+   radius" even though it measures 4px. */
 .theme-dark .markdown-rendered pre[data-code-language] {
   padding: 0;
+  overflow: hidden;
 }
 
 .theme-dark .markdown-rendered pre[data-code-language]::before {

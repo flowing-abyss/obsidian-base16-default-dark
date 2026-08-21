@@ -225,7 +225,11 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
 .theme-dark
   :is(.embedded-backlinks, .embedded-similar-notes)
   :is(.tree-item-inner, .search-result-file-title) {
-  font-size: var(--font-text-size);
+  /* One step short of the reading size, not at it: taken all the way to
+     --font-text-size these measured exactly 20px and read as a second body
+     of text competing with the note above them. This is a list ABOUT the
+     note, not the note. */
+  font-size: var(--b16-font-ui-l);
 }
 
 .theme-dark
