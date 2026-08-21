@@ -102,6 +102,7 @@
      works on one. Consumed by a later task's ==highlight== and #tag
      styling; the search "flashing" and .tag rules already use them below. */
   --b16-highlight-bg: rgba(210, 185, 60, 0.25);
+  --b16-highlight-bg-hover: rgba(210, 185, 60, 0.32);
   --b16-tag-bg: rgba(134, 193, 185, 0.15);
 
   /* Micro-syntax: the same hues as the accents, deliberately quieter. It
@@ -1043,6 +1044,16 @@
   border-start-end-radius: 0;
   border-end-end-radius: 0;
   padding-right: 0;
+}
+
+/* This class exists only while Micropatches' optional highlight-copy setting
+   is on. Increase the existing semantic fill by one restrained alpha step;
+   the sibling rules keep a multi-span Live Preview highlight visually whole. */
+.theme-dark.micropatches-highlight-copy mark:hover,
+.theme-dark.micropatches-highlight-copy span.cm-highlight:hover,
+.theme-dark.micropatches-highlight-copy span.cm-highlight:has(~ span.cm-highlight:hover),
+.theme-dark.micropatches-highlight-copy span.cm-highlight:hover ~ span.cm-highlight {
+  background-color: var(--b16-highlight-bg-hover);
 }
 
 /* Horizontal rules */

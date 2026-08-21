@@ -261,6 +261,16 @@
   padding-right: 0;
 }
 
+/* This class exists only while Micropatches' optional highlight-copy setting
+   is on. Increase the existing semantic fill by one restrained alpha step;
+   the sibling rules keep a multi-span Live Preview highlight visually whole. */
+.theme-dark.micropatches-highlight-copy mark:hover,
+.theme-dark.micropatches-highlight-copy span.cm-highlight:hover,
+.theme-dark.micropatches-highlight-copy span.cm-highlight:has(~ span.cm-highlight:hover),
+.theme-dark.micropatches-highlight-copy span.cm-highlight:hover ~ span.cm-highlight {
+  background-color: var(--b16-highlight-bg-hover);
+}
+
 /* Horizontal rules */
 /* Horizontal rules. The colour is safe to set on the bare element, but the
    spacing is NOT: Obsidian builds its pane resize handles out of <hr> too
