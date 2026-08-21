@@ -3036,6 +3036,42 @@ ul > li::marker,
 
 /* ===== 30-editor.css ===== */
 
+/* Optional line numbers are structural metadata, not document content. CM6
+   normally keeps its gutter in the same flex row as the note, narrowing and
+   shifting every line while the inline title stays put. Once the line-number
+   gutter exists, take it out of flow and place it before the heading fold
+   control; the content then keeps exactly the same reading edge as it has
+   when the setting is disabled. The gutter's intrinsic width still adapts to
+   the document's digit count. Mobile and full-width editors keep CM6's native
+   in-flow layout because they do not guarantee a spare column outside the
+   text measure. */
+body:not(.is-mobile).theme-dark
+  .markdown-source-view.mod-cm6.is-readable-line-width
+  .cm-contentContainer:has(> .cm-gutters > .cm-lineNumbers) {
+  position: relative;
+
+  > .cm-gutters {
+    position: absolute;
+    inset-inline-start: auto;
+    inset-inline-end: calc(100% + var(--b16-heading-fold-offset) + 4px);
+    inline-size: max-content;
+    margin-inline-end: 0;
+  }
+
+  > .cm-content {
+    inline-size: 100%;
+  }
+
+  /* Do not stack two coordinate systems in the same narrow utility column.
+     With line numbers enabled they are the precise locator; heading depth
+     stays encoded by the type hierarchy and the native fold control. Without
+     that gutter this whole block does not match, so the H1-H6 labels retain
+     their existing hover/persistent behaviour unchanged. */
+  .cm-line.HyperMD-header:not(.HyperMD-quote)::before {
+    display: none;
+  }
+}
+
 /* Properties */
 body {
   --metadata-label-width: 5em;
