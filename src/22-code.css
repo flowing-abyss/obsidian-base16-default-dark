@@ -347,6 +347,27 @@
   pointer-events: none;
 }
 
+/* Obsidian's copy button is sized for an unlabelled pre and therefore uses a
+   6px margin plus 6px vertical padding. Inside our 36px header that puts the
+   24px icon below the band's centre and partly into the code body. Give the
+   action the header's exact height and the same 17px inline inset as the body.
+   It remains visible in both modes: a persistent, muted action is clearer than
+   making the non-interactive `</>` glyph look like the only control. */
+.theme-dark .markdown-rendered pre[data-code-language] > .copy-code-button {
+  top: 0;
+  right: calc(var(--font-text-size) * 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: calc(var(--b16-block-header-height) - 1px);
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  color: var(--b16-text-muted);
+}
+
 /* The body's padding moves onto the code element, since the pre now owns
    the band. 0.7em block matches the live-preview block's top pad. */
 .theme-dark .markdown-rendered pre[data-code-language] > code {
@@ -363,7 +384,9 @@
    the wording, face, size, tracking and band geometry identical.
 
    The native flair stays in the DOM as the native-label fallback when
-   Micropatches is absent; it is hidden only when the shared attribute exists. */
+   Micropatches is absent. With the shared attribute present its text is
+   visually replaced by a copy icon, but the native element and its click
+   handler remain intact. */
 .theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin[data-code-language] {
   padding-inline-start: calc(var(--b16-label-size) * 0.75);
   border-bottom: 1px solid var(--b16-border-strong);
@@ -376,7 +399,41 @@
   .markdown-source-view.mod-cm6
   .HyperMD-codeblock-begin[data-code-language]
   .code-block-flair {
-  visibility: hidden;
+  right: calc(var(--font-text-size) * 0.85);
+  left: auto;
+  top: 0;
+  bottom: 0;
+  justify-content: center;
+  width: 24px;
+  gap: 0;
+  color: var(--b16-text-muted);
+  font-size: 0;
+  visibility: visible;
+  cursor: pointer;
+}
+
+/* Reuse Obsidian's native clickable flair rather than drawing a decorative
+   lookalike with no behaviour. The mask is the same Lucide `copy` geometry
+   used by Reading mode; currentColor supplies the theme token at paint time. */
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-language]
+  .code-block-flair::before {
+  content: '';
+  width: 24px;
+  height: 24px;
+  background-color: currentcolor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='8' y='8' width='14' height='14' rx='2' ry='2'/%3E%3Cpath d='M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='8' y='8' width='14' height='14' rx='2' ry='2'/%3E%3Cpath d='M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+}
+
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-language]
+  .code-block-flair::after {
+  content: none;
 }
 
 .theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin[data-code-language]::before {
@@ -401,6 +458,24 @@
   font-weight: 600;
   line-height: 1;
   pointer-events: none;
+}
+
+/* While the opening fence is being edited, its literal ```language is the
+   only truthful label. Remove the generated label and code glyph for that
+   one state so the language is never shown twice; the real copy action at
+   the opposite edge remains available. */
+.theme-dark .markdown-source-view.mod-cm6 .cm-active.HyperMD-codeblock-begin[data-code-language] {
+  padding-inline-start: calc(var(--font-text-size) * 0.85);
+}
+
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .cm-active.HyperMD-codeblock-begin[data-code-language]::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .cm-active.HyperMD-codeblock-begin[data-code-language]::after {
+  content: none;
+  display: none;
 }
 
 /* Preserve conventional language names after dropping all-caps. Most names
