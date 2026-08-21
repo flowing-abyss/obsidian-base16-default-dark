@@ -245,6 +245,8 @@
    the text colour on source order. Removing either half regresses one of
    the two live-preview properties. */
 .theme-dark :is(mark, span.cm-highlight) {
+  --b16-highlight-keyline-current: transparent;
+
   color: var(--b16-text-strong);
   background-color: var(--b16-highlight-bg);
   border: none;
@@ -256,6 +258,7 @@
 .theme-dark mark {
   border-radius: var(--b16-radius-s);
   padding: 0.05em 0.2em;
+  box-shadow: inset 0 0 0 1px var(--b16-highlight-keyline-current);
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
@@ -282,8 +285,32 @@
    The :has() is cheap: it is anchored on .cm-highlight, which exists only
    where the reader wrote a highlight, not on every line in the document. */
 .theme-dark span.cm-highlight {
+  --b16-highlight-keyline-left: transparent;
+  --b16-highlight-keyline-right: transparent;
+
   border-radius: var(--b16-radius-s);
   padding: 0.05em 0.25em;
+  box-shadow:
+    inset 1px 0 0 var(--b16-highlight-keyline-left),
+    inset -1px 0 0 var(--b16-highlight-keyline-right),
+    inset 0 1px 0 var(--b16-highlight-keyline-current),
+    inset 0 -1px 0 var(--b16-highlight-keyline-current);
+}
+
+/* The visible `==` is editing syntax, not highlighted content. Keeping it
+   neutral preserves the source affordance without turning both ends of the
+   band into decorative badges. The nested punctuation spans inherit this
+   colour through the semantic micro-syntax stand-down rule below. */
+.theme-dark span.cm-formatting-highlight.cm-highlight {
+  color: var(--b16-text-muted);
+}
+
+.theme-dark span.cm-highlight:not(.cm-highlight ~ .cm-highlight) {
+  --b16-highlight-keyline-left: var(--b16-highlight-keyline-current);
+}
+
+.theme-dark span.cm-highlight:not(:has(~ span.cm-highlight)) {
+  --b16-highlight-keyline-right: var(--b16-highlight-keyline-current);
 }
 
 .theme-dark span.cm-highlight ~ span.cm-highlight {
@@ -299,9 +326,10 @@
 }
 
 /* This class exists only while Micropatches' optional highlight-copy setting
-   is on. A restrained fill step plus one continuous lower keyline communicates
-   the copy action without inverting the whole band into a bright control. The
-   sibling rules keep a multi-span Live Preview highlight visually whole. */
+   is on. Hover leaves the semantic yellow almost still and adds a neutral,
+   one-pixel boundary. That reads as an available action without promoting a
+   short annotation into a button. The sibling rules keep a multi-span Live
+   Preview highlight visually whole. */
 .theme-dark.micropatches-highlight-copy mark:hover,
 .theme-dark.micropatches-highlight-copy
   span:where(
@@ -309,27 +337,19 @@
     .cm-highlight:has(~ .cm-highlight:hover),
     .cm-highlight:hover ~ .cm-highlight
   ) {
+  --b16-highlight-keyline-current: var(--b16-border-strong);
+
   background-color: var(--b16-highlight-bg-hover);
-  box-shadow: inset 0 -1px 0 var(--b16-highlight-keyline);
-  color: var(--b16-text-strong);
   cursor: copy;
 }
 
-.theme-dark.micropatches-highlight-copy mark:hover * {
-  color: var(--b16-text-strong);
-}
-
-/* Optional highlight copying uses the same local confirmation language: a
-   single, brief increase of the highlight's existing semantic fill. */
+/* Successful copying briefly strengthens the same neutral boundary and takes
+   one small fill step. No hue inversion or animation is needed. */
 .theme-dark.micropatches-highlight-copy
   :is(mark, span.cm-highlight).is-micropatches-copy-confirmed {
-  background-color: var(--b16-highlight-bg-confirmed);
-  box-shadow: inset 0 -1px 0 var(--b16-highlight-keyline);
-  color: var(--b16-text-strong);
-}
+  --b16-highlight-keyline-current: var(--b16-text-faint);
 
-.theme-dark.micropatches-highlight-copy mark.is-micropatches-copy-confirmed * {
-  color: var(--b16-text-strong);
+  background-color: var(--b16-highlight-bg-confirmed);
 }
 
 /* Horizontal rules */
