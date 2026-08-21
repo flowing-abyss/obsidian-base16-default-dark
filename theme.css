@@ -3560,6 +3560,40 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
   font-size: var(--b16-font-ui-l) !important;
 }
 
+/* The active session in the history list. The plugin outlines it with a
+   partial box — 1px on top and right, 2px on the left, and the list's own
+   divider underneath — so the marker reads as a rendering glitch rather
+   than as a selection. This theme already has one marker for "you are
+   here", used for the active Longform scene and the active file elsewhere:
+   an inset rail in the link hue over the inset-block surface. Same marker
+   here, and the list's bottom divider is left alone. */
+/* The second selector matches the plugin's own
+   `.claudian-session-sidebar .claudian-history-item.active`, which sets
+   `background: transparent` at the same (0,3,0) this rule would otherwise
+   have — measured, the fill lost while the rail landed. */
+.theme-dark .claudian-history-item.active,
+.theme-dark .claudian-session-sidebar .claudian-history-item.active {
+  border-top-width: 0;
+  border-right-width: 0;
+  border-left-width: 0;
+  background-color: var(--b16-surface-1);
+  box-shadow: inset 2px 0 0 var(--b16-accent-link);
+}
+
+/* The user's own message. The plugin fills it with `rgba(0, 0, 0, 0.3)`,
+   which on this theme's page lands at roughly #111 — DARKER than the
+   surface behind it, so the reader's turn read as a hole rather than as a
+   block, and barely separated from the assistant's turn beside it.
+
+   A chat turn is an inset block: the same kind of object as a quote, a
+   callout body or a code block, all of which sit on surface-1, one step
+   LIGHTER than the page. Same fill and the same small radius here, so the
+   panel belongs to the same system as the note beside it. */
+.theme-dark .claudian-message-user {
+  background-color: var(--b16-surface-1);
+  border-radius: var(--b16-radius-s);
+}
+
 /* The panes at the foot of a note — backlinks, and the Hybrid Search
    "similar notes" list — are lists of note titles, the same material a
    Bases row or a search result holds. They are content the reader scans,
