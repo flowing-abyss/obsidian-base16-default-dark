@@ -31,6 +31,21 @@
   --b16-status-error: #ab4642; /* red */
   --b16-status-ok: #a1b56c; /* green */
   --b16-status-warn: #f7ca88; /* yellow */
+
+  /* Canvas palette — preserve the Base16 hues and chroma, but equalise
+     perceptual lightness. The canonical colours range from OKLCH 0.53
+     (red) to 0.86 (yellow), so the native picker made one colour disappear
+     while another dominated. Canvas uses colour for peer categories, not
+     for an alert hierarchy: peers need comparable visual weight. Yellow
+     and cyan retain a fractional lightness lift so they still read as their
+     named hues instead of ochre and teal on the dark surface. */
+  --b16-canvas-red: oklch(from var(--b16-status-error) 69% c h);
+  --b16-canvas-orange: oklch(from var(--b16-accent-code) 69% c h);
+  --b16-canvas-yellow: oklch(from var(--b16-status-warn) 72% c h);
+  --b16-canvas-green: oklch(from var(--b16-status-ok) 69% c h);
+  --b16-canvas-cyan: oklch(from var(--b16-accent-tag) 70% c h);
+  --b16-canvas-purple: oklch(from var(--b16-accent-link-ext) 69% c h);
+
   /* A missing note is pending work, not an error. Mixing the warning hue
      with faint text keeps that meaning legible without giving an unresolved
      link the visual weight of a warning banner. */

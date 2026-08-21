@@ -73,6 +73,21 @@
   --b16-status-error: #ab4642; /* red */
   --b16-status-ok: #a1b56c; /* green */
   --b16-status-warn: #f7ca88; /* yellow */
+
+  /* Canvas palette — preserve the Base16 hues and chroma, but equalise
+     perceptual lightness. The canonical colours range from OKLCH 0.53
+     (red) to 0.86 (yellow), so the native picker made one colour disappear
+     while another dominated. Canvas uses colour for peer categories, not
+     for an alert hierarchy: peers need comparable visual weight. Yellow
+     and cyan retain a fractional lightness lift so they still read as their
+     named hues instead of ochre and teal on the dark surface. */
+  --b16-canvas-red: oklch(from var(--b16-status-error) 69% c h);
+  --b16-canvas-orange: oklch(from var(--b16-accent-code) 69% c h);
+  --b16-canvas-yellow: oklch(from var(--b16-status-warn) 72% c h);
+  --b16-canvas-green: oklch(from var(--b16-status-ok) 69% c h);
+  --b16-canvas-cyan: oklch(from var(--b16-accent-tag) 70% c h);
+  --b16-canvas-purple: oklch(from var(--b16-accent-link-ext) 69% c h);
+
   /* A missing note is pending work, not an error. Mixing the warning hue
      with faint text keeps that meaning legible without giving an unresolved
      link the visual weight of a warning banner. */
@@ -3045,6 +3060,20 @@ ul > li::marker,
   --shadow-border-accent: 0 0 0 1px var(--b16-accent-link);
 }
 
+/* Obsidian's six picker colours are peer categories. Feed it the
+   lightness-balanced Canvas variants instead of the raw semantic palette;
+   custom colours remain untouched. The declarations live on the theme root
+   so the picker menu, which Obsidian portals outside .canvas-wrapper, sees
+   exactly the same colours as the nodes and edges. */
+.theme-dark {
+  --canvas-color-1: var(--b16-canvas-red);
+  --canvas-color-2: var(--b16-canvas-orange);
+  --canvas-color-3: var(--b16-canvas-yellow);
+  --canvas-color-4: var(--b16-canvas-green);
+  --canvas-color-5: var(--b16-canvas-cyan);
+  --canvas-color-6: var(--b16-canvas-purple);
+}
+
 /* Keep the drafting grid available for alignment without allowing it to
    become texture. This touches one SVG pattern, not every dot separately. */
 .theme-dark .canvas-background circle {
@@ -3067,7 +3096,10 @@ ul > li::marker,
 }
 
 .theme-dark .canvas-node.is-themed .canvas-node-content {
-  background-color: color-mix(in srgb, var(--canvas-color) 4%, var(--b16-surface-1));
+  /* Broad low-alpha colour fields looked muddy on the dark surface,
+     especially in red, yellow and green. The border already carries the
+     category; keeping the reading surface neutral protects long-form text. */
+  background-color: var(--b16-surface-1);
 }
 
 /* Hover says “movable” with one contrast step; it does not introduce a

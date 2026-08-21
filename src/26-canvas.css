@@ -7,6 +7,20 @@
   --shadow-border-accent: 0 0 0 1px var(--b16-accent-link);
 }
 
+/* Obsidian's six picker colours are peer categories. Feed it the
+   lightness-balanced Canvas variants instead of the raw semantic palette;
+   custom colours remain untouched. The declarations live on the theme root
+   so the picker menu, which Obsidian portals outside .canvas-wrapper, sees
+   exactly the same colours as the nodes and edges. */
+.theme-dark {
+  --canvas-color-1: var(--b16-canvas-red);
+  --canvas-color-2: var(--b16-canvas-orange);
+  --canvas-color-3: var(--b16-canvas-yellow);
+  --canvas-color-4: var(--b16-canvas-green);
+  --canvas-color-5: var(--b16-canvas-cyan);
+  --canvas-color-6: var(--b16-canvas-purple);
+}
+
 /* Keep the drafting grid available for alignment without allowing it to
    become texture. This touches one SVG pattern, not every dot separately. */
 .theme-dark .canvas-background circle {
@@ -29,7 +43,10 @@
 }
 
 .theme-dark .canvas-node.is-themed .canvas-node-content {
-  background-color: color-mix(in srgb, var(--canvas-color) 4%, var(--b16-surface-1));
+  /* Broad low-alpha colour fields looked muddy on the dark surface,
+     especially in red, yellow and green. The border already carries the
+     category; keeping the reading surface neutral protects long-form text. */
+  background-color: var(--b16-surface-1);
 }
 
 /* Hover says “movable” with one contrast step; it does not introduce a
