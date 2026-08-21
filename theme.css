@@ -976,15 +976,19 @@
    The :has() is cheap: it is anchored on .cm-highlight, which exists only
    where the reader wrote a highlight, not on every line in the document. */
 .theme-dark span.cm-highlight {
-  border-radius: 0;
+  border-radius: var(--b16-radius-s);
   padding: 0.05em 0.25em;
 }
 
 .theme-dark span.cm-highlight ~ span.cm-highlight {
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
   padding-left: 0;
 }
 
 .theme-dark span.cm-highlight:has(~ span.cm-highlight) {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
   padding-right: 0;
 }
 
