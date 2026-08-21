@@ -48,6 +48,14 @@ body.theme-dark {
    fill and almost-white text. A keyline, not a shadow, separates them from
    the workspace — the same construction used by the theme's other floating
    panels. Notices take the medium UI step; tooltips stay one step smaller. */
+.theme-dark:not(.is-phone) .notice-container {
+  /* Obsidian already places the container 22px below the viewport and then
+     adds 10px of inner padding, but leaves its inline edge at zero. Mirror
+     that 22px inset on the right so the visible notice lands 32px from both
+     edges. Keep the native padding: it clips notice motion and spaces stacks. */
+  inset-inline-end: 22px;
+}
+
 .theme-dark .notice {
   max-width: min(360px, calc(100vw - 24px));
   margin-bottom: 8px;
