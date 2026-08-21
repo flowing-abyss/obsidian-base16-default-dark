@@ -1683,11 +1683,15 @@ ul > li::marker,
 
 /* ===== 21-tables.css ===== */
 
-/* table center */
-.markdown-preview-view table,
-.is-live-preview table {
-  margin-left: auto;
-  margin-right: auto;
+/* A data table continues the document's reading edge. Centring a compact
+   table breaks that vertical axis and makes the eye reacquire the first
+   column on every encounter. Keep intrinsic width, but anchor Markdown
+   tables to inline-start in both modes. The editor selector deliberately
+   stops at table widgets so plugin UI tables are left alone. */
+.theme-dark .markdown-preview-view.markdown-rendered table,
+.theme-dark .markdown-source-view.mod-cm6.is-live-preview .cm-table-widget table {
+  margin-inline-start: 0;
+  margin-inline-end: auto;
 }
 
 /* Frame: a rounded rectangle around the whole table, not a per-cell grid.
