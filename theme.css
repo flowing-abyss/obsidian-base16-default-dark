@@ -463,6 +463,16 @@
   line-height: var(--b16-flow-gap);
 }
 
+/* Compact spacing must not make the editor harder to operate. Obsidian's
+   caret is one tight line (1.3 text em, measured at 26px in the reference
+   vault), while the resting flow gap above is only 17px. Give an active blank
+   row exactly enough room to contain the caret. As soon as text replaces the
+   <br>, this selector stops matching and the ordinary 1.62 prose line returns. */
+.theme-dark .markdown-source-view.mod-cm6 .cm-line.cm-active:not([class*='HyperMD']):has(> br) {
+  min-height: calc(var(--font-text-size) * 1.3);
+  line-height: var(--line-height-tight);
+}
+
 .is-mobile.theme-dark {
   --background-primary: var(--b16-surface-0) !important;
   --background-secondary: var(--b16-surface-0) !important;
