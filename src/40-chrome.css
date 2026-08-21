@@ -43,6 +43,58 @@ body.theme-dark {
   border-radius: var(--b16-radius-s);
 }
 
+/* Transient chrome. Notices and tooltips are both short-lived information
+   surfaces, so they share one quiet material instead of Obsidian's near-black
+   fill and almost-white text. A keyline, not a shadow, separates them from
+   the workspace — the same construction used by the theme's other floating
+   panels. Notices take the medium UI step; tooltips stay one step smaller. */
+.theme-dark .notice {
+  max-width: min(360px, calc(100vw - 24px));
+  margin-bottom: 8px;
+  padding: 8px 11px;
+  color: var(--b16-text-normal);
+  background-color: var(--b16-surface-2);
+  border: 1px solid var(--b16-border-normal);
+  border-radius: var(--b16-radius-s);
+  box-shadow: none;
+  font-size: var(--b16-font-ui-m);
+  line-height: 1.3;
+}
+
+.theme-dark .tooltip {
+  max-width: min(360px, calc(100vw - 16px));
+  padding: 4px 8px;
+  color: var(--b16-text-normal);
+  background-color: var(--b16-surface-2);
+  border: 1px solid var(--b16-border-normal);
+  border-radius: var(--b16-radius-s);
+  box-shadow: none;
+  font-size: var(--b16-font-ui-s);
+  line-height: 1.3;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Obsidian draws tooltip pointers from one coloured CSS border. Keep the
+   pointer — it identifies the control being described — but make every
+   orientation use the same surface as the tooltip body. */
+.theme-dark .tooltip.mod-right .tooltip-arrow {
+  border-right-color: var(--b16-surface-2);
+}
+
+.theme-dark .tooltip.mod-left .tooltip-arrow {
+  border-left-color: var(--b16-surface-2);
+}
+
+.theme-dark .tooltip.mod-top .tooltip-arrow {
+  border-top-color: var(--b16-surface-2);
+}
+
+.theme-dark .tooltip.mod-bottom .tooltip-arrow {
+  border-bottom-color: var(--b16-surface-2);
+}
+
 /* Context menu (right-click dropdown) */
 .theme-dark .menu-scroll * {
   font-size: var(--b16-font-ui-s);
