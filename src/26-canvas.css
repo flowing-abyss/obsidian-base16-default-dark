@@ -118,24 +118,35 @@
   line-height: 1.25;
 }
 
-/* Floating Canvas chrome uses the same single raised surface as the rest of
-   the theme. Controls retain their native hit targets and mobile behaviour;
-   only the desktop creation strip is made denser. */
-.theme-dark :is(.canvas-control-group, .canvas-menu) {
-  background-color: var(--b16-surface-1);
+/* Keep permanent controls visually continuous with the Canvas. The contextual
+   menu remains raised because it temporarily overlays content. */
+.theme-dark .canvas-control-group {
+  background-color: var(--b16-surface-0);
   border-color: var(--b16-border-normal);
   border-radius: var(--b16-radius-s);
   box-shadow: none;
 }
 
 .theme-dark .canvas-control-item {
-  color: var(--b16-text-faint);
-  background-color: var(--b16-surface-1);
+  color: var(--b16-text-muted);
+  background-color: transparent;
   border-color: var(--b16-border-faint);
 }
 
-.theme-dark :is(.canvas-control-item, .canvas-menu .clickable-icon):hover,
+.theme-dark .canvas-control-item:hover,
 .theme-dark .canvas-control-item.is-active {
+  color: var(--b16-text-strong);
+  background-color: var(--b16-surface-2);
+}
+
+.theme-dark .canvas-menu {
+  background-color: var(--b16-surface-1);
+  border-color: var(--b16-border-normal);
+  border-radius: var(--b16-radius-s);
+  box-shadow: none;
+}
+
+.theme-dark .canvas-menu .clickable-icon:hover {
   color: var(--b16-text-normal);
   background-color: var(--b16-surface-2);
 }
