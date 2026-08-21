@@ -3261,6 +3261,14 @@ ul > li::marker,
   background-color: var(--b16-surface-2);
 }
 
+/* Arrowheads encode direction, so they need one more contrast step than the
+   edge they terminate. Keep them neutral: node and group colours retain the
+   semantic emphasis even when arrows are enabled on a dense graph. */
+.theme-dark .graph-view.color-arrow {
+  color: var(--b16-text-muted);
+  opacity: 0.82;
+}
+
 /* ===== 30-editor.css ===== */
 
 /* Optional line numbers are structural metadata, not document content. CM6
