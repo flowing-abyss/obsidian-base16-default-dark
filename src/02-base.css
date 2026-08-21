@@ -15,6 +15,51 @@
   font-weight: var(--font-weight);
 }
 
+/* Vertical content rhythm.
+
+   Reading mode puts each rendered block in its own `.el-*` wrapper. Margins
+   on children in neighbouring wrappers cannot collapse, so the native 17px
+   paragraph margin plus a table's own 17px margin became a 34px hole. The
+   wrapper now owns the single gap and the direct child contributes none.
+
+   A heading is different: its bottom margin already owns the relationship
+   with the content it introduces, so the following wrapper must not add a
+   second gap. Section-start margins remain in 10-headings.css. */
+.theme-dark
+  .markdown-preview-section
+  > :is(.el-p, .el-table, .el-pre, .el-blockquote, .el-ul, .el-ol, .el-div) {
+  margin-block-start: var(--b16-flow-gap);
+}
+
+.theme-dark
+  .markdown-preview-section
+  > :is(.el-h1, .el-h2, .el-h3, .el-h4, .el-h5, .el-h6)
+  + :is(.el-p, .el-table, .el-pre, .el-blockquote, .el-ul, .el-ol, .el-div) {
+  margin-block-start: 0;
+}
+
+.theme-dark .markdown-preview-section > .el-p > p,
+.theme-dark .markdown-preview-section > .el-table > table,
+.theme-dark .markdown-preview-section > .el-pre > pre,
+.theme-dark .markdown-preview-section > .el-blockquote > blockquote,
+.theme-dark .markdown-preview-section > .el-ul > ul,
+.theme-dark .markdown-preview-section > .el-ol > ol,
+.theme-dark .markdown-preview-section > .el-div > :is(.callout, .math-block) {
+  margin-block: 0;
+}
+
+/* In Live Preview a Markdown blank line is a real CodeMirror line box. Its
+   inherited 1.62 line-height made it 32.4px at the reference size — almost
+   exactly the same doubled gap as Reading mode. Only plain blank rows are
+   compacted: fenced code, quotes, lists, frontmatter and other HyperMD rows
+   keep the geometry required by their own renderers. :where() deliberately
+   keeps this selector weak so the heading-specific 20px row in
+   10-headings.css wins later in the cascade. */
+.theme-dark .markdown-source-view.mod-cm6 :where(.cm-line:not([class*='HyperMD']):has(> br)) {
+  min-height: var(--b16-flow-gap);
+  line-height: var(--b16-flow-gap);
+}
+
 .is-mobile.theme-dark {
   --background-primary: var(--b16-surface-0) !important;
   --background-secondary: var(--b16-surface-0) !important;

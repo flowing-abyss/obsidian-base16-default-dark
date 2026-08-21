@@ -3,7 +3,7 @@
 .theme-dark .markdown-rendered pre {
   background-color: var(--code-background);
   border: 1px solid var(--b16-border-normal);
-  border-radius: 2px;
+  border-radius: var(--b16-radius-s);
   padding: 12px;
 }
 
@@ -11,7 +11,7 @@
 .theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock {
   background-color: var(--code-background);
   border: none;
-  border-radius: 2px;
+  border-radius: var(--b16-radius-s);
   padding: 12px;
 }
 
@@ -113,7 +113,13 @@
 .theme-dark
   .markdown-source-view.mod-cm6
   .HyperMD-codeblock-begin:not(:has(.code-block-flair > svg)) {
+  display: flex;
+  align-items: center;
+  min-height: var(--b16-block-header-height);
+  padding-block: 0;
   background-color: var(--b16-surface-2);
+  box-sizing: border-box;
+  line-height: var(--b16-label-line-height);
 }
 
 /* The language label. Obsidian ships it as an absolutely positioned chip in
@@ -131,6 +137,7 @@
   bottom: 0;
   display: flex;
   align-items: center;
+  gap: 0.6em;
   padding: 0;
   border-radius: 0;
   background: transparent;
@@ -139,7 +146,18 @@
      measured 14.4px where the shared label size is 17px. Declared here, on
      the rule that already matches app.css's shape, so the band's label is
      the same size as a callout's and a table's. */
+  font-family: var(--font-interface-theme, var(--font-text));
   font-size: var(--b16-label-size);
+  font-weight: 600;
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .code-block-flair::before {
+  content: '</>';
+  color: var(--b16-text-muted);
+  font-family: var(--font-monospace);
+  font-size: 0.72em;
+  font-weight: 600;
+  line-height: 1;
 }
 
 .theme-dark .markdown-source-view.mod-cm6 .code-block-flair:hover {
@@ -150,38 +168,24 @@
 .theme-dark .code-block-flair {
   color: var(--b16-text-muted);
   font-size: var(--b16-label-size);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: capitalize;
 }
 
-/* A fenced block with no language has no grammar and therefore no tokens:
-   there is no contrast to protect. Semantically it is verbatim text rather
-   than code, so it takes the ordinary block surface, like a quote or a
-   callout — not the darker, framed treatment reserved for blocks that
-   actually carry highlighted tokens. */
-/* A fence with no language is not a code block, it is verbatim text: it
-   gets no grammar, no tokens and no syntax colours, so there is nothing for
-   a frame to protect and nothing for a header band to name. The ChatGPT
-   theme this palette comes from makes exactly this distinction — a
-   language-tagged block is a framed card with a header on base00, a bare
-   fence is a plain base01 fill — and the reason is the same in both: a
-   frame around content that carries no structure is decoration.
-
-   So: surface-1 fill, no border, the shared radius. Same shape as an inline
-   code chip, one size up, which is what a bare fence actually is. */
+/* A bare fence has no grammar and therefore no syntax tokens whose contrast
+   needs protecting on base00. Keep it deliberately simpler than real code:
+   one ordinary block surface, no frame and no language band — the same
+   semantic distinction used by the companion ChatGPT theme. */
 .theme-dark .markdown-rendered pre:not([class]) {
   background-color: var(--b16-surface-1);
   border: none;
   border-radius: var(--b16-radius-s);
 }
 
-/* Live preview's begin line for a languageless block takes the same block
-   surface as reading mode's whole block — which happens to be the same
-   value the header band above uses (both are base01), so a languageless
-   block's begin line is visually identical to a language-tagged one's; the
-   label text (present vs. copy-button-only) is what actually communicates
-   the difference. The body stays on --b16-surface-0 via the unconditional
-   rule above, same as every other block — see the comment above for why. */
+/* Live preview exposes the missing language only on the begin-line flair;
+   the body remains a series of ungrouped CodeMirror siblings. Keep the
+   existing surface fallback here without pretending CSS can wrap an
+   arbitrary multi-line fence into reading view's single simple block. */
 .theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin:has(.code-block-flair > svg) {
   background-color: var(--b16-surface-2);
 }
@@ -196,12 +200,12 @@
 
    The Micropatches `code-block-title` patch writes the fence's language and
    its optional `title:` onto the block as data attributes in both modes,
-   which `attr()` can print. Everything below is conditional on those
-   attributes: with the patch absent or disabled, none of these rules match
-   and the block falls back to the framed, bordered treatment above — which
+   which `attr()` can print. The language and title rules below are
+   conditional on those attributes: with the patch absent or disabled, a
+   language block falls back to the framed, bordered treatment above — which
    is the shape that ships to other people's vaults, so it has to stand on
-   its own. It does: a bounded card with a visible frame, just without a
-   name on it.
+   its own. It does: a bounded card with a visible frame, just without a name
+   on it. Bare fences remain the separate, simpler treatment above.
 
    A title, when present, replaces the language: if the author bothered to
    name the block, the name is the more useful label, and the language is
@@ -212,28 +216,47 @@
    the bottom two are rounded — which reads as "the code block has no
    radius" even though it measures 4px. */
 .theme-dark .markdown-rendered pre[data-code-language] {
+  position: relative;
   padding: 0;
   overflow: hidden;
 }
 
 .theme-dark .markdown-rendered pre[data-code-language]::before {
   content: attr(data-code-language);
-  display: block;
-  padding: 0.35em 0.75em;
+  display: flex;
+  align-items: center;
+  min-height: calc(var(--b16-block-header-height) - 1px);
+  padding: 0 0.75em 0 2.65em;
   background-color: var(--b16-surface-2);
   border-bottom: 1px solid var(--b16-border-strong);
+  box-sizing: border-box;
   color: var(--b16-text-muted);
-  font-family: var(--font-monospace);
+  font-family: var(--font-interface-theme, var(--font-text));
   font-size: var(--b16-label-size);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-weight: 600;
+  line-height: var(--b16-label-line-height);
+  letter-spacing: 0;
+  text-transform: capitalize;
 }
 
-.theme-dark .markdown-rendered pre[data-code-title]::before {
-  content: attr(data-code-title);
-  color: var(--b16-text-normal);
-  letter-spacing: 0;
-  text-transform: none;
+/* A small code glyph identifies the band without turning the language into
+   a shouty badge. It is a separate pseudo-element so it can stay 72% of the
+   label size; putting `</>` into the label's content would force both pieces
+   to share one size and recreate the visual weight this pass removes. */
+.theme-dark .markdown-rendered pre[data-code-language]::after {
+  content: '</>';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: calc(var(--b16-label-size) * 0.75);
+  display: flex;
+  align-items: center;
+  height: calc(var(--b16-block-header-height) - 1px);
+  color: var(--b16-text-muted);
+  font-family: var(--font-monospace);
+  font-size: calc(var(--b16-label-size) * 0.72);
+  font-weight: 600;
+  line-height: 1;
+  pointer-events: none;
 }
 
 /* The body's padding moves onto the code element, since the pre now owns
@@ -244,23 +267,140 @@
   overflow-x: auto;
 }
 
-/* Live preview already has a band — the begin line — and a label in it, so
-   only the title case needs anything: the flair keeps its place in the
-   layout (hiding it would shift nothing, but removing it would let the
-   copy affordance move) while the title prints at the band's inline start,
-   where the label would be. */
+/* Live preview and reading view must not derive the same label from two
+   different sources. Obsidian expands aliases in its native flair (`js` →
+   `JavaScript`), while reading view prints Micropatches' raw attribute
+   (`js`), and the flair inherits the UI sans face while reading mode uses
+   mono. Print the shared data attribute in both modes instead: this makes
+   the wording, face, size, tracking and band geometry identical.
+
+   The native flair stays in the DOM as the native-label fallback when
+   Micropatches is absent; it is hidden only when the shared attribute exists. */
+.theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin[data-code-language] {
+  padding-inline-start: calc(var(--b16-label-size) * 0.75);
+  border-bottom: 1px solid var(--b16-border-strong);
+  font-family: var(--font-interface-theme, var(--font-text));
+  font-size: var(--b16-label-size);
+  font-weight: 600;
+}
+
 .theme-dark
   .markdown-source-view.mod-cm6
-  .HyperMD-codeblock-begin[data-code-title]
+  .HyperMD-codeblock-begin[data-code-language]
   .code-block-flair {
   visibility: hidden;
 }
 
+.theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin[data-code-language]::before {
+  content: attr(data-code-language);
+  margin-inline-start: calc(var(--b16-label-size) * 1.9);
+  color: var(--b16-text-muted);
+  letter-spacing: 0;
+  text-transform: capitalize;
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin[data-code-language]::after {
+  content: '</>';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: calc(var(--b16-label-size) * 0.75);
+  display: flex;
+  align-items: center;
+  height: calc(var(--b16-block-header-height) - 1px);
+  color: var(--b16-text-muted);
+  font-family: var(--font-monospace);
+  font-size: calc(var(--b16-label-size) * 0.72);
+  font-weight: 600;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* Preserve conventional language names after dropping all-caps. Most names
+   become correct through `capitalize`; only aliases and acronyms need an
+   explicit display label. The same selectors feed both rendering modes. */
+.theme-dark .markdown-rendered pre[data-code-language='js']::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-language='js']::before {
+  content: 'JavaScript';
+}
+
+.theme-dark .markdown-rendered pre[data-code-language='ts']::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-language='ts']::before {
+  content: 'TypeScript';
+}
+
+.theme-dark .markdown-rendered pre[data-code-language='css']::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-language='css']::before {
+  content: 'CSS';
+}
+
+.theme-dark .markdown-rendered pre[data-code-language='html']::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-language='html']::before {
+  content: 'HTML';
+}
+
+.theme-dark .markdown-rendered pre[data-code-language='xml']::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-language='xml']::before {
+  content: 'XML';
+}
+
+.theme-dark .markdown-rendered pre[data-code-language='json']::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-language='json']::before {
+  content: 'JSON';
+}
+
+.theme-dark .markdown-rendered pre[data-code-language='yaml']::before,
+.theme-dark .markdown-rendered pre[data-code-language='yml']::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-language='yaml']::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-language='yml']::before {
+  content: 'YAML';
+}
+
+.theme-dark .markdown-rendered pre[data-code-language='sql']::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-language='sql']::before {
+  content: 'SQL';
+}
+
+.theme-dark .markdown-rendered pre[data-code-language='jsx']::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-language='jsx']::before {
+  content: 'JSX';
+}
+
+.theme-dark .markdown-rendered pre[data-code-language='tsx']::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-language='tsx']::before {
+  content: 'TSX';
+}
+
+/* A user-authored title remains more informative than the normalized
+   language name, so it follows the alias table and wins the same cascade in
+   both modes. */
+.theme-dark .markdown-rendered pre[data-code-title]::before,
 .theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin[data-code-title]::before {
   content: attr(data-code-title);
   color: var(--b16-text-normal);
-  font-family: var(--font-monospace);
-  font-size: var(--b16-label-size);
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 /* Syntax highlighting for code blocks. `pre[class*='language-']` here used to

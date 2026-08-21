@@ -72,6 +72,20 @@
   padding: var(--b16-table-cell-padding);
 }
 
+/* The table frame contributes the top edge and each th contributes the
+   bottom divider. Subtract both 1px edges from the wrapper so the complete
+   visible header — outer top through divider — matches the shared block
+   header height. min-height lets an unusually long heading wrap instead of
+   clipping while ordinary one-line headers remain compact. */
+.theme-dark .markdown-source-view.mod-cm6 .cm-table-widget thead .table-cell-wrapper,
+.theme-dark .markdown-preview-view thead .table-cell-wrapper {
+  display: flex;
+  align-items: center;
+  min-height: calc(var(--b16-block-header-height) - 2px);
+  padding-block: 0;
+  line-height: var(--b16-label-line-height);
+}
+
 /* Column rules are deliberately fainter than row rules: they guide the eye
    along a row, they are not there to draw a grid. */
 .theme-dark .markdown-rendered :is(th, td):not(:last-child) {

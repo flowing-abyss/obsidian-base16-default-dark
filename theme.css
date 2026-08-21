@@ -123,6 +123,16 @@
      Anchoring to the reading size makes all three literally equal. */
   --b16-label-size: calc(var(--font-text-size) * 0.85);
 
+  /* A title bar is one compact component regardless of whether it labels a
+     callout, a table or a code block. 1.8 × the reading size is 36px in the
+     reference vault: enough for a 17px label and its icon without letting a
+     structural band compete with prose. The shared line-height makes the
+     label baseline agree as well as the outer height. Consumers with a 1px
+     outer frame subtract that edge so the visible top-to-divider measure
+     still resolves to this token. */
+  --b16-label-line-height: 1.3;
+  --b16-block-header-height: calc(var(--font-text-size) * 1.8);
+
   /* One inner padding for every block that sets content apart from the
      prose — a quote, a callout's body, a code block's body. Measured before
      this token existed: a quote padded 18/22px sat next to a code block
@@ -134,6 +144,16 @@
      values render as unequal pixels and the blocks stop matching precisely
      where the reader compares them. */
   --b16-block-padding: calc(var(--font-text-size) * 0.65) calc(var(--font-text-size) * 0.85);
+
+  /* One vertical step between adjacent pieces of note content. Obsidian's
+     reading renderer wraps every paragraph/table/code block in a separate
+     .el-* div, so the children's native 0.85em margins do not collapse: a
+     paragraph followed by a table accumulated 17px + 17px at the 20px
+     reference size. Live Preview represented the same source blank line as
+     a full 32.4px editor row. Owning the gap at the wrapper/blank-line layer
+     makes both modes resolve to the same single 17px step. Headings keep
+     their separate 20px text-side gap above. */
+  --b16-flow-gap: calc(var(--font-text-size) * 0.85);
 
   /* One table cell padding, consumed by both modes — reading mode puts it on
      the cell, live preview on the .table-cell-wrapper inside it, because
@@ -171,6 +191,23 @@
   --h4-size: 1em;
   --h5-size: 0.92em;
   --h6-size: 0.92em;
+
+  /* Heading rhythm is measured against body text, not against each heading's
+     own font size. An `em` margin on h1 is otherwise much larger in pixels
+     than the same margin on h5 for two simultaneous reasons (larger type and
+     larger multiplier), which makes the scale collapse abruptly at the low
+     levels. The section gap deliberately shrinks by rank while the text-side
+     gap stays one quiet body em: every heading belongs to what follows it.
+
+     64 / 52 / 42 / 34 / 30px at the 20px reference size. These sit close to
+     two body line boxes at h1, then descend without the old 60px -> 38px ->
+     25px cliff. Both reading mode and Live Preview consume the same tokens. */
+  --b16-heading-gap-after: var(--font-text-size);
+  --b16-heading-gap-h1: calc(var(--font-text-size) * 3.2);
+  --b16-heading-gap-h2: calc(var(--font-text-size) * 2.6);
+  --b16-heading-gap-h3: calc(var(--font-text-size) * 2.1);
+  --b16-heading-gap-h4: calc(var(--font-text-size) * 1.7);
+  --b16-heading-gap-h5: calc(var(--font-text-size) * 1.5);
   /* h5/h6 are sans by design (labels, not prose) — set the input Obsidian
      already reads (--h5-font/--h6-font) instead of overriding the computed
      font-family on the heading rule itself. .theme-dark (0,1,0) also has to
@@ -380,6 +417,51 @@
   font-weight: var(--font-weight);
 }
 
+/* Vertical content rhythm.
+
+   Reading mode puts each rendered block in its own `.el-*` wrapper. Margins
+   on children in neighbouring wrappers cannot collapse, so the native 17px
+   paragraph margin plus a table's own 17px margin became a 34px hole. The
+   wrapper now owns the single gap and the direct child contributes none.
+
+   A heading is different: its bottom margin already owns the relationship
+   with the content it introduces, so the following wrapper must not add a
+   second gap. Section-start margins remain in 10-headings.css. */
+.theme-dark
+  .markdown-preview-section
+  > :is(.el-p, .el-table, .el-pre, .el-blockquote, .el-ul, .el-ol, .el-div) {
+  margin-block-start: var(--b16-flow-gap);
+}
+
+.theme-dark
+  .markdown-preview-section
+  > :is(.el-h1, .el-h2, .el-h3, .el-h4, .el-h5, .el-h6)
+  + :is(.el-p, .el-table, .el-pre, .el-blockquote, .el-ul, .el-ol, .el-div) {
+  margin-block-start: 0;
+}
+
+.theme-dark .markdown-preview-section > .el-p > p,
+.theme-dark .markdown-preview-section > .el-table > table,
+.theme-dark .markdown-preview-section > .el-pre > pre,
+.theme-dark .markdown-preview-section > .el-blockquote > blockquote,
+.theme-dark .markdown-preview-section > .el-ul > ul,
+.theme-dark .markdown-preview-section > .el-ol > ol,
+.theme-dark .markdown-preview-section > .el-div > :is(.callout, .math-block) {
+  margin-block: 0;
+}
+
+/* In Live Preview a Markdown blank line is a real CodeMirror line box. Its
+   inherited 1.62 line-height made it 32.4px at the reference size — almost
+   exactly the same doubled gap as Reading mode. Only plain blank rows are
+   compacted: fenced code, quotes, lists, frontmatter and other HyperMD rows
+   keep the geometry required by their own renderers. :where() deliberately
+   keeps this selector weak so the heading-specific 20px row in
+   10-headings.css wins later in the cascade. */
+.theme-dark .markdown-source-view.mod-cm6 :where(.cm-line:not([class*='HyperMD']):has(> br)) {
+  min-height: var(--b16-flow-gap);
+  line-height: var(--b16-flow-gap);
+}
+
 .is-mobile.theme-dark {
   --background-primary: var(--b16-surface-0) !important;
   --background-secondary: var(--b16-surface-0) !important;
@@ -541,21 +623,121 @@
   color: var(--b16-text-faint);
 }
 
-/* Air above each level, distinct per level */
+/* Reading-mode rhythm. The upper gap encodes section rank; the lower gap is
+   stable so every heading groups with the content it introduces. */
 .markdown-preview-view h1 {
-  margin-block: 2.2em 0.5em;
+  --heading-spacing: var(--b16-heading-gap-h1);
+
+  margin-block: var(--b16-heading-gap-h1) var(--b16-heading-gap-after);
 }
 .markdown-preview-view h2 {
-  margin-block: 2em 0.5em;
+  --heading-spacing: var(--b16-heading-gap-h2);
+
+  margin-block: var(--b16-heading-gap-h2) var(--b16-heading-gap-after);
 }
 .markdown-preview-view h3 {
-  margin-block: 1.6em 0.45em;
+  --heading-spacing: var(--b16-heading-gap-h3);
+
+  margin-block: var(--b16-heading-gap-h3) var(--b16-heading-gap-after);
 }
-.markdown-preview-view :is(h4, h5, h6) {
-  margin-block: 1.25em 0.4em;
+.markdown-preview-view h4 {
+  --heading-spacing: var(--b16-heading-gap-h4);
+
+  margin-block: var(--b16-heading-gap-h4) var(--b16-heading-gap-after);
+}
+.markdown-preview-view :is(h5, h6) {
+  --heading-spacing: var(--b16-heading-gap-h5);
+
+  margin-block: var(--b16-heading-gap-h5) var(--b16-heading-gap-after);
 }
 .markdown-preview-view > :first-child:is(h1, h2, h3, h4, h5, h6) {
   margin-block-start: 0;
+}
+
+/* Live Preview renders markdown blank lines as real 32.4px CodeMirror rows,
+   whereas reading mode collapses margins. Leaving those rows untouched made
+   both sides of a heading exactly one body line: structurally neutral, so the
+   heading no longer grouped with the text below it.
+
+   Give every heading the same before/after tokens as reading mode. When the
+   source contains a blank line next to it, that editable row owns the 20px
+   text-side unit and the heading contributes only the remainder. Directly
+   adjacent headings work too: the following heading owns the full section
+   gap, matching collapsed reading-mode margins. Only visible CM6 line nodes
+   are inspected, keeping the relational selectors local to the editor's
+   window rather than to the document or app. */
+.theme-dark .markdown-source-view.mod-cm6 .cm-line.HyperMD-header {
+  --b16-heading-gap-before: var(--b16-heading-gap-h5);
+
+  padding-block-start: var(--b16-heading-gap-before);
+  padding-block-end: var(--b16-heading-gap-after);
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .cm-line.HyperMD-header-1 {
+  --b16-heading-gap-before: var(--b16-heading-gap-h1);
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .cm-line.HyperMD-header-2 {
+  --b16-heading-gap-before: var(--b16-heading-gap-h2);
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .cm-line.HyperMD-header-3 {
+  --b16-heading-gap-before: var(--b16-heading-gap-h3);
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .cm-line.HyperMD-header-4 {
+  --b16-heading-gap-before: var(--b16-heading-gap-h4);
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .cm-line:has(> br):has(+ .HyperMD-header),
+.theme-dark .markdown-source-view.mod-cm6 .cm-line.HyperMD-header + .cm-line:has(> br) {
+  min-height: var(--b16-heading-gap-after);
+  line-height: var(--b16-heading-gap-after);
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .cm-line:has(> br) + .cm-line.HyperMD-header {
+  padding-block-start: calc(var(--b16-heading-gap-before) - var(--b16-heading-gap-after));
+}
+
+/* Obsidian has a dedicated physical `padding-top: 0` rule for
+   heading -> blank line -> heading. It is more specific than the logical
+   declaration above and otherwise flattens the hierarchy precisely in a
+   heading stack. Repeat the same token calculation on that real DOM shape;
+   using padding-top here is intentional because it overrides the native
+   physical property rather than relying on logical/physical alias order. */
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .cm-line.HyperMD-header
+  + .cm-line:has(> br)
+  + .cm-line.HyperMD-header {
+  padding-top: calc(var(--b16-heading-gap-before) - var(--b16-heading-gap-after));
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .cm-line.HyperMD-header:has(+ .cm-line > br),
+.theme-dark .markdown-source-view.mod-cm6 .cm-line.HyperMD-header:has(+ .HyperMD-header) {
+  padding-block-end: 0;
+}
+
+/* The first section has no previous prose to separate from. Do not infer it
+   from "no earlier mounted heading": CM6 windowing removes off-screen lines
+   and would make the first heading in every viewport look like the document's
+   first. Only frontmatter proves that we are at the real document start:
+   either its visible final line or Obsidian's collapsed-frontmatter widget.
+   Plain :first-child shapes are intentionally absent because the virtual
+   renderer can produce those at any scroll position. */
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .cm-content
+  > .HyperMD-frontmatter
+  + .cm-line:has(> br)
+  + .cm-line.HyperMD-header,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .cm-content
+  > :first-child:not(.cm-line, .cm-gap)
+  + .cm-line:has(> br)
+  + .cm-line.HyperMD-header {
+  padding-block-start: 0;
 }
 
 .inline-title {
@@ -1204,12 +1386,10 @@ ul > li::marker,
 
 /* Live preview has no blockquote element at all: CodeMirror renders every
    quoted line as its own .cm-line.HyperMD-quote sibling. Block padding and
-   a border radius therefore repeat once per line — the radius stacking into
-   a visible sawtooth down the right edge, the padding pushing consecutive
-   lines apart — which is exactly what the previous shared rule produced.
-   Only inline padding composes correctly across sibling line boxes, so that
-   is all this rule sets at full strength; the square corners are the same
-   ones the rest of the theme uses, so dropping the radius costs nothing.
+   a border radius therefore cannot repeat on every line — the radius stacks
+   into a visible sawtooth down the right edge, while the padding pushes
+   consecutive lines apart. Only inline padding composes correctly across
+   sibling line boxes, so the continuous middle of the quote stays square.
 
    The small block padding that remains is deliberate and behaves
    differently from the inline kind: sibling line boxes stack with no margin
@@ -1227,6 +1407,21 @@ ul > li::marker,
   padding-inline: calc(var(--font-text-size) * 0.85);
   font-style: normal;
   opacity: 1;
+}
+
+/* Reconstruct the shell's four tiny corners from the only boundaries CM6
+   exposes: the first quote line is not immediately preceded by another
+   quote line, and the last is not immediately followed by one. Interior
+   siblings remain square, so a multi-line quote reads as one 4px frame —
+   the same shell as reading mode — rather than as a stack of rounded rows. */
+.theme-dark .HyperMD-quote:not(.HyperMD-quote + .HyperMD-quote) {
+  border-start-start-radius: var(--b16-radius-s);
+  border-start-end-radius: var(--b16-radius-s);
+}
+
+.theme-dark .HyperMD-quote:not(:has(+ .HyperMD-quote)) {
+  border-end-start-radius: var(--b16-radius-s);
+  border-end-end-radius: var(--b16-radius-s);
 }
 
 .theme-dark .markdown-rendered blockquote > :first-child {
@@ -1287,12 +1482,14 @@ ul > li::marker,
   display: flex;
   align-items: center;
   gap: 0.5em;
+  min-height: var(--b16-block-header-height);
   margin: 0;
-  padding: 0.4em 0.9em;
+  padding: 0 0.9em;
   background-color: color-mix(in srgb, var(--callout-color) 12%, transparent);
   color: var(--callout-color);
   font-size: var(--b16-label-size);
   font-weight: 700 !important;
+  line-height: var(--b16-label-line-height);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -1555,6 +1752,20 @@ ul > li::marker,
   padding: var(--b16-table-cell-padding);
 }
 
+/* The table frame contributes the top edge and each th contributes the
+   bottom divider. Subtract both 1px edges from the wrapper so the complete
+   visible header — outer top through divider — matches the shared block
+   header height. min-height lets an unusually long heading wrap instead of
+   clipping while ordinary one-line headers remain compact. */
+.theme-dark .markdown-source-view.mod-cm6 .cm-table-widget thead .table-cell-wrapper,
+.theme-dark .markdown-preview-view thead .table-cell-wrapper {
+  display: flex;
+  align-items: center;
+  min-height: calc(var(--b16-block-header-height) - 2px);
+  padding-block: 0;
+  line-height: var(--b16-label-line-height);
+}
+
 /* Column rules are deliberately fainter than row rules: they guide the eye
    along a row, they are not there to draw a grid. */
 .theme-dark .markdown-rendered :is(th, td):not(:last-child) {
@@ -1593,7 +1804,7 @@ ul > li::marker,
 .theme-dark .markdown-rendered pre {
   background-color: var(--code-background);
   border: 1px solid var(--b16-border-normal);
-  border-radius: 2px;
+  border-radius: var(--b16-radius-s);
   padding: 12px;
 }
 
@@ -1601,7 +1812,7 @@ ul > li::marker,
 .theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock {
   background-color: var(--code-background);
   border: none;
-  border-radius: 2px;
+  border-radius: var(--b16-radius-s);
   padding: 12px;
 }
 
@@ -1703,7 +1914,13 @@ ul > li::marker,
 .theme-dark
   .markdown-source-view.mod-cm6
   .HyperMD-codeblock-begin:not(:has(.code-block-flair > svg)) {
+  display: flex;
+  align-items: center;
+  min-height: var(--b16-block-header-height);
+  padding-block: 0;
   background-color: var(--b16-surface-2);
+  box-sizing: border-box;
+  line-height: var(--b16-label-line-height);
 }
 
 /* The language label. Obsidian ships it as an absolutely positioned chip in
@@ -1721,6 +1938,7 @@ ul > li::marker,
   bottom: 0;
   display: flex;
   align-items: center;
+  gap: 0.6em;
   padding: 0;
   border-radius: 0;
   background: transparent;
@@ -1729,7 +1947,18 @@ ul > li::marker,
      measured 14.4px where the shared label size is 17px. Declared here, on
      the rule that already matches app.css's shape, so the band's label is
      the same size as a callout's and a table's. */
+  font-family: var(--font-interface-theme, var(--font-text));
   font-size: var(--b16-label-size);
+  font-weight: 600;
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .code-block-flair::before {
+  content: '</>';
+  color: var(--b16-text-muted);
+  font-family: var(--font-monospace);
+  font-size: 0.72em;
+  font-weight: 600;
+  line-height: 1;
 }
 
 .theme-dark .markdown-source-view.mod-cm6 .code-block-flair:hover {
@@ -1740,38 +1969,24 @@ ul > li::marker,
 .theme-dark .code-block-flair {
   color: var(--b16-text-muted);
   font-size: var(--b16-label-size);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: capitalize;
 }
 
-/* A fenced block with no language has no grammar and therefore no tokens:
-   there is no contrast to protect. Semantically it is verbatim text rather
-   than code, so it takes the ordinary block surface, like a quote or a
-   callout — not the darker, framed treatment reserved for blocks that
-   actually carry highlighted tokens. */
-/* A fence with no language is not a code block, it is verbatim text: it
-   gets no grammar, no tokens and no syntax colours, so there is nothing for
-   a frame to protect and nothing for a header band to name. The ChatGPT
-   theme this palette comes from makes exactly this distinction — a
-   language-tagged block is a framed card with a header on base00, a bare
-   fence is a plain base01 fill — and the reason is the same in both: a
-   frame around content that carries no structure is decoration.
-
-   So: surface-1 fill, no border, the shared radius. Same shape as an inline
-   code chip, one size up, which is what a bare fence actually is. */
+/* A bare fence has no grammar and therefore no syntax tokens whose contrast
+   needs protecting on base00. Keep it deliberately simpler than real code:
+   one ordinary block surface, no frame and no language band — the same
+   semantic distinction used by the companion ChatGPT theme. */
 .theme-dark .markdown-rendered pre:not([class]) {
   background-color: var(--b16-surface-1);
   border: none;
   border-radius: var(--b16-radius-s);
 }
 
-/* Live preview's begin line for a languageless block takes the same block
-   surface as reading mode's whole block — which happens to be the same
-   value the header band above uses (both are base01), so a languageless
-   block's begin line is visually identical to a language-tagged one's; the
-   label text (present vs. copy-button-only) is what actually communicates
-   the difference. The body stays on --b16-surface-0 via the unconditional
-   rule above, same as every other block — see the comment above for why. */
+/* Live preview exposes the missing language only on the begin-line flair;
+   the body remains a series of ungrouped CodeMirror siblings. Keep the
+   existing surface fallback here without pretending CSS can wrap an
+   arbitrary multi-line fence into reading view's single simple block. */
 .theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin:has(.code-block-flair > svg) {
   background-color: var(--b16-surface-2);
 }
@@ -1786,12 +2001,12 @@ ul > li::marker,
 
    The Micropatches `code-block-title` patch writes the fence's language and
    its optional `title:` onto the block as data attributes in both modes,
-   which `attr()` can print. Everything below is conditional on those
-   attributes: with the patch absent or disabled, none of these rules match
-   and the block falls back to the framed, bordered treatment above — which
+   which `attr()` can print. The language and title rules below are
+   conditional on those attributes: with the patch absent or disabled, a
+   language block falls back to the framed, bordered treatment above — which
    is the shape that ships to other people's vaults, so it has to stand on
-   its own. It does: a bounded card with a visible frame, just without a
-   name on it.
+   its own. It does: a bounded card with a visible frame, just without a name
+   on it. Bare fences remain the separate, simpler treatment above.
 
    A title, when present, replaces the language: if the author bothered to
    name the block, the name is the more useful label, and the language is
@@ -1802,28 +2017,47 @@ ul > li::marker,
    the bottom two are rounded — which reads as "the code block has no
    radius" even though it measures 4px. */
 .theme-dark .markdown-rendered pre[data-code-language] {
+  position: relative;
   padding: 0;
   overflow: hidden;
 }
 
 .theme-dark .markdown-rendered pre[data-code-language]::before {
   content: attr(data-code-language);
-  display: block;
-  padding: 0.35em 0.75em;
+  display: flex;
+  align-items: center;
+  min-height: calc(var(--b16-block-header-height) - 1px);
+  padding: 0 0.75em 0 2.65em;
   background-color: var(--b16-surface-2);
   border-bottom: 1px solid var(--b16-border-strong);
+  box-sizing: border-box;
   color: var(--b16-text-muted);
-  font-family: var(--font-monospace);
+  font-family: var(--font-interface-theme, var(--font-text));
   font-size: var(--b16-label-size);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-weight: 600;
+  line-height: var(--b16-label-line-height);
+  letter-spacing: 0;
+  text-transform: capitalize;
 }
 
-.theme-dark .markdown-rendered pre[data-code-title]::before {
-  content: attr(data-code-title);
-  color: var(--b16-text-normal);
-  letter-spacing: 0;
-  text-transform: none;
+/* A small code glyph identifies the band without turning the language into
+   a shouty badge. It is a separate pseudo-element so it can stay 72% of the
+   label size; putting `</>` into the label's content would force both pieces
+   to share one size and recreate the visual weight this pass removes. */
+.theme-dark .markdown-rendered pre[data-code-language]::after {
+  content: '</>';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: calc(var(--b16-label-size) * 0.75);
+  display: flex;
+  align-items: center;
+  height: calc(var(--b16-block-header-height) - 1px);
+  color: var(--b16-text-muted);
+  font-family: var(--font-monospace);
+  font-size: calc(var(--b16-label-size) * 0.72);
+  font-weight: 600;
+  line-height: 1;
+  pointer-events: none;
 }
 
 /* The body's padding moves onto the code element, since the pre now owns
@@ -1834,23 +2068,140 @@ ul > li::marker,
   overflow-x: auto;
 }
 
-/* Live preview already has a band — the begin line — and a label in it, so
-   only the title case needs anything: the flair keeps its place in the
-   layout (hiding it would shift nothing, but removing it would let the
-   copy affordance move) while the title prints at the band's inline start,
-   where the label would be. */
+/* Live preview and reading view must not derive the same label from two
+   different sources. Obsidian expands aliases in its native flair (`js` →
+   `JavaScript`), while reading view prints Micropatches' raw attribute
+   (`js`), and the flair inherits the UI sans face while reading mode uses
+   mono. Print the shared data attribute in both modes instead: this makes
+   the wording, face, size, tracking and band geometry identical.
+
+   The native flair stays in the DOM as the native-label fallback when
+   Micropatches is absent; it is hidden only when the shared attribute exists. */
+.theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin[data-code-language] {
+  padding-inline-start: calc(var(--b16-label-size) * 0.75);
+  border-bottom: 1px solid var(--b16-border-strong);
+  font-family: var(--font-interface-theme, var(--font-text));
+  font-size: var(--b16-label-size);
+  font-weight: 600;
+}
+
 .theme-dark
   .markdown-source-view.mod-cm6
-  .HyperMD-codeblock-begin[data-code-title]
+  .HyperMD-codeblock-begin[data-code-language]
   .code-block-flair {
   visibility: hidden;
 }
 
+.theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin[data-code-language]::before {
+  content: attr(data-code-language);
+  margin-inline-start: calc(var(--b16-label-size) * 1.9);
+  color: var(--b16-text-muted);
+  letter-spacing: 0;
+  text-transform: capitalize;
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin[data-code-language]::after {
+  content: '</>';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: calc(var(--b16-label-size) * 0.75);
+  display: flex;
+  align-items: center;
+  height: calc(var(--b16-block-header-height) - 1px);
+  color: var(--b16-text-muted);
+  font-family: var(--font-monospace);
+  font-size: calc(var(--b16-label-size) * 0.72);
+  font-weight: 600;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* Preserve conventional language names after dropping all-caps. Most names
+   become correct through `capitalize`; only aliases and acronyms need an
+   explicit display label. The same selectors feed both rendering modes. */
+.theme-dark .markdown-rendered pre[data-code-language='js']::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-language='js']::before {
+  content: 'JavaScript';
+}
+
+.theme-dark .markdown-rendered pre[data-code-language='ts']::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-language='ts']::before {
+  content: 'TypeScript';
+}
+
+.theme-dark .markdown-rendered pre[data-code-language='css']::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-language='css']::before {
+  content: 'CSS';
+}
+
+.theme-dark .markdown-rendered pre[data-code-language='html']::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-language='html']::before {
+  content: 'HTML';
+}
+
+.theme-dark .markdown-rendered pre[data-code-language='xml']::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-language='xml']::before {
+  content: 'XML';
+}
+
+.theme-dark .markdown-rendered pre[data-code-language='json']::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-language='json']::before {
+  content: 'JSON';
+}
+
+.theme-dark .markdown-rendered pre[data-code-language='yaml']::before,
+.theme-dark .markdown-rendered pre[data-code-language='yml']::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-language='yaml']::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-language='yml']::before {
+  content: 'YAML';
+}
+
+.theme-dark .markdown-rendered pre[data-code-language='sql']::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-language='sql']::before {
+  content: 'SQL';
+}
+
+.theme-dark .markdown-rendered pre[data-code-language='jsx']::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-language='jsx']::before {
+  content: 'JSX';
+}
+
+.theme-dark .markdown-rendered pre[data-code-language='tsx']::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-language='tsx']::before {
+  content: 'TSX';
+}
+
+/* A user-authored title remains more informative than the normalized
+   language name, so it follows the alias table and wins the same cascade in
+   both modes. */
+.theme-dark .markdown-rendered pre[data-code-title]::before,
 .theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin[data-code-title]::before {
   content: attr(data-code-title);
   color: var(--b16-text-normal);
-  font-family: var(--font-monospace);
-  font-size: var(--b16-label-size);
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 /* Syntax highlighting for code blocks. `pre[class*='language-']` here used to

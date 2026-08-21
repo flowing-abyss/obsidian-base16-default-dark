@@ -125,21 +125,121 @@
   color: var(--b16-text-faint);
 }
 
-/* Air above each level, distinct per level */
+/* Reading-mode rhythm. The upper gap encodes section rank; the lower gap is
+   stable so every heading groups with the content it introduces. */
 .markdown-preview-view h1 {
-  margin-block: 2.2em 0.5em;
+  --heading-spacing: var(--b16-heading-gap-h1);
+
+  margin-block: var(--b16-heading-gap-h1) var(--b16-heading-gap-after);
 }
 .markdown-preview-view h2 {
-  margin-block: 2em 0.5em;
+  --heading-spacing: var(--b16-heading-gap-h2);
+
+  margin-block: var(--b16-heading-gap-h2) var(--b16-heading-gap-after);
 }
 .markdown-preview-view h3 {
-  margin-block: 1.6em 0.45em;
+  --heading-spacing: var(--b16-heading-gap-h3);
+
+  margin-block: var(--b16-heading-gap-h3) var(--b16-heading-gap-after);
 }
-.markdown-preview-view :is(h4, h5, h6) {
-  margin-block: 1.25em 0.4em;
+.markdown-preview-view h4 {
+  --heading-spacing: var(--b16-heading-gap-h4);
+
+  margin-block: var(--b16-heading-gap-h4) var(--b16-heading-gap-after);
+}
+.markdown-preview-view :is(h5, h6) {
+  --heading-spacing: var(--b16-heading-gap-h5);
+
+  margin-block: var(--b16-heading-gap-h5) var(--b16-heading-gap-after);
 }
 .markdown-preview-view > :first-child:is(h1, h2, h3, h4, h5, h6) {
   margin-block-start: 0;
+}
+
+/* Live Preview renders markdown blank lines as real 32.4px CodeMirror rows,
+   whereas reading mode collapses margins. Leaving those rows untouched made
+   both sides of a heading exactly one body line: structurally neutral, so the
+   heading no longer grouped with the text below it.
+
+   Give every heading the same before/after tokens as reading mode. When the
+   source contains a blank line next to it, that editable row owns the 20px
+   text-side unit and the heading contributes only the remainder. Directly
+   adjacent headings work too: the following heading owns the full section
+   gap, matching collapsed reading-mode margins. Only visible CM6 line nodes
+   are inspected, keeping the relational selectors local to the editor's
+   window rather than to the document or app. */
+.theme-dark .markdown-source-view.mod-cm6 .cm-line.HyperMD-header {
+  --b16-heading-gap-before: var(--b16-heading-gap-h5);
+
+  padding-block-start: var(--b16-heading-gap-before);
+  padding-block-end: var(--b16-heading-gap-after);
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .cm-line.HyperMD-header-1 {
+  --b16-heading-gap-before: var(--b16-heading-gap-h1);
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .cm-line.HyperMD-header-2 {
+  --b16-heading-gap-before: var(--b16-heading-gap-h2);
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .cm-line.HyperMD-header-3 {
+  --b16-heading-gap-before: var(--b16-heading-gap-h3);
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .cm-line.HyperMD-header-4 {
+  --b16-heading-gap-before: var(--b16-heading-gap-h4);
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .cm-line:has(> br):has(+ .HyperMD-header),
+.theme-dark .markdown-source-view.mod-cm6 .cm-line.HyperMD-header + .cm-line:has(> br) {
+  min-height: var(--b16-heading-gap-after);
+  line-height: var(--b16-heading-gap-after);
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .cm-line:has(> br) + .cm-line.HyperMD-header {
+  padding-block-start: calc(var(--b16-heading-gap-before) - var(--b16-heading-gap-after));
+}
+
+/* Obsidian has a dedicated physical `padding-top: 0` rule for
+   heading -> blank line -> heading. It is more specific than the logical
+   declaration above and otherwise flattens the hierarchy precisely in a
+   heading stack. Repeat the same token calculation on that real DOM shape;
+   using padding-top here is intentional because it overrides the native
+   physical property rather than relying on logical/physical alias order. */
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .cm-line.HyperMD-header
+  + .cm-line:has(> br)
+  + .cm-line.HyperMD-header {
+  padding-top: calc(var(--b16-heading-gap-before) - var(--b16-heading-gap-after));
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .cm-line.HyperMD-header:has(+ .cm-line > br),
+.theme-dark .markdown-source-view.mod-cm6 .cm-line.HyperMD-header:has(+ .HyperMD-header) {
+  padding-block-end: 0;
+}
+
+/* The first section has no previous prose to separate from. Do not infer it
+   from "no earlier mounted heading": CM6 windowing removes off-screen lines
+   and would make the first heading in every viewport look like the document's
+   first. Only frontmatter proves that we are at the real document start:
+   either its visible final line or Obsidian's collapsed-frontmatter widget.
+   Plain :first-child shapes are intentionally absent because the virtual
+   renderer can produce those at any scroll position. */
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .cm-content
+  > .HyperMD-frontmatter
+  + .cm-line:has(> br)
+  + .cm-line.HyperMD-header,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .cm-content
+  > :first-child:not(.cm-line, .cm-gap)
+  + .cm-line:has(> br)
+  + .cm-line.HyperMD-header {
+  padding-block-start: 0;
 }
 
 .inline-title {

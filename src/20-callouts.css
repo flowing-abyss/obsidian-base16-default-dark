@@ -47,12 +47,14 @@
   display: flex;
   align-items: center;
   gap: 0.5em;
+  min-height: var(--b16-block-header-height);
   margin: 0;
-  padding: 0.4em 0.9em;
+  padding: 0 0.9em;
   background-color: color-mix(in srgb, var(--callout-color) 12%, transparent);
   color: var(--callout-color);
   font-size: var(--b16-label-size);
   font-weight: 700 !important;
+  line-height: var(--b16-label-line-height);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }

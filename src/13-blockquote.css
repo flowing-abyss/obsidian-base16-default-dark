@@ -30,12 +30,10 @@
 
 /* Live preview has no blockquote element at all: CodeMirror renders every
    quoted line as its own .cm-line.HyperMD-quote sibling. Block padding and
-   a border radius therefore repeat once per line — the radius stacking into
-   a visible sawtooth down the right edge, the padding pushing consecutive
-   lines apart — which is exactly what the previous shared rule produced.
-   Only inline padding composes correctly across sibling line boxes, so that
-   is all this rule sets at full strength; the square corners are the same
-   ones the rest of the theme uses, so dropping the radius costs nothing.
+   a border radius therefore cannot repeat on every line — the radius stacks
+   into a visible sawtooth down the right edge, while the padding pushes
+   consecutive lines apart. Only inline padding composes correctly across
+   sibling line boxes, so the continuous middle of the quote stays square.
 
    The small block padding that remains is deliberate and behaves
    differently from the inline kind: sibling line boxes stack with no margin
@@ -53,6 +51,21 @@
   padding-inline: calc(var(--font-text-size) * 0.85);
   font-style: normal;
   opacity: 1;
+}
+
+/* Reconstruct the shell's four tiny corners from the only boundaries CM6
+   exposes: the first quote line is not immediately preceded by another
+   quote line, and the last is not immediately followed by one. Interior
+   siblings remain square, so a multi-line quote reads as one 4px frame —
+   the same shell as reading mode — rather than as a stack of rounded rows. */
+.theme-dark .HyperMD-quote:not(.HyperMD-quote + .HyperMD-quote) {
+  border-start-start-radius: var(--b16-radius-s);
+  border-start-end-radius: var(--b16-radius-s);
+}
+
+.theme-dark .HyperMD-quote:not(:has(+ .HyperMD-quote)) {
+  border-end-start-radius: var(--b16-radius-s);
+  border-end-end-radius: var(--b16-radius-s);
 }
 
 .theme-dark .markdown-rendered blockquote > :first-child {
