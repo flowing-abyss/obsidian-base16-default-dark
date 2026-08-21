@@ -1,0 +1,144 @@
+/* Canvas is a thinking surface, not a collection of dashboard widgets.
+   Colour keeps its semantic job (domain, state, relationship), while
+   surface and hairline contrast carry the ordinary card hierarchy. */
+.theme-dark .canvas-wrapper {
+  --shadow-stationary: none;
+  --shadow-drag: none;
+  --shadow-border-accent: 0 0 0 1px var(--b16-accent-link);
+}
+
+/* Keep the drafting grid available for alignment without allowing it to
+   become texture. This touches one SVG pattern, not every dot separately. */
+.theme-dark .canvas-background circle {
+  opacity: 0.62;
+}
+
+/* Ordinary cards use the first raised surface and the same micro-radius as
+   code, callouts and tables. Obsidian's default stationary shadow and the
+   extra themed inset produced two competing outlines at overview zoom. */
+.theme-dark .canvas-node:not(.canvas-node-group) .canvas-node-container {
+  background-color: var(--b16-surface-1);
+  border-color: var(--b16-border-normal);
+  border-radius: var(--b16-radius-s);
+  box-shadow: none;
+}
+
+.theme-dark .canvas-node:not(.canvas-node-group).is-themed .canvas-node-container {
+  border-color: color-mix(in srgb, var(--canvas-color) 48%, var(--b16-border-normal));
+  box-shadow: none;
+}
+
+.theme-dark .canvas-node.is-themed .canvas-node-content {
+  background-color: color-mix(in srgb, var(--canvas-color) 4%, var(--b16-surface-1));
+}
+
+/* Hover says “movable” with one contrast step; it does not introduce a
+   shadow or animation that would repaint while the canvas is panned. */
+.theme-dark
+  .canvas-wrapper:not(.mod-readonly)
+  .canvas-node:not(.canvas-node-group, .is-selected, .is-focused):hover
+  .canvas-node-container {
+  border-color: var(--b16-border-strong);
+}
+
+.theme-dark
+  .canvas-wrapper:not(.mod-readonly)
+  .canvas-node:not(.canvas-node-group, .is-selected, .is-focused).is-themed:hover
+  .canvas-node-container {
+  border-color: color-mix(in srgb, var(--canvas-color) 64%, var(--b16-border-normal));
+}
+
+/* A group is a spatial region, so its fill is intentionally quieter than a
+   card. Its label carries the domain colour as a narrow rail instead of the
+   native solid badge, which was the loudest object on the board. */
+.theme-dark .canvas-node-group .canvas-node-container {
+  border-color: color-mix(in srgb, var(--canvas-color) 36%, transparent);
+  box-shadow: none;
+}
+
+.theme-dark .canvas-node-group .canvas-node-content {
+  background-color: color-mix(in srgb, var(--canvas-color) 3%, transparent);
+}
+
+.theme-dark .canvas-node-group.is-themed .canvas-group-label:not([contenteditable='true']) {
+  padding: calc(var(--font-text-size) * 0.25) calc(var(--font-text-size) * 0.45)
+    calc(var(--font-text-size) * 0.25) calc(var(--font-text-size) * 0.55);
+  color: var(--b16-text-normal);
+  background-color: color-mix(in srgb, var(--canvas-color) 7%, var(--b16-surface-1));
+  border: 1px solid color-mix(in srgb, var(--canvas-color) 42%, var(--b16-border-normal));
+  border-radius: var(--b16-radius-s);
+  box-shadow: inset 2px 0 var(--canvas-color);
+  font-size: 1.15em;
+  font-weight: var(--font-semibold);
+  line-height: 1.15;
+}
+
+/* Selection is one precise outline. The native combination of border,
+   stationary shadow and two themed rings made active cards look heavier
+   than their content warranted. */
+.theme-dark .canvas-node:is(.is-selected, .is-focused) .canvas-node-container {
+  border-color: var(--b16-accent-link);
+  box-shadow: 0 0 0 1px var(--b16-accent-link);
+}
+
+.theme-dark .canvas-node:is(.is-selected, .is-focused).is-themed .canvas-node-container {
+  border-color: var(--canvas-color);
+  box-shadow: 0 0 0 1px var(--canvas-color);
+}
+
+/* Edge labels are relationship metadata. Preserve Obsidian's zoom
+   multiplier so they scale once with the graph rather than becoming tiny at
+   overview zoom, then place them on a quiet opaque-enough reading surface. */
+.theme-dark .canvas-path-label {
+  padding: calc(var(--font-text-size) * 0.14 * var(--zoom-multiplier))
+    calc(var(--font-text-size) * 0.32 * var(--zoom-multiplier));
+  color: var(--b16-text-muted);
+  background-color: color-mix(in srgb, var(--b16-surface-0) 94%, transparent);
+  border: 1px solid var(--b16-border-faint);
+  border-radius: var(--b16-radius-s);
+  font-size: calc(var(--b16-font-ui-m) * var(--zoom-multiplier));
+  font-weight: var(--b16-chrome-weight);
+  line-height: 1.25;
+}
+
+/* Floating Canvas chrome uses the same single raised surface as the rest of
+   the theme. Controls retain their native hit targets and mobile behaviour;
+   only the desktop creation strip is made denser. */
+.theme-dark :is(.canvas-control-group, .canvas-menu) {
+  background-color: var(--b16-surface-1);
+  border-color: var(--b16-border-normal);
+  border-radius: var(--b16-radius-s);
+  box-shadow: none;
+}
+
+.theme-dark .canvas-control-item {
+  color: var(--b16-text-faint);
+  background-color: var(--b16-surface-1);
+  border-color: var(--b16-border-faint);
+}
+
+.theme-dark :is(.canvas-control-item, .canvas-menu .clickable-icon):hover,
+.theme-dark .canvas-control-item.is-active {
+  color: var(--b16-text-normal);
+  background-color: var(--b16-surface-2);
+}
+
+.theme-dark:not(.is-mobile) .canvas-card-menu {
+  background-color: var(--b16-surface-1);
+  border: 1px solid var(--b16-border-normal);
+  border-radius: var(--b16-radius-s);
+  box-shadow: none;
+}
+
+.theme-dark:not(.is-mobile) .canvas-card-menu .canvas-card-menu-button {
+  min-width: calc(var(--font-text-size) * 1.8);
+  padding: calc(var(--font-text-size) * 0.3);
+  color: var(--b16-text-faint);
+
+  --icon-size: var(--font-text-size);
+}
+
+.theme-dark:not(.is-mobile) .canvas-card-menu .canvas-card-menu-button:hover {
+  color: var(--b16-text-normal);
+  background-color: var(--b16-surface-2);
+}

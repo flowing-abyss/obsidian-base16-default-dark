@@ -15,4 +15,10 @@
 // Fields:
 //   - name: the custom property name, including its leading "--".
 //   - reason: why it is legitimate despite not being in either known set.
-export const VAR_EXEMPTIONS = [];
+export const VAR_EXEMPTIONS = [
+  {
+    name: "--zoom-multiplier",
+    reason:
+      "Obsidian declares this on .canvas-wrapper and Canvas edge labels consume it while zooming; the variable was absent from the captured root-variable snapshot because it is scoped to the Canvas view.",
+  },
+];
