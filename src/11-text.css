@@ -387,9 +387,9 @@ body:not(.classic-inline-backlinks) .embedded-backlinks .tree-item-inner {
    mode — this has to come later or the reset silently wins and the dashes
    never show where they matter most. */
 .theme-dark .internal-link.is-unresolved {
-  color: var(--b16-text-faint);
+  color: var(--link-unresolved-color);
   text-decoration: underline dashed;
-  text-decoration-color: var(--b16-text-faint);
+  text-decoration-color: var(--link-unresolved-decoration-color);
   text-underline-offset: 0.2em;
 }
 

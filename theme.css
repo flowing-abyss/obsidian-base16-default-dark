@@ -73,6 +73,10 @@
   --b16-status-error: #ab4642; /* red */
   --b16-status-ok: #a1b56c; /* green */
   --b16-status-warn: #f7ca88; /* yellow */
+  /* A missing note is pending work, not an error. Mixing the warning hue
+     with faint text keeps that meaning legible without giving an unresolved
+     link the visual weight of a warning banner. */
+  --b16-link-unresolved: color-mix(in srgb, var(--b16-status-warn) 50%, var(--b16-text-faint));
 
   /* Surfaces — five steps of dark, lightest last. surface-4 exists for
      fills that need to read as lighter than surface-3 (a hovered/active
@@ -330,7 +334,8 @@
   --link-external-color: var(--b16-accent-link-ext);
   --link-color: var(--b16-accent-link);
   --link-color-hover: var(--b16-accent-tag);
-  --link-unresolved-color: var(--b16-text-faint);
+  --link-unresolved-color: var(--b16-link-unresolved);
+  --link-unresolved-decoration-color: color-mix(in srgb, var(--b16-status-warn) 70%, transparent);
 
   /* Text formatting */
   --inline-code-color: var(--b16-accent-code);
@@ -346,7 +351,7 @@
   /* Graphs */
   --graph-line: var(--b16-surface-3);
   --graph-node: var(--b16-accent-link);
-  --graph-node-unresolved: var(--b16-text-faint);
+  --graph-node-unresolved: var(--b16-link-unresolved);
   --graph-node-tag: var(--b16-status-ok);
   --graph-node-attachment: var(--b16-status-warn);
 
@@ -1309,9 +1314,9 @@ body:not(.classic-inline-backlinks) .embedded-backlinks .tree-item-inner {
    mode — this has to come later or the reset silently wins and the dashes
    never show where they matter most. */
 .theme-dark .internal-link.is-unresolved {
-  color: var(--b16-text-faint);
+  color: var(--link-unresolved-color);
   text-decoration: underline dashed;
-  text-decoration-color: var(--b16-text-faint);
+  text-decoration-color: var(--link-unresolved-decoration-color);
   text-underline-offset: 0.2em;
 }
 
