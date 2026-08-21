@@ -17,7 +17,12 @@
 /* Project picker and workflow picker. Both are bare <select>s the plugin
    never sized, so they inherited the reading size. */
 .workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] select,
-.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] input,
+/* `input` is deliberately narrowed below: a checkbox is an input too, and
+   `width: 100%` on one stretched it across the whole panel (measured 260px)
+   and pushed its label off the right edge. Only text-like controls want the
+   full width. */
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER']
+  input:not([type='checkbox'], [type='radio']),
 .workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] textarea {
   font-size: var(--b16-font-ui-m);
   background-color: var(--b16-surface-1);
@@ -183,4 +188,24 @@
   font-size: var(--b16-font-ui-m);
   color: var(--b16-text-muted);
   padding: 0.35em 0.6em;
+}
+
+/* The plugin writes its own class twice — `.longform-remove-step-button
+   .svelte-yprjpc.svelte-yprjpc` — which is (0,3,0) and outranked the rule
+   above at (0,2,0). Measured result: the red fill survived while this
+   theme's colour landed, giving a grey X on red, dirtier than either alone.
+   Adding the element name takes this to (0,3,1) and wins honestly, without
+   a flag. */
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER']
+  button.longform-remove-step-button {
+  background: transparent;
+  color: var(--b16-text-faint);
+  border: none;
+  box-shadow: none;
+}
+
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER']
+  button.longform-remove-step-button:hover {
+  background: var(--b16-surface-2);
+  color: var(--b16-status-error);
 }

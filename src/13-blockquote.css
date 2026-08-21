@@ -22,8 +22,8 @@
   color: var(--b16-text-normal);
   background-color: var(--b16-surface-1);
   border-left: 3px solid var(--b16-border-strong);
-  border-radius: 0;
-  padding: 0.9em 1.1em;
+  border-radius: var(--b16-radius-s);
+  padding: var(--b16-block-padding);
   font-style: normal;
   opacity: 1;
 }
@@ -50,7 +50,7 @@
   border-left: 3px solid var(--b16-border-strong);
   border-radius: 0;
   padding-block: 0.25em;
-  padding-inline: 1.1em;
+  padding-inline: calc(var(--font-text-size) * 0.85);
   font-style: normal;
   opacity: 1;
 }

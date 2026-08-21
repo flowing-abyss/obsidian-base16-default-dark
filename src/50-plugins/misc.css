@@ -214,3 +214,22 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
 .view-content.claudian-container {
   font-size: var(--b16-font-ui-l) !important;
 }
+
+/* The panes at the foot of a note — backlinks, and the Hybrid Search
+   "similar notes" list — are lists of note titles, the same material a
+   Bases row or a search result holds. They are content the reader scans,
+   not chrome, so they take the reading size rather than a UI step (they sat
+   at 17.5px and 15.6px against 20px prose). The counts and scores beside
+   them stay on the label size, because those annotate the row rather than
+   being it. */
+.theme-dark
+  :is(.embedded-backlinks, .embedded-similar-notes)
+  :is(.tree-item-inner, .search-result-file-title) {
+  font-size: var(--font-text-size);
+}
+
+.theme-dark
+  :is(.embedded-backlinks, .embedded-similar-notes)
+  :is(.tree-item-flair, .search-result-count, .hybrid-search-score) {
+  font-size: var(--b16-label-size);
+}

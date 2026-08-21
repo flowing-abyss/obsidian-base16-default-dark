@@ -9,15 +9,15 @@
    space" that appeared below the calendar.
 
    The row wraps instead of overflowing, and takes the UI ramp so its parts
-   stay in proportion to the rest of the sidebar. */
+   stay in proportion to the rest of the sidebar. That removes the cause, so
+   no `overflow-x: hidden` is needed here — and it should not be added: CSS
+   forces the other axis, so hiding the horizontal overflow would silently
+   turn the vertical axis into `auto` and put a scrollbar on a pane that
+   simply needs to be taller. */
 .workspace-leaf-content[data-type='calendar'] .nav {
   flex-wrap: wrap;
   row-gap: 0.3em;
   font-size: var(--b16-font-ui-m);
-}
-
-.workspace-leaf-content[data-type='calendar'] .view-content {
-  overflow-x: hidden;
 }
 
 /* CALENDAR BASES */

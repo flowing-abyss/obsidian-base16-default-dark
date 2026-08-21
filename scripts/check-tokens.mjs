@@ -20,7 +20,10 @@ const COLOUR_FILES = new Set(["00-palette.css", "01-tokens.css"]);
 // .edgeLabel ancestor never reaches the glyphs and the text renders at
 // Mermaid's near-black default. Same root cause as the other twelve — an ID
 // in the selector, which no author rule can outrank without a flag.
-const IMPORTANT_BASELINE = 108;
+// 108 -> 109: the connector rule gained `stroke-width`, which Mermaid also
+// sets from an id-scoped selector. Same unavoidable-flag category as the
+// others in that file.
+const IMPORTANT_BASELINE = 109;
 
 // Matches #hex literals and rgb()/rgba()/hsl()/hsla() function literals.
 // Outside the colour-definition files, every colour must come from a

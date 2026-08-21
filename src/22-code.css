@@ -212,7 +212,7 @@
    the band. 0.7em block matches the live-preview block's top pad. */
 .theme-dark .markdown-rendered pre[data-code-language] > code {
   display: block;
-  padding: 0.7em 0.75em;
+  padding: var(--b16-block-padding);
   overflow-x: auto;
 }
 

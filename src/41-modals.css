@@ -7,11 +7,23 @@
    own .another-quick-switcher__* selectors elsewhere in this file), kept
    here rather than split out because they share this exact declaration
    with the modal selectors. */
-.theme-dark .prompt *,
+/* The `*` deliberately excludes the Hybrid Search preview subtree. That
+   panel renders an actual note, so it is content and takes the reading
+   size — the same call made for Bases rows and for the document-foot
+   panes; pressing Ctrl to preview the same note gives full size, and the
+   two should not disagree. Without the :not() the `*` here matched every
+   element inside the preview with an explicit declaration, which beats
+   inheritance no matter what the container is set to.
+   (:not() takes its argument's specificity, so this stays (0,3,0) and the
+   two selectors it shares the block with are unaffected.) */
+.theme-dark .prompt *:not(.hybrid-search-preview, .hybrid-search-preview *),
 .theme-dark .modal *,
-.hybrid-search-preview,
 .hybrid-search-preview-meta-panel {
   font-size: var(--b16-font-ui-m);
+}
+
+.theme-dark .prompt .hybrid-search-preview {
+  font-size: var(--font-text-size);
 }
 
 /* .theme-dark .modal .mv-picker-group-type is foreign (Metadata Validator
@@ -83,9 +95,13 @@
 .float-search-modal {
   min-height: 96%;
 }
+/* A score is an annotation on a result, not the result. At the same size as
+   the title it competed with it, and being monospace and coloured it won —
+   the number read as the loudest thing in the list. One step down puts it
+   back in its place. */
 .theme-dark .prompt .hybrid-search-score,
 .theme-dark .prompt .hybrid-search-mode-badge {
-  font-size: var(--b16-font-ui-m);
+  font-size: var(--b16-font-ui-s);
 }
 
 .float-search-modal-instructions {

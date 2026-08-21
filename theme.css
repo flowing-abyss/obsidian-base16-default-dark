@@ -123,6 +123,18 @@
      Anchoring to the reading size makes all three literally equal. */
   --b16-label-size: calc(var(--font-text-size) * 0.85);
 
+  /* One inner padding for every block that sets content apart from the
+     prose — a quote, a callout's body, a code block's body. Measured before
+     this token existed: a quote padded 18/22px sat next to a code block
+     padded 12/13px, so two blocks doing the same job in the same document
+     read as two different systems.
+
+     Absolute rather than `em`, for the reason --b16-label-size is: a code
+     block's own font-size is smaller than the prose around it, so equal `em`
+     values render as unequal pixels and the blocks stop matching precisely
+     where the reader compares them. */
+  --b16-block-padding: calc(var(--font-text-size) * 0.65) calc(var(--font-text-size) * 0.85);
+
   /* One table cell padding, consumed by both modes — reading mode puts it on
      the cell, live preview on the .table-cell-wrapper inside it, because
      app.css zeroes the cell there. See src/21-tables.css. */
@@ -1164,8 +1176,8 @@ ul > li::marker,
   color: var(--b16-text-normal);
   background-color: var(--b16-surface-1);
   border-left: 3px solid var(--b16-border-strong);
-  border-radius: 0;
-  padding: 0.9em 1.1em;
+  border-radius: var(--b16-radius-s);
+  padding: var(--b16-block-padding);
   font-style: normal;
   opacity: 1;
 }
@@ -1192,7 +1204,7 @@ ul > li::marker,
   border-left: 3px solid var(--b16-border-strong);
   border-radius: 0;
   padding-block: 0.25em;
-  padding-inline: 1.1em;
+  padding-inline: calc(var(--font-text-size) * 0.85);
   font-style: normal;
   opacity: 1;
 }
@@ -1233,8 +1245,14 @@ ul > li::marker,
 .theme-dark .callout {
   background-color: transparent;
   border: none;
-  border-left: 3px solid var(--callout-color);
-  border-radius: 0;
+  /* The rail is a marker, not the loudest thing on the page. At full
+     saturation it out-shouted the title it belongs to — most visibly on the
+     neutral types, where the "hue" is a light grey and a 3px bar of it read
+     as a bright stripe down the note. Softening it to a mix keeps the type
+     legible from the rail while the title band, the icon and the label
+     carry the identification. */
+  border-left: 3px solid color-mix(in srgb, var(--callout-color) 65%, transparent);
+  border-radius: var(--b16-radius-s);
   mix-blend-mode: normal;
   padding: 0;
   margin: 1em 0;
@@ -1274,7 +1292,7 @@ ul > li::marker,
 
 .theme-dark .callout-content {
   margin: 0;
-  padding: 0.7em 0.9em;
+  padding: var(--b16-block-padding);
   background: transparent;
   border: none;
 }
@@ -1352,9 +1370,13 @@ ul > li::marker,
   --callout-color: var(--b16-accent-code);
 }
 
+/* Neutral types take the faint step, not the muted one. --b16-text-muted is
+   sized for glyphs that must stay readable as prose; spent on a rail and a
+   tinted band it is simply bright, which is why the TOC callout stood out
+   more than the coloured ones next to it. */
 .theme-dark .callout[data-callout='quote'],
 .theme-dark .callout[data-callout='cite'] {
-  --callout-color: var(--b16-text-muted);
+  --callout-color: var(--b16-text-faint);
 }
 
 /* Custom callout types (not part of Obsidian's built-in set). Icon glyphs
@@ -1375,7 +1397,7 @@ ul > li::marker,
 }
 .theme-dark .callout[data-callout*='config'] {
   --callout-icon: settings;
-  --callout-color: var(--b16-text-muted);
+  --callout-color: var(--b16-text-faint);
 }
 .theme-dark .callout[data-callout^='attachment'],
 .theme-dark .callout[data-callout^='file'] {
@@ -1416,7 +1438,7 @@ ul > li::marker,
 .theme-dark .callout[data-callout='TOC'],
 .theme-dark .callout[data-callout='toc'] {
   --callout-icon: lucide-list-tree;
-  --callout-color: var(--b16-text-muted);
+  --callout-color: var(--b16-text-faint);
 }
 
 /* Config callout task list styling */
@@ -1760,7 +1782,7 @@ ul > li::marker,
    the band. 0.7em block matches the live-preview block's top pad. */
 .theme-dark .markdown-rendered pre[data-code-language] > code {
   display: block;
-  padding: 0.7em 0.75em;
+  padding: var(--b16-block-padding);
   overflow-x: auto;
 }
 
@@ -1943,6 +1965,19 @@ ul > li::marker,
   overflow-y: hidden;
 }
 
+/* MathJax's own container carries `overflow: auto auto` and routinely
+   reports one pixel more scrollHeight than clientHeight (measured: 49 vs 48
+   on the Gaussian in the fixture), which is enough for Chromium to paint a
+   vertical scrollbar beside a formula that fits perfectly. Pinning the
+   block padding on .math-block above did not help, because the scrollbar
+   was never on that element — this is the one that scrolls. Horizontal
+   stays auto: a formula genuinely wider than the column has to scroll. */
+.theme-dark .math-block mjx-container,
+.theme-dark mjx-container[jax='CHTML'][display='true'] {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
 /* MathJax container inside math block */
 .theme-dark .math-block > mjx-container,
 .theme-dark .markdown-source-view.mod-cm6 .math-block > mjx-container,
@@ -2077,16 +2112,21 @@ ul > li::marker,
   color: var(--b16-text-normal) !important;
 }
 
-/* Connectors read as structure, not content, so they sit one lightness step
-   below the labels they join. */
+/* Connectors carry the diagram's actual structure — which node leads to
+   which — so they are not decoration to be muted. At text-muted on a 1px
+   hairline they were barely traceable across a large diagram, and the
+   arrowheads all but vanished. Body lightness and a slightly heavier line
+   make the graph readable at a glance; the labels stay one step above by
+   being glyphs rather than strokes. */
 .theme-dark .mermaid :is(.edgePath .path, .flowchart-link, .relation),
 .theme-dark .mermaid :is(.messageLine0, .messageLine1, .actor-line, .transition) {
-  stroke: var(--b16-text-muted) !important;
+  stroke: var(--b16-text-normal) !important;
+  stroke-width: 1.5px !important;
 }
 
 .theme-dark .mermaid :is(marker, .marker, .arrowheadPath, #arrowhead path) {
-  fill: var(--b16-text-muted) !important;
-  stroke: var(--b16-text-muted) !important;
+  fill: var(--b16-text-normal) !important;
+  stroke: var(--b16-text-normal) !important;
 }
 
 /* An edge label gets no plate of its own. Mermaid backs each one with a
@@ -2473,11 +2513,23 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
    own .another-quick-switcher__* selectors elsewhere in this file), kept
    here rather than split out because they share this exact declaration
    with the modal selectors. */
-.theme-dark .prompt *,
+/* The `*` deliberately excludes the Hybrid Search preview subtree. That
+   panel renders an actual note, so it is content and takes the reading
+   size — the same call made for Bases rows and for the document-foot
+   panes; pressing Ctrl to preview the same note gives full size, and the
+   two should not disagree. Without the :not() the `*` here matched every
+   element inside the preview with an explicit declaration, which beats
+   inheritance no matter what the container is set to.
+   (:not() takes its argument's specificity, so this stays (0,3,0) and the
+   two selectors it shares the block with are unaffected.) */
+.theme-dark .prompt *:not(.hybrid-search-preview, .hybrid-search-preview *),
 .theme-dark .modal *,
-.hybrid-search-preview,
 .hybrid-search-preview-meta-panel {
   font-size: var(--b16-font-ui-m);
+}
+
+.theme-dark .prompt .hybrid-search-preview {
+  font-size: var(--font-text-size);
 }
 
 /* .theme-dark .modal .mv-picker-group-type is foreign (Metadata Validator
@@ -2549,9 +2601,13 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
 .float-search-modal {
   min-height: 96%;
 }
+/* A score is an annotation on a result, not the result. At the same size as
+   the title it competed with it, and being monospace and coloured it won —
+   the number read as the loudest thing in the list. One step down puts it
+   back in its place. */
 .theme-dark .prompt .hybrid-search-score,
 .theme-dark .prompt .hybrid-search-mode-badge {
-  font-size: var(--b16-font-ui-m);
+  font-size: var(--b16-font-ui-s);
 }
 
 .float-search-modal-instructions {
@@ -2845,15 +2901,15 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
    space" that appeared below the calendar.
 
    The row wraps instead of overflowing, and takes the UI ramp so its parts
-   stay in proportion to the rest of the sidebar. */
+   stay in proportion to the rest of the sidebar. That removes the cause, so
+   no `overflow-x: hidden` is needed here — and it should not be added: CSS
+   forces the other axis, so hiding the horizontal overflow would silently
+   turn the vertical axis into `auto` and put a scrollbar on a pane that
+   simply needs to be taller. */
 .workspace-leaf-content[data-type='calendar'] .nav {
   flex-wrap: wrap;
   row-gap: 0.3em;
   font-size: var(--b16-font-ui-m);
-}
-
-.workspace-leaf-content[data-type='calendar'] .view-content {
-  overflow-x: hidden;
 }
 
 /* CALENDAR BASES */
@@ -2888,7 +2944,12 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
 /* Project picker and workflow picker. Both are bare <select>s the plugin
    never sized, so they inherited the reading size. */
 .workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] select,
-.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] input,
+/* `input` is deliberately narrowed below: a checkbox is an input too, and
+   `width: 100%` on one stretched it across the whole panel (measured 260px)
+   and pushed its label off the right edge. Only text-like controls want the
+   full width. */
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER']
+  input:not([type='checkbox'], [type='radio']),
 .workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] textarea {
   font-size: var(--b16-font-ui-m);
   background-color: var(--b16-surface-1);
@@ -3054,6 +3115,26 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
   font-size: var(--b16-font-ui-m);
   color: var(--b16-text-muted);
   padding: 0.35em 0.6em;
+}
+
+/* The plugin writes its own class twice — `.longform-remove-step-button
+   .svelte-yprjpc.svelte-yprjpc` — which is (0,3,0) and outranked the rule
+   above at (0,2,0). Measured result: the red fill survived while this
+   theme's colour landed, giving a grey X on red, dirtier than either alone.
+   Adding the element name takes this to (0,3,1) and wins honestly, without
+   a flag. */
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER']
+  button.longform-remove-step-button {
+  background: transparent;
+  color: var(--b16-text-faint);
+  border: none;
+  box-shadow: none;
+}
+
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER']
+  button.longform-remove-step-button:hover {
+  background: var(--b16-surface-2);
+  color: var(--b16-status-error);
 }
 
 /* ===== 50-plugins/metadatamenu.css ===== */
@@ -3323,6 +3404,25 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
 /* Claudian */
 .view-content.claudian-container {
   font-size: var(--b16-font-ui-l) !important;
+}
+
+/* The panes at the foot of a note — backlinks, and the Hybrid Search
+   "similar notes" list — are lists of note titles, the same material a
+   Bases row or a search result holds. They are content the reader scans,
+   not chrome, so they take the reading size rather than a UI step (they sat
+   at 17.5px and 15.6px against 20px prose). The counts and scores beside
+   them stay on the label size, because those annotate the row rather than
+   being it. */
+.theme-dark
+  :is(.embedded-backlinks, .embedded-similar-notes)
+  :is(.tree-item-inner, .search-result-file-title) {
+  font-size: var(--font-text-size);
+}
+
+.theme-dark
+  :is(.embedded-backlinks, .embedded-similar-notes)
+  :is(.tree-item-flair, .search-result-count, .hybrid-search-score) {
+  font-size: var(--b16-label-size);
 }
 
 /* ===== 50-plugins/quick-switcher.css ===== */

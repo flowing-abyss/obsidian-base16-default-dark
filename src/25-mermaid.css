@@ -62,16 +62,21 @@
   color: var(--b16-text-normal) !important;
 }
 
-/* Connectors read as structure, not content, so they sit one lightness step
-   below the labels they join. */
+/* Connectors carry the diagram's actual structure — which node leads to
+   which — so they are not decoration to be muted. At text-muted on a 1px
+   hairline they were barely traceable across a large diagram, and the
+   arrowheads all but vanished. Body lightness and a slightly heavier line
+   make the graph readable at a glance; the labels stay one step above by
+   being glyphs rather than strokes. */
 .theme-dark .mermaid :is(.edgePath .path, .flowchart-link, .relation),
 .theme-dark .mermaid :is(.messageLine0, .messageLine1, .actor-line, .transition) {
-  stroke: var(--b16-text-muted) !important;
+  stroke: var(--b16-text-normal) !important;
+  stroke-width: 1.5px !important;
 }
 
 .theme-dark .mermaid :is(marker, .marker, .arrowheadPath, #arrowhead path) {
-  fill: var(--b16-text-muted) !important;
-  stroke: var(--b16-text-muted) !important;
+  fill: var(--b16-text-normal) !important;
+  stroke: var(--b16-text-normal) !important;
 }
 
 /* An edge label gets no plate of its own. Mermaid backs each one with a

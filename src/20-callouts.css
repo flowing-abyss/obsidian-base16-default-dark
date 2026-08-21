@@ -25,8 +25,14 @@
 .theme-dark .callout {
   background-color: transparent;
   border: none;
-  border-left: 3px solid var(--callout-color);
-  border-radius: 0;
+  /* The rail is a marker, not the loudest thing on the page. At full
+     saturation it out-shouted the title it belongs to — most visibly on the
+     neutral types, where the "hue" is a light grey and a 3px bar of it read
+     as a bright stripe down the note. Softening it to a mix keeps the type
+     legible from the rail while the title band, the icon and the label
+     carry the identification. */
+  border-left: 3px solid color-mix(in srgb, var(--callout-color) 65%, transparent);
+  border-radius: var(--b16-radius-s);
   mix-blend-mode: normal;
   padding: 0;
   margin: 1em 0;
@@ -66,7 +72,7 @@
 
 .theme-dark .callout-content {
   margin: 0;
-  padding: 0.7em 0.9em;
+  padding: var(--b16-block-padding);
   background: transparent;
   border: none;
 }
@@ -144,9 +150,13 @@
   --callout-color: var(--b16-accent-code);
 }
 
+/* Neutral types take the faint step, not the muted one. --b16-text-muted is
+   sized for glyphs that must stay readable as prose; spent on a rail and a
+   tinted band it is simply bright, which is why the TOC callout stood out
+   more than the coloured ones next to it. */
 .theme-dark .callout[data-callout='quote'],
 .theme-dark .callout[data-callout='cite'] {
-  --callout-color: var(--b16-text-muted);
+  --callout-color: var(--b16-text-faint);
 }
 
 /* Custom callout types (not part of Obsidian's built-in set). Icon glyphs
@@ -167,7 +177,7 @@
 }
 .theme-dark .callout[data-callout*='config'] {
   --callout-icon: settings;
-  --callout-color: var(--b16-text-muted);
+  --callout-color: var(--b16-text-faint);
 }
 .theme-dark .callout[data-callout^='attachment'],
 .theme-dark .callout[data-callout^='file'] {
@@ -208,7 +218,7 @@
 .theme-dark .callout[data-callout='TOC'],
 .theme-dark .callout[data-callout='toc'] {
   --callout-icon: lucide-list-tree;
-  --callout-color: var(--b16-text-muted);
+  --callout-color: var(--b16-text-faint);
 }
 
 /* Config callout task list styling */

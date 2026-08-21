@@ -27,6 +27,19 @@
   overflow-y: hidden;
 }
 
+/* MathJax's own container carries `overflow: auto auto` and routinely
+   reports one pixel more scrollHeight than clientHeight (measured: 49 vs 48
+   on the Gaussian in the fixture), which is enough for Chromium to paint a
+   vertical scrollbar beside a formula that fits perfectly. Pinning the
+   block padding on .math-block above did not help, because the scrollbar
+   was never on that element — this is the one that scrolls. Horizontal
+   stays auto: a formula genuinely wider than the column has to scroll. */
+.theme-dark .math-block mjx-container,
+.theme-dark mjx-container[jax='CHTML'][display='true'] {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
 /* MathJax container inside math block */
 .theme-dark .math-block > mjx-container,
 .theme-dark .markdown-source-view.mod-cm6 .math-block > mjx-container,

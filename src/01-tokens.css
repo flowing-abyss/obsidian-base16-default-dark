@@ -81,6 +81,18 @@
      Anchoring to the reading size makes all three literally equal. */
   --b16-label-size: calc(var(--font-text-size) * 0.85);
 
+  /* One inner padding for every block that sets content apart from the
+     prose — a quote, a callout's body, a code block's body. Measured before
+     this token existed: a quote padded 18/22px sat next to a code block
+     padded 12/13px, so two blocks doing the same job in the same document
+     read as two different systems.
+
+     Absolute rather than `em`, for the reason --b16-label-size is: a code
+     block's own font-size is smaller than the prose around it, so equal `em`
+     values render as unequal pixels and the blocks stop matching precisely
+     where the reader compares them. */
+  --b16-block-padding: calc(var(--font-text-size) * 0.65) calc(var(--font-text-size) * 0.85);
+
   /* One table cell padding, consumed by both modes — reading mode puts it on
      the cell, live preview on the .table-cell-wrapper inside it, because
      app.css zeroes the cell there. See src/21-tables.css. */
