@@ -79,22 +79,13 @@
    has tokens takes base00 for its body and is separated by the frame instead.
    base01 goes to the header band, which is what base16 reserves it for.
 
-   Reading mode expresses the full two-surface split below. Live preview
-   cannot: CodeMirror renders every line as a sibling .cm-line, so there is no
-   selector for "the lines between this begin line and its end line" — a `~`
-   general-sibling selector matches every later `.HyperMD-codeblock` line in
-   the document too, not just the ones belonging to the current block, which
-   would recolour every subsequent code block once one earlier block matched.
-   (Confirmed empirically: an earlier draft of this rule used `~` here and it
-   leaked exactly that way.) Live preview therefore applies the distinction
-   only where it is genuinely expressible — on the begin line itself, with no
-   combinator — and every code BODY (the unconditional .HyperMD-codeblock
-   rule above) stays on --b16-surface-0 regardless of language, since live
-   preview does highlight syntax and the tokens need base00 under them. A
-   languageless block will consequently read darker in live preview than in
-   reading mode (its body has no header band to sit under, but still shares
-   base00 with every other body); that is an accepted, deliberate gap, not a
-   bug. */
+   Reading mode expresses the full two-surface split on its single <pre>.
+   Live Preview has no range element around the sibling CodeMirror rows, so
+   the companion `code-block-title` micropatch marks every row in a bare fence
+   with `data-code-plain`. That range marker lets the rules below reproduce the
+   simple reading-mode block without a general-sibling selector leaking into
+   later language blocks. Without the patch, every live-preview body retains
+   the safe base00 syntax surface and framed fallback defined above. */
 .theme-dark .markdown-rendered pre[class^='language-'] {
   background-color: var(--b16-surface-0);
   /* The frame separates a base00 body from a base00 page, so it has to be
@@ -180,14 +171,111 @@
   background-color: var(--b16-surface-1);
   border: none;
   border-radius: var(--b16-radius-s);
+  padding: var(--b16-block-padding);
 }
 
-/* Live preview exposes the missing language only on the begin-line flair;
-   the body remains a series of ungrouped CodeMirror siblings. Keep the
-   existing surface fallback here without pretending CSS can wrap an
-   arbitrary multi-line fence into reading view's single simple block. */
-.theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin:has(.code-block-flair > svg) {
-  background-color: var(--b16-surface-2);
+/* Micropatches also marks the reading <pre>; this is intentionally redundant
+   with :not([class]) so the semantic marker remains the source of truth if
+   Obsidian later adds a class to otherwise bare fences. */
+.theme-dark .markdown-rendered pre[data-code-plain] {
+  background-color: var(--b16-surface-1);
+  border: none;
+  border-radius: var(--b16-radius-s);
+  padding: var(--b16-block-padding);
+}
+
+.theme-dark .markdown-rendered pre:not([class]) > code,
+.theme-dark .markdown-rendered pre[data-code-plain] > code {
+  display: block;
+}
+
+/* Plain-text parity in Live Preview. All marked rows share the same quiet
+   surface; the invisible fence rows collapse to zero and the first/last body
+   rows take the shared block padding and corners. This produces the same box
+   as Reading mode for one line or many, while an active fence temporarily
+   regains a normal line box so its Markdown remains editable. */
+.theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock[data-code-plain] {
+  background-color: var(--b16-surface-1);
+  border: none;
+  border-radius: 0;
+}
+
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock[data-code-plain]:not(.HyperMD-codeblock-begin, .HyperMD-codeblock-end) {
+  padding-inline: calc(var(--font-text-size) * 0.85);
+}
+
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-plain]
+  + .HyperMD-codeblock[data-code-plain]:not(.HyperMD-codeblock-end) {
+  padding-top: calc(var(--font-text-size) * 0.65);
+  border-start-start-radius: var(--b16-radius-s);
+  border-start-end-radius: var(--b16-radius-s);
+}
+
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock[data-code-plain]:not(.HyperMD-codeblock-begin):has(
+    + .HyperMD-codeblock-end[data-code-plain]
+  ) {
+  padding-bottom: calc(var(--font-text-size) * 0.65);
+  border-end-start-radius: var(--b16-radius-s);
+  border-end-end-radius: var(--b16-radius-s);
+}
+
+.theme-dark
+  .markdown-source-view.mod-cm6
+  :is(.HyperMD-codeblock-begin, .HyperMD-codeblock-end)[data-code-plain] {
+  height: 0;
+  min-height: 0;
+  padding: 0;
+  overflow: visible;
+  font-size: 0;
+  line-height: 0;
+}
+
+.theme-dark
+  .markdown-source-view.mod-cm6
+  :is(.cm-active.HyperMD-codeblock-begin, .cm-active.HyperMD-codeblock-end)[data-code-plain] {
+  height: auto;
+  min-height: 1.62em;
+  padding-inline: calc(var(--font-text-size) * 0.85);
+  font-size: var(--b16-label-size);
+  line-height: var(--line-height-normal);
+}
+
+/* The bare fence's native flair is only a copy action, not a language label:
+   remove the synthetic code glyph and return the control to the quiet
+   top-right placement used by Reading mode. It appears when the first content
+   row is hovered, so the resting block remains visually identical. */
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-plain]
+  .code-block-flair {
+  right: calc(var(--font-text-size) * 0.85);
+  left: auto;
+  top: calc(var(--font-text-size) * 0.65);
+  bottom: auto;
+  gap: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-plain]
+  .code-block-flair::before {
+  content: none;
+}
+
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-plain]:has(+ .HyperMD-codeblock[data-code-plain]:hover)
+  .code-block-flair {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 /* Header band, both modes.
