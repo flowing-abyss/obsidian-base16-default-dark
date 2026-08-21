@@ -2168,10 +2168,10 @@ ul > li::marker,
 
 /* Obsidian's copy button is sized for an unlabelled pre and therefore uses a
    6px margin plus 6px vertical padding. Inside our 36px header that puts the
-   24px icon below the band's centre and partly into the code body. Give the
-   action the header's exact height and the same 17px inline inset as the body.
-   It remains visible in both modes: a persistent, muted action is clearer than
-   making the non-interactive `</>` glyph look like the only control. */
+   icon below the band's centre and partly into the code body. Give the action
+   the header's exact height and the same 17px inline inset as the body. The
+   24px target remains easy to hit, while the glyph itself steps down to the
+   shared 16px small-icon size and text-faint until the title band is hovered. */
 .theme-dark .markdown-rendered pre[data-code-language] > .copy-code-button {
   top: 0;
   right: calc(var(--font-text-size) * 0.85);
@@ -2184,6 +2184,22 @@ ul > li::marker,
   padding: 0;
   background: transparent;
   border-radius: 0;
+  color: var(--b16-text-faint);
+}
+
+.theme-dark .markdown-rendered pre[data-code-language] > .copy-code-button > svg {
+  width: var(--icon-s);
+  height: var(--icon-s);
+}
+
+/* The header is a pseudo-element in Reading mode, so `pre:hover` alone cannot
+   distinguish it from the body. The code child owns the whole body region:
+   if it is not hovered, the pointer is in the title band (or on its action).
+   This preserves the requested band-level affordance without adding DOM. */
+.theme-dark
+  .markdown-rendered
+  pre[data-code-language]:hover:not(:has(> code:hover))
+  > .copy-code-button {
   color: var(--b16-text-muted);
 }
 
@@ -2225,7 +2241,7 @@ ul > li::marker,
   justify-content: center;
   width: 24px;
   gap: 0;
-  color: var(--b16-text-muted);
+  color: var(--b16-text-faint);
   font-size: 0;
   visibility: visible;
   cursor: pointer;
@@ -2239,13 +2255,21 @@ ul > li::marker,
   .HyperMD-codeblock-begin[data-code-language]
   .code-block-flair::before {
   content: '';
-  width: 24px;
-  height: 24px;
+  width: var(--icon-s);
+  height: var(--icon-s);
+  color: inherit;
   background-color: currentcolor;
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='8' y='8' width='14' height='14' rx='2' ry='2'/%3E%3Cpath d='M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2'/%3E%3C/svg%3E")
     center / contain no-repeat;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='8' y='8' width='14' height='14' rx='2' ry='2'/%3E%3Cpath d='M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2'/%3E%3C/svg%3E")
     center / contain no-repeat;
+}
+
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-language]:hover
+  .code-block-flair {
+  color: var(--b16-text-muted);
 }
 
 .theme-dark
