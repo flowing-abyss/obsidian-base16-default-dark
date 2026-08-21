@@ -60,8 +60,8 @@
      works on one. Consumed by a later task's ==highlight== and #tag
      styling; the search "flashing" and .tag rules already use them below. */
   --b16-highlight-bg: rgba(210, 185, 60, 0.25);
-  --b16-highlight-bg-hover: rgba(210, 185, 60, 0.32);
-  --b16-highlight-bg-confirmed: rgba(210, 185, 60, 0.42);
+  --b16-highlight-bg-hover: rgba(210, 185, 60, 0.68);
+  --b16-highlight-bg-confirmed: rgba(210, 185, 60, 0.82);
   --b16-tag-bg: rgba(134, 193, 185, 0.15);
 
   /* Micro-syntax: the same hues as the accents, deliberately quieter. It

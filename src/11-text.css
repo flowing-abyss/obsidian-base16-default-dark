@@ -75,20 +75,42 @@
    live preview's chip at (0,2,1). */
 .theme-dark .markdown-rendered :not(pre) > code,
 .theme-dark .cm-s-obsidian span.cm-inline-code {
+  --b16-inline-code-keyline: var(--b16-border-normal);
+
   color: var(--b16-accent-code);
   background-color: var(--b16-surface-1);
   border-radius: var(--b16-radius-s);
   padding: 0.1em 0.3em;
   /* An inset keyline defines the chip without increasing its line box. */
-  box-shadow: inset 0 0 0 1px var(--b16-border-normal);
+  box-shadow: inset 0 0 0 1px var(--b16-inline-code-keyline);
 }
 
 /* Micropatches adds the body class only while click-to-copy is enabled. The
-   neutral half-step lift communicates interactivity without turning the chip
-   into a pale grey button or adding an icon, tooltip, motion or accent. */
+   hover inverts where the semantic orange lives: glyphs turn strong white and
+   the existing keyline turns orange. The surface does not move or brighten,
+   avoiding the dirty grey button effect while making the copy action clear. */
 .theme-dark.micropatches-inline-code-copy .markdown-rendered :not(pre) > code:hover,
-.theme-dark.micropatches-inline-code-copy .cm-s-obsidian span.cm-inline-code:hover {
-  background-color: color-mix(in srgb, var(--b16-surface-1), var(--b16-surface-2) 50%);
+.theme-dark.micropatches-inline-code-copy
+  .cm-s-obsidian
+  span:where(
+    span.cm-inline-code:hover,
+    span.cm-formatting-code.cm-inline-code:hover + span.cm-inline-code,
+    span.cm-formatting-code.cm-inline-code:hover
+      + span.cm-inline-code
+      + span.cm-formatting-code.cm-inline-code,
+    span.cm-formatting-code.cm-inline-code:has(+ span.cm-inline-code:hover),
+    span.cm-formatting-code.cm-inline-code:has(
+        + span.cm-inline-code + span.cm-formatting-code.cm-inline-code:hover
+      ),
+    span.cm-inline-code:not(.cm-formatting-code):has(
+        + span.cm-formatting-code.cm-inline-code:hover
+      ),
+    span.cm-inline-code:not(.cm-formatting-code):hover + span.cm-formatting-code.cm-inline-code
+  ) {
+  --b16-inline-code-keyline: var(--b16-accent-code);
+
+  color: var(--b16-text-strong);
+  cursor: copy;
 }
 
 /* A successful clipboard write gets one local, 160ms confirmation from
@@ -96,8 +118,13 @@
    surface stays still, so feedback reads as state rather than a dirty hover
    fill. In Live Preview the plugin marks both backticks and the content,
    making the edited three-span chip pulse as one object. */
-.theme-dark .markdown-rendered :not(pre) > code.is-micropatches-copy-confirmed,
-.theme-dark .cm-s-obsidian span.cm-inline-code.is-micropatches-copy-confirmed {
+.theme-dark.micropatches-inline-code-copy
+  .markdown-rendered
+  :not(pre)
+  > code.is-micropatches-copy-confirmed,
+.theme-dark.micropatches-inline-code-copy
+  .cm-s-obsidian
+  span.cm-inline-code.is-micropatches-copy-confirmed {
   color: color-mix(in srgb, var(--b16-accent-code) 65%, var(--b16-text-strong));
 }
 
@@ -107,9 +134,9 @@
 .theme-dark .cm-s-obsidian span.cm-formatting-code.cm-inline-code {
   border-radius: var(--b16-radius-s) 0 0 var(--b16-radius-s);
   box-shadow:
-    inset 1px 0 0 var(--b16-border-normal),
-    inset 0 1px 0 var(--b16-border-normal),
-    inset 0 -1px 0 var(--b16-border-normal);
+    inset 1px 0 0 var(--b16-inline-code-keyline),
+    inset 0 1px 0 var(--b16-inline-code-keyline),
+    inset 0 -1px 0 var(--b16-inline-code-keyline);
 }
 
 .theme-dark
@@ -118,8 +145,8 @@
   + span.cm-inline-code:not(.cm-formatting-code) {
   padding-block: 0.1em;
   box-shadow:
-    inset 0 1px 0 var(--b16-border-normal),
-    inset 0 -1px 0 var(--b16-border-normal);
+    inset 0 1px 0 var(--b16-inline-code-keyline),
+    inset 0 -1px 0 var(--b16-inline-code-keyline);
 }
 
 .theme-dark
@@ -128,9 +155,9 @@
   + span.cm-formatting-code.cm-inline-code {
   border-radius: 0 var(--b16-radius-s) var(--b16-radius-s) 0;
   box-shadow:
-    inset -1px 0 0 var(--b16-border-normal),
-    inset 0 1px 0 var(--b16-border-normal),
-    inset 0 -1px 0 var(--b16-border-normal);
+    inset -1px 0 0 var(--b16-inline-code-keyline),
+    inset 0 1px 0 var(--b16-inline-code-keyline),
+    inset 0 -1px 0 var(--b16-inline-code-keyline);
 }
 
 /* Bold: weight and lightness carry the signal, not colour. */
@@ -279,6 +306,12 @@
 .theme-dark.micropatches-highlight-copy span.cm-highlight:has(~ span.cm-highlight:hover),
 .theme-dark.micropatches-highlight-copy span.cm-highlight:hover ~ span.cm-highlight {
   background-color: var(--b16-highlight-bg-hover);
+  color: var(--b16-surface-0);
+  cursor: copy;
+}
+
+.theme-dark.micropatches-highlight-copy mark:hover * {
+  color: var(--b16-surface-0);
 }
 
 /* Optional highlight copying uses the same local confirmation language: a
@@ -286,6 +319,11 @@
 .theme-dark.micropatches-highlight-copy
   :is(mark, span.cm-highlight).is-micropatches-copy-confirmed {
   background-color: var(--b16-highlight-bg-confirmed);
+  color: var(--b16-surface-0);
+}
+
+.theme-dark.micropatches-highlight-copy mark.is-micropatches-copy-confirmed * {
+  color: var(--b16-surface-0);
 }
 
 /* Horizontal rules */
