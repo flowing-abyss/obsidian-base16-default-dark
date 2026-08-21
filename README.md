@@ -15,7 +15,7 @@ A no-nonsense Obsidian theme built on the legendary [Base16 Default Dark](https:
 
 ### Recommended fonts
 
-The theme pairs well with the IBM Plex family, IBM Plex Sans, IBM Plex Serif, and IBM Plex Mono, along with Noto Color Emoji for emoji.
+The theme is designed around the IBM Plex family.
 
 1. Install [Local Fonts](https://github.com/flowing-abyss/obsidian-local-fonts) from Community Plugins.
 2. Download the [prebuilt font pack](https://flowing-abyss.com/local-fonts.zip) and unzip it into a `fonts` folder in your vault root.
