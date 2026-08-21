@@ -11,7 +11,7 @@ one file per concern, and the filename sort order IS the cascade order:
 src/00-palette.css  01-tokens.css  02-base.css
     10-headings.css 11-text.css 12-lists.css 13-blockquote.css
     20-callouts.css 21-tables.css 22-code.css 23-math.css 24-embeds.css
-    30-editor.css   40-chrome.css 41-modals.css
+    30-editor.css   40-chrome.css 41-modals.css 41-settings.css
     50-plugins/*.css
 ```
 

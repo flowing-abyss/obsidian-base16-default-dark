@@ -1,0 +1,80 @@
+/* Obsidian caps the desktop Settings navigation at 250px even though its text
+   follows the user's font scale. Keep the native width through 20px, then let
+   the cap grow just enough for 24–28px labels instead of turning every plugin
+   name into an ellipsis. The content pane still receives the remaining flex
+   space, and mobile Settings keeps its native full-screen navigation. */
+.theme-dark:not(.is-mobile) .vertical-tab-header {
+  max-width: max(250px, calc(var(--font-text-size) * 10.5));
+}
+
+/* The palette fixes Obsidian's accent inputs to Base16 blue. Leaving the
+   native picker visible would be misleading: it continues to display and
+   accept the saved app preference even though that preference cannot affect
+   this theme. Appearance is the only core tab with this colour input; the
+   active-tab guard keeps plugin colour settings untouched. */
+.theme-dark
+  .modal.mod-settings:has(.vertical-tab-nav-item[data-setting-id='appearance'].is-active)
+  .setting-item:has(> .setting-item-control > input[type='color']) {
+  display: none;
+}
+
+/* Settings toggles communicate a binary state, not the theme accent. Use the
+   restrained semantic pair already present in Base16 while keeping disabled
+   controls neutral so “off” and “unavailable” remain distinct meanings. */
+.theme-dark .modal.mod-settings .checkbox-container {
+  box-shadow: none;
+}
+
+/* Keep the pale thumb legible on both semantic rails. A one-pixel surface
+   outline is quieter than a second accent and stays equally clear against
+   the darker red and the lighter green states. */
+.theme-dark .modal.mod-settings .checkbox-container::after {
+  box-shadow: 0 0 0 1px var(--b16-surface-3);
+}
+
+.theme-dark .modal.mod-settings .checkbox-container:not(.is-enabled, .is-disabled) {
+  background-color: var(--b16-status-error);
+}
+
+.theme-dark .modal.mod-settings .checkbox-container.is-enabled:not(.is-disabled) {
+  background-color: var(--b16-status-ok);
+}
+
+/* Installed-plugin rows expose stable data-plugin-id attributes. Strengthen
+   only their information hierarchy: name first, compact metadata second,
+   description third. The hairline separates version from authorship without
+   turning either into a decorative badge. */
+.theme-dark .modal.mod-settings .setting-item[data-plugin-id] .setting-item-name {
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.theme-dark .modal.mod-settings .setting-item[data-plugin-id] .setting-item-name > .u-small {
+  color: var(--text-muted);
+  font-size: var(--font-ui-smallest);
+  font-weight: 400;
+}
+
+.theme-dark
+  .modal.mod-settings
+  .setting-item[data-plugin-id]
+  .setting-item-name
+  > .u-small:first-child {
+  margin-inline-start: 0.5em;
+}
+
+.theme-dark
+  .modal.mod-settings
+  .setting-item[data-plugin-id]
+  .setting-item-name
+  > .u-small
+  + .u-small {
+  margin-inline-start: 0.55em;
+  padding-inline-start: 0.55em;
+  border-inline-start: 1px solid var(--background-modifier-border);
+}
+
+.theme-dark .modal.mod-settings .setting-item[data-plugin-id] .setting-item-description {
+  margin-top: 2px;
+  line-height: 1.35;
+}
