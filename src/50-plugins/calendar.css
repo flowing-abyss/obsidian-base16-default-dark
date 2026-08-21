@@ -177,6 +177,14 @@
 }
 
 /* CALENDAR BASES */
+.bases-calendar-container {
+  /* FullCalendar defaults this variable to white. Its sticky section wrapper
+     is one device pixel larger than the nested header/body tables, so that
+     default showed through as a bright rule along the bottom and inline-end
+     edges of the grid. Keep the wrapper on Obsidian's own canvas colour. */
+  --fc-page-bg-color: var(--background-primary);
+}
+
 .bases-calendar-container .fc-scrollgrid {
   border: 1px solid var(--background-modifier-border);
 }
