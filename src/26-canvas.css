@@ -49,6 +49,17 @@
   background-color: var(--b16-surface-1);
 }
 
+/* The preview renderer inserts a zero-height pusher before a card's first
+   real block. Do not let that implementation detail turn the normal between-
+   block flow gap into empty space at the top of a Canvas card. */
+.theme-dark
+  .canvas-node-content
+  .markdown-preview-section
+  > .markdown-preview-pusher
+  + :is(.el-p, .el-table, .el-pre, .el-blockquote, .el-ul, .el-ol, .el-div) {
+  margin-block-start: 0;
+}
+
 /* Hover says “movable” with one contrast step; it does not introduce a
    shadow or animation that would repaint while the canvas is panned. */
 .theme-dark
