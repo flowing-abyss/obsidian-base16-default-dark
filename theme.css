@@ -3812,12 +3812,58 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
   box-shadow: none;
 }
 
+/* Keep the pale thumb legible on both semantic rails. A one-pixel surface
+   outline is quieter than a second accent and stays equally clear against
+   the darker red and the lighter green states. */
+.theme-dark .modal.mod-settings .checkbox-container::after {
+  box-shadow: 0 0 0 1px var(--b16-surface-0);
+}
+
 .theme-dark .modal.mod-settings .checkbox-container:not(.is-enabled, .is-disabled) {
   background-color: var(--b16-status-error);
 }
 
 .theme-dark .modal.mod-settings .checkbox-container.is-enabled:not(.is-disabled) {
   background-color: var(--b16-status-ok);
+}
+
+/* Installed-plugin rows expose stable data-plugin-id attributes. Strengthen
+   only their information hierarchy: name first, compact metadata second,
+   description third. The hairline separates version from authorship without
+   turning either into a decorative badge. */
+.theme-dark .modal.mod-settings .setting-item[data-plugin-id] .setting-item-name {
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.theme-dark .modal.mod-settings .setting-item[data-plugin-id] .setting-item-name > .u-small {
+  color: var(--text-muted);
+  font-size: var(--font-ui-smallest);
+  font-weight: 400;
+}
+
+.theme-dark
+  .modal.mod-settings
+  .setting-item[data-plugin-id]
+  .setting-item-name
+  > .u-small:first-child {
+  margin-inline-start: 0.5em;
+}
+
+.theme-dark
+  .modal.mod-settings
+  .setting-item[data-plugin-id]
+  .setting-item-name
+  > .u-small
+  + .u-small {
+  margin-inline-start: 0.55em;
+  padding-inline-start: 0.55em;
+  border-inline-start: 1px solid var(--background-modifier-border);
+}
+
+.theme-dark .modal.mod-settings .setting-item[data-plugin-id] .setting-item-description {
+  margin-top: 2px;
+  line-height: 1.35;
 }
 
 /* .theme-dark .modal .mv-picker-group-type is foreign (Metadata Validator
