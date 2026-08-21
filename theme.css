@@ -102,8 +102,9 @@
      works on one. Consumed by a later task's ==highlight== and #tag
      styling; the search "flashing" and .tag rules already use them below. */
   --b16-highlight-bg: rgba(210, 185, 60, 0.25);
-  --b16-highlight-bg-hover: rgba(210, 185, 60, 0.68);
-  --b16-highlight-bg-confirmed: rgba(210, 185, 60, 0.82);
+  --b16-highlight-bg-hover: rgba(210, 185, 60, 0.38);
+  --b16-highlight-bg-confirmed: rgba(210, 185, 60, 0.5);
+  --b16-highlight-keyline: rgba(210, 185, 60, 0.82);
   --b16-tag-bg: rgba(134, 193, 185, 0.15);
 
   /* Micro-syntax: the same hues as the accents, deliberately quieter. It
@@ -1085,19 +1086,24 @@
 }
 
 /* This class exists only while Micropatches' optional highlight-copy setting
-   is on. Increase the existing semantic fill by one restrained alpha step;
-   the sibling rules keep a multi-span Live Preview highlight visually whole. */
+   is on. A restrained fill step plus one continuous lower keyline communicates
+   the copy action without inverting the whole band into a bright control. The
+   sibling rules keep a multi-span Live Preview highlight visually whole. */
 .theme-dark.micropatches-highlight-copy mark:hover,
-.theme-dark.micropatches-highlight-copy span.cm-highlight:hover,
-.theme-dark.micropatches-highlight-copy span.cm-highlight:has(~ span.cm-highlight:hover),
-.theme-dark.micropatches-highlight-copy span.cm-highlight:hover ~ span.cm-highlight {
+.theme-dark.micropatches-highlight-copy
+  span:where(
+    .cm-highlight:hover,
+    .cm-highlight:has(~ .cm-highlight:hover),
+    .cm-highlight:hover ~ .cm-highlight
+  ) {
   background-color: var(--b16-highlight-bg-hover);
-  color: var(--b16-surface-0);
+  box-shadow: inset 0 -1px 0 var(--b16-highlight-keyline);
+  color: var(--b16-text-strong);
   cursor: copy;
 }
 
 .theme-dark.micropatches-highlight-copy mark:hover * {
-  color: var(--b16-surface-0);
+  color: var(--b16-text-strong);
 }
 
 /* Optional highlight copying uses the same local confirmation language: a
@@ -1105,11 +1111,12 @@
 .theme-dark.micropatches-highlight-copy
   :is(mark, span.cm-highlight).is-micropatches-copy-confirmed {
   background-color: var(--b16-highlight-bg-confirmed);
-  color: var(--b16-surface-0);
+  box-shadow: inset 0 -1px 0 var(--b16-highlight-keyline);
+  color: var(--b16-text-strong);
 }
 
 .theme-dark.micropatches-highlight-copy mark.is-micropatches-copy-confirmed * {
-  color: var(--b16-surface-0);
+  color: var(--b16-text-strong);
 }
 
 /* Horizontal rules */
@@ -1182,6 +1189,9 @@ body:not(.classic-inline-backlinks) .embedded-backlinks .tree-item-inner {
    mode and live preview use different class names for the same elements
    (e.g. .internal-link vs .cm-hmd-internal-link), so both must be listed or
    the stand-down silently breaks in whichever mode is missing its class.
+   Highlights (mark / .cm-highlight) are semantic bands too: their visible
+   `==` markers must inherit the band's readable foreground instead of staying
+   cyan and disappearing into the yellow fill while the source is active.
    Tags (.tag / .cm-hashtag) are included explicitly rather than relying on
    the bare `a` reading-mode rule to catch `a.tag` by accident — without it
    a tag's `#` sigil is micro-punct while the word is accent-tag, a two-tone
@@ -1222,6 +1232,8 @@ body:not(.classic-inline-backlinks) .embedded-backlinks .tree-item-inner {
     .external-link,
     .cm-hmd-internal-link,
     .cm-link,
+    mark,
+    .cm-highlight,
     strong,
     .cm-strong,
     .tag,
