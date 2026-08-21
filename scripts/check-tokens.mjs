@@ -23,7 +23,12 @@ const COLOUR_FILES = new Set(["00-palette.css", "01-tokens.css"]);
 // 108 -> 109: the connector rule gained `stroke-width`, which Mermaid also
 // sets from an id-scoped selector. Same unavoidable-flag category as the
 // others in that file.
-const IMPORTANT_BASELINE = 109;
+// 109 -> 111: two flags restoring monochrome tab titles. Supercharged Links
+// writes its per-note colour as an inline style on the tab title, and an
+// inline value beats any author rule without a flag. The pre-split theme
+// carried the same flag for the same reason (c007469:theme.css:2001); this
+// version keeps the active/inactive distinction the legacy rule flattened.
+const IMPORTANT_BASELINE = 111;
 
 // Matches #hex literals and rgb()/rgba()/hsl()/hsla() function literals.
 // Outside the colour-definition files, every colour must come from a

@@ -2536,7 +2536,16 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
    (Outline, Backlinks, …) were never covered by that legacy selector, so
    this is not a net-new change there — only the main split's tab titles
    change behaviour (now muted-by-default, normal-when-active, matching
-   every other tab strip and the sidebar tree). */
+   every other tab strip and the sidebar tree).
+
+   Correction, after the reader reported losing monochrome tabs: removing
+   that legacy rule outright was wrong. Supercharged Links writes its
+   per-note colour as an INLINE style on the tab title — verified, no
+   stylesheet rule colours it — so an inline value beats any author rule
+   without a flag, and dropping the legacy `!important` let a coloured tab
+   title back in beside a neutral one. The two rules below therefore carry
+   the flag, but unlike the legacy rule they keep the active/inactive
+   distinction rather than flattening both to one value. */
 .theme-dark
   :is(
     .nav-file-title,
@@ -2549,8 +2558,17 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
   font-size: var(--b16-font-ui-m);
 }
 
+/* The tab title is the one member of the ramp above that an inline style can
+   outrank — Supercharged Links writes its per-note colour directly on the
+   element — so it is repeated here with the flag. Kept as its own rule
+   rather than flagging the whole list, so the flag lands only where it is
+   actually needed. */
+.theme-dark .workspace-tab-header-inner-title {
+  color: var(--b16-text-muted) !important;
+}
+
 .theme-dark .workspace-tab-header.is-active .workspace-tab-header-inner-title {
-  color: var(--b16-text-normal);
+  color: var(--b16-text-normal) !important;
 }
 
 .theme-dark .workspace-tab-header.is-active {
