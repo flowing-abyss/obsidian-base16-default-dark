@@ -867,6 +867,14 @@
   box-shadow: inset 0 0 0 1px var(--b16-border-normal);
 }
 
+/* Micropatches adds the body class only while click-to-copy is enabled. The
+   neutral one-step lift communicates interactivity without adding a button,
+   icon, tooltip, motion or another accent colour. */
+.theme-dark.micropatches-inline-code-copy .markdown-rendered :not(pre) > code:hover,
+.theme-dark.micropatches-inline-code-copy .cm-s-obsidian span.cm-inline-code:hover {
+  background-color: var(--b16-surface-2);
+}
+
 /* With the cursor inside inline code, CodeMirror exposes the two backticks as
    separate siblings. Draw one continuous keyline around all three fragments
    instead of giving every span its own box (which creates internal seams). */
