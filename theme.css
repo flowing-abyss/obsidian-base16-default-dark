@@ -3633,6 +3633,30 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
   font-weight: 500;
 }
 
+/* Calendar data must never reflow the grid. Automatic table layout made the
+   week-number column shrink in months containing only one-digit week numbers,
+   then redistributed the saved width across all seven days. Reserve a stable
+   compact column for week numbers and divide the remainder equally. */
+#calendar-container table.calendar {
+  width: 100%;
+  table-layout: fixed;
+}
+
+#calendar-container table.calendar col:first-child {
+  width: 2em;
+}
+
+/* The plugin scopes its 6px dot-container rule to day cells, but the same
+   container inside a week number is unscoped and inherits a full text line.
+   A weekly-note marker therefore made its row 4.64px taller. Match the day
+   marker geometry so notes and review state cannot resize the calendar. */
+#calendar-container .week-num .dot-container {
+  display: flex;
+  justify-content: center;
+  height: 6px;
+  line-height: 6px;
+}
+
 /* The last two columns are the weekend in this Monday-first calendar. A
    single divider establishes the group; stronger neutral labels identify it
    without introducing another accent meaning. */
