@@ -4327,6 +4327,17 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
   color: var(--text-normal);
 }
 
+/* LIST CALLOUTS
+   The plugin's 0.15 dark-mode tint turns its deliberately restrained RGB
+   palette into nearly neutral brown/grey fields on surface-0. 0.18 is the
+   first step at which blue, teal, violet, amber, red and green remain
+   distinguishable behind a full paragraph without becoming banners. The
+   actual semantic RGB values stay in the plugin config, so changing themes
+   does not make the vault's marker configuration depend on this theme. */
+.theme-dark {
+  --lc-bg-opacity-dark: 0.18;
+}
+
 /* INLINE AI */
 .cm-tooltip.cm-tooltip-autocomplete > ul > li[role='option'][aria-selected] {
   background-color: var(--background-modifier-hover) !important;
