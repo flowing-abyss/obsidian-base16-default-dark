@@ -91,6 +91,16 @@
   background-color: color-mix(in srgb, var(--b16-surface-1), var(--b16-surface-2) 50%);
 }
 
+/* A successful clipboard write gets one local, 160ms confirmation from
+   Micropatches. Brighten only the semantic orange glyphs: the chip's grey
+   surface stays still, so feedback reads as state rather than a dirty hover
+   fill. In Live Preview the plugin marks both backticks and the content,
+   making the edited three-span chip pulse as one object. */
+.theme-dark .markdown-rendered :not(pre) > code.is-micropatches-copy-confirmed,
+.theme-dark .cm-s-obsidian span.cm-inline-code.is-micropatches-copy-confirmed {
+  color: color-mix(in srgb, var(--b16-accent-code) 65%, var(--b16-text-strong));
+}
+
 /* With the cursor inside inline code, CodeMirror exposes the two backticks as
    separate siblings. Draw one continuous keyline around all three fragments
    instead of giving every span its own box (which creates internal seams). */
@@ -269,6 +279,13 @@
 .theme-dark.micropatches-highlight-copy span.cm-highlight:has(~ span.cm-highlight:hover),
 .theme-dark.micropatches-highlight-copy span.cm-highlight:hover ~ span.cm-highlight {
   background-color: var(--b16-highlight-bg-hover);
+}
+
+/* Optional highlight copying uses the same local confirmation language: a
+   single, brief increase of the highlight's existing semantic fill. */
+.theme-dark.micropatches-highlight-copy
+  :is(mark, span.cm-highlight).is-micropatches-copy-confirmed {
+  background-color: var(--b16-highlight-bg-confirmed);
 }
 
 /* Horizontal rules */
