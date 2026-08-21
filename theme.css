@@ -216,6 +216,12 @@
      The gutter offset leaves the native 20px fold control untouched. */
   --b16-heading-level-size: calc(var(--font-text-size) * 0.55);
   --b16-heading-level-gutter: calc(var(--font-text-size) * 1.4);
+  /* Folding is interface, not heading typography: one control and icon size
+     stay constant across H1–H6 while still following the user's reading
+     scale. The extra 2px keeps the hit target clear of the heading glyphs. */
+  --b16-heading-fold-control-size: var(--font-text-size);
+  --b16-heading-fold-icon-size: calc(var(--font-text-size) * 0.7);
+  --b16-heading-fold-offset: calc(var(--b16-heading-fold-control-size) + 2px);
   /* h5/h6 are sans by design (labels, not prose) — set the input Obsidian
      already reads (--h5-font/--h6-font) instead of overriding the computed
      font-family on the heading rule itself. .theme-dark (0,1,0) also has to
@@ -859,9 +865,46 @@
   line-height: 1.2;
 }
 
-/* Collapse indicator: the rail-relative override is gone along with the rail
-   itself, so the indicator falls back to Obsidian's own default gutter
-   position, which already matches the heading's un-shifted left edge. */
+/* Heading folding. Obsidian gives Live Preview a full-line flex container but
+   Reading view a fixed 20px square pinned to the line's top; it also renders
+   their SVGs at 10px and 8x10px respectively. One control geometry makes the
+   affordance mode-independent: `1lh` centres it on the heading's first line,
+   including a wrapped heading, while the icon remains a constant UI size
+   rather than growing from H6 to H1. Padding has to be reset explicitly —
+   Live Preview reserves 5px on the right and otherwise shifts the SVG off the
+   container's mathematical centre. */
+.theme-dark .markdown-preview-view :is(h1, h2, h3, h4, h5, h6) {
+  /* Reading view normally positions the absolute indicator from its static
+     inline position. A wrapped heading can move that position to line two;
+     a local containing block keeps the control on the first line. */
+  position: relative;
+}
+
+.theme-dark .markdown-preview-view .heading-collapse-indicator,
+.theme-dark .markdown-source-view.mod-cm6 .cm-line.HyperMD-header .collapse-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--b16-heading-fold-control-size);
+  height: 1lh;
+  padding: 0;
+}
+
+.theme-dark .markdown-preview-view .heading-collapse-indicator {
+  inset: 0 auto auto calc(-1 * var(--b16-heading-fold-offset));
+  margin: 0;
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .cm-line.HyperMD-header .collapse-indicator {
+  left: calc(-1 * var(--b16-heading-fold-offset));
+}
+
+.theme-dark .markdown-preview-view .heading-collapse-indicator svg,
+.theme-dark .markdown-source-view.mod-cm6 .cm-line.HyperMD-header .collapse-indicator svg {
+  flex: none;
+  width: var(--b16-heading-fold-icon-size);
+  height: var(--b16-heading-fold-icon-size);
+}
 
 /* A heading inside a callout keeps the callout's own surface — painting
    --background-primary behind it drew a dark band, a box inside a box,

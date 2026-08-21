@@ -174,6 +174,12 @@
      The gutter offset leaves the native 20px fold control untouched. */
   --b16-heading-level-size: calc(var(--font-text-size) * 0.55);
   --b16-heading-level-gutter: calc(var(--font-text-size) * 1.4);
+  /* Folding is interface, not heading typography: one control and icon size
+     stay constant across H1–H6 while still following the user's reading
+     scale. The extra 2px keeps the hit target clear of the heading glyphs. */
+  --b16-heading-fold-control-size: var(--font-text-size);
+  --b16-heading-fold-icon-size: calc(var(--font-text-size) * 0.7);
+  --b16-heading-fold-offset: calc(var(--b16-heading-fold-control-size) + 2px);
   /* h5/h6 are sans by design (labels, not prose) — set the input Obsidian
      already reads (--h5-font/--h6-font) instead of overriding the computed
      font-family on the heading rule itself. .theme-dark (0,1,0) also has to
