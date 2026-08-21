@@ -869,11 +869,11 @@
 }
 
 /* Micropatches adds the body class only while click-to-copy is enabled. The
-   neutral one-step lift communicates interactivity without adding a button,
-   icon, tooltip, motion or another accent colour. */
+   neutral half-step lift communicates interactivity without turning the chip
+   into a pale grey button or adding an icon, tooltip, motion or accent. */
 .theme-dark.micropatches-inline-code-copy .markdown-rendered :not(pre) > code:hover,
 .theme-dark.micropatches-inline-code-copy .cm-s-obsidian span.cm-inline-code:hover {
-  background-color: var(--b16-surface-2);
+  background-color: color-mix(in srgb, var(--b16-surface-1), var(--b16-surface-2) 50%);
 }
 
 /* With the cursor inside inline code, CodeMirror exposes the two backticks as
