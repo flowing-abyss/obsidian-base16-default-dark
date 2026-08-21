@@ -863,6 +863,40 @@
   background-color: var(--b16-surface-1);
   border-radius: var(--b16-radius-s);
   padding: 0.1em 0.3em;
+  /* An inset keyline defines the chip without increasing its line box. */
+  box-shadow: inset 0 0 0 1px var(--b16-border-normal);
+}
+
+/* With the cursor inside inline code, CodeMirror exposes the two backticks as
+   separate siblings. Draw one continuous keyline around all three fragments
+   instead of giving every span its own box (which creates internal seams). */
+.theme-dark .cm-s-obsidian span.cm-formatting-code.cm-inline-code {
+  border-radius: var(--b16-radius-s) 0 0 var(--b16-radius-s);
+  box-shadow:
+    inset 1px 0 0 var(--b16-border-normal),
+    inset 0 1px 0 var(--b16-border-normal),
+    inset 0 -1px 0 var(--b16-border-normal);
+}
+
+.theme-dark
+  .cm-s-obsidian
+  span.cm-formatting-code.cm-inline-code
+  + span.cm-inline-code:not(.cm-formatting-code) {
+  padding-block: 0.1em;
+  box-shadow:
+    inset 0 1px 0 var(--b16-border-normal),
+    inset 0 -1px 0 var(--b16-border-normal);
+}
+
+.theme-dark
+  .cm-s-obsidian
+  span.cm-inline-code:not(.cm-formatting-code)
+  + span.cm-formatting-code.cm-inline-code {
+  border-radius: 0 var(--b16-radius-s) var(--b16-radius-s) 0;
+  box-shadow:
+    inset -1px 0 0 var(--b16-border-normal),
+    inset 0 1px 0 var(--b16-border-normal),
+    inset 0 -1px 0 var(--b16-border-normal);
 }
 
 /* Bold: weight and lightness carry the signal, not colour. */
