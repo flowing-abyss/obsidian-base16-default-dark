@@ -53,9 +53,10 @@
 
    The first body line is reachable as the band's adjacent sibling, and the
    closing fence is already empty, so shrinking its line box turns it from a
-   stray row into the matching bottom pad. Restored to full height while the
-   caret is on it, because at that point it is a line being edited and needs
-   room for the ``` it shows. */
+   stray row into the matching bottom pad. Restored to full height whenever
+   CodeMirror exposes its real formatting span — either because the caret is
+   on that row or because the block body is being edited — so the visible ```
+   never inherits the compact empty-row scale. */
 .theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin + .HyperMD-codeblock {
   padding-top: 0.7em;
 }
@@ -69,7 +70,9 @@
   line-height: 0.8;
 }
 
-.theme-dark .markdown-source-view.mod-cm6 .cm-active.HyperMD-codeblock-end {
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-end:is(.cm-active, :has(> .cm-formatting-code-block)) {
   font-size: var(--b16-label-size);
   line-height: var(--line-height-normal);
 }
@@ -460,20 +463,29 @@
   pointer-events: none;
 }
 
-/* While the opening fence is being edited, its literal ```language is the
-   only truthful label. Remove the generated label and code glyph for that
-   one state so the language is never shown twice; the real copy action at
-   the opposite edge remains available. */
-.theme-dark .markdown-source-view.mod-cm6 .cm-active.HyperMD-codeblock-begin[data-code-language] {
+/* Whenever CodeMirror exposes the opening fence, its literal ```language is
+   the only truthful label. This also happens while a body row is active, not
+   only when the caret sits on the opening row. Remove the generated label and
+   code glyph for every visible-fence state so the language is never shown
+   twice; the real copy action at the opposite edge remains available. */
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-language]:is(.cm-active, :has(> .cm-formatting-code-block)) {
   padding-inline-start: calc(var(--font-text-size) * 0.85);
 }
 
 .theme-dark
   .markdown-source-view.mod-cm6
-  .cm-active.HyperMD-codeblock-begin[data-code-language]::before,
+  .HyperMD-codeblock-begin[data-code-language]:is(
+    .cm-active,
+    :has(> .cm-formatting-code-block)
+  )::before,
 .theme-dark
   .markdown-source-view.mod-cm6
-  .cm-active.HyperMD-codeblock-begin[data-code-language]::after {
+  .HyperMD-codeblock-begin[data-code-language]:is(
+    .cm-active,
+    :has(> .cm-formatting-code-block)
+  )::after {
   content: none;
   display: none;
 }
