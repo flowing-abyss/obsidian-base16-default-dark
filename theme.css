@@ -435,11 +435,19 @@
 }
 
 /* INLINE TITLE */
+/* line-height 0.9 is carried over from the pre-split theme deliberately. The
+   title's margin-bottom is already 0, so all the space between it and the
+   first paragraph comes from the paragraph's own top margin — but at the
+   default 1.2 the title's line box adds ~10px of leading below the glyphs
+   (measured: box 42px against a 35px face, versus 31.5px at 0.9), and that
+   leading reads as extra gap. Tightening the box removes it without
+   touching either margin. */
 .inline-title:not([data-level]) {
   margin: 0;
   padding: 0;
   text-align: left;
   background: transparent;
+  line-height: 0.9;
 }
 
 /* fix */
