@@ -2647,6 +2647,15 @@ ul > li::marker,
 
 .theme-dark .mermaid {
   font-family: var(--font-mermaid);
+  /* Mermaid gives wide SVGs an intrinsic pixel width. Reading mode otherwise
+     lets that drawing escape the readable column, while Live Preview happens
+     to supply its own scroller. Own the boundary here so both renderers keep
+     the SVG at its legible size and expose the same horizontal navigation.
+     The block grows to the diagram's natural height, so vertical overflow is
+     never useful and would only create a second scrollbar. */
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 /* Boxes: flowchart nodes, class boxes, state boxes, sequence actors, notes.
