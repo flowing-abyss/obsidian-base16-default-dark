@@ -19,7 +19,7 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Verify theme.css matches sources and passes the durable checks
+      - name: Verify sources and build release artifact
         run: |
           npm ci
           npm run check
@@ -30,6 +30,6 @@ jobs:
         with:
           files: |
             manifest.json
-            theme.css
+            dist/theme.css
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

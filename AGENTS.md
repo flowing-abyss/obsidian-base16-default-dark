@@ -15,9 +15,11 @@ src/00-palette.css  01-tokens.css  02-base.css
     50-plugins/*.css
 ```
 
-`npm run build` concatenates them into `theme.css`. `npm run check` builds and then runs
-every gate (lint, normalize test, tokens, contrast, scale, vars). The pre-commit hook runs
-`npm run check` and refuses the commit if it fails.
+`npm run build` concatenates them into the readable development artifact `theme.css`.
+`npm run build:dist` additionally produces the minified release artifact
+`dist/theme.css`; never edit or commit that ignored directory. `npm run check` builds and
+then runs every gate (lint, normalize test, tokens, contrast, scale, vars, minified
+structure). The pre-commit hook runs `npm run check` and refuses the commit if it fails.
 
 Edit `src/`, run `npm run check`, commit the sources **and** the regenerated `theme.css`
 together.
@@ -32,3 +34,6 @@ together.
    npm run release:minor   # 3.1.0 → 3.2.0 (new features)
    npm run release:major   # 3.1.0 → 4.0.0 (breaking changes)
    ```
+
+   The tag workflow verifies the readable artifact, builds `dist/theme.css`, and uploads
+   that minified file to the GitHub Release as `theme.css`.

@@ -8,11 +8,13 @@
     "release:major": "npm --tag-version-prefix='' version major && git push && git push --tags",
     "prepare": "husky",
     "build": "node scripts/build.mjs",
+    "build:dist": "npm run build && npm run check:dist",
+    "check:dist": "node scripts/build-dist.mjs",
     "check:tokens": "node scripts/check-tokens.mjs",
     "check:contrast": "node scripts/check-contrast.mjs",
     "check:scale": "node scripts/check-scale.mjs",
     "check:vars": "node scripts/check-vars.mjs",
-    "check": "npm run build && npm run lint && npm run test:normalize && npm run check:tokens && npm run check:contrast && npm run check:scale && npm run check:vars",
+    "check": "npm run build && npm run lint && npm run test:normalize && npm run check:tokens && npm run check:contrast && npm run check:scale && npm run check:vars && npm run check:dist",
     "test:normalize": "node scripts/test-normalize.mjs",
     "reload": "node scripts/reload.mjs",
     "shots": "node scripts/shots.mjs",
@@ -29,7 +31,9 @@
   "devDependencies": {
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
+    "postcss": "^8.5.26",
     "prettier": "^3.8.3",
+    "sass": "^1.103.1",
     "stylelint": "^17.8.0",
     "stylelint-config-standard": "^40.0.0"
   }

@@ -8,6 +8,9 @@
 # npm
 node_modules
 
+# Generated release artifact
+/dist/
+
 # Exclude sourcemaps
 *.map
 
