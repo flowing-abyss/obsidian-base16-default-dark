@@ -3669,6 +3669,15 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
   box-shadow: inset 1px 0 0 var(--b16-border-normal);
 }
 
+/* A divider needs a small gutter to read as a group boundary instead of an
+   accidental grid line. Add the same three-pixel breathing room after week
+   numbers and before Saturday, inside the fixed columns so outer geometry is
+   unchanged. */
+#calendar-container .calendar tbody td:nth-child(2),
+#calendar-container .calendar tbody td:nth-last-child(2) {
+  padding-left: 4px;
+}
+
 /* The month title and the "today" control sat on two different lines even
    with the row centred. The cause is a `margin-bottom: 14.4px` the plugin
    puts on the title container: `align-items: center` centres the MARGIN
