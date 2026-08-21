@@ -113,10 +113,11 @@
      their separate 20px text-side gap above. */
   --b16-flow-gap: calc(var(--font-text-size) * 0.85);
 
-  /* One table cell padding, consumed by both modes — reading mode puts it on
-     the cell, live preview on the .table-cell-wrapper inside it, because
-     app.css zeroes the cell there. See src/21-tables.css. */
-  --b16-table-cell-padding: 0.45em 0.7em;
+  /* Dense data-cell padding. Absolute to the reading size rather than `em`:
+     header labels are smaller than body text, but their inline edges must
+     still align. At the 20px reference this resolves to 4px × 10px, leaving
+     a full 26px line box while reducing an ordinary row from 45px to 35px. */
+  --b16-table-cell-padding: calc(var(--font-text-size) * 0.2) calc(var(--font-text-size) * 0.5);
 
   /* UI chrome size ramp — one scale for every "smaller than body" UI text
      size (modals, menus, panel headers, plugin chrome), replacing a scatter
