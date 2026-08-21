@@ -57,26 +57,11 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
   margin-right: 0;
 }
 
-/* omnisearch */
-.omnisearch-result__folder-path {
-  display: none;
-}
-
-.omnisearch-result__title {
-  color: var(--link-color);
-}
-
 /* Match affordance, not a content kind — see 40-chrome.css's search rules
    for the same reasoning: no kind hue for a transient "you searched this". */
 .suggestion-highlight.suggestion-highlight {
   border-bottom: 2px solid var(--b16-border-strong);
   color: var(--text-normal);
-}
-
-/* copilot */
-.tw-flex.tw-items-center.tw-justify-between.tw-gap-2.tw-p-2 {
-  margin: 0;
-  padding: 0;
 }
 
 /* INLINE AI */
@@ -94,11 +79,6 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
 /* Properties of the virtual link when hovered */
 .virtual-link.glossary-entry a:hover {
   color: var(--link-color);
-}
-/* OHS Workbench tabs  */
-.ohs-workbench-tab {
-  background-color: transparent !important;
-  color: var(--text-normal) !important;
 }
 /* META BIND */
 .mb-button-group {

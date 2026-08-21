@@ -108,7 +108,7 @@
 }
 
 /* Scene status glyph, emitted from the data attribute the plugin sets. */
-[data-scene-status]::after {
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] [data-scene-status]::after {
   content: attr(data-scene-status);
   opacity: 0.55;
   padding: 0 2px 0 0;

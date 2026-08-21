@@ -1,13 +1,4 @@
-/* Lists */
-.theme-dark .markdown-preview-view .list-bullet::after {
-  background-color: var(--text-faint);
-}
-
 /* LISTS */
-.markdown-source-view.mod-cm6.is-readable-line-width .cm-line {
-  padding: 0;
-}
-
 .markdown-rendered ul:not(.contains-task-list, .dataview-result-list-ul) {
   padding-inline-start: 0;
 }
@@ -95,16 +86,6 @@ ul > li::marker,
 }
 
 /* .HyperMD-list-line-1:not(.HyperMD-task-line[data-task]):has(.cm-hmd-internal-link) { */
-.HyperMD-list-line-1:not(.HyperMD-task-line[data-task], .lc-list-callout) {
-  border-radius: 5px;
-  border: none;
-  border-width: 1px;
-}
-
-.HyperMD-list-line-1:not(.HyperMD-task-line[data-task]) .cm-hmd-internal-link:not(.cm-hmd-embed) {
-  font-weight: 600 !important;
-}
-
 /* LEVEL 2 */
 .markdown-reading-view ul > li > ul > li > .list-bullet::after,
 .markdown-source-view.mod-cm6 .HyperMD-list-line-2 .list-bullet::after {
@@ -138,10 +119,6 @@ ul > li::marker,
   background-color: var(--bullet-new-color);
 }
 
-.HyperMD-list-line-4 {
-  font-style: italic;
-}
-
 /* LEVEL 5 */
 .markdown-reading-view ul > li > ul > li > ul > li > ul > li > ul > li > .list-bullet::after,
 .markdown-source-view.mod-cm6 .HyperMD-list-line-5 .list-bullet::after {
@@ -150,10 +127,6 @@ ul > li::marker,
   width: 6px;
   border-radius: 0;
   background-color: var(--bullet-new-color);
-}
-
-.HyperMD-list-line-5 {
-  font-style: italic;
 }
 
 /* LEVEL 6 */
@@ -182,10 +155,6 @@ ul > li::marker,
   border-width: 1px;
 }
 
-.HyperMD-list-line-6 {
-  font-style: italic;
-}
-
 /* LEVEL 7 */
 .markdown-reading-view
   ul
@@ -209,10 +178,6 @@ ul > li::marker,
   width: 2px;
   border-radius: 0;
   background-color: var(--bullet-new-color);
-}
-
-.HyperMD-list-line-7 {
-  font-style: italic;
 }
 
 /* fix task checkbox */

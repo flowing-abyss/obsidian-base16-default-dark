@@ -719,11 +719,6 @@
   background: transparent;
 }
 
-/* fix mermaid background color */
-.cluster rect {
-  fill: transparent !important;
-}
-
 /* order-sensitive: was line 797 in the legacy file. There it followed (and
    so won a same-specificity tie against) the .HyperMD-codeblock padding
    rule above; splitting moved that rule's source (12-lists.css) ahead of

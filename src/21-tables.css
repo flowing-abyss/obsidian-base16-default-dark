@@ -97,19 +97,3 @@
 .theme-dark .markdown-rendered tbody tr:hover {
   background-color: var(--b16-surface-2);
 }
-
-/* A table inside a callout sits on an already-surface-1 ambient (see
-   20-callouts.css), so the header fill and the hover fill above would be
-   the same colour as their surroundings and vanish. One more surface step
-   keeps both readable without touching the frame or the row/column rules,
-   whose alpha-based border colours already scale correctly with whatever
-   surface they land on. The callout is the descendant of .markdown-rendered
-   here, not the other way round, so it alone is enough to select on; this
-   ties the specificity of the two rules above and wins on source order. */
-.theme-dark .callout thead {
-  background-color: var(--b16-surface-2);
-}
-
-.theme-dark .callout tbody tr:hover {
-  background-color: var(--b16-surface-2);
-}

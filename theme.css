@@ -1405,16 +1405,7 @@ body:not(.classic-inline-backlinks) .embedded-backlinks .tree-item-inner {
 
 /* ===== 12-lists.css ===== */
 
-/* Lists */
-.theme-dark .markdown-preview-view .list-bullet::after {
-  background-color: var(--text-faint);
-}
-
 /* LISTS */
-.markdown-source-view.mod-cm6.is-readable-line-width .cm-line {
-  padding: 0;
-}
-
 .markdown-rendered ul:not(.contains-task-list, .dataview-result-list-ul) {
   padding-inline-start: 0;
 }
@@ -1502,16 +1493,6 @@ ul > li::marker,
 }
 
 /* .HyperMD-list-line-1:not(.HyperMD-task-line[data-task]):has(.cm-hmd-internal-link) { */
-.HyperMD-list-line-1:not(.HyperMD-task-line[data-task], .lc-list-callout) {
-  border-radius: 5px;
-  border: none;
-  border-width: 1px;
-}
-
-.HyperMD-list-line-1:not(.HyperMD-task-line[data-task]) .cm-hmd-internal-link:not(.cm-hmd-embed) {
-  font-weight: 600 !important;
-}
-
 /* LEVEL 2 */
 .markdown-reading-view ul > li > ul > li > .list-bullet::after,
 .markdown-source-view.mod-cm6 .HyperMD-list-line-2 .list-bullet::after {
@@ -1545,10 +1526,6 @@ ul > li::marker,
   background-color: var(--bullet-new-color);
 }
 
-.HyperMD-list-line-4 {
-  font-style: italic;
-}
-
 /* LEVEL 5 */
 .markdown-reading-view ul > li > ul > li > ul > li > ul > li > ul > li > .list-bullet::after,
 .markdown-source-view.mod-cm6 .HyperMD-list-line-5 .list-bullet::after {
@@ -1557,10 +1534,6 @@ ul > li::marker,
   width: 6px;
   border-radius: 0;
   background-color: var(--bullet-new-color);
-}
-
-.HyperMD-list-line-5 {
-  font-style: italic;
 }
 
 /* LEVEL 6 */
@@ -1589,10 +1562,6 @@ ul > li::marker,
   border-width: 1px;
 }
 
-.HyperMD-list-line-6 {
-  font-style: italic;
-}
-
 /* LEVEL 7 */
 .markdown-reading-view
   ul
@@ -1616,10 +1585,6 @@ ul > li::marker,
   width: 2px;
   border-radius: 0;
   background-color: var(--bullet-new-color);
-}
-
-.HyperMD-list-line-7 {
-  font-style: italic;
 }
 
 /* fix task checkbox */
@@ -2066,22 +2031,6 @@ ul > li::marker,
 }
 
 .theme-dark .markdown-rendered tbody tr:hover {
-  background-color: var(--b16-surface-2);
-}
-
-/* A table inside a callout sits on an already-surface-1 ambient (see
-   20-callouts.css), so the header fill and the hover fill above would be
-   the same colour as their surroundings and vanish. One more surface step
-   keeps both readable without touching the frame or the row/column rules,
-   whose alpha-based border colours already scale correctly with whatever
-   surface they land on. The callout is the descendant of .markdown-rendered
-   here, not the other way round, so it alone is enough to select on; this
-   ties the specificity of the two rules above and wins on source order. */
-.theme-dark .callout thead {
-  background-color: var(--b16-surface-2);
-}
-
-.theme-dark .callout tbody tr:hover {
   background-color: var(--b16-surface-2);
 }
 
@@ -2808,11 +2757,6 @@ ul > li::marker,
   background: transparent;
 }
 
-/* fix mermaid background color */
-.cluster rect {
-  fill: transparent !important;
-}
-
 /* order-sensitive: was line 797 in the legacy file. There it followed (and
    so won a same-specificity tie against) the .HyperMD-codeblock padding
    rule above; splitting moved that rule's source (12-lists.css) ahead of
@@ -3090,7 +3034,7 @@ body {
 
 .metadata-property:hover .metadata-property-icon,
 .metadata-property:hover .metadata-property-warning-icon,
-.metadata-property:hover .metadata-container .metadata-property-value .clickable-icon {
+.metadata-container .metadata-property:hover .metadata-property-value .clickable-icon {
   max-width: 30px;
   opacity: 1;
   pointer-events: auto;
@@ -3135,16 +3079,6 @@ body {
 .workspace-leaf-content[data-type='markdown']
   .inline-title:hover
   ~ .metadata-container
-  .metadata-content,
-/* Child-scoped :has, deliberately. An unscoped `body:has(.metadata-menu)`
-   asks Chromium to re-check the entire document on every DOM mutation
-   anywhere in the app — the same document-wide cost src/50-plugins/bases.css
-   avoids for its tooltip rule. MetadataMenu's popup is appended at body
-   level like every other Obsidian popup, so `> ` narrows the invalidation
-   to body's direct children at no change in behaviour. */
-body:has(> .metadata-menu)
-  .workspace-leaf-content[data-type='markdown']
-  .metadata-container
   .metadata-content {
   opacity: 1;
   max-height: 1000px;
@@ -3398,10 +3332,6 @@ body:not(.show-sidebar-header-buttons) :is(.mod-left-split, .mod-right-split) {
       opacity: 0;
     }
 
-    &.mod-top .workspace-tab-header-container:not(:hover) .workspace-tab-header-container-inner {
-      opacity: 0;
-    }
-
     &.mod-top .workspace-tab-header-container-inner {
       &:hover {
         padding-bottom: 4px;
@@ -3430,11 +3360,6 @@ body:is(.mod-windows, .mod-linux) {
 body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
   .titlebar-button-container.mod-right {
   background-color: transparent;
-}
-
-/* fix graph analysis */
-.scrollContainer {
-  padding: 0;
 }
 
 /* search: a match is a transient affordance ("you are looking for this
@@ -3547,8 +3472,8 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
    inheritance no matter what the container is set to.
    (:not() takes its argument's specificity, so this stays (0,3,0) and the
    two selectors it shares the block with are unaffected.) */
-.theme-dark .prompt *:not(.hybrid-search-preview, .hybrid-search-preview *),
-.theme-dark .modal *,
+.theme-dark .prompt,
+.theme-dark .modal,
 .hybrid-search-preview-meta-panel {
   font-size: var(--b16-font-ui-m);
 }
@@ -3582,19 +3507,6 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
 .popover {
   box-shadow: none;
 }
-.popover.hover-editor {
-  border: 1px ridge var(--b16-border-strong);
-}
-.popover-titlebar {
-  background-color: var(--b16-surface-0) !important;
-}
-.popover-title {
-  visibility: hidden;
-}
-.popover-action,
-.popover-header-icon {
-  color: var(--text-muted) !important;
-}
 .popover-content {
   font-size: var(--font-text-size);
 }
@@ -3605,7 +3517,6 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
    kept here because it shares this exact declaration block with the
    modal selectors. */
 .prompt,
-.prompt.another-quick-switcher__floating-prompt,
 .float-search-modal,
 .modal.task-search-modal {
   position: absolute;
@@ -3616,9 +3527,7 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
   max-height: 96%;
   box-shadow: none;
   border-radius: 0;
-  border-width: 2px;
   border: 1px solid var(--background-modifier-border);
-  border-collapse: collapse;
 }
 .modal-container.mod-dim .modal {
   box-shadow: none;
@@ -4204,7 +4113,7 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
 }
 
 /* Scene status glyph, emitted from the data attribute the plugin sets. */
-[data-scene-status]::after {
+.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] [data-scene-status]::after {
   content: attr(data-scene-status);
   opacity: 0.55;
   padding: 0 2px 0 0;
@@ -4306,56 +4215,6 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
   color: var(--b16-status-error);
 }
 
-/* ===== 50-plugins/metadatamenu.css ===== */
-
-/* metadatamenu */
-
-.field-btn-container button.property-metadata-menu,
-.metadata-content .action-container .fileclass-btn-container .add-field-button {
-  background: transparent;
-  color: var(--b16-text-faint);
-  padding: 0;
-  margin: 0;
-  height: calc(var(--input-height));
-  width: calc(var(--input-height) * 0.7);
-}
-
-.metadata-menu.modal-container.note-fields-modal .modal {
-  width: 705px;
-}
-
-.metadata-menu.modal-container.note-fields-modal .modal .field-value-wrapper {
-  min-width: 375px;
-  max-width: 375px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: block;
-  box-sizing: border-box;
-  position: relative;
-  transition:
-    max-height 0.2s ease,
-    padding 0.2s ease;
-  max-height: 1.5em;
-  padding: 0;
-}
-
-.metadata-menu.modal-container.note-fields-modal .modal .field-value-wrapper:hover {
-  white-space: normal;
-  overflow-wrap: break-word;
-  overflow: visible;
-  min-width: 375px;
-  max-width: 375px;
-  position: relative;
-  z-index: 10;
-  max-height: 10em;
-}
-
-/* hide metadata menu add button */
-.suggester-input .mod-cta {
-  display: none;
-}
-
 /* ===== 50-plugins/misc.css ===== */
 
 .dataview .task-list-item-checkbox {
@@ -4417,26 +4276,11 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
   margin-right: 0;
 }
 
-/* omnisearch */
-.omnisearch-result__folder-path {
-  display: none;
-}
-
-.omnisearch-result__title {
-  color: var(--link-color);
-}
-
 /* Match affordance, not a content kind — see 40-chrome.css's search rules
    for the same reasoning: no kind hue for a transient "you searched this". */
 .suggestion-highlight.suggestion-highlight {
   border-bottom: 2px solid var(--b16-border-strong);
   color: var(--text-normal);
-}
-
-/* copilot */
-.tw-flex.tw-items-center.tw-justify-between.tw-gap-2.tw-p-2 {
-  margin: 0;
-  padding: 0;
 }
 
 /* INLINE AI */
@@ -4454,11 +4298,6 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
 /* Properties of the virtual link when hovered */
 .virtual-link.glossary-entry a:hover {
   color: var(--link-color);
-}
-/* OHS Workbench tabs  */
-.ohs-workbench-tab {
-  background-color: transparent !important;
-  color: var(--text-normal) !important;
 }
 /* META BIND */
 .mb-button-group {
@@ -4700,16 +4539,14 @@ body .another-quick-switcher__item {
 body .another-quick-switcher__item__description {
   margin-left: 8px;
 }
-.another-quick-switcher__item__title__header1 {
+.another-quick-switcher__item__title__header {
   margin-left: 6px;
 }
 
 .another-quick-switcher__status__default-input,
-.another-quick-switcher__status__search-command,
 .another-quick-switcher__header__auto-preview-icon,
 .another-quick-switcher__command_buttons,
-.another-quick-switcher__starred_item .another-quick-switcher__item__entry::before,
-.search-input-clear-button {
+.another-quick-switcher__starred_item .another-quick-switcher__item__entry::before {
   display: none;
 }
 

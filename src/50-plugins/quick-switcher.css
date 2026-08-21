@@ -49,16 +49,14 @@ body .another-quick-switcher__item {
 body .another-quick-switcher__item__description {
   margin-left: 8px;
 }
-.another-quick-switcher__item__title__header1 {
+.another-quick-switcher__item__title__header {
   margin-left: 6px;
 }
 
 .another-quick-switcher__status__default-input,
-.another-quick-switcher__status__search-command,
 .another-quick-switcher__header__auto-preview-icon,
 .another-quick-switcher__command_buttons,
-.another-quick-switcher__starred_item .another-quick-switcher__item__entry::before,
-.search-input-clear-button {
+.another-quick-switcher__starred_item .another-quick-switcher__item__entry::before {
   display: none;
 }
 

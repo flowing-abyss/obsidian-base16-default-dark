@@ -223,10 +223,6 @@ body:not(.show-sidebar-header-buttons) :is(.mod-left-split, .mod-right-split) {
       opacity: 0;
     }
 
-    &.mod-top .workspace-tab-header-container:not(:hover) .workspace-tab-header-container-inner {
-      opacity: 0;
-    }
-
     &.mod-top .workspace-tab-header-container-inner {
       &:hover {
         padding-bottom: 4px;
@@ -255,11 +251,6 @@ body:is(.mod-windows, .mod-linux) {
 body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
   .titlebar-button-container.mod-right {
   background-color: transparent;
-}
-
-/* fix graph analysis */
-.scrollContainer {
-  padding: 0;
 }
 
 /* search: a match is a transient affordance ("you are looking for this

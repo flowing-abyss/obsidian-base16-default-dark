@@ -25,7 +25,7 @@ body {
 
 .metadata-property:hover .metadata-property-icon,
 .metadata-property:hover .metadata-property-warning-icon,
-.metadata-property:hover .metadata-container .metadata-property-value .clickable-icon {
+.metadata-container .metadata-property:hover .metadata-property-value .clickable-icon {
   max-width: 30px;
   opacity: 1;
   pointer-events: auto;
@@ -70,16 +70,6 @@ body {
 .workspace-leaf-content[data-type='markdown']
   .inline-title:hover
   ~ .metadata-container
-  .metadata-content,
-/* Child-scoped :has, deliberately. An unscoped `body:has(.metadata-menu)`
-   asks Chromium to re-check the entire document on every DOM mutation
-   anywhere in the app — the same document-wide cost src/50-plugins/bases.css
-   avoids for its tooltip rule. MetadataMenu's popup is appended at body
-   level like every other Obsidian popup, so `> ` narrows the invalidation
-   to body's direct children at no change in behaviour. */
-body:has(> .metadata-menu)
-  .workspace-leaf-content[data-type='markdown']
-  .metadata-container
   .metadata-content {
   opacity: 1;
   max-height: 1000px;

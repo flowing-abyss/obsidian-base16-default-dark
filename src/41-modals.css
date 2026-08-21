@@ -16,8 +16,8 @@
    inheritance no matter what the container is set to.
    (:not() takes its argument's specificity, so this stays (0,3,0) and the
    two selectors it shares the block with are unaffected.) */
-.theme-dark .prompt *:not(.hybrid-search-preview, .hybrid-search-preview *),
-.theme-dark .modal *,
+.theme-dark .prompt,
+.theme-dark .modal,
 .hybrid-search-preview-meta-panel {
   font-size: var(--b16-font-ui-m);
 }
@@ -51,19 +51,6 @@
 .popover {
   box-shadow: none;
 }
-.popover.hover-editor {
-  border: 1px ridge var(--b16-border-strong);
-}
-.popover-titlebar {
-  background-color: var(--b16-surface-0) !important;
-}
-.popover-title {
-  visibility: hidden;
-}
-.popover-action,
-.popover-header-icon {
-  color: var(--text-muted) !important;
-}
 .popover-content {
   font-size: var(--font-text-size);
 }
@@ -74,7 +61,6 @@
    kept here because it shares this exact declaration block with the
    modal selectors. */
 .prompt,
-.prompt.another-quick-switcher__floating-prompt,
 .float-search-modal,
 .modal.task-search-modal {
   position: absolute;
@@ -85,9 +71,7 @@
   max-height: 96%;
   box-shadow: none;
   border-radius: 0;
-  border-width: 2px;
   border: 1px solid var(--background-modifier-border);
-  border-collapse: collapse;
 }
 .modal-container.mod-dim .modal {
   box-shadow: none;
