@@ -50,6 +50,18 @@
   letter-spacing: 0.04em;
 }
 
+/* The quick workspace loader is a generic Prompt with no view-specific class;
+   its input is the only stable discriminator Obsidian exposes. Scope :has()
+   to that one transient prompt so other suggestion flairs keep their normal
+   UI size. */
+.theme-dark
+  .prompt:has(> .prompt-input-container > .prompt-input[placeholder='Type layout name...'])
+  .flair.mod-pop {
+  font-size: 0.75em;
+  padding: 1px 4px;
+  letter-spacing: 0.04em;
+}
+
 /* popovers */
 .theme-light,
 .theme-dark {
