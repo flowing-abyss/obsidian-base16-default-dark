@@ -26,6 +26,15 @@
   font-size: var(--font-text-size);
 }
 
+/* Obsidian caps the desktop Settings navigation at 250px even though its text
+   follows the user's font scale. Keep the native width through 20px, then let
+   the cap grow just enough for 24–28px labels instead of turning every plugin
+   name into an ellipsis. The content pane still receives the remaining flex
+   space, and mobile Settings keeps its native full-screen navigation. */
+.theme-dark:not(.is-mobile) .vertical-tab-header {
+  max-width: max(250px, calc(var(--font-text-size) * 10.5));
+}
+
 /* .theme-dark .modal .mv-picker-group-type is foreign (Metadata Validator
    plugin selector — the mv-* classes, distinct from Metadata Menu), kept
    here because it shares this exact declaration block with the modal

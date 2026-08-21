@@ -3082,6 +3082,20 @@ body {
   margin-top: 3px;
 }
 
+/* A URL property is allowed to wrap; it is not allowed to enlarge the note.
+   Obsidian's metadata link is a flex item whose min-content width is the full
+   unbroken URL (1288px at the 28px desktop scale in the project-note fixture).
+   Release that minimum at every flex layer and let the textual part break
+   while its action icon stays intact, in both desktop and mobile layouts. */
+.theme-dark :is(.metadata-property-value, .metadata-link, .metadata-link-inner) {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.theme-dark .metadata-link-inner {
+  overflow-wrap: anywhere;
+}
+
 .is-live-preview.show-properties .metadata-container {
   display: none;
 }
@@ -3509,6 +3523,15 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
   font-size: var(--font-text-size);
 }
 
+/* Obsidian caps the desktop Settings navigation at 250px even though its text
+   follows the user's font scale. Keep the native width through 20px, then let
+   the cap grow just enough for 24–28px labels instead of turning every plugin
+   name into an ellipsis. The content pane still receives the remaining flex
+   space, and mobile Settings keeps its native full-screen navigation. */
+.theme-dark:not(.is-mobile) .vertical-tab-header {
+  max-width: max(250px, calc(var(--font-text-size) * 10.5));
+}
+
 /* .theme-dark .modal .mv-picker-group-type is foreign (Metadata Validator
    plugin selector — the mv-* classes, distinct from Metadata Menu), kept
    here because it shares this exact declaration block with the modal
@@ -3642,20 +3665,6 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
      the room; the 16px and 20px layouts remain unchanged. */
   --b16-mobile-file-margin-x: max(24px, calc(var(--font-text-size) * 1.2));
   --file-margins: var(--file-margins-y) var(--b16-mobile-file-margin-x);
-}
-
-/* A URL property is allowed to wrap; it is not allowed to enlarge the note.
-   Obsidian's metadata link is a flex item whose min-content width is the full
-   unbroken URL (936px in the project-note fixture). Release that minimum at
-   every flex layer and let the textual part break while its action icon stays
-   intact. */
-.is-mobile.theme-dark :is(.metadata-property-value, .metadata-link, .metadata-link-inner) {
-  min-width: 0;
-  max-width: 100%;
-}
-
-.is-mobile.theme-dark .metadata-link-inner {
-  overflow-wrap: anywhere;
 }
 
 /* A mobile toolbar is permanent navigation. Give it a stable edge and an
@@ -4057,10 +4066,22 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
   --color-background-weekend: transparent;
   --color-background-weeknum: transparent;
 
+  container-type: inline-size;
   margin: 0;
   padding: 0;
   font-size: 1.05em;
   font-weight: 500;
+}
+
+/* A fixed pixel breakpoint would hide useful quarter shortcuts in an ordinary
+   20px sidebar merely because the pane is narrow. Express the limit in em so
+   it responds to both available width and the user's text scale: the same
+   324px pane keeps quarters at 16–20px, while at 24–28px it preserves the
+   month, Today and arrow controls without introducing a horizontal scrollbar. */
+@container (max-width: 18em) {
+  #calendar-container .nav .quarters {
+    display: none;
+  }
 }
 
 /* Calendar data must never reflow the grid. Automatic table layout made the

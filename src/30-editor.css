@@ -46,6 +46,20 @@ body {
   margin-top: 3px;
 }
 
+/* A URL property is allowed to wrap; it is not allowed to enlarge the note.
+   Obsidian's metadata link is a flex item whose min-content width is the full
+   unbroken URL (1288px at the 28px desktop scale in the project-note fixture).
+   Release that minimum at every flex layer and let the textual part break
+   while its action icon stays intact, in both desktop and mobile layouts. */
+.theme-dark :is(.metadata-property-value, .metadata-link, .metadata-link-inner) {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.theme-dark .metadata-link-inner {
+  overflow-wrap: anywhere;
+}
+
 .is-live-preview.show-properties .metadata-container {
   display: none;
 }

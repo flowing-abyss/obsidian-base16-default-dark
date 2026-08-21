@@ -50,10 +50,22 @@
   --color-background-weekend: transparent;
   --color-background-weeknum: transparent;
 
+  container-type: inline-size;
   margin: 0;
   padding: 0;
   font-size: 1.05em;
   font-weight: 500;
+}
+
+/* A fixed pixel breakpoint would hide useful quarter shortcuts in an ordinary
+   20px sidebar merely because the pane is narrow. Express the limit in em so
+   it responds to both available width and the user's text scale: the same
+   324px pane keeps quarters at 16–20px, while at 24–28px it preserves the
+   month, Today and arrow controls without introducing a horizontal scrollbar. */
+@container (max-width: 18em) {
+  #calendar-container .nav .quarters {
+    display: none;
+  }
 }
 
 /* Calendar data must never reflow the grid. Automatic table layout made the
