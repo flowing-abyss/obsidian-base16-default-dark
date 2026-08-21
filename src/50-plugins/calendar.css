@@ -42,19 +42,30 @@
   font-size: var(--b16-font-ui-m);
 }
 
-/* Keep the plugin on the theme's surface and status hierarchy. The previous
-   black alpha made the weekend columns darker by only two RGB steps and read
-   as uneven background dirt. One opaque surface step is still quiet, but
-   makes the two non-working-day columns unambiguous at a glance. */
+/* Keep the grid on one uninterrupted surface. Weekend and state structure is
+   drawn with precise lines below; broad grey or status-colour washes make a
+   compact calendar look stained rather than organised. */
 #calendar-container {
-  --color-background-heading: var(--b16-surface-1);
-  --color-background-weekend: var(--b16-surface-1);
-  --color-background-weeknum: var(--b16-surface-1);
+  --color-background-heading: transparent;
+  --color-background-weekend: transparent;
+  --color-background-weeknum: transparent;
 
   margin: 0;
   padding: 0;
   font-size: 1.05em;
   font-weight: 500;
+}
+
+/* The last two columns are the weekend in this Monday-first calendar. A
+   single divider establishes the group; stronger neutral labels identify it
+   without introducing another accent meaning. */
+#calendar-container .calendar thead th:nth-last-child(-n + 2) {
+  color: var(--b16-text-normal);
+}
+
+#calendar-container .calendar thead th:nth-last-child(2),
+#calendar-container .calendar tbody td:nth-last-child(2) {
+  box-shadow: inset 1px 0 0 var(--b16-border-normal);
 }
 
 /* The month title and the "today" control sat on two different lines even
@@ -92,14 +103,16 @@
   box-shadow: inset 0 0 0 2px var(--b16-accent-link);
 }
 
-/* Review state is semantic but subordinate to "today". Translucent Base16
-   status colours preserve the weekend surface beneath a reviewed date. */
+/* Review state uses the same geometry as "today", but at half its weight.
+   A crisp one-pixel status ring is clearer and cleaner than a tinted fill. */
 #calendar-container [data-reviewed~='false'] {
-  background: color-mix(in srgb, var(--b16-status-error) 12%, transparent);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--b16-status-error);
 }
 
 #calendar-container [data-reviewed~='true'] {
-  background: color-mix(in srgb, var(--b16-status-ok) 12%, transparent);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--b16-status-ok);
 }
 
 /* TASKS CALENDAR */
