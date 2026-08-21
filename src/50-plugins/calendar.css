@@ -92,10 +92,15 @@
   box-shadow: inset 1px 0 0 var(--b16-border-normal);
 }
 
-/* A divider needs a small gutter to read as a group boundary instead of an
-   accidental grid line. Add the same three-pixel breathing room after week
-   numbers and before Saturday, inside the fixed columns so outer geometry is
-   unchanged. */
+/* A divider needs equal breathing room on both sides to read as a group
+   boundary instead of an accidental grid line. Expand the native 1px cell
+   padding to 4px around both separators, inside the fixed columns so outer
+   geometry is unchanged. */
+#calendar-container .calendar tbody td:first-child,
+#calendar-container .calendar tbody td:nth-last-child(3) {
+  padding-right: 4px;
+}
+
 #calendar-container .calendar tbody td:nth-child(2),
 #calendar-container .calendar tbody td:nth-last-child(2) {
   padding-left: 4px;
