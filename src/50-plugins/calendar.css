@@ -42,6 +42,21 @@
   font-size: var(--b16-font-ui-m);
 }
 
+/* Keep the plugin on the theme's surface and status hierarchy. The previous
+   black alpha made the weekend columns darker by only two RGB steps and read
+   as uneven background dirt. One opaque surface step is still quiet, but
+   makes the two non-working-day columns unambiguous at a glance. */
+#calendar-container {
+  --color-background-heading: var(--b16-surface-1);
+  --color-background-weekend: var(--b16-surface-1);
+  --color-background-weeknum: var(--b16-surface-1);
+
+  margin: 0;
+  padding: 0;
+  font-size: 1.05em;
+  font-weight: 500;
+}
+
 /* The month title and the "today" control sat on two different lines even
    with the row centred. The cause is a `margin-bottom: 14.4px` the plugin
    puts on the title container: `align-items: center` centres the MARGIN
@@ -59,13 +74,37 @@
 }
 
 .workspace-leaf-content[data-type='calendar'] .nav {
-  margin-bottom: 0.5em;
-}
-
-.workspace-leaf-content[data-type='calendar'] .nav {
   font-size: var(--b16-font-ui-s);
   margin-bottom: 0;
   padding-bottom: 0;
+}
+
+#calendar-container .reset-button {
+  margin: 3px 0 0;
+  padding: 0;
+}
+
+/* The current day is the calendar's primary state. An inset ring does not
+   change cell geometry, unlike the old border, so every week stays exactly
+   the same height. */
+#calendar-container .today {
+  color: var(--b16-accent-link);
+  box-shadow: inset 0 0 0 2px var(--b16-accent-link);
+}
+
+/* Review state is semantic but subordinate to "today". Translucent Base16
+   status colours preserve the weekend surface beneath a reviewed date. */
+#calendar-container [data-reviewed~='false'] {
+  background: color-mix(in srgb, var(--b16-status-error) 12%, transparent);
+}
+
+#calendar-container [data-reviewed~='true'] {
+  background: color-mix(in srgb, var(--b16-status-ok) 12%, transparent);
+}
+
+/* TASKS CALENDAR */
+.tasksCalendar .task .inner {
+  background-color: var(--b16-surface-0);
 }
 
 /* CALENDAR BASES */
