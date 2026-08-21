@@ -41,6 +41,15 @@
   translate: 0 -1px;
 }
 
+/* The workspace state is metadata for the layout name, not a second label.
+   Keep it visibly badge-like, but subordinate it to the workspace title and
+   avoid spending a full UI type step on one short status word. */
+.theme-dark .modal .mod-manage-workspaces .flair.mod-pop {
+  font-size: 0.75em;
+  padding: 1px 4px;
+  letter-spacing: 0.04em;
+}
+
 /* popovers */
 .theme-light,
 .theme-dark {
@@ -79,11 +88,7 @@
 .float-search-modal {
   min-height: 96%;
 }
-/* A score is an annotation on a result, not the result. At the same size as
-   the title it competed with it, and being monospace and coloured it won —
-   the number read as the loudest thing in the list. One step down puts it
-   back in its place. */
-.theme-dark .prompt .hybrid-search-score,
+/* Search mode is metadata for the query, not result content. */
 .theme-dark .prompt .hybrid-search-mode-badge {
   font-size: var(--b16-font-ui-s);
 }
