@@ -127,10 +127,25 @@ body:not(.show-sidebar-header-buttons) :is(.mod-left-split, .mod-right-split) {
   }
 
   .workspace-tabs {
+    /* The collapsed strip is the affordance for switching panes: hovering it
+       expands the tab bar. At 10px it was hard to aim at and easy to miss
+       entirely — 16px is still unmistakably a collapsed strip rather than a
+       tab bar, and it gives the cursor something to land on. */
     &:not(.mod-top) .workspace-tab-header-container:not(:hover) {
-      --sidebar-tabs-unhovered-height: 10px;
+      --sidebar-tabs-unhovered-height: 16px;
 
       height: var(--sidebar-tabs-unhovered-height);
+    }
+
+    /* The strip is only a hit target while collapsed, so its contents are
+       faded out — the same move the .mod-top branch below makes. At the old
+       10px the tab icons happened to fall entirely outside the box; at 16px
+       their top edge showed through as a row of slivers, which read as a
+       rendering artefact rather than as a control. */
+    &:not(.mod-top)
+      .workspace-tab-header-container:not(:hover)
+      .workspace-tab-header-container-inner {
+      opacity: 0;
     }
 
     /* A .mod-top group only faded its contents and kept its full height,
