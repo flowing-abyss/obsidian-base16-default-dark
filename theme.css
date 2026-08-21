@@ -799,8 +799,20 @@
 }
 
 /* Horizontal rules */
+/* Horizontal rules. The colour is safe to set on the bare element, but the
+   spacing is NOT: Obsidian builds its pane resize handles out of <hr> too
+   (`hr.workspace-leaf-resize-handle`), and a bare `margin-block: 2em` landed
+   34px of margin on every one of them. Those handles are absolutely
+   positioned with `bottom: 0`, so the bottom margin lifted each divider 34px
+   up into the pane above it — which is what put a stray line partway up the
+   sidebar's calendar pane and made the space beneath it read as a second,
+   empty panel. Scoped to rendered markdown, where a thematic break actually
+   lives. */
 .theme-dark hr {
   border-color: var(--b16-border-normal);
+}
+
+.theme-dark .markdown-rendered hr {
   margin-block: 2em;
 }
 
