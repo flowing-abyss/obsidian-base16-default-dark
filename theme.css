@@ -3548,8 +3548,8 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
 /* popovers */
 .theme-light,
 .theme-dark {
-  --popover-width: 600px;
-  --popover-height: 400px;
+  --popover-width: min(600px, calc(100vw - var(--size-4-6)));
+  --popover-height: min(400px, calc(100vh - var(--size-4-6)));
 }
 /* Border instead of shadow */
 .popover {
@@ -3564,9 +3564,7 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
    Tasks plugin / obsidian-tasks-plugin despite the name similarity),
    kept here because it shares this exact declaration block with the
    modal selectors. */
-.prompt,
-.float-search-modal,
-.modal.task-search-modal {
+.theme-dark:not(.is-mobile) :is(.prompt, .float-search-modal, .modal.task-search-modal) {
   position: absolute;
   top: calc(var(--header-height) + 10px) !important;
   left: 10px !important;
@@ -3580,7 +3578,7 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
 .modal-container.mod-dim .modal {
   box-shadow: none;
 }
-.float-search-modal {
+.theme-dark:not(.is-mobile) .float-search-modal {
   min-height: 96%;
 }
 /* Search mode is metadata for the query, not result content. */
@@ -3611,6 +3609,145 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
 /* fix modal */
 .modal-content h1 {
   margin-top: 0;
+}
+
+/* ===== 42-mobile.css ===== */
+
+/* Mobile is the same quiet workspace, not a second visual language.
+   Obsidian deliberately enlarges touch targets, but also turns their visible
+   surfaces into 30–52px pills. Keep the hit geometry and change only the
+   radius inputs that paint containers. Toggles, sliders and tags retain
+   their functional shapes. This replaces the vault snippet's `.is-mobile *`
+   hammer, which forced every descendant through an !important declaration. */
+.is-mobile.theme-dark {
+  --clickable-icon-radius: var(--b16-radius-m);
+  --view-header-action-radius: var(--b16-radius-m);
+  --nav-item-radius: var(--b16-radius-s);
+  --setting-items-radius: var(--b16-radius-m);
+  --modal-radius: var(--b16-radius-m);
+  --textarea-radius: var(--b16-radius-s);
+  --tab-switcher-preview-radius: var(--b16-radius-m);
+  --tab-switcher-preview-shadow-active: 0 0 0 2px var(--b16-accent-link);
+  --embed-actions-radius: var(--b16-radius-m);
+  --embed-action-radius: var(--b16-radius-m);
+  --mobile-sidebar-radius: 0;
+  --navbar-radius: 0;
+  --navbar-width: 100%;
+  --navbar-max-width: none;
+  --navbar-position: fixed;
+
+  /* The fold control scales with reading text. At 24px and above the native
+     fixed 24px file gutter no longer contains it, clipping the icon against
+     the viewport. Grow the mobile page margin only when the control needs
+     the room; the 16px and 20px layouts remain unchanged. */
+  --b16-mobile-file-margin-x: max(24px, calc(var(--font-text-size) * 1.2));
+  --file-margins: var(--file-margins-y) var(--b16-mobile-file-margin-x);
+}
+
+/* A URL property is allowed to wrap; it is not allowed to enlarge the note.
+   Obsidian's metadata link is a flex item whose min-content width is the full
+   unbroken URL (936px in the project-note fixture). Release that minimum at
+   every flex layer and let the textual part break while its action icon stays
+   intact. */
+.is-mobile.theme-dark :is(.metadata-property-value, .metadata-link, .metadata-link-inner) {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.is-mobile.theme-dark .metadata-link-inner {
+  overflow-wrap: anywhere;
+}
+
+/* A mobile toolbar is permanent navigation. Give it a stable edge and an
+   opaque material instead of floating a blurred capsule over the last lines
+   of a note. The bar reaches the physical bottom while its actions stay
+   above the home-indicator safe area. */
+.is-mobile.theme-dark .mobile-navbar {
+  inset-inline: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 8px var(--safe-area-inset-bottom);
+  background-color: var(--b16-surface-2);
+  border-top: 1px solid var(--b16-border-normal);
+  border-radius: 0;
+  opacity: 1;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* The document header is another fixed navigation surface. Keep the native
+   safe-area and touch padding, but remove translucency so content never
+   shows through its controls while scrolling. */
+.is-mobile.theme-dark .view-header {
+  margin: var(--safe-area-inset-top, 0) 0 0;
+  padding: 0 var(--size-4-3);
+  background-color: var(--b16-surface-0);
+  border-bottom: 1px solid var(--b16-border-faint);
+  opacity: 1;
+}
+
+/* Heading links and programmatic navigation must land below the fixed header,
+   not beneath it. Manual scrolling may pass content under the bar; an anchor
+   jump should never hide the line the user asked to see. */
+.is-mobile.theme-dark .markdown-preview-view :is(h1, h2, h3, h4, h5, h6) {
+  scroll-margin-block-start: calc(
+    var(--safe-area-inset-top, 0px) + var(--header-height) + var(--size-4-2)
+  );
+}
+
+.is-mobile.theme-dark .search-input-container {
+  background-color: var(--b16-surface-1);
+  border: 1px solid var(--b16-border-normal);
+  border-radius: var(--b16-radius-s);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.is-mobile.theme-dark .suggestion-item {
+  border-radius: var(--b16-radius-s);
+}
+
+/* Mobile drawer tab selectors use the 30px touch-radius variable as visible
+   corner geometry. Keep their 40–52px hit areas, but draw the same compact
+   container used by the rest of the theme. */
+.is-mobile.theme-dark
+  .workspace-drawer
+  :is(
+    .workspace-drawer-tab-options-list,
+    .workspace-drawer-tab-options .workspace-tab-header-inner,
+    .workspace-drawer-tab-select .workspace-tab-header-inner
+  ) {
+  border-radius: var(--b16-radius-m);
+}
+
+/* Mobile prompts are full-width task surfaces, not floating desktop cards.
+   Obsidian's native phone geometry is already correct once the desktop
+   480px rule is excluded; only its 30/44px visual radii and translucent
+   material disagree with the rest of this theme. */
+.is-phone.theme-dark .prompt {
+  background-color: var(--b16-surface-0);
+  border-radius: 0;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.is-mobile.theme-dark .prompt-input-container {
+  background-color: var(--b16-surface-2);
+  border: 1px solid var(--b16-border-normal);
+  border-radius: var(--b16-radius-m);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Quarter shortcuts are useful in a desktop sidebar, but on a 430px phone
+   drawer they are the only part of Calendar's single-line header that cannot
+   coexist with a scaled month title and the Today control. The month arrows
+   remain available; removing this secondary shortcut avoids turning the
+   entire calendar pane into a horizontal scroller at 24–28px text sizes. */
+.is-phone.theme-dark #calendar-container .nav .quarters {
+  display: none;
 }
 
 /* ===== 50-plugins/bases.css ===== */

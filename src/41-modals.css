@@ -65,8 +65,8 @@
 /* popovers */
 .theme-light,
 .theme-dark {
-  --popover-width: 600px;
-  --popover-height: 400px;
+  --popover-width: min(600px, calc(100vw - var(--size-4-6)));
+  --popover-height: min(400px, calc(100vh - var(--size-4-6)));
 }
 /* Border instead of shadow */
 .popover {
@@ -81,9 +81,7 @@
    Tasks plugin / obsidian-tasks-plugin despite the name similarity),
    kept here because it shares this exact declaration block with the
    modal selectors. */
-.prompt,
-.float-search-modal,
-.modal.task-search-modal {
+.theme-dark:not(.is-mobile) :is(.prompt, .float-search-modal, .modal.task-search-modal) {
   position: absolute;
   top: calc(var(--header-height) + 10px) !important;
   left: 10px !important;
@@ -97,7 +95,7 @@
 .modal-container.mod-dim .modal {
   box-shadow: none;
 }
-.float-search-modal {
+.theme-dark:not(.is-mobile) .float-search-modal {
   min-height: 96%;
 }
 /* Search mode is metadata for the query, not result content. */
