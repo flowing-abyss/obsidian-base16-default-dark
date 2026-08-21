@@ -28,7 +28,11 @@ const COLOUR_FILES = new Set(["00-palette.css", "01-tokens.css"]);
 // inline value beats any author rule without a flag. The pre-split theme
 // carried the same flag for the same reason (c007469:theme.css:2001); this
 // version keeps the active/inactive distinction the legacy rule flattened.
-const IMPORTANT_BASELINE = 111;
+// 111 -> 112: one flag on the Claudian active-session fill. The Calendar
+// plugin ships a bare, unscoped `.active { background: transparent
+// !important }` that lands on every element in the app with that class, so
+// no author rule can set the fill without a flag of its own.
+const IMPORTANT_BASELINE = 112;
 
 // Matches #hex literals and rgb()/rgba()/hsl()/hsla() function literals.
 // Outside the colour-definition files, every colour must come from a

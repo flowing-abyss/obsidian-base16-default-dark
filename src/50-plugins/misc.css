@@ -222,7 +222,19 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
    here", used for the active Longform scene and the active file elsewhere:
    an inset rail in the link hue over the inset-block surface. Same marker
    here, and the list's bottom divider is left alone. */
-/* The second selector matches the plugin's own
+/* The flag is not avoidable here, and the reason is worth recording: the
+   Calendar plugin ships a bare, unscoped
+
+       .active { background: transparent !important;
+                 color: var(--text-accent) !important;
+                 border: 1px solid var(--text-accent) }
+
+   which lands on EVERY element in the app carrying an `active` class. That
+   is where the odd part-drawn cyan outline on this row came from, and why
+   the fill below cannot win without a flag of its own. The border widths
+   above do win normally, so only the fill is flagged.
+
+   The second selector matches the plugin's own
    `.claudian-session-sidebar .claudian-history-item.active`, which sets
    `background: transparent` at the same (0,3,0) this rule would otherwise
    have — measured, the fill lost while the rail landed. */
@@ -231,7 +243,7 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
   border-top-width: 0;
   border-right-width: 0;
   border-left-width: 0;
-  background-color: var(--b16-surface-1);
+  background-color: var(--b16-surface-1) !important;
   box-shadow: inset 2px 0 0 var(--b16-accent-link);
 }
 
