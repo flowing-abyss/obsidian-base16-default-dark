@@ -258,6 +258,12 @@
   --graph-node-attachment: var(--b16-status-warn);
 
   /* Borders */
+  /* The visible divider stays 1px; only its grab area grows. Obsidian ships
+     a 3px hit target for a 1px line, which is a hard thing to land a cursor
+     on — 7px is comfortable and still invisible at rest, because the handle
+     is transparent until hovered and the line itself is drawn by the border
+     at --divider-width. */
+  --divider-width-hover: 7px;
   --divider-color: var(--b16-border-normal);
   --divider-color-hover: var(--b16-border-strong);
 
