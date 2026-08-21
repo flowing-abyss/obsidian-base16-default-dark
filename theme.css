@@ -963,15 +963,17 @@
   background-color: var(--b16-tag-bg);
 }
 
-/* Tag chip geometry. Obsidian builds the chip out of two halves: app.css
-   puts the left radius and left padding on .cm-hashtag-begin (the `#`) and
-   the right pair on .cm-hashtag-end (the word). Off the cursor line the
-   sigil is swallowed by a widget and the begin half is never emitted at
-   all — measured: the word span is the only .cm-hashtag on the line — so
-   the chip renders with a flat, unpadded left edge and a right cap whose
-   2em radius clamps to a full semicircle against the 32px line box. It
-   reads as sliced off. Give every tag one symmetric chip, then split it
-   back across the pair on the line being edited, where both halves exist.
+/* Tag chip geometry. Obsidian normally builds the chip out of two halves:
+   `.cm-hashtag-begin` (the `#`) and `.cm-hashtag-end` (the word). Some valid
+   characters create more syntax spans: `#category/knowledge_base` is emitted
+   as `#` + `category/knowledge_` + `base`. Styling each span as a complete
+   chip makes one tag look like two adjacent tags. Give every standalone span
+   a symmetric chip, then remove only the touching edges from every contiguous
+   run of hashtag spans, regardless of how many fragments CodeMirror creates.
+
+   Off the cursor line the sigil can be swallowed by a widget and the word
+   span can be the only `.cm-hashtag` on the line. Because neither adjacency
+   rule matches that standalone span, it correctly keeps both outer caps.
 
    Specificity note: app.css addresses these as `.cm-s-obsidian
    span.cm-hashtag-end` (0,2,1), so a plain `.theme-dark .cm-hashtag`
@@ -983,13 +985,13 @@
   padding: 0.1em 0.4em;
 }
 
-.theme-dark .cm-s-obsidian span.cm-hashtag-begin {
+.theme-dark .cm-s-obsidian span.cm-hashtag:has(+ span.cm-hashtag) {
   padding-right: 0;
   border-start-end-radius: 0;
   border-end-end-radius: 0;
 }
 
-.theme-dark .cm-s-obsidian span.cm-hashtag-begin + span.cm-hashtag-end {
+.theme-dark .cm-s-obsidian span.cm-hashtag + span.cm-hashtag {
   padding-left: 0;
   border-start-start-radius: 0;
   border-end-start-radius: 0;
