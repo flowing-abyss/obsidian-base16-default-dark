@@ -27,6 +27,14 @@
   --b16-accent-tag: #86c1b9; /* cyan    — tags */
   --b16-accent-code: #dc9656; /* orange  — inline code */
 
+  /* This is a fixed-palette theme: the app accent is the Base16 blue, not a
+     second user-selected colour. Important is intentional here because
+     Obsidian writes a custom accent after the theme; locking the three
+     official inputs also keeps plugins using --color-accent in the palette. */
+  --accent-h: 196.29 !important;
+  --accent-s: 36.46% !important;
+  --accent-l: 62.35% !important;
+
   /* Status — reserved, not reused for decoration elsewhere. */
   --b16-status-error: #ab4642; /* red */
   --b16-status-ok: #a1b56c; /* green */

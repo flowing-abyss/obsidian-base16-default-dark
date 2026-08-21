@@ -35,6 +35,17 @@
   max-width: max(250px, calc(var(--font-text-size) * 10.5));
 }
 
+/* The palette fixes Obsidian's accent inputs to Base16 blue. Leaving the
+   native picker visible would be misleading: it continues to display and
+   accept the saved app preference even though that preference cannot affect
+   this theme. Appearance is the only core tab with this colour input; the
+   active-tab guard keeps plugin colour settings untouched. */
+.theme-dark
+  .modal.mod-settings:has(.vertical-tab-nav-item[data-setting-id='appearance'].is-active)
+  .setting-item:has(> .setting-item-control > input[type='color']) {
+  display: none;
+}
+
 /* Settings toggles communicate a binary state, not the theme accent. Use the
    restrained semantic pair already present in Base16 while keeping disabled
    controls neutral so “off” and “unavailable” remain distinct meanings. */

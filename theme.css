@@ -69,6 +69,14 @@
   --b16-accent-tag: #86c1b9; /* cyan    — tags */
   --b16-accent-code: #dc9656; /* orange  — inline code */
 
+  /* This is a fixed-palette theme: the app accent is the Base16 blue, not a
+     second user-selected colour. Important is intentional here because
+     Obsidian writes a custom accent after the theme; locking the three
+     official inputs also keeps plugins using --color-accent in the palette. */
+  --accent-h: 196.29 !important;
+  --accent-s: 36.46% !important;
+  --accent-l: 62.35% !important;
+
   /* Status — reserved, not reused for decoration elsewhere. */
   --b16-status-error: #ab4642; /* red */
   --b16-status-ok: #a1b56c; /* green */
@@ -3803,6 +3811,17 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
    space, and mobile Settings keeps its native full-screen navigation. */
 .theme-dark:not(.is-mobile) .vertical-tab-header {
   max-width: max(250px, calc(var(--font-text-size) * 10.5));
+}
+
+/* The palette fixes Obsidian's accent inputs to Base16 blue. Leaving the
+   native picker visible would be misleading: it continues to display and
+   accept the saved app preference even though that preference cannot affect
+   this theme. Appearance is the only core tab with this colour input; the
+   active-tab guard keeps plugin colour settings untouched. */
+.theme-dark
+  .modal.mod-settings:has(.vertical-tab-nav-item[data-setting-id='appearance'].is-active)
+  .setting-item:has(> .setting-item-control > input[type='color']) {
+  display: none;
 }
 
 /* Settings toggles communicate a binary state, not the theme accent. Use the
