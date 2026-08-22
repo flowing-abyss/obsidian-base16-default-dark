@@ -3481,34 +3481,35 @@ body.theme-dark {
    Icon-only toolbar controls are deliberately excluded; boxing every glyph
    would turn the app chrome into a noisy grid instead of a control system.
 
-   Specificity is part of this contract. :where(.theme-dark) and the zero-
-   specificity state lists leave this default at 0,1,1: enough to beat bare
-   browser/Obsidian button rules, but below a plugin's two-class semantic
-   state such as `.abyss-rail-btn.is-active`. The old 0,3,1 selector replaced
-   the plugin's accent fill with transparent while leaving text-on-accent in
-   place, producing dark "empty" controls on a dark surface. */
-:where(.theme-dark) button:not(.clickable-icon, .menu-item, [class*='editingToolbar']) {
+   The foreground is part of that contract. Plugins commonly pair an accent
+   fill with `text-on-accent`; once the theme deliberately removes that fill,
+   it must replace the foreground too or the control becomes dark-on-dark.
+   Cover both Obsidian's active vocabulary and selected option buttons. */
+.theme-dark button:not(.clickable-icon, .menu-item, [class*='editingToolbar']) {
   background: transparent;
   border: 1px solid var(--b16-border-normal);
   border-radius: var(--b16-radius-control);
   box-shadow: none;
 
-  &:where(:hover, :focus-visible) {
+  &:is(:hover, :focus-visible) {
     background: transparent;
     border-color: var(--b16-border-strong);
     box-shadow: inset 2px 0 0 var(--b16-accent-link);
+    color: var(--b16-text-normal);
   }
 
-  &:where(:active) {
+  &:active {
     background: transparent;
     border-color: var(--b16-surface-4);
     box-shadow: inset 2px 0 0 var(--b16-accent-tag);
+    color: var(--b16-text-normal);
   }
 
-  &:where(.is-active, [aria-pressed='true']) {
+  &:is(.is-active, .is-selected, [aria-pressed='true']) {
     background: transparent;
     border-color: var(--b16-border-strong);
     box-shadow: inset 2px 0 0 var(--b16-accent-link);
+    color: var(--b16-text-normal);
   }
 
   &:disabled {
@@ -3518,7 +3519,7 @@ body.theme-dark {
 
 /* Destructive controls retain the same geometry but spend their rail on the
    error hue, so the shared house style never erases the action's meaning. */
-:where(.theme-dark)
+.theme-dark
   button.mod-warning:not(.clickable-icon, .menu-item, [class*='editingToolbar']):is(
     :hover,
     :focus-visible,
