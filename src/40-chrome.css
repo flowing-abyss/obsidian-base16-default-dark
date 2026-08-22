@@ -326,6 +326,24 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
 .tree-item-self.search-result-file-title:is(.is-active, .is-selected) {
   border-left-color: var(--b16-accent-link);
 }
+
+/* Sidebar lists are navigation, even when a plugin renders them with a
+   content-oriented primitive such as a Bases cell. Give both side docks one
+   predictable type size while leaving embedded lists in the document on the
+   larger reading step. Without this contextual correction, Bases links land
+   at 17.5px, embedded backlinks at 17px and Workbench links at 15.6px — three
+   visually adjacent sizes with no semantic reason for the difference. */
+.theme-dark
+  .workspace-split.mod-sidedock
+  :is(
+    .tree-item-self.search-result-file-title,
+    .bases-rendered-value .internal-link,
+    .bases-metadata-value .internal-link
+  ) {
+  font-size: var(--b16-font-ui-m);
+  line-height: var(--b16-label-line-height);
+}
+
 .search-result-file-matches {
   border-left: 1px solid var(--b16-border-strong);
   margin-left: 8px;
