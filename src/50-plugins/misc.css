@@ -277,3 +277,12 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
      read as loud as the note title beside it. Bottom of the UI ramp. */
   font-size: var(--b16-font-ui-s);
 }
+
+/* A Similar Notes relevance score is the same annotation as the score in
+   Hybrid Search's prompt. The prompt sizes it at 0.75 of the medium UI step;
+   repeat that relationship here instead of letting the wider result row
+   make the same number larger. The heading count and backlink counts keep
+   their existing size because they describe sections, not relevance. */
+.theme-dark .embedded-similar-notes .hybrid-search-similar-result .tree-item-flair {
+  font-size: calc(var(--b16-font-ui-m) * 0.75);
+}
