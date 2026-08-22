@@ -3490,6 +3490,7 @@ body.theme-dark {
   border: 1px solid var(--b16-border-normal);
   border-radius: var(--b16-radius-control);
   box-shadow: none;
+  color: var(--b16-text-normal);
 
   &:is(:hover, :focus-visible) {
     background: transparent;
