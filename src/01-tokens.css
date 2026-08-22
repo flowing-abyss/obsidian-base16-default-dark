@@ -96,6 +96,7 @@
      accent. */
   --b16-micro-punct: color-mix(in srgb, var(--b16-accent-tag) 45%, var(--b16-text-faint));
   --b16-micro-digit: color-mix(in srgb, var(--b16-accent-code) 80%, var(--b16-text-faint));
+  --b16-radius-control: 3px;
   --b16-radius-s: 4px;
   --b16-radius-m: 7px;
 

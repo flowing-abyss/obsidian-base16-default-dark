@@ -138,6 +138,7 @@
      accent. */
   --b16-micro-punct: color-mix(in srgb, var(--b16-accent-tag) 45%, var(--b16-text-faint));
   --b16-micro-digit: color-mix(in srgb, var(--b16-accent-code) 80%, var(--b16-text-faint));
+  --b16-radius-control: 3px;
   --b16-radius-s: 4px;
   --b16-radius-m: 7px;
 
@@ -3474,6 +3475,53 @@ body.theme-dark {
   border-radius: var(--b16-radius-s);
 }
 
+/* Text controls use the same flat house style as Meta Bind and Task
+   Calendar: chrome stays transparent, meaning remains in the label/icon,
+   and interaction is carried by a stronger edge plus a narrow inset rail.
+   Icon-only toolbar controls are deliberately excluded; boxing every glyph
+   would turn the app chrome into a noisy grid instead of a control system. */
+.theme-dark button:not(.clickable-icon, .menu-item, [class*='editingToolbar']) {
+  background: transparent;
+  border: 1px solid var(--b16-border-normal);
+  border-radius: var(--b16-radius-control);
+  box-shadow: none;
+
+  &:is(:hover, :focus-visible) {
+    background: transparent;
+    border-color: var(--b16-border-strong);
+    box-shadow: inset 2px 0 0 var(--b16-accent-link);
+  }
+
+  &:active {
+    background: transparent;
+    border-color: var(--b16-surface-4);
+    box-shadow: inset 2px 0 0 var(--b16-accent-tag);
+  }
+
+  &:is(.is-active, [aria-pressed='true']) {
+    background: transparent;
+    border-color: var(--b16-border-strong);
+    box-shadow: inset 2px 0 0 var(--b16-accent-link);
+  }
+
+  &:disabled {
+    box-shadow: none;
+  }
+}
+
+/* Destructive controls retain the same geometry but spend their rail on the
+   error hue, so the shared house style never erases the action's meaning. */
+.theme-dark
+  button.mod-warning:not(.clickable-icon, .menu-item, [class*='editingToolbar']):is(
+    :hover,
+    :focus-visible,
+    :active,
+    .is-active,
+    [aria-pressed='true']
+  ) {
+  box-shadow: inset 2px 0 0 var(--b16-status-error);
+}
+
 /* Transient chrome. Notices and tooltips are both short-lived information
    surfaces, so they share one quiet material instead of Obsidian's near-black
    fill and almost-white text. A keyline, not a shadow, separates them from
@@ -4891,7 +4939,7 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
 
   & > .mb-button {
     & > .mb-button-inner {
-      border-radius: 3px;
+      border-radius: var(--b16-radius-control);
       background: transparent;
       border: 1px solid var(--b16-border-normal);
       box-shadow: none;
@@ -4928,7 +4976,7 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
 
     /* single button — full border intact */
     &:last-child:first-child > .mb-button-inner {
-      border-radius: 3px;
+      border-radius: var(--b16-radius-control);
       border: 1px solid var(--b16-border-normal);
     }
   }
@@ -4942,7 +4990,7 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
 
 .mv-sidebar-actions .mv-sidebar-action-btn,
 .mv-vault-note-header .mv-vault-note-link {
-  border-radius: 3px;
+  border-radius: var(--b16-radius-control);
   background: transparent;
   border: 1px solid var(--b16-border-normal);
   box-shadow: none;
@@ -5071,12 +5119,16 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
 }
 
 /* A Similar Notes relevance score is the same annotation as the score in
-   Hybrid Search's prompt. The prompt sizes it at 0.75 of the medium UI step;
-   repeat that relationship here instead of letting the wider result row
-   make the same number larger. The heading count and backlink counts keep
-   their existing size because they describe sections, not relevance. */
+   Hybrid Search's prompt. Keep it close to that compact prompt size, with a
+   small lift for the wider embedded pane. The heading count and backlink
+   counts keep their existing size because they describe sections, not
+   relevance. */
 .theme-dark .embedded-similar-notes .hybrid-search-similar-result .tree-item-flair {
-  font-size: calc(var(--b16-font-ui-m) * 0.75);
+  font-size: calc(var(--b16-font-ui-m) * 0.8);
+}
+
+.theme-dark .embedded-similar-notes .hybrid-search-similar-result .tree-item-flair-outer {
+  align-self: center;
 }
 
 /* ===== 50-plugins/quick-switcher.css ===== */
