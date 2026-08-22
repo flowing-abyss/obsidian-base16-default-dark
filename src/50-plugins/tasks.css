@@ -1,4 +1,16 @@
 /* TASKS */
+/* Abyss Tasks renders the mutually exclusive Day / Week / Month buttons
+   inside a filled, padded capsule. The buttons themselves already follow the
+   theme's flat control contract, so that extra material reads as a second,
+   unrelated control behind them. Keep the tight gap that communicates one
+   view switcher, but let every button use the same height and surface as the
+   adjacent Today action. */
+.theme-dark .abyss-cal-view-switcher {
+  padding: 0;
+  background: transparent;
+  border-radius: var(--b16-radius-control);
+}
+
 /* Task 13 fix: `--font-scale-000`/`--font-scale-00`/`--font-scale-0` are not
    defined by this theme or by Obsidian — measured live via getComputedStyle,
    all three resolve to the empty string. With no fallback, every
