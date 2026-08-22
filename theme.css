@@ -3701,8 +3701,14 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
   background-color: var(--b16-highlight-bg) !important;
 }
 .tree-item-self.search-result-file-title {
-  border-left: 3px solid var(--b16-border-strong);
+  /* Reserve the rail for selection. Repeating even a quiet grey edge on
+     every result creates decoration without meaning; hover already has a
+     surface response, while the accent rail now says only "selected". */
+  border-left: 2px solid transparent;
   font-size: var(--b16-font-ui-l);
+}
+.tree-item-self.search-result-file-title:is(.is-active, .is-selected) {
+  border-left-color: var(--b16-accent-link);
 }
 .search-result-file-matches {
   border-left: 1px solid var(--b16-border-strong);
