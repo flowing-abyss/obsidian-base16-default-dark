@@ -1,0 +1,5983 @@
+/* ============================================================
+   Abyss Tasks — CSS custom properties
+   ============================================================ */
+.abyss-panel-view {
+  --abyss-shell-top-inset: clamp(3px, 0.4vw, 5px);
+  --abyss-priority-a: var(--color-red);
+  --abyss-priority-b: var(--color-orange);
+  --abyss-priority-c: var(--color-yellow);
+  --abyss-priority-e: var(--color-blue);
+  --abyss-priority-f: var(--color-purple);
+  --abyss-date-overdue: var(--color-red);
+  --abyss-date-tomorrow: var(--color-orange);
+  --abyss-calendar-item-font-size: 0.8em;
+  --abyss-calendar-track-height: 1.65em;
+  --abyss-calendar-item-radius: 6px;
+  --abyss-calendar-item-pad-inline: 6px;
+  --abyss-calendar-item-rail: 3px;
+  --abyss-calendar-ghost-rail: var(--abyss-calendar-item-rail);
+  --abyss-calendar-border-width: 1px;
+  --abyss-calendar-forecast-fill-strength: 6%;
+  --abyss-event-fill-strength: 11%;
+  --abyss-event-outline-strength: 24%;
+  --abyss-event-focus-tag-strength: 55%;
+  --abyss-preview-fill-strength: 7%;
+  /* Preview outlines mix toward the theme's text color. Pale tags need a stronger text share on
+     light backgrounds, while dark tags need more of their own hue to stay recognizable in dark. */
+  --abyss-preview-border-tag-strength: 35%;
+  --abyss-calendar-surface: color-mix(
+    in srgb,
+    var(--abyss-tag-color, var(--interactive-accent)) var(--abyss-event-fill-strength),
+    var(--background-primary)
+  );
+  --abyss-calendar-surface-forecast: color-mix(
+    in srgb,
+    var(--abyss-tag-color, var(--interactive-accent)) var(--abyss-calendar-forecast-fill-strength),
+    var(--background-primary)
+  );
+  --abyss-calendar-border: color-mix(
+    in srgb,
+    var(--abyss-tag-color, var(--interactive-accent)) var(--abyss-event-outline-strength),
+    var(--background-primary)
+  );
+  --abyss-calendar-border-forecast: color-mix(
+    in srgb,
+    var(--abyss-tag-color, var(--interactive-accent)) 45%,
+    var(--background-modifier-border)
+  );
+  --abyss-calendar-foreground: var(--abyss-tag-text-color, var(--text-normal));
+  --abyss-calendar-now: color-mix(in srgb, var(--text-error) 48%, transparent);
+  /* Task 40 (Round 4): fixed contrast anchors consumed by --abyss-tag-text-color (set per-element,
+     in JS, by tagFillContrast.ts's tagFillTextColorVar — see that module's own doc comment for
+     the full reasoning). Deliberately NOT theme-variable tokens like --text-normal: their whole
+     purpose is to stay a reliable, near-maximum-contrast anchor against a tag-fill background
+     whose luminance was just computed from the user's own arbitrary tag color, independent of
+     whatever the ambient theme's own text color happens to be. Softened slightly off pure
+     black/white so they don't look harsh next to the softer surrounding UI text. */
+  --abyss-tag-text-light: #f5f5f5;
+  --abyss-tag-text-dark: #161616;
+}
+
+.theme-dark .abyss-panel-view {
+  --abyss-calendar-forecast-fill-strength: 9%;
+  --abyss-event-fill-strength: 14%;
+  --abyss-event-outline-strength: 32%;
+  --abyss-preview-fill-strength: 10%;
+  --abyss-preview-border-tag-strength: 55%;
+}
+
+/* Embedded/legacy calendar renderers are not always nested under `.abyss-panel-view`, but they share
+   the same occurrence DOM axis. Give that host the semantic recurrence tokens without imposing a
+   palette or typography outside the active Obsidian theme. */
+.tasksCalendar {
+  --abyss-calendar-item-rail: 3px;
+  --abyss-calendar-slot-gap: 4px;
+  --abyss-calendar-border-width: 1px;
+  --abyss-calendar-forecast-fill-strength: 6%;
+  --abyss-event-fill-strength: 11%;
+  --abyss-event-outline-strength: 24%;
+  --abyss-calendar-surface: color-mix(
+    in srgb,
+    var(--abyss-tag-color, var(--interactive-accent)) var(--abyss-event-fill-strength, 11%),
+    var(--background-primary)
+  );
+  --abyss-calendar-surface-forecast: color-mix(
+    in srgb,
+    var(--abyss-tag-color, var(--interactive-accent)) var(--abyss-calendar-forecast-fill-strength),
+    var(--background-primary)
+  );
+  --abyss-calendar-border: color-mix(
+    in srgb,
+    var(--abyss-tag-color, var(--interactive-accent)) var(--abyss-event-outline-strength, 24%),
+    var(--background-primary)
+  );
+  --abyss-calendar-border-forecast: color-mix(
+    in srgb,
+    var(--abyss-tag-color, var(--interactive-accent)) 45%,
+    var(--background-modifier-border)
+  );
+  --abyss-calendar-foreground: var(--text-normal);
+  --abyss-calendar-now: color-mix(in srgb, var(--text-error) 48%, transparent);
+}
+
+.theme-dark .tasksCalendar {
+  --abyss-calendar-forecast-fill-strength: 9%;
+  --abyss-event-fill-strength: 14%;
+  --abyss-event-outline-strength: 32%;
+}
+
+/* ============================================================
+   Abyss Tasks — Three-Panel Layout
+   ============================================================ */
+
+.abyss-panel-view {
+  padding: 0 !important;
+  overflow: hidden !important;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  border-top: 1px solid var(--background-modifier-border);
+  border-top-color: color-mix(in srgb, var(--background-modifier-border) 60%, transparent);
+}
+
+.abyss-layout {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+  background: var(--background-primary);
+  font-family: var(--font-interface);
+}
+
+/* Layout mode modifiers — hide panels depending on active mode */
+.abyss-layout--calendar .abyss-left,
+.abyss-layout--calendar .abyss-right,
+.abyss-layout--search .abyss-left,
+.abyss-layout--search .abyss-right,
+.abyss-layout--projects .abyss-left,
+.abyss-layout--projects .abyss-right {
+  display: none;
+}
+
+/* Rail */
+.abyss-rail {
+  width: 48px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0;
+  background: var(--background-secondary);
+  border-right: 1px solid var(--background-modifier-border);
+  gap: 2px;
+  z-index: 1;
+}
+
+/* Left panel */
+.abyss-left {
+  width: 240px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--background-secondary);
+  border-right: 1px solid var(--background-modifier-border);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Center panel */
+.abyss-center {
+  flex: 1;
+  min-width: 0;
+  container-type: inline-size;
+  container-name: abyss-task-list;
+  display: flex;
+  flex-direction: column;
+  background: var(--background-primary);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Right panel */
+.abyss-right {
+  width: 320px;
+  flex-shrink: 0;
+  background: var(--background-secondary-alt, var(--background-primary));
+  border-left: 1px solid var(--background-modifier-border);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ============================================================
+   Legacy tasksCalendar styles
+   ============================================================ */
+
+.tasksCalendar .data-link-icon::before {
+  display: none;
+}
+
+/* --- */
+.tasksCalendar span {
+  display: contents;
+}
+.tasksCalendar .buttons {
+  cursor: default;
+  width: 100%;
+  height: 30px;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  margin-bottom: 4px;
+}
+.tasksCalendar[view='list'] button.listView,
+.tasksCalendar[view='week'] button.weekView,
+.tasksCalendar[view='month'] button.monthView,
+.tasksCalendar.filter button.filter {
+  /* Selected view: theme accent, so it tracks the theme instead of a flat grey. */
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+}
+body:not(.is-mobile) .tasksCalendar button.listView:hover,
+body:not(.is-mobile) .tasksCalendar button.weekView:hover,
+body:not(.is-mobile) .tasksCalendar button.monthView:hover,
+body:not(.is-mobile) .tasksCalendar button.previous:hover,
+body:not(.is-mobile) .tasksCalendar button.next:hover,
+body:not(.is-mobile) .tasksCalendar button.current:hover,
+body:not(.is-mobile) .tasksCalendar button.filter:hover,
+body:not(.is-mobile) .tasksCalendar button.statistic:hover {
+  background: var(--interactive-hover);
+}
+.tasksCalendar[view='list'] button.listView svg,
+.tasksCalendar[view='month'] button.monthView svg,
+.tasksCalendar[view='week'] button.weekView svg,
+.tasksCalendar.filter button.filter svg {
+  stroke: var(--text-on-accent) !important;
+}
+.tasksCalendar button {
+  background-color: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 5px;
+  color: var(--text-normal);
+  height: 30px;
+  box-shadow: none;
+  border: 1px solid var(--background-modifier-border);
+  font-weight: normal;
+  font-size: 14px;
+  background: var(--interactive-normal);
+  padding: 4px 6px;
+  outline: none;
+  user-select: none;
+  white-space: nowrap;
+  flex: 0;
+}
+.tasksCalendar button:focus-visible {
+  outline: 2px solid var(--interactive-accent);
+  outline-offset: 2px;
+}
+.tasksCalendar button:nth-child(2),
+.tasksCalendar button:nth-child(3),
+.tasksCalendar button:nth-child(6) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: 0.5px solid var(--background-modifier-border);
+  margin-right: 0;
+}
+.tasksCalendar button:nth-child(3),
+.tasksCalendar button:nth-child(4),
+.tasksCalendar button:nth-child(7) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left: 0.5px solid var(--background-modifier-border);
+  margin-left: 0;
+}
+.tasksCalendar .current {
+  margin: 0 4px;
+  display: inline;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+.tasksCalendar .current span:first-child {
+  font-weight: bold;
+  color: var(--icon-color);
+}
+.tasksCalendar .current span:last-child {
+  font-weight: normal;
+  color: var(--icon-color-active);
+}
+.tasksCalendar button:nth-child(1) {
+  margin-right: 4px;
+}
+.tasksCalendar button:nth-child(8) {
+  margin-left: 4px;
+}
+.tasksCalendar svg {
+  height: var(--icon-size);
+  width: var(--icon-size);
+  stroke-width: var(--icon-stroke);
+}
+.tasksCalendar .statisticPopup,
+.tasksCalendar .weekViewContext {
+  display: none;
+  border-radius: 5px;
+  font-size: 14px;
+  border: 1px solid var(--nav-item-background-active);
+  position: absolute;
+  height: auto;
+  width: 150px;
+  width: auto;
+  margin: 0 !important;
+  list-style: none;
+  padding: 2px !important;
+  z-index: 99;
+  box-shadow: 0px 0px 10px 0px var(--nav-item-background-active);
+  background: var(--background-secondary);
+}
+.tasksCalendar .statisticPopup {
+  max-width: 220px;
+  min-width: 140px;
+  overflow-x: auto;
+  right: 0;
+  box-sizing: border-box;
+  background: var(--background-secondary) !important;
+  border: 1px solid var(--background-modifier-border);
+  box-shadow: 0 2px 8px 0 var(--background-modifier-box-shadow);
+  font-size: 14px !important;
+  color: var(--text-normal) !important;
+}
+.tasksCalendar .weekViewContext {
+  left: 65px;
+}
+.tasksCalendar .statisticPopup:before,
+.tasksCalendar .weekViewContext:before {
+  content: '';
+  width: 0px;
+  height: 0px;
+  -webkit-transform: rotate(360deg);
+  border-style: solid;
+  border-width: 0 10px 10px 10px;
+  border-color: transparent transparent var(--background-secondary) transparent;
+  position: absolute;
+}
+.tasksCalendar .statisticPopup:before {
+  top: -10px;
+  right: 5px;
+}
+.tasksCalendar .weekViewContext:before {
+  top: -10px;
+  left: 5px;
+}
+.tasksCalendar .statisticPopup.active,
+.tasksCalendar .weekViewContext.active {
+  display: block;
+}
+.tasksCalendar .statisticPopup li {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.2em;
+  font-size: 14px !important;
+  padding-left: 0;
+  padding-right: 8px;
+  margin-left: 0;
+}
+.tasksCalendar .stat-label {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-left: 0.3em;
+  white-space: nowrap;
+}
+.tasksCalendar .stat-count {
+  font-weight: bold;
+  margin-left: auto;
+  color: var(--text-normal);
+  min-width: 1.5em;
+  text-align: right;
+  display: inline-block;
+}
+.tasksCalendar button.statistic {
+  max-width: 40px;
+  min-width: 30px;
+  overflow: hidden;
+  position: relative;
+}
+.tasksCalendar button.statistic svg {
+  stroke: var(--icon-color);
+}
+.tasksCalendar button.statistic[data-percentage='100']:after {
+  display: none !important;
+}
+.tasksCalendar button.statistic:after {
+  content: attr(data-remaining);
+  position: absolute;
+  height: 14px;
+  width: 14px;
+  top: -8px;
+  right: -8px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 14px;
+  font-size: 9px;
+  font-weight: bold;
+  border: 1px solid var(--nav-item-background-active);
+  overflow: hidden;
+  color: var(--icon-color);
+  background: var(--background-secondary);
+}
+.tasksCalendar .weekViewContext .liIcon {
+  display: grid !important;
+  height: 18px;
+  width: 18px;
+  margin-right: 5px;
+  padding: 2px;
+}
+.tasksCalendar .weekViewContext .liIcon .box {
+  background: var(--icon-color);
+  z-index: 1;
+  display: grid;
+  overflow: hidden;
+  margin: 0.5px;
+  border-radius: 1px;
+}
+.tasksCalendar .weekViewContext li.active .liIcon .box {
+  background: var(--icon-color-active) !important;
+}
+.tasksCalendar .grid {
+  overflow: hidden;
+  cursor: default;
+  width: 100%;
+  height: 75vh;
+}
+.tasksCalendar .list {
+  overflow-x: hidden;
+  overflow-y: auto;
+  cursor: default;
+  width: 100%;
+  height: 75vh;
+}
+.tasksCalendar .cell {
+  z-index: 1;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 1fr;
+  overflow: hidden;
+  margin: 1px 0;
+}
+.tasksCalendar .cellContent {
+  overflow-x: hidden;
+  overflow-y: auto;
+  align-content: start;
+  padding: 1px 0;
+}
+.tasksCalendar .cellContent::-webkit-scrollbar {
+  display: none;
+}
+.tasksCalendar .cellName {
+  display: block;
+  font-weight: normal;
+  padding: 0 2px;
+  color: var(--text-normal);
+  flex-shrink: 0;
+  flex-grow: 0;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-align: left;
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.8;
+}
+body:not(.is-mobile) .tasksCalendar .cellName:hover {
+  opacity: 1;
+}
+.tasksCalendar .task {
+  --abyss-tag-color: var(--task-color, var(--interactive-accent));
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  box-sizing: border-box;
+  padding: 2px 4px;
+  background: var(--abyss-calendar-surface);
+  border-inline-start: var(--abyss-calendar-item-rail) solid var(--abyss-tag-color);
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 var(--abyss-calendar-border-width) var(--abyss-calendar-border);
+  margin: 1px 1px 2px 1px;
+  font-size: var(--font-smallest, 11px);
+  line-height: 1.4;
+  cursor: pointer;
+  transition: background 0.1s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tasksCalendar .task {
+  color: var(--text-normal);
+}
+.tasksCalendar .task .note {
+  color: var(--text-muted);
+}
+body:not(.is-mobile) .tasksCalendar .task:hover {
+  box-shadow: inset 0 0 0 var(--abyss-calendar-border-width) var(--background-modifier-hover);
+}
+.tasksCalendar .task[draggable='true'] {
+  cursor: grab;
+}
+.tasksCalendar .task.overdue {
+  color: var(--color-red, #e74c3c);
+}
+.tasksCalendar .task.hide {
+  opacity: 0.2;
+}
+.tasksCalendar .task .inner {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  text-decoration: none;
+  word-break: break-all !important;
+  -webkit-hyphens: none !important;
+  line-height: 1.3;
+  text-decoration: none !important;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.tasksCalendar .task.abyss-calendar-item > .inner > .abyss-status-marker {
+  display: inline-grid;
+  margin-inline-end: var(--abyss-calendar-slot-gap);
+  vertical-align: middle;
+}
+.tasksCalendar a {
+  text-decoration: none !important;
+}
+.tasksCalendar .task .inner .inner-link {
+  display: inline;
+  cursor: pointer;
+}
+.tasksCalendar .task .note {
+  display: block;
+  width: 100%;
+  font-size: 9px;
+  background: var(--task-background);
+  padding: 1px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.tasksCalendar .task .icon {
+  display: inline;
+  width: 18px;
+  height: 18px;
+  text-align: center;
+  margin-right: 3px;
+}
+.tasksCalendar .task .description {
+  display: inline;
+  padding: 1px;
+}
+.tasksCalendar .task .description:before {
+  display: inline;
+  content: attr(data-relative);
+  margin-right: 3px;
+  border-radius: 3px;
+  margin-right: 3px;
+  padding: 0 3px;
+  font-size: 9px;
+  vertical-align: middle;
+}
+.tasksCalendar .task.overdue .description:before {
+  color: var(--text-on-accent);
+  background: var(--abyss-priority-b);
+}
+.tasksCalendar .task:not(.overdue) .description:before {
+  display: none;
+}
+.tasksCalendar .task.dailyNote .description:before,
+.tasksCalendar .task.done .description:before,
+.tasksCalendar .task.cancelled .description:before {
+  display: none !important;
+}
+.tasksCalendar .task.cancelled .note,
+.tasksCalendar .task.done .note {
+  background: var(--nav-item-background-active) !important;
+  color: var(--text-faint) !important;
+}
+.tasksCalendar .task.cancelled .description,
+.tasksCalendar .task.done .description {
+  color: var(--text-faint) !important;
+}
+.tasksCalendar .task.cancelled,
+.tasksCalendar .task.done {
+  background: none !important;
+}
+.tasksCalendar .task.overdue .inner {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--task-background),
+    var(--task-background) 5px,
+    transparent 5px,
+    transparent 10px
+  ) !important;
+}
+
+/* Today & Weekends */
+.tasksCalendar .cell.today .cellName {
+  font-weight: bold;
+  color: var(--text-normal);
+  opacity: 1;
+}
+.tasksCalendar .cell[data-weekday='0'].today .cellName {
+  font-weight: bold;
+  color: var(--icon-color-active);
+  opacity: 1;
+}
+.tasksCalendar[view='month'] .cell.today {
+  background: var(--background-modifier-active-hover) !important;
+  border: 1px solid hsla(var(--interactive-accent-hsl), 0.25) !important;
+  border-radius: 5px;
+}
+.tasksCalendar[view='week'] .cell.today {
+  background: var(--background-modifier-active-hover) !important;
+  border: 1px solid hsla(var(--interactive-accent-hsl), 0.25) !important;
+}
+.tasksCalendar .cell[data-weekday='0'] .cellName,
+.tasksCalendar .gridHead[data-weekday='0'] {
+  color: var(--icon-color-active);
+}
+
+/* Month View */
+.tasksCalendar[view='month'] .grid {
+  display: grid;
+  gap: 4px;
+  grid-template-rows: 20px 1fr !important;
+  grid-template-columns: 1fr !important;
+}
+.tasksCalendar[view='month'] .gridHeads {
+  display: grid;
+  grid-template-columns: 20px 1fr 1fr 1fr 1fr 1fr 1fr 1fr !important;
+  width: 100%;
+  height: 20px;
+  border: 1px solid var(--nav-item-background-active);
+  border-radius: 5px;
+}
+.tasksCalendar[view='month'] .gridHead {
+  display: inline;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-align: center;
+  font-weight: bold;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0;
+  font-size: 14px;
+  height: 20px;
+  line-height: 20px;
+  font-size: 10px;
+}
+.tasksCalendar[view='month'] .wrappers {
+  display: grid;
+  grid-template-rows: repeat(6, calc(100% / 6));
+  grid-template-columns: 1fr !important;
+  min-height: 0;
+  height: calc(100% - 20px);
+  gap: 4px 4px;
+}
+.tasksCalendar[view='month'] .wrappers,
+.tasksCalendar[view='week'] .grid {
+  position: relative;
+}
+.tasksCalendar[view='month'] .wrappers:before,
+.tasksCalendar[view='week'] .grid:before,
+.tasksCalendar[view='list'] .list:before {
+  z-index: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 120px;
+  font-weight: bold;
+  color: var(--background-modifier-active-hover);
+}
+.tasksCalendar[view='month'] .wrappers:before,
+.tasksCalendar[view='list'] .list:before {
+  content: attr(data-month);
+}
+.tasksCalendar[view='week'] .grid:before {
+  content: attr(data-week);
+}
+.tasksCalendar[view='month'] .wrapper {
+  z-index: 1;
+  display: grid;
+  grid-template-rows: 1fr !important;
+  grid-template-columns: 22px 1fr 1fr 1fr 1fr 1fr 1fr 1fr !important;
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--nav-item-background-active);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.tasksCalendar[view='month'] .wrapperButton {
+  display: flex;
+  writing-mode: vertical-lr;
+  transform: rotate(180deg);
+  background: none;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: normal;
+  color: var(--text-normal);
+  color: var(--icon-color-active);
+  cursor: pointer;
+  width: 100%;
+  overflow: hidden;
+  /* background: var(--background-primary); */
+  background: var(--background-secondary);
+}
+.tasksCalendar[view='month'] .wrapperButton:hover {
+  background: var(--background-modifier-hover);
+}
+.tasksCalendar[view='month'] .cell {
+  margin: 0;
+}
+.tasksCalendar[view='month'] .prevMonth,
+.tasksCalendar[view='month'] .nextMonth {
+  background: var(--background-secondary);
+}
+
+/* Week view */
+.tasksCalendar[view='week'] .grid {
+  display: grid;
+  gap: 2px 4px;
+}
+.tasksCalendar[view='week'] .cell {
+  border: 1px solid var(--nav-item-background-active);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+/* List View */
+.tasksCalendar[view='list'] .list {
+  border: 1px solid var(--nav-item-background-active);
+  border-radius: 5px;
+}
+.tasksCalendar[view='list'] .list .task,
+.tasksCalendar[view='list'] .list .task.done,
+.tasksCalendar[view='list'] .list .task .note,
+.tasksCalendar[view='list'] .list .task.done .note {
+  background: transparent !important;
+}
+.tasksCalendar[view='list'] .list .task .inner {
+  display: flex !important;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  padding: 0 10px;
+  white-space: nowrap;
+}
+.tasksCalendar[view='list'] .list .task .note {
+  display: inline-block;
+  width: 150px;
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+.tasksCalendar[view='list'] .list .task .description {
+  width: 100%;
+  flex-shrink: 1;
+  flex-grow: 1;
+}
+.tasksCalendar[view='list'] .list .task.done .note,
+.tasksCalendar[view='list'] .list .task.done .description,
+.tasksCalendar[view='list'] .list .task.cancelled .note,
+.tasksCalendar[view='list'] .list .task.cancelled .description {
+  color: var(--text-faint) !important;
+}
+.tasksCalendar[view='list'] .list .task .note,
+.tasksCalendar[view='list'] .list .task .description {
+  color: var(--task-color) !important;
+  line-clamp: 0 !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-size: 14px;
+}
+.tasksCalendar summary::marker,
+.tasksCalendar summary::-webkit-details-marker {
+  display: none !important;
+  content: '' !important;
+}
+.tasksCalendar[view='list'] details.today {
+  background: var(--background-modifier-active-hover);
+  border: 1px solid hsla(var(--interactive-accent-hsl), 0.25);
+}
+.tasksCalendar[view='list'] details.today summary {
+  font-weight: bold;
+  background: none;
+}
+.tasksCalendar[view='list'] details.today .content {
+  margin: 3px;
+}
+.tasksCalendar[view='list'] details {
+  display: block;
+  margin: 5px;
+  border-radius: 5px;
+  overflow: hidden;
+  /*background: var(--background-secondary);*/
+  border: 1px solid var(--nav-item-background-active);
+}
+.tasksCalendar[view='list'] summary {
+  background: var(--background-secondary);
+  padding: 0 10px;
+  border-radius: 5px;
+}
+.tasksCalendar[view='list'] summary span.weekNr {
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+/* Style classes */
+.tasksCalendar[view='week'].style1 .grid,
+.iconStyle1 {
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+}
+.tasksCalendar[view='week'].style1 .grid .cell:nth-child(1),
+.iconStyle1 .box:nth-child(1) {
+  grid-area: 1 / 1 / 3 / 3;
+}
+.tasksCalendar[view='week'].style1 .grid .cell:nth-child(2),
+.iconStyle1 .box:nth-child(2) {
+  grid-area: 3 / 1 / 5 / 3;
+}
+.tasksCalendar[view='week'].style1 .grid .cell:nth-child(3),
+.iconStyle1 .box:nth-child(3) {
+  grid-area: 5 / 1 / 7 / 3;
+}
+.tasksCalendar[view='week'].style1 .grid .cell:nth-child(4),
+.iconStyle1 .box:nth-child(4) {
+  grid-area: 1 / 3 / 3 / 5;
+}
+.tasksCalendar[view='week'].style1 .grid .cell:nth-child(5),
+.iconStyle1 .box:nth-child(5) {
+  grid-area: 3 / 3 / 5 / 5;
+}
+.tasksCalendar[view='week'].style1 .grid .cell:nth-child(6),
+.iconStyle1 .box:nth-child(6) {
+  grid-area: 5 / 3 / 6 / 5;
+}
+.tasksCalendar[view='week'].style1 .grid .cell:nth-child(7),
+.iconStyle1 .box:nth-child(7) {
+  grid-area: 6 / 3 / 7 / 5;
+}
+.tasksCalendar[view='week'].style2 .grid,
+.iconStyle2 {
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+}
+.tasksCalendar[view='week'].style2 .grid .cell:nth-child(1),
+.iconStyle2 .box:nth-child(1) {
+  grid-area: 1 / 1 / 3 / 3;
+}
+.tasksCalendar[view='week'].style2 .grid .cell:nth-child(3),
+.iconStyle2 .box:nth-child(3) {
+  grid-area: 3 / 1 / 5 / 3;
+}
+.tasksCalendar[view='week'].style2 .grid .cell:nth-child(5),
+.iconStyle2 .box:nth-child(5) {
+  grid-area: 5 / 1 / 7 / 3;
+}
+.tasksCalendar[view='week'].style2 .grid .cell:nth-child(2),
+.iconStyle2 .box:nth-child(2) {
+  grid-area: 1 / 3 / 3 / 5;
+}
+.tasksCalendar[view='week'].style2 .grid .cell:nth-child(4),
+.iconStyle2 .box:nth-child(4) {
+  grid-area: 3 / 3 / 5 / 5;
+}
+.tasksCalendar[view='week'].style2 .grid .cell:nth-child(6),
+.iconStyle2 .box:nth-child(6) {
+  grid-area: 5 / 3 / 6 / 5;
+}
+.tasksCalendar[view='week'].style2 .grid .cell:nth-child(7),
+.iconStyle2 .box:nth-child(7) {
+  grid-area: 6 / 3 / 7 / 5;
+}
+.tasksCalendar[view='week'].style3 .grid,
+.iconStyle3 {
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr;
+}
+.tasksCalendar[view='week'].style4 .grid,
+.iconStyle4 {
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+.tasksCalendar[view='week'].style5 .grid,
+.iconStyle5 {
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+}
+.tasksCalendar[view='week'].style5 .grid .cell:nth-child(1),
+.iconStyle5 .box:nth-child(1) {
+  grid-area: 1 / 1 / 3 / 2;
+}
+.tasksCalendar[view='week'].style5 .grid .cell:nth-child(2),
+.iconStyle5 .box:nth-child(2) {
+  grid-area: 3 / 1 / 5 / 2;
+}
+.tasksCalendar[view='week'].style5 .grid .cell:nth-child(3),
+.iconStyle5 .box:nth-child(3) {
+  grid-area: 5 / 1 / 7 / 2;
+}
+.tasksCalendar[view='week'].style5 .grid .cell:nth-child(4),
+.iconStyle5 .box:nth-child(4) {
+  grid-area: 7 / 1 / 9 / 2;
+}
+.tasksCalendar[view='week'].style5 .grid .cell:nth-child(5),
+.iconStyle5 .box:nth-child(5) {
+  grid-area: 9 / 1 / 11 / 2;
+}
+.tasksCalendar[view='week'].style5 .grid .cell:nth-child(6),
+.iconStyle5 .box:nth-child(6) {
+  grid-area: 1 / 2 / 6 / 3;
+}
+.tasksCalendar[view='week'].style5 .grid .cell:nth-child(7),
+.iconStyle5 .box:nth-child(7) {
+  grid-area: 6 / 2 / 11 / 3;
+}
+.tasksCalendar[view='week'].style6 .grid,
+.iconStyle6 {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+}
+.tasksCalendar[view='week'].style6 .grid .cell:nth-child(1),
+.iconStyle6 .box:nth-child(1) {
+  grid-area: 1 / 1 / 3 / 3;
+}
+.tasksCalendar[view='week'].style6 .grid .cell:nth-child(2),
+.iconStyle6 .box:nth-child(2) {
+  grid-area: 3 / 1 / 5 / 3;
+}
+.tasksCalendar[view='week'].style6 .grid .cell:nth-child(3),
+.iconStyle6 .box:nth-child(3) {
+  grid-area: 5 / 1 / 7 / 3;
+}
+.tasksCalendar[view='week'].style6 .grid .cell:nth-child(4),
+.iconStyle6 .box:nth-child(4) {
+  grid-area: 7 / 1 / 9 / 3;
+}
+.tasksCalendar[view='week'].style6 .grid .cell:nth-child(5),
+.iconStyle6 .box:nth-child(5) {
+  grid-area: 9 / 1 / 11 / 3;
+}
+.tasksCalendar[view='week'].style6 .grid .cell:nth-child(6),
+.iconStyle6 .box:nth-child(6) {
+  grid-area: 1 / 3 / 6 / 4;
+}
+.tasksCalendar[view='week'].style6 .grid .cell:nth-child(7),
+.iconStyle6 .box:nth-child(7) {
+  grid-area: 6 / 3 / 11 / 4;
+}
+.tasksCalendar[view='week'].style7 .grid,
+.iconStyle7 {
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+}
+.tasksCalendar[view='week'].style7 .grid .cell:nth-child(1),
+.iconStyle7 .box:nth-child(1) {
+  grid-area: 1 / 1 / 3 / 2;
+}
+.tasksCalendar[view='week'].style7 .grid .cell:nth-child(2),
+.iconStyle7 .box:nth-child(2) {
+  grid-area: 3 / 1 / 5 / 2;
+}
+.tasksCalendar[view='week'].style7 .grid .cell:nth-child(3),
+.iconStyle7 .box:nth-child(3) {
+  grid-area: 5 / 1 / 7 / 2;
+}
+.tasksCalendar[view='week'].style7 .grid .cell:nth-child(4),
+.iconStyle7 .box:nth-child(4) {
+  grid-area: 7 / 1 / 9 / 2;
+}
+.tasksCalendar[view='week'].style7 .grid .cell:nth-child(5),
+.iconStyle7 .box:nth-child(5) {
+  grid-area: 1 / 2 / 3 / 3;
+}
+.tasksCalendar[view='week'].style7 .grid .cell:nth-child(6),
+.iconStyle7 .box:nth-child(6) {
+  grid-area: 3 / 2 / 6 / 3;
+}
+.tasksCalendar[view='week'].style7 .grid .cell:nth-child(7),
+.iconStyle7 .box:nth-child(7) {
+  grid-area: 6 / 2 / 9 / 3;
+}
+.tasksCalendar[view='week'].style8 .grid,
+.iconStyle8 {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+}
+.tasksCalendar[view='week'].style8 .grid .cell:nth-child(1),
+.iconStyle8 .box:nth-child(1) {
+  grid-area: 1 / 1 / 3 / 2;
+}
+.tasksCalendar[view='week'].style8 .grid .cell:nth-child(2),
+.iconStyle8 .box:nth-child(2) {
+  grid-area: 1 / 2 / 3 / 3;
+}
+.tasksCalendar[view='week'].style8 .grid .cell:nth-child(3),
+.iconStyle8 .box:nth-child(3) {
+  grid-area: 1 / 3 / 3 / 4;
+}
+.tasksCalendar[view='week'].style8 .grid .cell:nth-child(4),
+.iconStyle8 .box:nth-child(4) {
+  grid-area: 3 / 1 / 5 / 2;
+}
+.tasksCalendar[view='week'].style8 .grid .cell:nth-child(5),
+.iconStyle8 .box:nth-child(5) {
+  grid-area: 3 / 2 / 5 / 3;
+}
+.tasksCalendar[view='week'].style8 .grid .cell:nth-child(6),
+.iconStyle8 .box:nth-child(6) {
+  grid-area: 3 / 3 / 5 / 4;
+}
+.tasksCalendar[view='week'].style8 .grid .cell:nth-child(7),
+.iconStyle8 .box:nth-child(7) {
+  grid-area: 5 / 1 / 6 / 4;
+}
+.tasksCalendar[view='week'].style9 .grid,
+.iconStyle9 {
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+.tasksCalendar[view='week'].style9 .grid .cell:nth-child(1),
+.iconStyle9 .box:nth-child(1) {
+  grid-area: 1 / 1 / 3 / 3;
+}
+.tasksCalendar[view='week'].style9 .grid .cell:nth-child(2),
+.iconStyle9 .box:nth-child(2) {
+  grid-area: 1 / 3 / 3 / 5;
+}
+.tasksCalendar[view='week'].style9 .grid .cell:nth-child(3),
+.iconStyle9 .box:nth-child(3) {
+  grid-area: 1 / 5 / 3 / 7;
+}
+.tasksCalendar[view='week'].style9 .grid .cell:nth-child(4),
+.iconStyle9 .box:nth-child(4) {
+  grid-area: 1 / 7 / 3 / 9;
+}
+.tasksCalendar[view='week'].style9 .grid .cell:nth-child(5),
+.iconStyle9 .box:nth-child(5) {
+  grid-area: 1 / 9 / 3 / 11;
+}
+.tasksCalendar[view='week'].style9 .grid .cell:nth-child(6),
+.iconStyle9 .box:nth-child(6) {
+  grid-area: 3 / 1 / 4 / 6;
+}
+.tasksCalendar[view='week'].style9 .grid .cell:nth-child(7),
+.iconStyle9 .box:nth-child(7) {
+  grid-area: 3 / 6 / 4 / 11;
+}
+.tasksCalendar[view='week'].style10 .grid,
+.iconStyle10 {
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+.tasksCalendar[view='week'].style10 .grid .cell:nth-child(1),
+.iconStyle10 .box:nth-child(1) {
+  grid-area: 1 / 1 / 4 / 3;
+}
+.tasksCalendar[view='week'].style10 .grid .cell:nth-child(2),
+.iconStyle10 .box:nth-child(2) {
+  grid-area: 1 / 3 / 4 / 5;
+}
+.tasksCalendar[view='week'].style10 .grid .cell:nth-child(3),
+.iconStyle10 .box:nth-child(3) {
+  grid-area: 1 / 5 / 4 / 7;
+}
+.tasksCalendar[view='week'].style10 .grid .cell:nth-child(4),
+.iconStyle10 .box:nth-child(4) {
+  grid-area: 1 / 7 / 3 / 9;
+}
+.tasksCalendar[view='week'].style10 .grid .cell:nth-child(5),
+.iconStyle10 .box:nth-child(5) {
+  grid-area: 1 / 9 / 3 / 11;
+}
+.tasksCalendar[view='week'].style10 .grid .cell:nth-child(6),
+.iconStyle10 .box:nth-child(6) {
+  grid-area: 3 / 7 / 4 / 9;
+}
+.tasksCalendar[view='week'].style10 .grid .cell:nth-child(7),
+.iconStyle10 .box:nth-child(7) {
+  grid-area: 3 / 9 / 4 / 11;
+}
+.tasksCalendar[view='week'].style11 .grid,
+.iconStyle11 {
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+}
+.tasksCalendar[view='week'].style11 .grid {
+  height: 300px;
+}
+.tasksCalendar[view='week'].style11 .cell[data-weekday='0'],
+.iconStyle11 {
+  display: none !important;
+}
+.tasksCalendar[view='week'].style11 .cell[data-weekday='6'],
+.iconStyle11 {
+  display: none !important;
+}
+
+/* Options classes */
+.tasksCalendar.noIcons .task .icon {
+  display: none !important;
+}
+.tasksCalendar:not(.noFilename) .task.noNoteIcon .icon {
+  display: none !important;
+}
+.tasksCalendar.noFilename .task .note {
+  display: none !important;
+}
+.tasksCalendar.filter .task.done,
+.tasksCalendar.filter .task.cancelled {
+  display: none !important;
+}
+.tasksCalendar.filter #statisticDone {
+  pointer-events: none !important;
+  color: var(--text-faint) !important;
+}
+.tasksCalendar.noScheduled .task.scheduled {
+  display: none !important;
+}
+.tasksCalendar.noStart .task.start {
+  display: none !important;
+}
+.tasksCalendar.noDue .task.due {
+  display: none !important;
+}
+.tasksCalendar.noDone .task.done {
+  display: none !important;
+}
+.tasksCalendar.noProcess .task.process {
+  display: none !important;
+}
+.tasksCalendar.noRecurrence .task.recurrence {
+  display: none !important;
+}
+.tasksCalendar.noOverdue .task.overdue {
+  display: none !important;
+}
+.tasksCalendar.noDailyNote .task.dailyNote {
+  display: none !important;
+}
+.tasksCalendar.noCellNameEvent .cellName {
+  pointer-events: none !important;
+}
+.tasksCalendar.noLayer .grid .wrappers:before,
+.tasksCalendar.noLayer .grid:before,
+.tasksCalendar.noLayer .list:before {
+  display: none !important;
+}
+.tasksCalendar.focusDone .task {
+  opacity: 0.25 !important;
+}
+.tasksCalendar.focusDone .task.done {
+  opacity: 1 !important;
+}
+.tasksCalendar.focusDue .task {
+  opacity: 0.25 !important;
+}
+.tasksCalendar.focusDue .task.due {
+  opacity: 1 !important;
+}
+.tasksCalendar.focusOverdue .task {
+  opacity: 0.25 !important;
+}
+.tasksCalendar.focusOverdue .task.overdue {
+  opacity: 1 !important;
+}
+.tasksCalendar.focusStart .task {
+  opacity: 0.25 !important;
+}
+.tasksCalendar.focusStart .task.start {
+  opacity: 1 !important;
+}
+.tasksCalendar.focusScheduled .task {
+  opacity: 0.25 !important;
+}
+.tasksCalendar.focusScheduled .task.scheduled {
+  opacity: 1 !important;
+}
+.tasksCalendar.focusRecurrence .task {
+  opacity: 0.25 !important;
+}
+.tasksCalendar.focusRecurrence .task.recurrence {
+  opacity: 1 !important;
+}
+.tasksCalendar.focusDailyNote .task {
+  opacity: 0.25 !important;
+}
+.tasksCalendar.focusDailyNote .task.dailyNote {
+  opacity: 1 !important;
+}
+.tasksCalendar.mini {
+  max-width: 500px !important;
+  margin: 0 auto;
+}
+.tasksCalendar.mini .grid {
+  height: 400px !important;
+}
+.tasksCalendar.mini .gridHead,
+.tasksCalendar.mini .cellName,
+.tasksCalendar.mini .task,
+.tasksCalendar.mini .wrapperButton {
+  font-size: 9px !important;
+}
+.tasksCalendar.mini .wrappers:before,
+.tasksCalendar.mini .grid:before {
+  font-size: 70px !important;
+}
+.tasksCalendar.mini .statisticPopup li,
+.tasksCalendar.mini .weekViewContext li {
+  font-size: 9px !important;
+}
+.tasksCalendar.noWeekNr .wrapperButton {
+  visibility: hidden !important;
+  width: 0 !important;
+}
+.tasksCalendar.noWeekNr .gridHead:first-child {
+  visibility: hidden !important;
+  width: 0 !important;
+}
+.tasksCalendar.noWeekNr .wrapper {
+  grid-template-columns: 0px 1fr 1fr 1fr 1fr 1fr 1fr 1fr !important;
+}
+.tasksCalendar.noWeekNr .gridHeads {
+  grid-template-columns: 0px 1fr 1fr 1fr 1fr 1fr 1fr 1fr !important;
+}
+.tasksCalendar.noWeekNr .list .weekNr {
+  display: none !important;
+}
+.tasksCalendar.lineClamp1 .task .inner {
+  -webkit-line-clamp: 1 !important;
+  white-space: nowrap !important;
+}
+.tasksCalendar.lineClamp2 .task .inner {
+  -webkit-line-clamp: 2 !important;
+}
+.tasksCalendar.lineClamp3 .task .inner {
+  -webkit-line-clamp: 3 !important;
+}
+.tasksCalendar.noLineClamp .task .inner {
+  display: block !important;
+}
+.tasksCalendar.noOverdueFlag .task .description:before {
+  display: none !important;
+}
+
+/* ===== Calendar redesign: Today/Week/Month timegrid (abyss-tg-*) ===== */
+
+.abyss-tg-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Task 47: `overflow-y: auto` + `scrollbar-gutter: stable` here mirror .abyss-tg-grid-row's own
+   scrolling setup below, even though this row's own content never actually overflows/scrolls.
+   Reason: .abyss-tg-grid-row DOES scroll (24 hours of content) and its `scrollbar-gutter: stable`
+   permanently reserves a scrollbar-width strip of space on its right edge, shrinking the *usable*
+   width its flex day-columns divide up. Without the identical reservation here, this row's day
+   cells divide up the FULL row width (no strip withheld) — a few pixels wider each, compounding
+   linearly across columns (day 1 barely off, day 7 visibly off) — which is exactly the "grid
+   doesn't line up with the row below" misalignment reported. Reserving the same never-used strip
+   here keeps every day-column's actual available width identical to .abyss-tg-grid-row's, so nothing
+   can drift again regardless of how many columns are rendered (Day's 1 vs Week's 7). */
+.abyss-tg-header-row {
+  display: flex;
+  border-bottom: 1px solid var(--background-modifier-border);
+  flex-shrink: 0;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.abyss-tg-header-gutter {
+  width: 3.5em;
+  flex-shrink: 0;
+}
+
+.abyss-tg-header-cell {
+  flex: 1;
+  text-align: center;
+  padding: 6px 0;
+  font-size: 0.8em;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-left: 1px solid var(--background-modifier-border);
+}
+
+/* Only headers that actually drill into a day (Week's header cells — see HourGrid.ts's
+   onDayHeaderClick) advertise clickability. Day/Today view's single header wires no handler,
+   so it must not show a pointer-cursor/hover it can't honor. */
+.abyss-tg-header-cell.is-clickable {
+  cursor: pointer;
+}
+
+.abyss-tg-header-cell.is-clickable:hover {
+  background-color: var(--background-modifier-hover);
+}
+
+.abyss-tg-header-weekday {
+  margin-right: 0.3em;
+}
+
+/* Round 3: today used to be conveyed by a full-column red border (too aggressive in Day view,
+   too noisy in Week). Now only the day-number span is accented, keeping the weekday abbreviation
+   in its existing muted style. */
+.abyss-tg-header-cell.is-today .abyss-tg-header-day-number {
+  color: var(--text-error);
+  font-weight: 700;
+}
+
+/* Task 47: see .abyss-tg-header-row's comment just above for why `overflow-y: auto` +
+   `scrollbar-gutter: stable` are applied here despite this row never actually scrolling — this
+   row's day cells must reserve the identical scrollbar-width strip .abyss-tg-grid-row's own
+   day-columns reserve, or the two rows' flex-computed column widths diverge. */
+.abyss-tg-allday-row {
+  display: flex;
+  border-bottom: 1px solid var(--background-modifier-border);
+  flex-shrink: 0;
+  min-height: 2.25em;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.abyss-tg-allday-gutter {
+  width: 3.5em;
+  flex-shrink: 0;
+  text-align: right;
+  padding-right: 4px;
+}
+
+/* Task 47: the "No-time" text's smaller/muted styling lives on this nested label, not on
+   .abyss-tg-allday-gutter itself. Putting `font-size` directly on the gutter element used to make
+   its own `width: 3.5em` resolve against ITS OWN (smaller, self-overridden) font-size instead of
+   the row's ambient one — unlike .abyss-tg-header-gutter/.abyss-tg-hour-gutter, which set no font-size
+   override and so compute that same `3.5em` against the ambient size. That silently made this
+   gutter ~13px narrower than the other two (confirmed live: 39.375px vs 52.5px at a 15px ambient
+   font-size), which is exactly the constant left-edge offset between the all-day band and the
+   hour-grid reported as "grid doesn't line up." Scoping font-size to this inner label instead
+   keeps the gutter's own box (and therefore its width: 3.5em) sized identically to its siblings. */
+.abyss-tg-allday-gutter-label {
+  font-size: 0.75em;
+  color: var(--text-faint);
+}
+
+.abyss-tg-allday-days {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-width: 0;
+}
+
+.abyss-tg-allday-cell {
+  flex: 1;
+  /* Task 47: without this, a flex item's default `min-width: auto` lets its own content's
+     intrinsic minimum size (here, a long `.abyss-tg-body-title`'s nowrap text) override its
+     flex-computed share of the row — the cell grows to fit the text instead of the text
+     truncating inside a fixed-width cell. That both broke this cell's alignment with the
+     hour-grid day-column below it (confirmed live: cells grew increasingly wider, up to
+     1000+px, instead of each being an equal ~1/7th share) AND was the actual cause of the
+     "span title overflows its own segment" symptom — the box itself was overflowing, so the
+     .abyss-tg-body-title ellipsis/overflow:hidden rules (already shared with plain items, Task 44)
+     never got a chance to engage. */
+  min-width: 0;
+  position: relative;
+  border-left: 1px solid var(--background-modifier-border);
+  padding: 2px 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.abyss-tg-cell-items {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: calc(var(--abyss-span-lane-count, 0) * var(--abyss-calendar-track-height));
+}
+
+.abyss-tg-root--week .abyss-tg-cell-items {
+  display: grid;
+  grid-auto-rows: var(--abyss-calendar-track-height);
+  gap: 0;
+  margin-top: calc(var(--abyss-span-lane-count, 0) * var(--abyss-calendar-track-height));
+}
+
+/* Week compact items share the span track's one-pixel block inset. The horizontal position
+   remains the all-day cell's 1px border + 4px padding, matching the Week span segment below. */
+.abyss-tg-root--week .abyss-tg-cell-items > .abyss-tg-body,
+.abyss-tg-root--week .abyss-tg-cell-items > .abyss-tg-deadline-marker {
+  margin-block: 1px;
+}
+
+.abyss-tg-root--week .abyss-tg-cell-items > .abyss-tg-deadline-marker {
+  /* Unlike .abyss-tg-body, this inline-flex grid item's intrinsic title width would otherwise
+     become the Week track minimum and overflow the all-day day cell. */
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.abyss-tg-span-layer,
+.abyss-mg-span-layer {
+  position: absolute;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: repeat(var(--abyss-span-track-count), minmax(0, 1fr));
+  grid-auto-rows: var(--abyss-calendar-track-height);
+  gap: 0;
+  pointer-events: none;
+}
+
+.abyss-tg-span-layer {
+  inset: 2px 4px auto;
+}
+
+.abyss-tg-root--week .abyss-tg-span-layer {
+  inset: 2px 0 auto;
+}
+
+.abyss-span-piece {
+  box-sizing: border-box;
+  height: calc(100% - 2px);
+  margin: 1px 2px;
+  pointer-events: auto;
+  cursor: grab;
+  min-width: 0;
+}
+
+/* Week layers start at the cell border: 5px reaches the plain item's border-start
+   (1px cell border + 4px padding), while 4px reaches its border-end. Keep Month's
+   shared two-pixel margins unchanged. */
+.abyss-tg-root--week .abyss-tg-span-layer .abyss-span-piece,
+.abyss-tg-root--week .abyss-tg-span-layer > .abyss-span-move-preview,
+.abyss-tg-root--week .abyss-tg-span-layer > .abyss-span-boundary-preview {
+  margin-block: 1px;
+  margin-inline: 5px 4px;
+}
+
+.abyss-span-piece:focus-visible {
+  box-shadow: inset 0 0 0 1px
+    color-mix(
+      in srgb,
+      var(--abyss-tag-color, var(--interactive-accent)) var(--abyss-event-focus-tag-strength),
+      var(--text-normal)
+    );
+}
+
+.abyss-span-piece.is-picked-up {
+  box-shadow: var(--shadow-s);
+}
+
+.abyss-span-move-preview,
+.abyss-span-boundary-preview {
+  z-index: 8;
+  position: relative;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.abyss-tg-grid-row {
+  display: flex;
+  /* flex-start, not the stretch default: without it, flex items (the hour-gutter and each
+     day-column) are stretched to this scroll container's *visible* cross-size (its clientHeight)
+     rather than sized to their own 24-hour content (1152px). That silently truncated every
+     day-column's own box to ~viewport height, which in turn truncated .abyss-tg-hour-column
+     (positioned `inset: 0` to its day-column parent) to the same short height — clipping
+     click-to-create/drag-drop hit-testing and the is-today red outline partway down the column
+     (visually: gridlines kept rendering past that point as unclipped overflow from the plain,
+     non-positioned .abyss-tg-hour-row siblings, while interactivity and the outline silently
+     stopped there instead). */
+  align-items: flex-start;
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+  scrollbar-gutter: stable;
+}
+
+.abyss-tg-hour-gutter {
+  width: 3.5em;
+  flex-shrink: 0;
+}
+
+.abyss-tg-hour-label {
+  height: 48px;
+  font-size: 0.75em;
+  color: var(--text-faint);
+  text-align: right;
+  padding-right: 4px;
+  transform: translateY(-0.5em);
+}
+
+.abyss-tg-day-column {
+  flex: 1;
+  position: relative;
+  border-left: 1px solid var(--background-modifier-border);
+}
+
+.abyss-tg-hour-row {
+  height: 48px;
+  border-bottom: 1px solid var(--background-modifier-border-hover);
+}
+
+.abyss-tg-hour-column {
+  position: absolute;
+  inset: 0;
+  /* Explicit, deliberate stacking (not DOM-order accident): sits above the hour-grid
+     lines painted by the day-column's plain (non-positioned) .abyss-tg-hour-row siblings. */
+  z-index: 1;
+  /* Auto (not none): empty space now has a meaning of its own (click-to-create — see
+     onCreateAtTime), so this layer needs to receive the click. Blocks/the quick-add popover
+     sit on top as ordinary auto-pointer-events children either way. */
+  pointer-events: auto;
+}
+
+.abyss-tg-now-line {
+  /* A one-pixel track across all rendered day columns, behind their interactive task layers. */
+  position: absolute;
+  left: 3.5em;
+  right: 0;
+  height: 1px;
+  background: var(--abyss-calendar-now);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.abyss-tg-now-line-dot {
+  /* Marks today's column on the otherwise full-width track. */
+  position: absolute;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--abyss-calendar-now);
+  transform: translate(-50%, -50%);
+}
+
+/* Rebase tag-dependent tokens on the task root itself. Custom properties declared only on the
+   panel resolve against panel values; declaring these here lets each item's own `--abyss-tag-color`
+   and contrast-selected `--abyss-tag-text-color` participate in the semantic surface. */
+.abyss-calendar-item {
+  --abyss-calendar-surface: color-mix(
+    in srgb,
+    var(--abyss-tag-color, var(--interactive-accent)) var(--abyss-event-fill-strength, 11%),
+    var(--background-primary)
+  );
+  --abyss-calendar-surface-forecast: color-mix(
+    in srgb,
+    var(--abyss-tag-color, var(--interactive-accent))
+      var(--abyss-calendar-forecast-fill-strength, 6%),
+    var(--background-primary)
+  );
+  --abyss-calendar-border: color-mix(
+    in srgb,
+    var(--abyss-tag-color, var(--interactive-accent)) var(--abyss-event-outline-strength, 24%),
+    var(--background-primary)
+  );
+  --abyss-calendar-border-forecast: color-mix(
+    in srgb,
+    var(--abyss-tag-color, var(--interactive-accent)) 45%,
+    var(--background-modifier-border)
+  );
+  --abyss-calendar-foreground: var(--abyss-tag-text-color, var(--text-normal));
+}
+
+/* Occurrence, continuity, and recurrence are visual axes on one calendar-item silhouette. The
+   semantic class is applied with those data attributes at the renderer boundary, so no state is
+   allowed to introduce its own padding/radius/type geometry. */
+.abyss-tg-block.abyss-calendar-item,
+.abyss-tg-block-continuation.abyss-calendar-item,
+.abyss-tg-body.abyss-calendar-item,
+.abyss-tg-deadline-marker.abyss-calendar-item,
+.abyss-mg-plain.abyss-calendar-item,
+.abyss-mg-block-dot.abyss-calendar-item,
+.abyss-mg-span-segment.abyss-calendar-item,
+.abyss-mg-deadline-marker.abyss-calendar-item {
+  border-radius: var(--abyss-calendar-item-radius);
+  padding: 2px var(--abyss-calendar-item-pad-inline);
+  font-size: var(--abyss-calendar-item-font-size);
+}
+
+.abyss-calendar-item[data-occurrence-state='forecast'] {
+  background: var(--abyss-calendar-surface-forecast);
+  color: var(--abyss-calendar-foreground);
+  outline: var(--abyss-calendar-border-width) dotted var(--abyss-calendar-border-forecast);
+  outline-offset: -1px;
+}
+
+.abyss-calendar-leading-row.abyss-tg-block-head,
+.abyss-calendar-leading-row.abyss-tg-body,
+.abyss-calendar-leading-row.abyss-tg-deadline-marker,
+.abyss-calendar-leading-row.abyss-mg-plain,
+.abyss-calendar-leading-row.abyss-mg-block-dot,
+.abyss-calendar-leading-row.abyss-mg-span-segment,
+.abyss-calendar-leading-row.abyss-mg-deadline-marker {
+  gap: 0.35em;
+}
+
+.abyss-tg-block {
+  position: absolute;
+  /* Explicit, deliberate stacking (not DOM-order accident): above the hour-grid lines
+     and the now-line track, so task content remains legible. */
+  z-index: 2;
+  pointer-events: auto;
+  border-radius: var(--abyss-calendar-item-radius);
+  padding: 2px var(--abyss-calendar-item-pad-inline);
+  font-size: var(--abyss-calendar-item-font-size);
+  overflow: hidden;
+  cursor: grab;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  /* Task 36: a very short-duration task (e.g. 5-15min) previously rendered a block shorter than
+     one legible line of text, effectively clipping/hiding its title. Floor derived from this
+     rule's own box model, not guessed: `padding: 2px 6px` above contributes 2px top + 2px bottom
+     (4px), and the tallest row inside — `.abyss-tg-block-head`, whose checkbox scales to `1.6em` of
+     this block's own `font-size: 0.8em` (see `.abyss-tg-block-head .abyss-status-marker` below) — needs
+     `1.6em` of height. `renderTimedBlocks.ts`'s `capMinHeightsPx`/`MIN_BLOCK_HEIGHT_PX` mirror
+     this same figure numerically so a min-height-inflated block can't be grown into visually
+     overlapping the very next block scheduled in its own day-column (see that function's doc
+     comment) — the two are kept in sync by cross-referencing comments on both sides, not by
+     sharing a single value at build time. */
+  min-height: calc(1.6em + 4px);
+}
+
+/* Checkbox + title share one row (not stacked): the marker is an inline span but the
+   title is block-level, so without this row wrapper the title used to force a line
+   break after the checkbox. */
+.abyss-tg-block-head {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  min-width: 0;
+  /* Task 36: `.abyss-tg-block`'s flex-column layout has exactly two in-flow rows — this one and
+     `.abyss-tg-block-toprow` above it — so when the block is squeezed down toward its own
+     min-height (a short-duration task), something has to give. `flex-shrink: 0` here paired with
+     `.abyss-tg-block-toprow`'s `flex-shrink: 1` below means the browser shrinks (and, past
+     `.abyss-tg-block-toprow`'s own `min-height: 0`, fully collapses) the subtitle/badges row first,
+     leaving this checkbox+title row — the one thing a block must always show — untouched. */
+  flex-shrink: 0;
+}
+
+/* Scale the checkbox with the block's own font-size (0.8em) instead of the fixed 19px
+   used everywhere else (RightPanel/TaskCard's card-sized marker) — `font-size: 1em`
+   makes the marker inherit .abyss-tg-block-head's computed size, and its width/height
+   follow proportionally, mirroring the original ~19px-for-12px-font ratio. */
+.abyss-tg-block-head .abyss-status-marker {
+  font-size: 1em;
+  width: 1.6em;
+  height: 1.6em;
+  min-width: 1.6em;
+  flex: 0 0 1.6em;
+}
+.abyss-tg-block-head .abyss-status-marker svg {
+  width: 0.85em;
+  height: 0.85em;
+}
+
+.abyss-tg-block-title {
+  font-weight: 600;
+  line-height: 1.4;
+  /* Task 40 (Round 4): --abyss-tag-text-color is set per-block in JS (tagFillContrast.ts) from the
+     ACTUAL contrast-winning variant against this block's own tag-colored fill — falls back to
+     the pre-existing var(--text-normal) when the block has no tag color at all (nothing was set)
+     or the tag/background didn't parse. See tagFillContrast.ts's own doc comment for why a single
+     fixed color here lost contrast against a bright/pale or very dark/desaturated tag color. */
+  color: var(--abyss-tag-text-color, var(--text-normal));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+/* Task 38: same strikethrough convention as .abyss-list-task-title.is-done/.is-cancelled — a
+   completed/cancelled timed task stays a full, visible block; this is what communicates its
+   completion instead of the task disappearing from the grid. */
+.abyss-tg-block-title.is-done,
+.abyss-tg-block-continuation-title.is-done {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+.abyss-tg-block-title.is-cancelled,
+.abyss-tg-block-continuation-title.is-cancelled {
+  text-decoration: line-through;
+  color: var(--text-faint);
+}
+
+/* Task 38 follow-up (Round 4 review): the SAME strikethrough convention as
+   .abyss-tg-block-title.is-done/.is-cancelled above, extended to the calendar item types that
+   were missed when Task 38 first added it — all-day span/plain items (.abyss-tg-body-title),
+   deadline markers (.abyss-tg-deadline-title), and Month-grid compact items (.abyss-mg-item-title,
+   shared by timed/span/timedSpan/plain/deadline items there). Without these, a completed task
+   showed strikethrough in Week/Day's timed view but a plain, untouched title everywhere else. */
+.abyss-tg-body-title.is-done,
+.abyss-tg-deadline-title.is-done,
+.abyss-mg-item-title.is-done {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+.abyss-tg-body-title.is-cancelled,
+.abyss-tg-deadline-title.is-cancelled,
+.abyss-mg-item-title.is-cancelled {
+  text-decoration: line-through;
+  color: var(--text-faint);
+}
+
+/* Task 21: was 0.85em, which nests inside .abyss-tg-block's own 0.8em — an em value
+   compounds against its *parent's computed* size, not the root, so 0.85em here
+   actually rendered at 0.85 * 0.8 = 0.68em of the real interface font-size (visibly
+   smaller than intended, and smaller than .abyss-tg-block-title's 0.8em despite reading
+   as "only slightly smaller than the title" in the source). 0.95em keeps the same
+   *relative-to-the-block* convention (so it still scales correctly if the block's own
+   0.8em ever changes) while landing close to the title's actual rendered size instead
+   of compounding down to two-thirds of it. */
+.abyss-tg-block-subtitle {
+  font-size: 0.95em;
+  /* Task 40 (Round 4): same --abyss-tag-text-color fallback pattern as .abyss-tg-block-title above.
+     Deliberately the SAME full-strength color as the title rather than a dimmer mix of it:
+     --abyss-tag-text-color is already a near-maximum-contrast anchor (plain near-black/near-white,
+     see .abyss-panel-view's own comment) with no natural "muted" variant to blend toward without
+     re-introducing the exact contrast risk this task fixes — the title/subtitle's existing
+     visual hierarchy (font-weight, size, layout position) still reads clearly without it.
+     Untagged blocks are untouched: they keep the pre-existing var(--text-muted). */
+  color: var(--abyss-tag-text-color, var(--text-muted));
+}
+
+/* Tag chips + count badges row (Task 13): reuses .abyss-task-count-badge/.abyss-task-tag's own
+   sizing (both already set an explicit font-size), so only layout is added here. All-day items
+   only now — Task 32 removed this meta row from Month's compact items (`.abyss-mg-item-meta`) as
+   it made small Month cells feel cluttered, and Task 35 removed it from Week/Day's timed
+   blocks/continuation segments entirely in favor of `.abyss-tg-block-badges` below. */
+.abyss-tg-body-meta {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin-inline-start: 4px;
+  flex-shrink: 0;
+}
+
+/* Task 35: the block's first-row container — pairs the time/duration subtitle with the
+   count-badges group on the same line, `justify-content: space-between` pushing the badges to
+   the block's top-right corner. A real flex layout rather than an absolute-position overlay:
+   an earlier attempt at absolutely positioning `.abyss-tg-block-badges` directly inside
+   `.abyss-tg-block` covered the subtitle text on narrower (overlapping-column) blocks, since
+   nothing then reserved space for it. */
+.abyss-tg-block-toprow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px;
+  min-width: 0;
+  /* Task 36: the LEAST important row — collapses first (down to 0 height, `overflow: hidden`
+     clipping its content away cleanly rather than letting it spill) under the pressure of a
+     short block squeezed toward `.abyss-tg-block`'s min-height, so the title in the sibling
+     `.abyss-tg-block-head` row (flex-shrink: 0) always stays visible instead. */
+  flex-shrink: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.abyss-tg-block-toprow .abyss-tg-block-subtitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  flex-shrink: 1;
+}
+
+/* Count-badges-only group for Week/Day's timed blocks (`renderTimedBlocksForDay`) and their
+   multi-day continuation segments (`renderTimedSpanContinuation`) — no tag chips here (the
+   block's own tag-colored fill already conveys the tag). Sits inside `.abyss-tg-block-toprow`
+   above; never shrinks, so a long subtitle ellipsizes before ever crowding the badges out. */
+.abyss-tg-block-badges {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* Task 40 follow-up (Round 4 review): `.abyss-task-count-badge` (shared with the main task list,
+   TaskCard.ts's `.abyss-task-title-row`) was hard-coded to `var(--text-muted)`, so it never
+   participated in Task 40's luminance-based contrast switching — a badge inside a bright/dark
+   tag-filled timed block or continuation segment could wash out against that fill exactly like
+   the title/subtitle used to. Scoped to `.abyss-tg-block-badges` (only ever rendered inside a timed
+   block/continuation segment, see renderTimedBlocks.ts) so the main task list's badges — a
+   different container with `--abyss-tag-text-color` never set in scope — are completely unaffected;
+   `var(x, var(--text-muted))` falls back to the exact same untagged color either way. */
+.abyss-tg-block-badges .abyss-task-count-badge {
+  color: var(--abyss-tag-text-color, var(--text-muted));
+}
+
+/* Task 33: .abyss-tg-block clips its content (overflow: hidden, for the tag-fill background), so
+   the resize target sits fully inside the block and exposes its complete 10px hit area rather
+   than straddling the edge and losing half of the target to clipping. */
+.abyss-tg-resize-handle {
+  position: absolute;
+  left: 25%;
+  right: 25%;
+  height: 10px;
+  z-index: 3;
+  cursor: ns-resize;
+}
+
+.abyss-tg-resize-handle--start-time {
+  top: 0;
+}
+
+.abyss-tg-resize-handle--duration {
+  bottom: 0;
+}
+
+.abyss-tg-resize-handle::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 4px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--abyss-tag-text-color, var(--text-normal));
+  opacity: 0;
+  pointer-events: none;
+}
+
+.abyss-tg-resize-handle:hover::after,
+.abyss-tg-span-edge:hover::after,
+.abyss-tg-resize-handle:active::after,
+.abyss-tg-span-edge:active::after,
+[data-active-resize='true']::after {
+  opacity: 1;
+}
+
+/* Task 21: checkbox + title share one flex row so they render on the same line
+   instead of stacking — same root cause and fix as .abyss-tg-block-head (Task 12):
+   the status marker is a `<span>` but `.abyss-status-marker` sets `display: grid` on
+   itself, which makes it a block-level box even though its tag is inline, so
+   without a flex (or grid) parent the title that follows always wrapped onto its
+   own line below it. */
+.abyss-tg-body {
+  box-sizing: border-box;
+  min-block-size: 0;
+  border-radius: var(--abyss-calendar-item-radius);
+  padding: 2px var(--abyss-calendar-item-pad-inline);
+  font-size: var(--abyss-calendar-item-font-size);
+  line-height: 1.4;
+  cursor: grab;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+  min-width: 0;
+}
+
+.abyss-tg-body-title {
+  flex: 1;
+  min-width: 0;
+  /* Task 44: matches .abyss-tg-block-title's overflow/text-overflow/white-space treatment exactly
+     (asserted in test/timegrid-allday.test.ts) so a long all-day title truncates/ellipsizes
+     identically to a timed block's, instead of the two rows following visually different rules. */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  /* Task 44: bold weight to match .abyss-tg-block-title — previously unset here (inheriting
+     normal weight from .abyss-tg-body), so an all-day item's title read visibly lighter/thinner
+     than a timed block's title directly below it in the same day column. */
+  font-weight: 600;
+  line-height: 1.4;
+  /* Task 40 (Round 4): all-day span/plain items share the same tag-colored fill (renderAllDay.ts's
+     renderDraggableBody), so their title needs the same contrast-driven override — previously
+     this had no explicit color at all and simply inherited Obsidian's own body text color, which
+     has the identical fixed-color contrast risk against a bright/pale or very dark tag fill. See
+     tagFillContrast.ts's own doc comment. */
+  color: var(--abyss-tag-text-color, var(--text-normal));
+}
+
+.abyss-tg-root--week .abyss-tg-deadline-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.abyss-tg-span-continuation {
+  cursor: grab;
+  border-inline-start: var(--abyss-calendar-ghost-rail) dashed
+    var(--abyss-tag-color, var(--interactive-accent));
+}
+
+.abyss-tg-plain {
+  border: 1px solid var(--background-modifier-border);
+}
+
+/* Event bodies use one restrained, opaque theme-aware tint. Their single full-strength tag cue
+   is the inline-start rail; priority stays exclusively on the crisp status marker. */
+.abyss-tg-block,
+.abyss-tg-span,
+.abyss-tg-span-continuation,
+.abyss-tg-plain,
+.abyss-mg-block-dot,
+.abyss-mg-span-segment:not(.abyss-mg-span-continuation),
+.abyss-mg-span-continuation,
+.abyss-mg-plain,
+.abyss-mg-deadline-marker {
+  box-sizing: border-box;
+  background: var(--abyss-calendar-surface);
+  border-inline-start: var(--abyss-calendar-item-rail) solid
+    var(--abyss-tag-color, var(--interactive-accent));
+  box-shadow: inset 0 0 0 1px var(--abyss-calendar-border);
+}
+
+.abyss-tg-block:hover,
+.abyss-tg-span:hover,
+.abyss-tg-plain:hover,
+.abyss-tg-block-continuation:hover,
+.abyss-tg-span-continuation:hover,
+.abyss-mg-block-dot:hover,
+.abyss-mg-span-segment:hover,
+.abyss-mg-plain:hover,
+.abyss-mg-deadline-marker:hover {
+  box-shadow: inset 0 0 0 1px var(--background-modifier-hover);
+}
+
+.abyss-span-piece:focus-visible,
+.abyss-span-piece:focus-visible:hover {
+  box-shadow: inset 0 0 0 2px
+    color-mix(
+      in srgb,
+      var(--abyss-tag-color, var(--interactive-accent)) var(--abyss-event-focus-tag-strength),
+      var(--text-normal)
+    );
+}
+
+.abyss-tg-span-edge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  /* The exact 10px edge remains reachable even when a terminal marker occupies the same leading
+     pixels. Only the edge itself is above the marker; its visual rail stays hidden until hover. */
+  z-index: 5;
+  width: 10px;
+  cursor: ew-resize;
+}
+.abyss-tg-span-edge::after {
+  content: '';
+  position: absolute;
+  top: 25%;
+  bottom: 25%;
+  inset-inline-start: 4px;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--abyss-tag-text-color, var(--text-normal));
+  opacity: 0;
+  pointer-events: none;
+}
+.abyss-tg-span-edge--proxy {
+  width: 16px;
+}
+.abyss-tg-span-edge--proxy::after {
+  inset-inline-start: calc(50% - 1px);
+}
+.abyss-tg-span-continuation > .abyss-tg-span-edge--proxy.abyss-tg-span-edge--left {
+  inset-inline-start: calc(-1 * var(--abyss-calendar-ghost-rail));
+  inset-inline-end: auto;
+}
+.abyss-tg-span-edge--left {
+  inset-inline-start: -5px;
+  inset-inline-end: auto;
+}
+.abyss-tg-span-edge--right {
+  inset-inline-start: auto;
+  inset-inline-end: -5px;
+}
+/* Clipping roots keep the complete 10px target inside their box. */
+.abyss-tg-block > .abyss-tg-span-edge--right {
+  inset-inline-start: auto;
+  inset-inline-end: 0;
+}
+/* Task 34: left edge gets the same overflow-hidden-clipping fix as the right edge above. */
+.abyss-tg-block > .abyss-tg-span-edge--left {
+  inset-inline-start: 0;
+  inset-inline-end: auto;
+}
+.abyss-tg-body > .abyss-tg-span-edge--right {
+  inset-inline-start: auto;
+  inset-inline-end: 0;
+}
+.abyss-tg-body > .abyss-tg-span-edge--left {
+  inset-inline-start: 0;
+  inset-inline-end: auto;
+}
+
+/* Status controls remain above ordinary content; exact boundary targets intentionally use z-index
+   5 so the left edge is reachable without first focusing the task. */
+.abyss-tg-body > .abyss-status-marker {
+  position: relative;
+  z-index: 4;
+}
+
+/* A pre-due timed continuation keeps the common .abyss-tg-block root and full-opacity text. Its
+   dashed rail communicates continuity without making the segment look disabled; interaction,
+   focus, identity, and resize behavior remain identical to the terminal root. */
+.abyss-tg-block-continuation {
+  box-sizing: border-box;
+  position: absolute;
+  z-index: 2;
+  left: 4px;
+  right: 4px;
+  pointer-events: auto;
+  border-radius: var(--abyss-calendar-item-radius);
+  border-inline-start: var(--abyss-calendar-ghost-rail) dashed
+    var(--abyss-tag-color, var(--interactive-accent));
+  padding: 2px var(--abyss-calendar-item-pad-inline);
+  font-size: var(--abyss-calendar-item-font-size);
+  overflow: hidden;
+  background: var(--abyss-calendar-surface);
+  /* Task 36: same flex-column layout as `.abyss-tg-block` (see its own comment) so this segment's
+     two in-flow rows — `.abyss-tg-block-toprow` (subtitle+badges) and the title below — can
+     participate in the same "collapse the subtitle first" shrink behavior at a short min-height,
+     via `.abyss-tg-block-continuation-title`'s `flex-shrink: 0` below. */
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  /* Same derivation as `.abyss-tg-block`'s min-height, minus the marker (this segment has none):
+     2*2px padding plus one legible line of the title's
+     own font-size (this rule's `font-size: 0.8em`) at a generous 1.4 line-height. */
+  min-height: calc(1.6em + 4px);
+}
+
+.abyss-tg-drag-preview {
+  position: absolute;
+  z-index: 8;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.abyss-tg-boundary-preview {
+  position: absolute;
+  z-index: 8;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.abyss-calendar-preview {
+  overflow: visible;
+}
+
+.abyss-calendar-preview-target-outline {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  border-radius: var(--abyss-calendar-item-radius);
+  outline: 2px dashed
+    color-mix(
+      in srgb,
+      var(--abyss-tag-color, var(--interactive-accent)) var(--abyss-preview-border-tag-strength),
+      var(--text-normal)
+    );
+  outline-offset: 1px;
+  pointer-events: none;
+}
+
+.abyss-calendar-preview[data-density='regular'] > .abyss-calendar-preview-shell {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  border-radius: var(--abyss-calendar-item-radius);
+  padding: 2px var(--abyss-calendar-item-pad-inline);
+  font-size: var(--abyss-calendar-item-font-size);
+  background: color-mix(
+    in srgb,
+    var(--abyss-tag-color, var(--interactive-accent)) var(--abyss-event-fill-strength),
+    var(--background-primary)
+  );
+  box-shadow: inset 0 0 0 1px
+    color-mix(
+      in srgb,
+      var(--abyss-tag-color, var(--interactive-accent)) var(--abyss-event-outline-strength),
+      var(--background-primary)
+    );
+}
+
+.abyss-calendar-preview[data-phase='terminal'] > .abyss-calendar-preview-shell {
+  border-inline-start: var(--abyss-calendar-item-rail) solid
+    var(--abyss-tag-color, var(--interactive-accent));
+}
+
+.abyss-calendar-preview[data-phase='ghost'] > .abyss-calendar-preview-shell {
+  border-inline-start: var(--abyss-calendar-ghost-rail) dashed
+    var(--abyss-tag-color, var(--interactive-accent));
+}
+
+.abyss-calendar-preview-title,
+.abyss-calendar-preview-subtitle,
+.abyss-calendar-preview-time {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--abyss-tag-text-color, var(--text-normal));
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.abyss-calendar-preview-title {
+  font-size: inherit;
+  font-weight: 600;
+}
+
+.abyss-calendar-preview-subtitle,
+.abyss-calendar-preview-time {
+  font-size: 0.9em;
+  color: var(--abyss-tag-text-color, var(--text-muted));
+}
+
+.abyss-tg-drag-preview.is-all-day {
+  position: relative;
+  min-height: 1.6em;
+  width: 100%;
+}
+.abyss-tg-block-continuation-title {
+  /* Same --abyss-tag-text-color fallback pattern as .abyss-tg-block-title, resolved against this
+     continuation segment's shared committed fill. */
+  color: var(--abyss-tag-text-color, var(--text-muted));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  line-height: 1.4;
+  /* Task 36: never shrinks — see `.abyss-tg-block-continuation`'s own comment on this segment's
+     flex-column "collapse the subtitle row first" behavior. */
+  flex-shrink: 0;
+}
+
+/* Deadline markers: shape (small non-draggable pill, no fill/body) is what signals
+   "deadline" now, not color — color follows the plugin-wide color=priority convention
+   instead of a hardcoded red. Neutral/muted when no priority is set. */
+.abyss-tg-deadline-marker {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 5px;
+  padding: 2px 6px;
+  font-size: 0.78em;
+  border: 1px solid var(--background-modifier-border);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.abyss-tg-deadline-marker[data-priority='A'] {
+  border-color: var(--abyss-priority-a);
+  color: var(--abyss-priority-a);
+}
+.abyss-tg-deadline-marker[data-priority='B'] {
+  border-color: var(--abyss-priority-b);
+  color: var(--abyss-priority-b);
+}
+.abyss-tg-deadline-marker[data-priority='C'] {
+  border-color: var(--abyss-priority-c);
+  color: var(--abyss-priority-c);
+}
+.abyss-tg-deadline-marker[data-priority='E'] {
+  border-color: var(--abyss-priority-e);
+  color: var(--abyss-priority-e);
+}
+.abyss-tg-deadline-marker[data-priority='F'] {
+  border-color: var(--abyss-priority-f);
+  color: var(--abyss-priority-f);
+}
+
+/* Task 21: same checkbox-scaling override as .abyss-tg-block-head (Task 12), extended to
+   every other flex row that carries a status marker next to its title — without this,
+   the marker stays at .abyss-status-marker's own fixed 19px (sized for TaskCard's larger
+   text) and looks oversized against these items' much smaller 0.72–0.8em text. */
+.abyss-tg-body .abyss-status-marker,
+.abyss-tg-deadline-marker .abyss-status-marker,
+.abyss-mg-block-dot .abyss-status-marker,
+.abyss-mg-span-segment .abyss-status-marker,
+.abyss-mg-plain .abyss-status-marker,
+.abyss-mg-deadline-marker .abyss-status-marker {
+  font-size: 1em;
+  width: 1.6em;
+  height: 1.6em;
+  min-width: 1.6em;
+  flex: 0 0 1.6em;
+}
+
+/* A panel-background halo keeps the checkbox/status shape crisp over arbitrary user tag colors
+   without changing the marker's priority border or icon color. */
+.abyss-tg-block-head .abyss-status-marker,
+.abyss-tg-body .abyss-status-marker,
+.abyss-mg-block-dot .abyss-status-marker,
+.abyss-mg-span-segment .abyss-status-marker,
+.abyss-mg-plain .abyss-status-marker {
+  background: var(--background-primary);
+  box-shadow: 0 0 0 1px var(--background-primary);
+}
+.abyss-tg-body .abyss-status-marker svg,
+.abyss-tg-deadline-marker .abyss-status-marker svg,
+.abyss-mg-block-dot .abyss-status-marker svg,
+.abyss-mg-span-segment .abyss-status-marker svg,
+.abyss-mg-plain .abyss-status-marker svg,
+.abyss-mg-deadline-marker .abyss-status-marker svg {
+  width: 0.85em;
+  height: 0.85em;
+}
+
+.abyss-tg-block.is-dragging,
+.abyss-tg-body.is-dragging,
+.abyss-mg-block-dot.is-dragging,
+.abyss-mg-plain.is-dragging {
+  box-shadow: inset 0 0 0 1px var(--background-modifier-active-hover);
+  cursor: grabbing;
+}
+
+/* The source stays geometrically fixed while its inert overlay moves. */
+.abyss-tg-block.is-picked-up {
+  cursor: grabbing;
+  z-index: 5;
+}
+
+/* Keyboard focus and click selection both need a visibly stronger tag-aware inset than the
+   resting terminal outline, without replacing the committed fill. */
+.abyss-tg-block:focus-visible {
+  box-shadow: inset 0 0 0 2px
+    color-mix(
+      in srgb,
+      var(--abyss-tag-color, var(--interactive-accent)) var(--abyss-event-focus-tag-strength),
+      var(--text-normal)
+    );
+}
+
+.abyss-tg-block.is-selected {
+  box-shadow: inset 0 0 0 2px
+    color-mix(
+      in srgb,
+      var(--abyss-tag-color, var(--interactive-accent)) var(--abyss-event-focus-tag-strength),
+      var(--text-normal)
+    );
+}
+
+/* Retained only for the legacy no-owner all-day seam. View-owned interactions use
+   data-active-resize so the matching two-pixel edge grip identifies the exact boundary. */
+.abyss-tg-body.is-edge-resizing {
+  outline: 2px dashed var(--abyss-tag-color, var(--interactive-accent));
+  outline-offset: 1px;
+}
+
+/* Click-to-create quick-add: positioned exactly like a .abyss-tg-block (absolute child of the
+   same hourColumnEl, anchored via inline `top`) at the clicked time, instead of a block
+   spanning a duration. */
+.abyss-tg-quick-add {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  z-index: 20;
+  background: var(--background-primary);
+  border: 1px solid var(--interactive-accent);
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+
+.abyss-tg-quick-add-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.8em;
+  color: var(--text-normal);
+}
+
+.abyss-tg-allday-cell.is-drag-over {
+  background: var(--background-modifier-hover);
+}
+
+/* Click-to-create quick-add for the all-day/"no-time" row: fills the cell (inset matches the
+   cell's own padding), same technique as .abyss-mg-quick-add (Month day cell). */
+.abyss-tg-allday-quick-add {
+  position: absolute;
+  inset: 2px 4px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  background: var(--background-primary);
+  border: 1px solid var(--interactive-accent);
+  border-radius: 4px;
+  padding: 0 4px;
+}
+
+.abyss-tg-allday-quick-add-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.8em;
+  color: var(--text-normal);
+}
+
+/* ===== Calendar redesign: Month overview (abyss-mg-*) ===== */
+
+.abyss-mg-grid {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.abyss-mg-head-row {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.abyss-mg-row {
+  position: relative;
+  display: flex;
+  flex: 0 0 auto;
+  min-height: calc(var(--abyss-calendar-track-height) * 4);
+}
+
+.abyss-mg-span-layer {
+  top: calc(3px + 0.75lh);
+  right: 0;
+  left: 22px;
+}
+
+.abyss-mg-head {
+  flex: 1;
+  text-align: center;
+  font-size: 0.75em;
+  color: var(--text-faint);
+  padding: 4px 0;
+}
+
+/* Empty corner cell above the week-number column, keeps day-of-week headers aligned
+   with the 7 day columns below (mirrors legacy MonthView.ts's empty gridHead corner). */
+.abyss-mg-week-head {
+  flex: 0 0 22px;
+  width: 22px;
+}
+
+.abyss-mg-week-btn {
+  flex: 0 0 22px;
+  width: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68em;
+  color: var(--text-faint);
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  cursor: pointer;
+}
+
+.abyss-mg-week-btn:hover {
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+
+.abyss-mg-cell {
+  position: relative;
+  flex: 1;
+  border: 1px solid var(--background-modifier-border);
+  padding: 2px 4px;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.abyss-mg-cell-items {
+  display: grid;
+  grid-auto-rows: var(--abyss-calendar-track-height);
+  gap: 0;
+  margin-top: 0;
+  min-height: calc(var(--abyss-span-lane-count, 0) * var(--abyss-calendar-track-height));
+}
+
+/* Hover-visible "+" affordance for click-to-create (kept off plain click, which already
+   drills into Week — see MonthGridView's onDayClick/onCreateAtDate split). */
+.abyss-mg-add-btn {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 15px;
+  height: 15px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 3px;
+  background: var(--background-modifier-hover);
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+.abyss-mg-cell:hover .abyss-mg-add-btn {
+  opacity: 1;
+}
+
+.abyss-mg-add-btn:hover {
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+}
+
+/* Inline quick-add: fills the cell (inset matches the cell's own padding) rather than
+   floating outside it, so it's never clipped by the cell's `overflow: hidden`. */
+.abyss-mg-quick-add {
+  position: absolute;
+  inset: 2px 4px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  background: var(--background-primary);
+  border: 1px solid var(--interactive-accent);
+  border-radius: 4px;
+  padding: 0 4px;
+}
+
+.abyss-mg-quick-add-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: var(--abyss-calendar-item-font-size);
+  color: var(--text-normal);
+}
+
+/* Round 3: dropped the pre-existing background-color tint that used to sit alongside this
+   border — the user found the border alone sufficient and asked for the tint's removal. */
+.abyss-mg-cell.is-today {
+  box-shadow: inset 0 0 0 2px var(--text-error);
+}
+
+.abyss-mg-cell.is-outside-month {
+  opacity: 0.4;
+}
+
+.abyss-mg-day-label {
+  font-size: 0.75em;
+  color: var(--text-muted);
+}
+
+/* Task 21: checkbox + title share one flex row (same root cause/fix as
+   .abyss-tg-block-head — Task 12 — and .abyss-tg-body above): .abyss-status-marker sets its own
+   `display: grid`, making it a block-level box despite being a `<span>`, so without a
+   flex parent the title after it always wrapped onto a new line. Text truncation moves
+   from this container (which can no longer usefully own text-overflow once it's a flex
+   row of several children) onto .abyss-mg-item-title specifically, below. */
+.abyss-mg-plain,
+.abyss-mg-block-dot,
+.abyss-mg-span-segment,
+.abyss-mg-deadline-marker {
+  font-size: var(--abyss-calendar-item-font-size);
+  border-radius: var(--abyss-calendar-item-radius);
+  padding: 2px var(--abyss-calendar-item-pad-inline);
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+  min-width: 0;
+}
+
+.abyss-mg-span-segment {
+  margin-inline: 5px;
+}
+
+.abyss-mg-cell-items > .abyss-mg-plain,
+.abyss-mg-cell-items > .abyss-mg-block-dot,
+.abyss-mg-cell-items > .abyss-mg-deadline-marker {
+  block-size: calc(100% - 2px);
+  margin-block: 1px;
+}
+
+.abyss-mg-item-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.4;
+  /* Task 40 (Round 4): Month view's compact items share the same tag-colored fill
+     (MonthGridView.ts's applyTagFill), so their title needs the same contrast-driven override —
+     see tagFillContrast.ts's own doc comment. */
+  color: var(--abyss-tag-text-color, var(--text-normal));
+}
+
+.abyss-mg-item-time {
+  flex-shrink: 0;
+}
+
+.abyss-tg-span-continuation,
+.abyss-mg-span-continuation {
+  cursor: grab;
+  border-inline-start: var(--abyss-calendar-ghost-rail) dashed
+    var(--abyss-tag-color, var(--interactive-accent));
+}
+
+.abyss-span-piece-host {
+  height: 100%;
+  min-height: 0;
+}
+
+/* Month task bodies, including compact deadline pills, derive identity from the shared fill
+   rule above. Priority remains confined to each task's internal status marker. */
+
+/* ===== Calendar redesign: Planning chips =====
+   Value-bearing only — an unset Start/Plan chip carries .abyss-chip-empty instead (same
+   dashed, untinted placeholder look as the unset Date/Priority chips), so the accent
+   tint here signals "this has a value" and doesn't apply to the placeholder state. */
+.abyss-chip-scheduled:not(.abyss-chip-empty),
+.abyss-chip-start:not(.abyss-chip-empty) {
+  background: color-mix(in srgb, var(--interactive-accent) 14%, transparent);
+}
+
+/* Mobile View */
+body.is-mobile .tasksCalendar .gridHead,
+body.is-mobile .tasksCalendar .cellName,
+body.is-mobile .tasksCalendar .task {
+  font-size: 9px;
+}
+body.is-mobile .tasksCalendar[view='week']:not(.style4) .cellName,
+body.is-mobile .tasksCalendar[view='week']:not(.style4) .task {
+  font-size: 13px !important;
+}
+body.is-mobile .tasksCalendar .statisticPopup li {
+  font-size: 13px !important;
+}
+
+.tasksCalendar .statisticButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--text-normal);
+  margin-left: 8px;
+  vertical-align: middle;
+  padding: 0 4px;
+}
+.tasksCalendar .statisticButton:focus {
+  outline: none;
+}
+
+.tasksCalendar .statisticPopup li.active {
+  background: var(--background-modifier-active-hover) !important;
+  color: var(--text-normal) !important;
+  box-shadow: none;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+.tasksCalendar .statisticPopup li,
+.tasksCalendar .stat-label {
+  overflow: visible !important;
+  white-space: normal !important;
+}
+
+.tasksCalendar .statisticPopup li {
+  position: relative;
+}
+
+/* Show standard tooltip via title */
+.tasksCalendar .statisticPopup li[title]:hover:after,
+.tasksCalendar .statisticPopup li[title]:active:after {
+  content: attr(title);
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--background-secondary);
+  color: var(--text-normal);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 4px;
+  padding: 4px 8px;
+  white-space: pre-line;
+  z-index: 9999;
+  min-width: 80px;
+  max-width: 220px;
+  font-size: 13px;
+  box-shadow: 0 2px 8px 0 var(--background-modifier-box-shadow);
+  pointer-events: none;
+}
+
+.tasksCalendar .task.highlighted {
+  background: var(--background-modifier-error) !important;
+  color: var(--text-on-accent) !important;
+  border: 2px solid var(--background-modifier-error-hover);
+  opacity: 1 !important;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border 0.2s;
+}
+
+.tasksCalendar button.active {
+  background: var(--interactive-accent) !important;
+  color: var(--text-on-accent);
+}
+.tasksCalendar button.active svg {
+  stroke: var(--text-on-accent);
+}
+
+/* ---- Rail ---- */
+.abyss-rail-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+}
+.abyss-rail-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 4px;
+}
+.abyss-rail-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--icon-color);
+  cursor: pointer;
+  padding: 0;
+  transition:
+    background 0.1s,
+    color 0.1s;
+}
+.abyss-rail-btn:hover {
+  background: var(--background-modifier-hover);
+  color: var(--icon-color-active);
+}
+.abyss-rail-btn.is-active {
+  /* Use the theme accent (like the calendar view switcher's active button) so
+     the selected rail item tracks the theme instead of reading as a flat grey. */
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+}
+.abyss-rail-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ---- Left Panel ---- */
+.abyss-left-section-header {
+  padding: 12px 16px 4px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+  user-select: none;
+}
+.abyss-left-section {
+  padding: 4px 0;
+}
+.abyss-left-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 12px 5px 16px;
+  border-radius: 6px;
+  margin: 1px 6px;
+  cursor: pointer;
+  transition: background 0.1s;
+  user-select: none;
+  color: var(--nav-item-color);
+  font-size: var(--font-ui-small);
+}
+.abyss-left-item:hover {
+  background: var(--nav-item-background-hover);
+  color: var(--nav-item-color-hover);
+}
+.abyss-left-item.is-active {
+  background: var(--nav-item-background-active);
+  color: var(--nav-item-color-active);
+  font-weight: 500;
+}
+.abyss-left-item-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.abyss-left-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.abyss-left-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  opacity: 0.7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.abyss-left-icon svg {
+  width: 15px;
+  height: 15px;
+}
+.abyss-left-count {
+  font-size: 11px;
+  color: var(--text-muted);
+  opacity: 0.6;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+/* Tag groups */
+.abyss-tag-group {
+  margin: 1px 6px;
+}
+.abyss-tag-group-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.1s;
+  user-select: none;
+  color: var(--nav-item-color);
+  font-size: var(--font-ui-small);
+  font-weight: 500;
+}
+.abyss-tag-group-header .abyss-left-label {
+  /* Don't grow: keep the label natural-width so a trailing custom dot hugs the
+     text instead of being pushed right toward the count (which uses margin-left:auto).
+     Shrink + min-width:0 still allows ellipsis on long names. */
+  flex: 0 1 auto;
+  min-width: 0;
+}
+.abyss-tag-group-header .abyss-left-count {
+  margin-left: auto;
+}
+.abyss-tag-group-header:hover {
+  background: var(--nav-item-background-hover);
+}
+.abyss-tag-group-header.is-active {
+  background: var(--nav-item-background-active);
+  font-weight: 600;
+}
+.abyss-group-arrow {
+  font-size: 10px;
+  opacity: 0.5;
+  transition: transform 0.15s;
+}
+.abyss-group-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+/* Project colour indicator. Deliberately a diamond (rotated square) rather than
+   the round tag dot, so project vs. tag reads at a glance. Colour comes from the
+   project's status; a faint default keeps the shape visible when none is set. */
+.abyss-project-dot {
+  width: 7px;
+  height: 7px;
+  flex-shrink: 0;
+  transform: rotate(45deg);
+  background: var(--text-faint);
+  border-radius: 1px;
+}
+/* Marks a left-panel container whose view state (group/sort/show or filters)
+   differs from defaults. Sits after the label, before the count badge; the
+   fixed size + flex-shrink:0 keep it from resizing or eliding the label. */
+.abyss-left-custom-dot {
+  flex-shrink: 0;
+  width: 5px;
+  height: 5px;
+  /* Pull tight to the label: the parent flex `gap` (6-8px) would otherwise
+     leave the dot floating well clear of the text; a negative margin lets it
+     hug the name, matching the tag color-dot spacing. */
+  margin-left: -3px;
+  /* Nudge up ~2px from the label's vertical centre: enough to read as a small
+     "badge" in the upper-right of the text, but still visually attached (a full
+     top-align felt detached). Relative to centre so it holds across row heights. */
+  transform: translateY(-2px);
+  border-radius: 50%;
+  background: var(--color-accent);
+  opacity: 0.9;
+}
+.abyss-tag-group-children {
+  padding-left: 8px;
+}
+.abyss-tag-child {
+  font-weight: normal;
+}
+
+/* Settings card */
+.abyss-settings-group-card {
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+  padding: 8px 12px;
+  margin: 8px 0;
+}
+
+/* Settings sections — collapsible accordion */
+.abyss-settings-section {
+  border: 1px solid var(--background-modifier-border);
+  border-left: 3px solid var(--interactive-accent);
+  border-radius: var(--radius-m);
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.abyss-settings-section-header {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+  user-select: none;
+  background: var(--background-modifier-form-field);
+  gap: 8px;
+}
+
+.abyss-settings-section-header:hover {
+  background: var(--background-modifier-hover);
+}
+
+.abyss-settings-section-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+}
+
+.abyss-settings-section-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.abyss-settings-section-label {
+  flex: 1;
+  font-weight: 600;
+  color: var(--text-normal);
+}
+
+.abyss-settings-section-chevron {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+  transition: transform 150ms ease;
+}
+
+.abyss-settings-section-chevron svg {
+  width: 16px;
+  height: 16px;
+}
+
+.abyss-settings-section.is-open .abyss-settings-section-chevron {
+  transform: rotate(90deg);
+}
+
+.abyss-settings-section-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 150ms ease;
+  background: var(--background-primary);
+}
+
+.abyss-settings-section.is-open .abyss-settings-section-body {
+  max-height: 2000px;
+}
+
+/* ---- Center Panel ---- */
+.abyss-center-header {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--background-modifier-border);
+}
+.abyss-center-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  flex: 1;
+  color: var(--text-normal);
+}
+.abyss-center-search {
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--background-modifier-border);
+  background: var(--background-secondary);
+  color: var(--text-normal);
+  padding: 0 8px;
+  font-size: 13px;
+  width: 160px;
+  outline: none;
+  transition:
+    border-color 0.15s,
+    width 0.2s;
+}
+.abyss-center-search:focus {
+  border-color: var(--interactive-accent);
+  width: 200px;
+}
+.abyss-search-global {
+  flex: 1;
+  width: auto;
+  min-width: 0;
+  max-width: 360px;
+  transition: border-color 0.15s;
+}
+.abyss-search-global:focus {
+  width: auto;
+}
+.abyss-center-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+.abyss-center-empty {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 40px 20px;
+  font-size: 14px;
+}
+.abyss-group-header {
+  padding: 16px 16px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-faint);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+  margin-top: 2px;
+  border-top: 1px solid var(--background-modifier-border);
+}
+.abyss-group-header--first {
+  border-top: none;
+  padding-top: 8px;
+  margin-top: 0;
+}
+
+/* Task card */
+.abyss-task-card {
+  --abyss-task-card-marker-size: 19px;
+  --abyss-task-card-primary-gap: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+  min-width: 0;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.1s;
+  position: relative;
+}
+.abyss-task-card-main-row {
+  display: flex;
+  align-items: center;
+  gap: var(--abyss-task-card-primary-gap);
+  width: 100%;
+  min-width: 0;
+}
+.abyss-task-card-main-row > .abyss-status-marker {
+  width: var(--abyss-task-card-marker-size);
+  height: var(--abyss-task-card-marker-size);
+  min-width: var(--abyss-task-card-marker-size);
+  flex-basis: var(--abyss-task-card-marker-size);
+}
+.abyss-task-card:hover {
+  background: var(--background-modifier-hover);
+}
+.abyss-task-card.is-selected {
+  background: var(--background-modifier-active-hover);
+}
+.abyss-task-card.abyss-multi-selected {
+  background: var(--background-modifier-active-hover);
+  box-shadow: inset 2px 0 0 var(--interactive-accent);
+}
+.abyss-task-card:focus-visible {
+  outline: 1px solid var(--background-modifier-border-focus);
+  outline-offset: -1px;
+}
+.abyss-selection-badge {
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 2px 12px 4px;
+}
+/* Status marker — chip replacing the native checkbox at task render sites.
+   Visual contract: PRIORITY = border color (only use of color), STATUS
+   GROUP (type) = container shape, CUSTOM STATUS = neutral-tone icon inside.
+   Background stays transparent (neutral empty-checkbox slot); priority
+   (when set) colors the border instead of an outer box-shadow halo, so the
+   chip's footprint never grows. */
+.abyss-status-marker {
+  width: 19px;
+  height: 19px;
+  min-width: 19px;
+  flex: 0 0 19px;
+  border-radius: 5px;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  /* --text-faint is clearly visible on both the list and the (darker) right
+     panel; the old --background-modifier-border was near-invisible for the
+     empty To-do marker, which has no inner icon to fall back on. Priority
+     overrides this border-color with the priority hue. */
+  border: 1.5px solid var(--text-faint);
+  background: transparent;
+  color: var(--text-normal);
+  cursor: pointer;
+  /* Center a text glyph/emoji marker exactly: kill baseline/line-box offset
+     so the character sits dead-center like the SVG icons do. */
+  font-size: 12px;
+  line-height: 1;
+  text-align: center;
+}
+.abyss-status-marker--inert {
+  cursor: default;
+}
+/* Shape by status-group (type): in-progress is the only circular group. */
+.abyss-status-marker[data-status-type='in-progress'] {
+  border-radius: 50%;
+}
+.abyss-status-marker > svg {
+  display: block;
+}
+.abyss-status-marker[data-status='other'] {
+  color: var(--text-muted);
+}
+.abyss-status-marker svg {
+  width: 13px;
+  height: 13px;
+  color: currentColor;
+  stroke: currentColor;
+}
+/* Priority — colors BOTH the chip border and the inner icon (via currentColor),
+   so the whole marker reads as one priority hue. Footprint stays 19px (border,
+   not an outer halo). No-priority markers keep the neutral color from the base
+   rule.
+
+   Falls back to the underlying global color vars (same bug/fix as
+   .abyss-priority-chip above — Round 4 Task 41) because subtask rows using this
+   marker render via RightPanel, which TaskModal also mounts at document.body
+   OUTSIDE `.abyss-panel-view` — there --abyss-priority-* is undefined, so without a
+   fallback the marker's priority border/color was lost entirely. */
+.abyss-status-marker[data-priority='A'] {
+  border-color: var(--abyss-priority-a, var(--color-red));
+  color: var(--abyss-priority-a, var(--color-red));
+}
+.abyss-status-marker[data-priority='B'] {
+  border-color: var(--abyss-priority-b, var(--color-orange));
+  color: var(--abyss-priority-b, var(--color-orange));
+}
+.abyss-status-marker[data-priority='C'] {
+  border-color: var(--abyss-priority-c, var(--color-yellow));
+  color: var(--abyss-priority-c, var(--color-yellow));
+}
+.abyss-status-marker[data-priority='E'] {
+  border-color: var(--abyss-priority-e, var(--color-blue));
+  color: var(--abyss-priority-e, var(--color-blue));
+}
+.abyss-status-marker[data-priority='F'] {
+  border-color: var(--abyss-priority-f, var(--color-purple));
+  color: var(--abyss-priority-f, var(--color-purple));
+}
+.abyss-task-body {
+  flex: 1;
+  min-width: 0;
+}
+.abyss-task-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+}
+.abyss-task-title {
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+  font-size: var(--font-ui-medium);
+  color: var(--text-normal);
+}
+.abyss-task-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 2px;
+}
+.abyss-task-desc {
+  font-size: var(--font-smallest, 11px);
+  color: var(--text-muted);
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.abyss-task-card > .abyss-task-desc {
+  margin-top: 0;
+  margin-inline-start: calc(
+    var(--abyss-task-card-marker-size) + var(--abyss-task-card-primary-gap)
+  );
+}
+.abyss-task-pills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.abyss-task-meta-right {
+  flex-shrink: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+.abyss-task-date {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+.abyss-task-date svg {
+  width: 11px;
+  height: 11px;
+  flex-shrink: 0;
+}
+.abyss-date-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 0;
+}
+.abyss-date-icon svg {
+  width: 11px;
+  height: 11px;
+  display: block;
+}
+.abyss-task-date.is-overdue {
+  color: var(--abyss-date-overdue);
+}
+.abyss-task-date.is-today {
+  color: var(--interactive-accent);
+}
+.abyss-task-date.is-tomorrow {
+  color: var(--abyss-date-tomorrow);
+}
+.abyss-task-date.is-soon {
+  color: var(--interactive-accent);
+}
+.abyss-task-tag {
+  font-size: 11px;
+  color: var(--abyss-tag-color, var(--text-faint));
+  background: transparent;
+  border: none;
+  padding: 0 2px;
+  height: auto;
+  display: inline-flex;
+  align-items: center;
+  opacity: 0.88;
+  cursor: pointer;
+}
+.abyss-task-tag--colored {
+  opacity: 1;
+}
+.abyss-center .abyss-task-tag:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  opacity: 1;
+}
+.abyss-task-source-note {
+  font-size: 11px;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  opacity: 0.8;
+  cursor: default;
+  pointer-events: none;
+}
+.abyss-task-source-note-icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+}
+.abyss-task-source-note-icon svg {
+  width: 11px;
+  height: 11px;
+}
+.abyss-task-source-note-name {
+  text-decoration: underline;
+  text-decoration-color: var(--text-faint);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+.abyss-task-progress {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+.abyss-task-count-badge {
+  font-size: 11px;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-variant-numeric: tabular-nums;
+}
+.abyss-task-count-badge svg {
+  width: 11px;
+  height: 11px;
+  flex-shrink: 0;
+}
+
+/* Task time badge (in title row, kept for list view compatibility) */
+.abyss-task-time {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  flex-shrink: 0;
+  min-width: 36px;
+  font-family: var(--font-monospace, monospace);
+  margin-right: 4px;
+}
+
+/* Delete button on task card */
+.abyss-task-delete-btn {
+  opacity: 0;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 18px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  flex-shrink: 0;
+  transition:
+    opacity 0.1s,
+    color 0.1s,
+    background 0.1s;
+  padding: 0;
+  line-height: 1;
+}
+.abyss-task-delete-btn svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+.abyss-task-card:hover .abyss-task-delete-btn {
+  opacity: 1;
+}
+.abyss-task-delete-btn:hover {
+  color: var(--text-error);
+  background: hsla(0, 70%, 50%, 0.1);
+}
+
+/* Keep the title readable when the center pane is squeezed between both side panels. Metadata
+   moves below the title instead of competing with it for the same flex track. Container sizing is
+   intentional here: the center pane can become narrow inside a wide Obsidian window. */
+@container abyss-task-list (max-width: 28rem) {
+  .abyss-task-card-main-row {
+    display: grid;
+    grid-template-columns: var(--abyss-task-card-marker-size) minmax(0, 1fr) 24px;
+    column-gap: var(--abyss-task-card-primary-gap);
+    row-gap: 2px;
+  }
+
+  .abyss-task-card-main-row > .abyss-status-marker {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .abyss-task-body {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .abyss-task-delete-btn {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .abyss-task-meta-right {
+    grid-column: 2 / -1;
+    grid-row: 2;
+    width: 100%;
+  }
+
+  .abyss-task-source-note {
+    white-space: nowrap;
+  }
+}
+
+/* Add task bar */
+.abyss-add-task-bar {
+  padding: 0 8px 8px;
+  flex-shrink: 0;
+  border-top: 1px solid var(--background-modifier-border);
+}
+.abyss-add-task-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 13px;
+  transition:
+    background 0.1s,
+    color 0.1s;
+}
+.abyss-add-task-trigger:hover {
+  color: var(--interactive-accent);
+  background: hsla(var(--accent-h), var(--accent-s), var(--accent-l), 0.08);
+}
+.abyss-add-task-plus {
+  font-size: 16px;
+  line-height: 1;
+  color: var(--interactive-accent);
+  font-weight: 400;
+}
+.abyss-quick-capture {
+  padding: 4px 4px 6px;
+}
+.abyss-quick-capture-input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1.5px solid var(--interactive-accent);
+  background: var(--background-primary);
+  color: var(--text-normal);
+  font-size: 14px;
+  outline: none;
+  box-shadow: var(--shadow-s);
+  box-sizing: border-box;
+}
+.abyss-quick-capture-input::placeholder {
+  color: var(--text-faint);
+}
+
+/* Calendar mode */
+.abyss-center--calendar {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Calendar Nav ─────────────────────────────────────── */
+.abyss-cal-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--background-modifier-border);
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.abyss-cal-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.abyss-cal-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.abyss-cal-nav-title-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+}
+
+.abyss-cal-nav-month,
+.abyss-cal-nav-year {
+  background: transparent;
+  border: none;
+  color: var(--text-normal);
+  font-size: var(--font-ui-medium);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: background 0.1s;
+}
+
+.abyss-cal-nav-month:hover,
+.abyss-cal-nav-year:hover {
+  background: var(--background-modifier-hover);
+}
+
+.abyss-cal-nav-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--icon-color);
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.abyss-cal-nav-btn .svg-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.abyss-cal-nav-btn:hover {
+  background: var(--background-modifier-hover);
+}
+
+.abyss-cal-nav-today {
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: var(--font-ui-small);
+  transition:
+    background 0.1s,
+    color 0.1s;
+}
+
+.abyss-cal-nav-today:hover {
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+
+.abyss-cal-view-switcher {
+  display: flex;
+  gap: 2px;
+  background: var(--background-modifier-border);
+  border-radius: 8px;
+  padding: 2px;
+}
+
+.abyss-cal-view-btn {
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: var(--font-ui-small);
+  transition:
+    background 0.1s,
+    color 0.1s;
+}
+
+.abyss-cal-view-btn:hover {
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+
+.abyss-cal-view-btn.is-active {
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+  font-weight: 500;
+}
+
+.abyss-cal-style-btn {
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  opacity: 0.6;
+  transition: opacity 0.1s;
+}
+.abyss-cal-style-btn:hover {
+  opacity: 1;
+}
+
+.abyss-month-picker,
+.abyss-year-picker {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  padding: 8px;
+  min-width: 180px;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 100;
+  background: var(--background-primary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-l);
+}
+
+.abyss-year-picker {
+  grid-template-columns: repeat(3, 1fr);
+  min-width: 160px;
+}
+
+.abyss-month-picker-btn,
+.abyss-year-picker-btn {
+  padding: 6px 4px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  font-size: var(--font-ui-small);
+  color: var(--text-normal);
+  transition: background 0.1s;
+}
+
+.abyss-month-picker-btn:hover,
+.abyss-year-picker-btn:hover {
+  background: var(--background-modifier-hover);
+}
+
+.abyss-month-picker-btn.is-active,
+.abyss-year-picker-btn.is-active {
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+}
+
+.abyss-cal-body {
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+}
+.abyss-cal-body .grid,
+.abyss-cal-body .list {
+  flex: 1;
+  height: auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.abyss-calendar-projection-diagnostic {
+  flex: 0 0 auto;
+  padding: var(--size-2-2) var(--size-4-2);
+  border-block-start: 1px dotted var(--background-modifier-border);
+  background: color-mix(in srgb, var(--background-secondary) 72%, transparent);
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  line-height: var(--line-height-tight);
+}
+
+/* ── List View ────────────────────────────────────────── */
+.abyss-list-view {
+  padding: 8px 0;
+}
+
+.abyss-list-section {
+  margin-bottom: 16px;
+}
+
+.abyss-list-date-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px 8px;
+  cursor: pointer;
+}
+
+.abyss-list-date-label {
+  font-size: var(--font-ui-small);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.abyss-list-overdue-header .abyss-list-date-label,
+.abyss-list-overdue-header {
+  color: var(--color-red, #e74c3c);
+}
+
+.abyss-list-date-count {
+  font-size: var(--font-ui-small);
+  color: var(--text-faint);
+  background: var(--background-modifier-hover);
+  border-radius: 10px;
+  padding: 0 6px;
+}
+
+.abyss-list-task {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.abyss-list-task:hover {
+  background: var(--background-modifier-hover);
+}
+
+.abyss-list-task-title {
+  flex: 1;
+  font-size: var(--font-ui-medium);
+}
+
+.abyss-list-task-title.is-done {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.abyss-list-task-meta {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ---- Right Panel ---- */
+.abyss-right-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-faint);
+  padding: 20px;
+  text-align: center;
+  gap: 6px;
+  user-select: none;
+}
+.abyss-right-empty-icon {
+  width: 56px;
+  height: 56px;
+  opacity: 0.2;
+  margin-bottom: 8px;
+}
+.abyss-right-empty-icon svg {
+  width: 56px;
+  height: 56px;
+}
+.abyss-right-empty-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin: 0;
+}
+.abyss-right-empty-hint {
+  font-size: 12px;
+  color: var(--text-faint);
+  margin: 0;
+}
+
+/* Comment rows */
+.abyss-comment-row {
+  padding: 6px 0;
+  border-bottom: 1px solid var(--background-modifier-border);
+}
+.abyss-comment-row:last-child {
+  border-bottom: none;
+}
+.abyss-comment-date {
+  font-size: 10px;
+  color: var(--text-faint);
+  display: block;
+  margin-bottom: 2px;
+  font-variant-numeric: tabular-nums;
+}
+.abyss-comment-text {
+  font-size: 13px;
+  color: var(--text-normal);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Breadcrumb */
+.abyss-breadcrumb {
+  padding: 8px 16px 4px;
+  font-size: 12px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+}
+.abyss-breadcrumb-item {
+  cursor: pointer;
+  color: var(--text-accent);
+}
+.abyss-breadcrumb-item:hover {
+  text-decoration: underline;
+}
+.abyss-breadcrumb-item.is-current {
+  color: var(--text-muted);
+  cursor: default;
+  text-decoration: none;
+}
+.abyss-breadcrumb-sep {
+  color: var(--text-faint);
+}
+
+/* Header */
+.abyss-right-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px 10px;
+  position: relative;
+  border-bottom: 1px solid var(--background-modifier-border);
+}
+.abyss-right-title {
+  flex: 1;
+  font-size: 17px;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  color: var(--text-normal);
+  outline: none;
+  padding: 2px 4px;
+  border-radius: 4px;
+  min-width: 0;
+}
+.abyss-right-title:focus {
+  background: var(--background-modifier-hover);
+}
+.abyss-right-title-view {
+  min-height: var(--input-height, 30px);
+  padding: 4px 6px;
+  border-radius: var(--radius-s);
+  cursor: text;
+  overflow: auto;
+  resize: vertical; /* user can stretch the block */
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.abyss-right-title-view:hover {
+  background: var(--background-modifier-hover);
+}
+.abyss-suggest-path {
+  font-size: var(--font-ui-smaller);
+  color: var(--text-muted);
+}
+.abyss-right-title-edit {
+  width: 100%;
+  min-height: var(--input-height, 30px);
+  resize: vertical;
+  /* font-size/weight come from the shared .abyss-right-title class; inherit the
+     UI font-family so the textarea doesn't fall back to the UA monospace and
+     read/edit modes match visually. */
+  font-family: inherit;
+  line-height: inherit;
+}
+.abyss-right-header-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.abyss-right-action-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--icon-color);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.abyss-right-action-btn:hover {
+  background: var(--background-modifier-hover);
+}
+
+/* Chips */
+.abyss-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 4px 16px 10px;
+}
+.abyss-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: var(--radius-l);
+  border: 1px solid var(--background-modifier-border);
+  background: var(--background-secondary);
+  font-size: var(--font-ui-smaller);
+  color: var(--text-normal);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    border-color 0.1s,
+    background 0.1s;
+  user-select: none;
+  box-sizing: border-box;
+  vertical-align: middle;
+}
+.abyss-chip:hover {
+  background: var(--background-modifier-hover);
+  border-color: var(--interactive-accent);
+}
+.abyss-chip-empty {
+  color: var(--text-muted);
+  border-style: dashed;
+}
+.abyss-chip-tag {
+  cursor: default;
+  color: var(--abyss-chip-tag-color, var(--text-normal));
+}
+.abyss-chip-tag:hover {
+  background: var(--background-modifier-hover);
+  border-color: var(--interactive-accent);
+}
+.abyss-chip-add--hidden {
+  display: none;
+}
+.abyss-chip-add {
+  background: transparent;
+  border-style: dashed;
+  color: var(--text-muted);
+}
+.abyss-chip-add-date {
+  position: relative;
+}
+.abyss-chip-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 50%;
+  font-size: 12px;
+  line-height: 1;
+  padding: 0;
+  flex-shrink: 0;
+  transition:
+    background 0.1s,
+    color 0.1s;
+}
+.abyss-chip-remove:hover {
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+
+/* Popovers */
+.abyss-popover {
+  position: absolute;
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-s);
+  z-index: 100;
+  padding: 0.5rem;
+  min-width: 10rem;
+}
+.abyss-popover-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2rem;
+}
+.abyss-date-input,
+.abyss-time-input,
+.abyss-duration-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 0.375rem;
+  padding: 0 0.5rem;
+  background: transparent;
+  color: var(--text-normal);
+  font-size: 13px;
+}
+.abyss-popover-clear-icon-btn {
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.abyss-popover-clear-icon-btn:hover {
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+.abyss-popover-clear-icon-btn svg {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+.abyss-date-popover,
+.abyss-time-popover {
+  border: 0;
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-s);
+}
+.abyss-date-popover .abyss-date-input,
+.abyss-time-popover .abyss-time-input {
+  border: 1px solid var(--background-modifier-border);
+  background: transparent;
+  box-shadow: none;
+}
+.abyss-date-picker-popover {
+  inline-size: max-content;
+  max-inline-size: calc(100% - (var(--abyss-popover-edge-gap, 0.5rem) * 2));
+}
+.abyss-priority-popover {
+  display: grid;
+  min-width: 0;
+  inline-size: max-content;
+  max-inline-size: calc(100% - (var(--abyss-popover-edge-gap, 0.5rem) * 2));
+  padding: 0;
+  border-radius: 0.5rem;
+  border: 0;
+  overflow: hidden;
+  box-shadow: var(--shadow-s);
+}
+.abyss-priority-option {
+  display: grid;
+  grid-template-columns: 0.8em 0.9em max-content;
+  align-items: center;
+  justify-content: start;
+  column-gap: 0.35em;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  padding: 0.5em 0.65em 0.5em 0.45em;
+  cursor: pointer;
+  border-radius: 0;
+  color: var(--text-normal);
+  font-size: var(--font-ui-medium);
+  line-height: 1.25;
+}
+
+/* Shared recurrence editor: an anchored planning instrument whose strongest visual line is the
+   parser-canonical rule itself. All concrete colors remain owned by the active Obsidian theme. */
+.abyss-recurrence-badge {
+  --abyss-recurrence-badge-height: 1rem;
+  --abyss-recurrence-badge-radius: var(--radius-s);
+  --abyss-recurrence-badge-padding: 0 var(--size-2-1);
+  --abyss-recurrence-badge-icon-size: 0.7rem;
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  height: var(--abyss-recurrence-badge-height);
+  min-width: var(--abyss-recurrence-badge-height);
+  padding: var(--abyss-recurrence-badge-padding);
+  border-radius: var(--abyss-recurrence-badge-radius);
+  background: var(--background-modifier-hover);
+  color: var(--text-muted);
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.abyss-recurrence-badge-icon {
+  display: inline-flex;
+  flex: 0 0 var(--abyss-recurrence-badge-icon-size);
+  align-items: center;
+  justify-content: center;
+  width: var(--abyss-recurrence-badge-icon-size);
+  height: var(--abyss-recurrence-badge-icon-size);
+}
+
+.abyss-recurrence-badge-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.abyss-recurrence-badge[data-recurrence-validity='invalid'] {
+  color: var(--text-warning, var(--color-orange));
+}
+
+.abyss-recurrence-badge[data-recurrence-forecast='true'] {
+  outline: 1px dotted var(--text-faint);
+  outline-offset: 1px;
+}
+
+.abyss-calendar-leading-row > .abyss-recurrence-badge {
+  width: 1rem;
+  min-width: 1rem;
+  padding: 0;
+  color: var(--abyss-calendar-foreground);
+}
+
+.abyss-repeat-chip .abyss-recurrence-badge {
+  margin-inline-end: var(--size-2-1);
+}
+
+.abyss-repeat-chip:not(.abyss-chip-empty) {
+  border-color: var(--interactive-accent);
+}
+
+.abyss-repeat-chip:focus-visible,
+.abyss-recurrence-editor button:focus-visible,
+.abyss-recurrence-editor input:focus-visible,
+.abyss-recurrence-editor select:focus-visible {
+  outline: 2px solid var(--interactive-accent);
+  outline-offset: 2px;
+}
+
+.abyss-recurrence-popover {
+  box-sizing: border-box;
+  inline-size: min(22rem, calc(100% - (var(--abyss-popover-edge-gap, 0.5rem) * 2)));
+  min-inline-size: min(18rem, calc(100% - (var(--abyss-popover-edge-gap, 0.5rem) * 2)));
+  max-inline-size: calc(100% - (var(--abyss-popover-edge-gap, 0.5rem) * 2));
+  padding: 0.625rem;
+  background: var(--background-secondary);
+}
+
+.abyss-popover-anchored.abyss-recurrence-popover-floating {
+  position: fixed;
+  z-index: var(--layer-menu);
+}
+
+.abyss-recurrence-editor {
+  display: grid;
+  gap: 0.5rem;
+  inline-size: 100%;
+  color: var(--text-normal);
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-smaller);
+}
+
+.abyss-recurrence-heading,
+.abyss-recurrence-completed-row,
+.abyss-recurrence-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.abyss-recurrence-title {
+  flex: 1;
+  font-size: var(--font-ui-small);
+  font-weight: var(--font-semibold, 600);
+}
+
+.abyss-recurrence-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.abyss-recurrence-presets button {
+  min-height: 1.75rem;
+  padding: 0 0.55rem;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-s);
+  background: var(--background-primary);
+  color: var(--text-muted);
+  box-shadow: none;
+  font-size: inherit;
+}
+
+.abyss-recurrence-presets button:hover {
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+
+.abyss-recurrence-presets button[aria-pressed='true'] {
+  border-color: var(--interactive-accent);
+  background: var(--background-modifier-active-hover);
+  color: var(--text-normal);
+  font-weight: var(--font-medium, 500);
+}
+
+.abyss-recurrence-controls {
+  min-inline-size: 0;
+}
+
+.abyss-recurrence-cadence {
+  display: grid;
+  grid-template-columns: auto 4.5rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.abyss-recurrence-inline-label {
+  color: var(--text-muted);
+}
+
+.abyss-recurrence-editor input[type='number'],
+.abyss-recurrence-editor input[type='text'],
+.abyss-recurrence-editor select {
+  box-sizing: border-box;
+  min-width: 0;
+  height: var(--input-height, 30px);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-s);
+  background: var(--background-primary);
+  color: var(--text-normal);
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.abyss-recurrence-editor input[type='number'],
+.abyss-recurrence-editor input[type='text'] {
+  padding-inline: 0.5rem;
+}
+
+.abyss-recurrence-raw {
+  inline-size: 100%;
+}
+
+.abyss-recurrence-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.2rem;
+  margin-block-start: 0.375rem;
+}
+
+.abyss-recurrence-weekday {
+  display: grid;
+  grid-template-rows: auto auto;
+  place-items: center;
+  gap: 0.1rem;
+  min-width: 0;
+  padding: 0.2rem 0.1rem;
+  border-radius: var(--radius-s);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.abyss-recurrence-weekday:has(input:checked) {
+  background: var(--background-modifier-active-hover);
+  color: var(--text-normal);
+}
+
+.abyss-recurrence-weekday input {
+  margin: 0;
+}
+
+.abyss-recurrence-detail-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 4.25rem;
+  gap: 0.375rem;
+  margin-block-start: 0.375rem;
+}
+
+.abyss-recurrence-check-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.abyss-recurrence-check-row input {
+  margin: 0;
+}
+
+.abyss-recurrence-completed-row > span {
+  flex: 1;
+  color: var(--text-muted);
+}
+
+.abyss-recurrence-completed-row select {
+  max-inline-size: 12rem;
+}
+
+.abyss-recurrence-delete-warning,
+.abyss-recurrence-status {
+  font-size: var(--font-ui-smaller);
+  line-height: 1.2;
+}
+
+.abyss-recurrence-delete-warning[hidden],
+.abyss-recurrence-status[hidden] {
+  display: none;
+}
+
+.abyss-recurrence-delete-warning {
+  color: var(--text-warning, var(--color-orange));
+}
+
+.abyss-recurrence-preview {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.5rem;
+  align-items: baseline;
+  padding: 0.5rem 0.625rem;
+  border-inline-start: 2px solid var(--interactive-accent);
+  border-radius: var(--radius-s);
+  background: var(--background-primary);
+}
+
+.abyss-recurrence-preview-label {
+  color: var(--text-faint);
+  font-size: var(--font-ui-smaller);
+  font-weight: var(--font-medium, 500);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.abyss-recurrence-preview-rule {
+  min-width: 0;
+  color: var(--text-normal);
+  font-size: var(--font-ui-small);
+  font-weight: var(--font-medium, 500);
+  overflow-wrap: anywhere;
+}
+
+.abyss-recurrence-status {
+  color: var(--text-error);
+}
+
+.abyss-recurrence-actions-spacer {
+  flex: 1;
+}
+
+.abyss-recurrence-actions button {
+  min-height: 1.75rem;
+  font-size: inherit;
+}
+
+.abyss-recurrence-clear {
+  padding-inline: 0;
+  border-color: transparent;
+  background: transparent;
+  color: var(--text-muted);
+  box-shadow: none;
+}
+
+.abyss-recurrence-clear:hover {
+  color: var(--text-normal);
+}
+
+.abyss-recurrence-delete-confirm {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--size-4-6);
+  background: var(--modal-scrim-background);
+}
+
+.abyss-recurrence-delete-confirm-dialog {
+  box-sizing: border-box;
+  inline-size: min(26rem, 100%);
+  padding: var(--size-4-5);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-l);
+  background: var(--background-primary);
+  box-shadow: var(--shadow-l);
+  color: var(--text-normal);
+}
+
+.abyss-recurrence-delete-confirm-title {
+  margin-block: 0 var(--size-4-2);
+  color: var(--text-error);
+  font-size: var(--font-ui-medium);
+}
+
+.abyss-recurrence-delete-confirm-description {
+  margin-block: 0 var(--size-4-4);
+  color: var(--text-muted);
+  line-height: var(--line-height-normal);
+}
+
+.abyss-recurrence-delete-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--size-4-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .abyss-recurrence-editor *,
+  .abyss-repeat-chip {
+    scroll-behavior: auto;
+    transition: none !important;
+  }
+}
+.abyss-priority-option-flag {
+  width: 0.9em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+/* Filled flag: the banner path is filled with the current colour so every
+   priority flag across the plugin reads the same (see the shared fill rule
+   below). The Lucide `flag` pole stays a stroke. */
+.abyss-priority-option-flag svg {
+  width: 0.9em;
+  height: 0.9em;
+  fill: currentColor;
+}
+.abyss-priority-option[data-priority='A'] .abyss-priority-option-flag {
+  color: var(--abyss-priority-a);
+}
+.abyss-priority-option[data-priority='B'] .abyss-priority-option-flag {
+  color: var(--abyss-priority-b);
+}
+.abyss-priority-option[data-priority='C'] .abyss-priority-option-flag {
+  color: var(--abyss-priority-c);
+}
+.abyss-priority-option[data-priority='E'] .abyss-priority-option-flag {
+  color: var(--abyss-priority-e);
+}
+.abyss-priority-option[data-priority='F'] .abyss-priority-option-flag {
+  color: var(--abyss-priority-f);
+}
+.abyss-priority-option:hover {
+  background: var(--background-modifier-hover);
+}
+.abyss-priority-option.is-active {
+  font-weight: 600;
+}
+.abyss-priority-option-label {
+  white-space: nowrap;
+}
+.abyss-priority-option-check {
+  width: 0.8em;
+  height: 0.8em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent);
+}
+.abyss-priority-option-check svg {
+  width: 0.75em;
+  height: 0.75em;
+}
+
+/* Combined priority+status popover (src/ui/statusMenu.ts). Rendered at
+   document.body, OUTSIDE `.abyss-panel-view`, so the panel-scoped --abyss-priority-*
+   vars are empty here — use the global Obsidian color vars directly (same
+   underlying colors --abyss-priority-* alias inside the panel). 'D' (None) is
+   intentionally left uncolored/muted, matching the priority popover. */
+.abyss-status-popover {
+  position: fixed;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  min-width: 12rem;
+  max-width: 16rem;
+  /* Match Obsidian's native menu: same design tokens for padding, radius,
+     shadow, font metrics and colour, so the checkbox menu is visually identical
+     to the task context menu regardless of theme. */
+  padding: var(--size-2-3);
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+  box-shadow: var(--shadow-s);
+  font-size: var(--font-ui-small);
+  line-height: var(--line-height-tight);
+  color: var(--text-normal);
+}
+.abyss-status-popover.abyss-forecast-context-menu {
+  box-sizing: border-box;
+  min-width: min(12rem, calc(100vw - 16px));
+  max-width: min(16rem, calc(100vw - 16px));
+}
+.abyss-status-popover.abyss-forecast-context-menu > button {
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.abyss-status-popover-priority-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--size-2-1);
+  padding: var(--size-2-1) var(--size-2-1) var(--size-2-3);
+}
+.abyss-status-popover-flag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 0.35rem;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.abyss-status-popover-flag:hover {
+  background: var(--background-modifier-hover);
+}
+.abyss-status-popover-flag.is-active {
+  border-color: var(--color-accent);
+  background: var(--background-modifier-hover);
+  box-shadow: inset 0 0 0 1px var(--color-accent);
+}
+.abyss-status-popover-flag svg {
+  width: 0.95rem;
+  height: 0.95rem;
+  /* Filled banner so this matches the right-panel priority flags. */
+  fill: currentColor;
+}
+.abyss-status-popover-flag[data-abyss-priority='A'] {
+  color: var(--color-red);
+}
+.abyss-status-popover-flag[data-abyss-priority='B'] {
+  color: var(--color-orange);
+}
+.abyss-status-popover-flag[data-abyss-priority='C'] {
+  color: var(--color-yellow);
+}
+.abyss-status-popover-flag[data-abyss-priority='E'] {
+  color: var(--color-blue);
+}
+.abyss-status-popover-flag[data-abyss-priority='F'] {
+  color: var(--color-purple);
+}
+.abyss-menu-priority-flag[data-abyss-priority='A'] .menu-item-icon {
+  color: var(--color-red);
+}
+.abyss-menu-priority-flag[data-abyss-priority='B'] .menu-item-icon {
+  color: var(--color-orange);
+}
+.abyss-menu-priority-flag[data-abyss-priority='C'] .menu-item-icon {
+  color: var(--color-yellow);
+}
+.abyss-menu-priority-flag[data-abyss-priority='D'] .menu-item-icon {
+  color: var(--text-muted);
+}
+.abyss-menu-priority-flag[data-abyss-priority='E'] .menu-item-icon {
+  color: var(--color-blue);
+}
+.abyss-menu-priority-flag[data-abyss-priority='F'] .menu-item-icon {
+  color: var(--color-purple);
+}
+/* Filled banner so native-menu priority flags match the popover / right panel. */
+.abyss-menu-priority-flag .menu-item-icon svg {
+  fill: currentColor;
+}
+/* Status shape-marker injected into a native menu item's icon slot
+   (buildStatusSubmenu, src/ui/statusMenu.ts) — rendered outside
+   `.abyss-panel-view`, always with priority 'D' so no colored border is drawn;
+   just shrink it to fit the menu's icon slot alongside the check indicator. */
+.menu-item-icon .abyss-status-marker {
+  width: 15px;
+  height: 15px;
+  min-width: 15px;
+  flex: 0 0 15px;
+  cursor: default;
+}
+.menu-item-icon .abyss-status-marker svg {
+  width: 10px;
+  height: 10px;
+}
+.abyss-status-popover-divider {
+  height: 1px;
+  margin: var(--size-2-2) var(--size-2-1);
+  background: var(--background-modifier-border);
+}
+.abyss-status-popover-list {
+  display: flex;
+  flex-direction: column;
+  /* Grow to fit all statuses; only scroll when there are really many
+     (or the popover would run off-screen) rather than at a fixed small cap. */
+  max-height: min(55vh, 32rem);
+  overflow-y: auto;
+}
+.abyss-status-popover-row {
+  display: flex;
+  align-items: center;
+  /* Native menu-item metrics: icon gap, padding and radius from the same tokens. */
+  gap: var(--size-4-2);
+  padding: var(--size-4-1) var(--size-4-2);
+  border-radius: var(--radius-s);
+  cursor: pointer;
+}
+.abyss-status-popover-row:hover {
+  background: var(--background-modifier-hover);
+}
+/* Shrink the status marker to the native menu-item icon slot (16px) so rows are
+   as compact as Obsidian's own menu — the card-sized 19px marker read as chunky. */
+.abyss-status-popover-row .abyss-status-marker {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  flex: 0 0 16px;
+  border-width: 1.5px;
+  border-radius: 4px;
+  cursor: default;
+}
+.abyss-status-popover-row .abyss-status-marker[data-status-type='in-progress'],
+.menu-item-icon .abyss-status-marker[data-status-type='in-progress'] {
+  border-radius: 50%;
+}
+.abyss-status-popover-row .abyss-status-marker svg {
+  width: 11px;
+  height: 11px;
+}
+.abyss-status-popover-row.is-current {
+  font-weight: 600;
+  color: var(--text-normal);
+}
+.abyss-status-popover-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.abyss-status-popover-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 0.9rem;
+  height: 0.9rem;
+  color: var(--color-accent);
+}
+.abyss-status-popover-check svg {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+/* Priority chip in right panel. Falls back to the underlying global color vars
+   (same aliasing --abyss-priority-* does inside .abyss-panel-view — see the comment on
+   .abyss-status-popover above) because RightPanel is also mounted by TaskModal at
+   document.body, OUTSIDE `.abyss-panel-view` (see TaskModal.ts) — there the
+   panel-scoped --abyss-priority-* custom properties are undefined, so without a
+   fallback the chip rendered with no color at all (Round 4 Task 41). */
+.abyss-priority-chip[data-priority='A'] {
+  color: var(--abyss-priority-a, var(--color-red));
+}
+.abyss-priority-chip[data-priority='B'] {
+  color: var(--abyss-priority-b, var(--color-orange));
+}
+.abyss-priority-chip[data-priority='C'] {
+  color: var(--abyss-priority-c, var(--color-yellow));
+}
+.abyss-priority-chip[data-priority='E'] {
+  color: var(--abyss-priority-e, var(--color-blue));
+}
+.abyss-priority-chip[data-priority='F'] {
+  color: var(--abyss-priority-f, var(--color-purple));
+}
+
+/* Right panel body */
+.abyss-right-section {
+  padding: 16px 16px 0;
+}
+.abyss-right-section + .abyss-right-section {
+  margin-top: 8px;
+}
+.abyss-right-section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.abyss-right-section-label {
+  font-size: var(--font-ui-smaller, 11px);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+.abyss-right-section-count {
+  font-size: var(--font-ui-small);
+  color: var(--text-faint);
+  background: var(--background-modifier-hover);
+  border-radius: 10px;
+  padding: 0 6px;
+}
+.abyss-right-desc {
+  width: 100%;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 6px;
+  padding: 8px;
+  background: var(--background-secondary);
+  color: var(--text-normal);
+  font-size: var(--font-ui-small);
+  resize: vertical;
+  min-height: 60px;
+  font-family: var(--font-text);
+  outline: none;
+  box-sizing: border-box;
+}
+.abyss-right-desc:focus {
+  border-color: var(--interactive-accent);
+}
+.abyss-right-desc-view {
+  cursor: text;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.abyss-right-desc-view:hover {
+  border-color: var(--background-modifier-border-hover);
+}
+.abyss-right-desc-empty {
+  color: var(--text-faint);
+}
+
+/* Sub-tasks */
+.abyss-subtask-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.abyss-subtask-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+  cursor: grab;
+  position: relative;
+  user-select: none;
+}
+.abyss-subtask-row:active {
+  cursor: grabbing;
+}
+.abyss-subtask-row.is-dragging {
+  opacity: 0.4;
+}
+.abyss-subtask-row.drop-above::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-accent, var(--interactive-accent));
+  border-radius: 1px;
+  pointer-events: none;
+}
+.abyss-subtask-row.drop-below::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-accent, var(--interactive-accent));
+  border-radius: 1px;
+  pointer-events: none;
+}
+.abyss-subtask-label {
+  font-size: var(--font-ui-small);
+  color: var(--text-normal);
+  cursor: pointer;
+  flex: 1;
+}
+.abyss-subtask-label:hover {
+  text-decoration: underline;
+  color: var(--text-accent);
+}
+.abyss-subtask-label.is-done {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+.abyss-subtask-content {
+  flex: 1;
+  min-width: 0;
+}
+.abyss-subtask-progress {
+  font-size: var(--font-smallest, 11px);
+  color: var(--text-muted);
+  background: var(--background-modifier-hover);
+  border-radius: 8px;
+  padding: 0 5px;
+}
+.abyss-subtask-meta {
+  display: flex;
+  gap: 6px;
+  margin-top: 2px;
+}
+.abyss-subtask-comment-count {
+  font-size: var(--font-smallest, 11px);
+  color: var(--text-muted);
+}
+.abyss-subtask-new-input {
+  width: 100%;
+  padding: 4px 8px;
+  border: 1px solid var(--interactive-accent);
+  border-radius: 4px;
+  background: var(--background-secondary);
+  color: var(--text-normal);
+  font-size: var(--font-ui-small);
+  margin: 4px 0;
+  box-sizing: border-box;
+  outline: none;
+}
+
+/* Inline add-subtask row */
+.abyss-subtask-add-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 0 4px;
+  cursor: pointer;
+  color: var(--text-muted);
+  border-radius: 4px;
+  transition: color 0.1s;
+}
+.abyss-subtask-add-row:hover {
+  color: var(--text-normal);
+}
+.abyss-subtask-add-row--hidden {
+  display: none;
+}
+.abyss-subtask-add-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+.abyss-subtask-add-label {
+  font-size: var(--font-ui-small);
+}
+
+/* Comments */
+.abyss-comment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.abyss-comment-row {
+  font-size: 13px;
+  color: var(--text-normal);
+  background: var(--background-secondary);
+  border-radius: 6px;
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.abyss-comment-text {
+  line-height: 1.4;
+}
+.abyss-comment-date {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.abyss-comment-input {
+  width: 100%;
+  min-height: 60px;
+  resize: vertical;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 6px;
+  padding: 8px;
+  font-size: var(--font-ui-small);
+  background: var(--background-secondary);
+  color: var(--text-normal);
+  margin-top: 8px;
+  box-sizing: border-box;
+  display: block;
+  font-family: var(--font-text);
+  outline: none;
+}
+.abyss-comment-input:focus {
+  outline: none;
+  border-color: var(--interactive-accent);
+}
+.abyss-comment-edit-input {
+  width: 100%;
+  border: 1px solid var(--interactive-accent);
+  border-radius: 6px;
+  padding: 6px 8px;
+  background: var(--background-secondary);
+  color: var(--text-normal);
+  font-size: 13px;
+  font-family: var(--font-text);
+  resize: vertical;
+  min-height: 48px;
+  outline: none;
+  box-sizing: border-box;
+  margin-top: 4px;
+}
+.abyss-tag-input {
+  padding: 3px 8px;
+  font-size: 12px;
+  border-radius: 20px;
+  border: 1px solid var(--interactive-accent);
+  background: var(--background-primary);
+  color: var(--text-normal);
+  outline: none;
+  width: 100px;
+}
+.abyss-tag-dropdown-wrap {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+}
+.abyss-tag-suggest-item {
+  color: var(--abyss-tag-suggest-color, var(--text-normal));
+}
+
+/* Tag picker multi-select modal */
+.abyss-tag-picker-modal .modal-content {
+  padding: 0;
+  overflow: hidden;
+}
+.abyss-tag-picker-search {
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  border-bottom: 1px solid var(--divider-color);
+  background: transparent;
+  font-size: var(--font-ui-medium);
+  outline: none;
+  box-sizing: border-box;
+}
+.abyss-tag-picker-list {
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+.abyss-tag-picker-modal button.abyss-tag-picker-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  width: calc(100% - 12px);
+  height: auto;
+  min-height: 0;
+  box-sizing: border-box;
+  appearance: none;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  white-space: normal;
+  cursor: pointer;
+  border-radius: var(--radius-s);
+  margin: 1px 6px;
+  user-select: none;
+}
+.abyss-tag-picker-modal button.abyss-tag-picker-item:hover {
+  background: var(--background-modifier-hover);
+}
+.abyss-tag-picker-modal button.abyss-tag-picker-item--checked {
+  background: var(--background-modifier-active-hover);
+}
+.abyss-tag-picker-modal button.abyss-tag-picker-item--checked:hover {
+  background: var(--background-modifier-active-hover);
+}
+.abyss-tag-picker-item--partial {
+  opacity: 0.7;
+}
+.abyss-tag-picker-modal button.abyss-tag-picker-item--removing {
+  background: rgba(var(--color-red-rgb), 0.08);
+}
+.abyss-tag-picker-modal button.abyss-tag-picker-item--removing:hover {
+  background: rgba(var(--color-red-rgb), 0.08);
+}
+.abyss-tag-picker-modal button.abyss-tag-picker-item--removing .abyss-tag-picker-icon {
+  color: var(--color-red);
+}
+.abyss-tag-picker-modal button.abyss-tag-picker-item--removing .abyss-tag-picker-label {
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+.abyss-tag-picker-modal button.abyss-tag-picker-item:focus-visible,
+.abyss-status-icon-field button.abyss-status-icon-result:focus-visible {
+  outline: 2px solid var(--interactive-accent);
+  outline-offset: 2px;
+}
+.abyss-tag-picker-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--interactive-accent);
+}
+.abyss-tag-picker-item--partial .abyss-tag-picker-icon {
+  color: var(--text-muted);
+}
+.abyss-tag-picker-label {
+  font-size: var(--font-ui-small);
+  color: var(--abyss-tag-picker-color, var(--tag-color, var(--text-normal)));
+}
+.abyss-tag-picker-empty {
+  padding: 16px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+}
+.abyss-tag-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 200;
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+  box-shadow: var(--shadow-s);
+  min-width: 160px;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+.abyss-tag-dropdown--hidden {
+  display: none;
+}
+.abyss-tag-dropdown-opt {
+  padding: 5px 12px;
+  font-size: 12px;
+  color: var(--abyss-tag-opt-color, var(--text-faint));
+  cursor: pointer;
+  white-space: nowrap;
+}
+.abyss-tag-dropdown-opt:hover,
+.abyss-tag-dropdown-opt.is-active {
+  background: var(--background-modifier-hover);
+  color: var(--abyss-tag-opt-color, var(--text-normal));
+}
+
+/* Context menu */
+.abyss-context-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--background-primary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+  box-shadow: var(--shadow-s);
+  z-index: 100;
+  min-width: 140px;
+  overflow: hidden;
+}
+.abyss-add-date-menu--compact {
+  right: auto;
+  min-width: 0;
+  inline-size: max-content;
+  max-inline-size: calc(100% - (var(--abyss-popover-edge-gap, 0.5rem) * 2));
+}
+.abyss-context-item {
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-normal);
+}
+.abyss-context-item:hover {
+  background: var(--background-modifier-hover);
+}
+.abyss-context-item.abyss-context-danger {
+  color: var(--color-red, #e74c3c);
+}
+
+/* Time popover */
+.abyss-time-popover {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 50;
+}
+
+/* Anchor-positioned popover: uses CSS custom properties set via setCssProps */
+.abyss-popover-anchored {
+  --abyss-popover-anchor-gap: 0.25rem;
+  --abyss-popover-edge-gap: 0.5rem;
+  position: absolute;
+  top: var(--abyss-pop-top, 100%);
+  left: var(--abyss-pop-left, 0);
+  right: auto;
+  z-index: 10;
+}
+
+/* ── Task Modal ──────────────────────────────────────────── */
+
+.abyss-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--modal-scrim-background, rgba(0, 0, 0, 0.45));
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* While the task-detail modal is open, lift Obsidian's hover-preview popover above
+   the modal backdrop (z-index 1000) so Cmd-hover previews aren't hidden behind it. */
+body.abyss-modal-open .popover.hover-popover {
+  z-index: 1001;
+}
+
+.abyss-modal {
+  position: relative;
+  background: var(--background-primary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-l, 8px);
+  width: 480px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-l);
+}
+
+.abyss-modal-close-btn {
+  /* positioned inside .abyss-right-header-actions flex row */
+}
+
+/* Modal body reuses abyss-right panel styles — no extra CSS needed */
+.abyss-modal-body {
+  width: 100%;
+  position: relative;
+}
+
+/* ── Drag-and-drop states ────────────────────────────────── */
+
+.is-dragging:not(.abyss-tg-block):not(.abyss-tg-body):not(.abyss-mg-block-dot):not(
+    .abyss-mg-plain
+  ) {
+  opacity: 0.4;
+  cursor: grabbing;
+}
+
+.is-drag-over {
+  background: var(--background-modifier-hover);
+  outline: 2px dashed var(--color-accent, var(--interactive-accent));
+  outline-offset: -2px;
+  border-radius: 4px;
+}
+
+/* ── Tag management: pinned section ─────────────────────── */
+
+.abyss-left-section--pinned .abyss-left-section-header {
+  color: var(--color-accent, var(--interactive-accent));
+}
+
+.abyss-pinned-tag {
+  font-size: var(--font-smallest);
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.abyss-pinned-tag:hover {
+  color: var(--text-normal);
+}
+
+/* ── Tag management: drag-to-tag ────────────────────────── */
+
+.abyss-drop-target {
+  background: var(--background-modifier-hover);
+  outline: 2px dashed var(--color-accent, var(--interactive-accent));
+  outline-offset: -2px;
+  border-radius: 4px;
+}
+
+.abyss-dragging {
+  opacity: 0.5;
+  cursor: grabbing;
+}
+
+/* ── Tag management: rename modal ───────────────────────── */
+
+.abyss-rename-input {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.abyss-rename-btn-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* ── Center header controls ─────────────────────────────────── */
+.abyss-center-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.abyss-center-controls {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
+/* ── Property filter chips ──────────────────────────────────── */
+.abyss-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 4px 0 10px;
+  border-radius: var(--radius-l);
+  border: 1px solid var(--background-modifier-border);
+  background: var(--background-secondary);
+  color: var(--text-normal);
+  font-size: var(--font-ui-smaller);
+  white-space: nowrap;
+}
+
+.abyss-filter-chip-x {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+  padding: 0;
+}
+
+.abyss-filter-chip-x:hover {
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+
+/* ── View-state (sort/group) button ─────────────────────── */
+.abyss-view-state-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.abyss-view-state-btn:hover {
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+
+.abyss-view-state-btn--active {
+  color: var(--color-accent);
+}
+
+.abyss-view-state-btn--active::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+/* ── View-state popover ─────────────────────────────────────── */
+.abyss-view-state-popover {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 100;
+  min-width: 240px;
+  max-height: 420px;
+  overflow-y: auto;
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+  box-shadow: var(--shadow-s);
+  margin-top: 4px;
+}
+
+.abyss-view-state-row {
+  border-bottom: 1px solid var(--background-modifier-border-hover);
+}
+
+.abyss-view-state-row:last-child {
+  border-bottom: none;
+}
+
+.abyss-view-state-row-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.abyss-view-state-row-main:hover {
+  background: var(--background-modifier-hover);
+}
+
+.abyss-view-state-row-icon {
+  display: flex;
+  opacity: 0.7;
+}
+
+.abyss-view-state-row-label {
+  flex: 1;
+  font-size: 13px;
+}
+
+.abyss-view-state-row-value {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.abyss-view-state-row-chevron {
+  display: flex;
+  color: var(--text-faint);
+  transition: transform 0.15s ease;
+}
+
+.abyss-view-state-row-main.is-open .abyss-view-state-row-chevron {
+  transform: rotate(90deg);
+}
+
+.abyss-view-state-sublist {
+  padding: 4px 0;
+}
+
+.abyss-view-state-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 7px 12px 7px 14px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-normal);
+}
+
+.abyss-view-state-option:hover {
+  background: var(--background-modifier-hover);
+}
+
+.abyss-view-state-option-check {
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--color-accent);
+}
+
+.abyss-view-state-option-check svg {
+  width: 12px;
+  height: 12px;
+}
+
+.abyss-view-state-option-label {
+  flex: 1;
+}
+
+.abyss-view-state-option-default {
+  font-size: 10px;
+  color: var(--text-faint);
+  margin-left: auto;
+  padding-left: 8px;
+}
+
+.abyss-view-state-sublist-divider {
+  height: 1px;
+  margin: 4px 12px;
+  background: var(--background-modifier-border);
+}
+
+.abyss-hidden {
+  display: none;
+}
+
+/* ── Source note chip — clickable variant ────────────────────── */
+.abyss-task-source-note--clickable {
+  cursor: pointer;
+  pointer-events: auto;
+  opacity: 0.9;
+}
+
+.abyss-task-source-note--clickable:hover .abyss-task-source-note-name {
+  text-decoration: underline;
+  text-decoration-color: var(--text-muted);
+}
+
+.abyss-cursor-pointer {
+  cursor: pointer;
+}
+
+/* ── Date / time parts — hover hint ─────────────────────────── */
+.abyss-task-date-part,
+.abyss-task-time-part {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.abyss-task-date-part:hover,
+.abyss-task-time-part:hover {
+  text-decoration: underline;
+  opacity: 0.85;
+}
+
+/* ── View-state popover reset row ───────────────────────────── */
+.abyss-view-state-reset {
+  border-top: 1px solid var(--background-modifier-border);
+  padding: 8px 14px;
+  display: flex;
+  justify-content: center;
+}
+
+.abyss-view-state-reset-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 11px;
+  color: var(--text-faint);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.abyss-view-state-reset-btn:hover {
+  color: var(--text-muted);
+  text-decoration: underline;
+}
+
+.abyss-drop-active {
+  outline: 2px dashed var(--interactive-accent);
+  outline-offset: -2px;
+  background: var(--interactive-accent-hover);
+  border-radius: var(--radius-s);
+}
+
+/* ── Projects ─────────────────────────────────────────────────────────────── */
+
+.abyss-projects-host,
+.abyss-projects-panel {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.abyss-projects-panel > div {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+/* Left-panel collapsible sections + add affordance */
+.abyss-left-section-header--collapsible {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  user-select: none;
+}
+.abyss-left-section-chevron {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-faint);
+}
+.abyss-left-section-chevron svg {
+  width: 14px;
+  height: 14px;
+}
+.abyss-left-section-title {
+  flex: 1;
+  font-size: var(--font-ui-smaller);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+.abyss-left-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  color: var(--text-muted);
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+.abyss-left-section-header--collapsible:hover .abyss-left-add {
+  opacity: 1;
+}
+.abyss-left-add:hover {
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+.abyss-left-add svg {
+  width: 14px;
+  height: 14px;
+}
+.abyss-left-add-input {
+  width: 100%;
+  margin: 4px 0;
+  font-size: var(--font-ui-small);
+}
+.abyss-left-showmore {
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  cursor: pointer;
+}
+.abyss-left-showmore:hover {
+  color: var(--text-normal);
+}
+.abyss-group-arrow svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Progress bar (shared) */
+.abyss-progress-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 90px;
+}
+.abyss-progress {
+  flex: 1;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--background-modifier-border);
+  overflow: hidden;
+}
+.abyss-progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--interactive-accent);
+}
+.abyss-progress-label {
+  font-size: var(--font-ui-smaller);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.abyss-status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-faint);
+  flex: 0 0 auto;
+}
+
+/* Projects list (overview) */
+.abyss-projects-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--background-modifier-border);
+  flex: 0 0 auto;
+}
+.abyss-projects-title {
+  margin: 0;
+  font-size: var(--font-ui-large);
+}
+.abyss-projects-new {
+  cursor: pointer;
+}
+.abyss-projects-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 8px 12px;
+}
+.abyss-projects-empty {
+  color: var(--text-muted);
+  text-align: center;
+  padding: 24px;
+}
+.abyss-projects-group {
+  margin-bottom: 12px;
+}
+.abyss-projects-group-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 4px;
+  font-size: var(--font-ui-smaller);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+.abyss-projects-group-count {
+  margin-left: auto;
+}
+.abyss-project-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.abyss-project-row:hover {
+  background: var(--background-modifier-hover);
+}
+.abyss-project-row-name {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.abyss-project-name {
+  color: var(--text-normal);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.abyss-project-folder {
+  font-size: var(--font-ui-smaller);
+  color: var(--text-faint);
+}
+.abyss-project-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+.abyss-project-row:hover .abyss-project-row-actions {
+  opacity: 1;
+}
+.abyss-project-status-btn,
+.abyss-project-open-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 4px;
+  box-shadow: none;
+}
+.abyss-project-status-btn:hover,
+.abyss-project-open-btn:hover {
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+
+/* Projects dashboard (single project) */
+.abyss-projects-dashboard {
+  padding: 12px 16px;
+  overflow-y: auto;
+}
+.abyss-project-back {
+  display: inline-flex;
+  align-self: flex-start;
+  width: fit-content;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px 6px;
+  margin-bottom: 8px;
+}
+.abyss-project-back:hover {
+  color: var(--text-normal);
+}
+.abyss-project-dashboard-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.abyss-project-dashboard-title {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+}
+.abyss-status-pill {
+  padding: 2px 10px;
+  border-radius: var(--radius-l);
+  color: var(--text-on-accent);
+  font-size: var(--font-ui-smaller);
+  border: none;
+  cursor: pointer;
+}
+.abyss-project-dashboard-stats {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 12px 0;
+}
+.abyss-project-time-label {
+  font-size: var(--font-ui-smaller);
+  color: var(--text-muted);
+}
+.abyss-project-description {
+  color: var(--text-muted);
+  margin: 8px 0 16px;
+  white-space: pre-wrap;
+}
+.abyss-project-tasks {
+  border-top: 1px solid var(--background-modifier-border);
+  padding-top: 8px;
+}
+
+.abyss-projects-new-input {
+  width: 100%;
+  margin-bottom: 8px;
+  font-size: var(--font-ui-small);
+}
+
+/* ── Settings: collapsible drag-to-reorder cards (statuses + tag groups) ────── */
+/* Cards share the filled-row look of native setting items for a consistent feel;
+   grip + chevron are the only added affordances. */
+.abyss-settings-card {
+  border-radius: var(--radius-m);
+  margin-bottom: 6px;
+  background: var(--background-secondary);
+}
+.abyss-settings-card.abyss-dragging {
+  opacity: 0.5;
+}
+.abyss-settings-card.abyss-drag-over {
+  outline: 2px solid var(--interactive-accent);
+  outline-offset: -2px;
+}
+.abyss-settings-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+  user-select: none;
+}
+.abyss-settings-card-badge {
+  font-size: var(--font-ui-smaller);
+  color: var(--text-muted);
+  background: var(--background-modifier-border);
+  border-radius: 6px;
+  padding: 1px 7px;
+}
+.abyss-settings-card-grip {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-faint);
+  cursor: grab;
+}
+.abyss-settings-card-grip svg {
+  width: 14px;
+  height: 14px;
+}
+.abyss-settings-card-title {
+  flex: 1;
+  font-weight: var(--font-semibold);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.abyss-settings-card-chevron {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-muted);
+}
+.abyss-settings-card-chevron svg {
+  width: 16px;
+  height: 16px;
+}
+.abyss-settings-card-body {
+  padding: 0 12px 8px;
+  border-top: 1px solid var(--background-modifier-border);
+}
+
+.abyss-tag-group-header.abyss-reorder-target,
+.abyss-tag-leaf.abyss-reorder-target {
+  box-shadow: inset 0 -2px 0 0 var(--interactive-accent);
+}
+
+/* ── Settings: custom statuses section ──────────────────────────────────── */
+.abyss-status-type-group {
+  margin-bottom: 16px;
+}
+.abyss-status-type-group-label {
+  font-size: var(--font-ui-smaller);
+  font-weight: var(--font-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin: 0 0 6px 2px;
+}
+/* Symbol badges in this section are single characters — monospace reads clearer. */
+.abyss-status-type-group .abyss-settings-card-badge {
+  font-family: var(--font-monospace);
+}
+.abyss-status-header-preview {
+  display: inline-flex;
+  align-items: center;
+}
+.abyss-status-symbol-error {
+  color: var(--text-error);
+  font-size: var(--font-ui-smaller);
+  margin-top: 4px;
+}
+.abyss-status-icon-field {
+  margin-bottom: 12px;
+}
+.abyss-status-icon-input-host {
+  margin-top: 4px;
+}
+.abyss-status-icon-results {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 6px;
+  padding: 8px;
+  margin-top: 8px;
+}
+.abyss-status-icon-field button.abyss-status-icon-result {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  box-sizing: border-box;
+  appearance: none;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: inherit;
+  font: inherit;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.abyss-status-icon-field button.abyss-status-icon-result:hover {
+  background: var(--background-modifier-hover);
+}
+.abyss-status-icon-field button.abyss-status-icon-result.is-selected {
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+}
+.abyss-status-icon-field
+  button.abyss-status-icon-result.is-selected
+  .abyss-status-icon-result-icon {
+  color: var(--text-on-accent);
+}
+.abyss-status-icon-result-icon {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-muted);
+}
+.abyss-status-icon-result-icon svg {
+  width: 16px;
+  height: 16px;
+}
+.abyss-status-icon-empty {
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  padding: 4px 2px;
+}
+.abyss-status-icon-clear .abyss-status-icon-result-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+.abyss-status-symbol-lock {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  color: var(--text-muted);
+  vertical-align: middle;
+}
+.abyss-status-symbol-lock svg {
+  width: 12px;
+  height: 12px;
+}
+.abyss-status-symbol-locked {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.abyss-status-icon-lock {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  color: var(--text-muted);
+  vertical-align: middle;
+}
+.abyss-status-icon-lock svg {
+  width: 12px;
+  height: 12px;
+}
+.abyss-status-icon-locked-preview {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 4px;
+  opacity: 0.6;
+  color: var(--text-muted);
+}
+.abyss-status-icon-locked-preview svg {
+  width: 16px;
+  height: 16px;
+}
+.abyss-status-preview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.abyss-status-preview-title {
+  color: var(--text-muted);
+}
+
+/* Seat only the first navigation/control surfaces below the shell edge. */
+.abyss-layout > .abyss-rail {
+  padding-top: calc(8px + var(--abyss-shell-top-inset));
+}
+
+.abyss-layout > .abyss-left > .abyss-left-section:first-child {
+  padding-top: calc(12px + var(--abyss-shell-top-inset));
+}
+
+.abyss-layout--tasks > .abyss-center > .abyss-center-header,
+.abyss-layout--search > .abyss-center > .abyss-center-header {
+  padding-top: calc(12px + var(--abyss-shell-top-inset));
+}
+
+.abyss-layout--calendar > .abyss-center > .abyss-cal-nav {
+  padding-top: calc(8px + var(--abyss-shell-top-inset));
+}
+
+.abyss-layout--projects > .abyss-center .abyss-projects-toolbar {
+  padding-top: calc(12px + var(--abyss-shell-top-inset));
+}
+
+.abyss-layout > .abyss-right > .abyss-right-header:first-child {
+  padding-top: calc(12px + var(--abyss-shell-top-inset));
+}
+
+.abyss-layout > .abyss-right > .abyss-breadcrumb:first-child {
+  padding-top: calc(18px + var(--abyss-shell-top-inset));
+}
+
+/* Persistent, panel-owned recovery surface for drafts whose task identity became stale. */
+.abyss-detached-drafts {
+  display: grid;
+  gap: 6px;
+  margin: 8px 12px;
+  padding: 8px;
+  min-width: 0;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-s);
+  background: var(--background-secondary);
+}
+
+.abyss-detached-drafts-title {
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  font-weight: var(--font-semibold);
+}
+
+.abyss-detached-draft {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 4px 6px;
+  align-items: center;
+  min-width: 0;
+  padding-top: 6px;
+  border-top: 1px solid var(--background-modifier-border);
+}
+
+.abyss-detached-draft-label {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.abyss-detached-draft pre {
+  grid-column: 1 / -1;
+  max-height: 8rem;
+  margin: 0;
+  padding: 6px;
+  overflow: auto;
+  border-radius: var(--radius-s);
+  background: var(--background-primary);
+  color: var(--text-normal);
+  font-size: var(--font-ui-smaller);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.abyss-detached-draft-copy,
+.abyss-detached-draft-discard {
+  padding: 2px 6px;
+  font-size: var(--font-ui-smaller);
+}
+
+.abyss-detached-draft > [aria-live='polite'],
+.abyss-detached-drafts-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
