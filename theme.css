@@ -497,22 +497,14 @@
    inherited 1.62 line-height made it 32.4px at the reference size — almost
    exactly the same doubled gap as Reading mode. Only plain blank rows are
    compacted: fenced code, quotes, lists, frontmatter and other HyperMD rows
-   keep the geometry required by their own renderers. :where() deliberately
-   keeps this selector weak so the heading-specific 20px row in
-   10-headings.css wins later in the cascade. */
+   keep the geometry required by their own renderers. The row stays compact
+   while active as well: CodeMirror centres its full-height caret across the
+   smaller line box, so moving the cursor never changes document geometry.
+   :where() deliberately keeps this selector weak so the heading-specific
+   20px row in 10-headings.css wins later in the cascade. */
 .theme-dark .markdown-source-view.mod-cm6 :where(.cm-line:not([class*='HyperMD']):has(> br)) {
   min-height: var(--b16-flow-gap);
   line-height: var(--b16-flow-gap);
-}
-
-/* Compact spacing must not make the editor harder to operate. Obsidian's
-   caret is one tight line (1.3 text em, measured at 26px in the reference
-   vault), while the resting flow gap above is only 17px. Give an active blank
-   row exactly enough room to contain the caret. As soon as text replaces the
-   <br>, this selector stops matching and the ordinary 1.62 prose line returns. */
-.theme-dark .markdown-source-view.mod-cm6 .cm-line.cm-active:not([class*='HyperMD']):has(> br) {
-  min-height: calc(var(--font-text-size) * 1.3);
-  line-height: var(--line-height-tight);
 }
 
 .is-mobile.theme-dark {
