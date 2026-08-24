@@ -3790,6 +3790,29 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
   inset-inline-end: var(--size-4-1);
 }
 
+/* STATUS BAR
+   Keep the desktop status bar available without letting persistent counters
+   compete with the document. Its unchanged box remains the hover target, so
+   revealing it causes no layout shift; keyboard focus reveals it as well.
+   Touch interfaces retain Obsidian's visible default because they have no
+   reliable hover state. */
+@media (hover: hover) and (pointer: fine) {
+  .theme-dark .status-bar {
+    opacity: 0;
+    transition: opacity 120ms ease-out;
+  }
+
+  .theme-dark .status-bar:is(:hover, :focus-within) {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-dark .status-bar {
+    transition: none;
+  }
+}
+
 /* TABS */
 /* Step 3 (quieter chrome): the note is the only thing entitled to full
    contrast; chrome sits a step below so the eye returns to the centre
