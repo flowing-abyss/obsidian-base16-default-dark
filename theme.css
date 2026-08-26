@@ -1037,7 +1037,7 @@
    while still reading as a distinct box. The `.cm-s-obsidian` half is
    needed for the same reason as the tag rule above — app.css addresses
    live preview's chip at (0,2,1). */
-.theme-dark .markdown-rendered :not(pre) > code,
+.theme-dark .markdown-rendered :not(pre) > code:not(.mb-button-group),
 .theme-dark .cm-s-obsidian span.cm-inline-code {
   --b16-inline-code-keyline: var(--b16-border-normal);
 
@@ -1053,7 +1053,10 @@
    hover inverts where the semantic orange lives: glyphs turn strong white and
    the existing keyline turns orange. The surface does not move or brighten,
    avoiding the dirty grey button effect while making the copy action clear. */
-.theme-dark.micropatches-inline-code-copy .markdown-rendered :not(pre) > code:hover,
+.theme-dark.micropatches-inline-code-copy
+  .markdown-rendered
+  :not(pre)
+  > code:not(.mb-button-group):hover,
 .theme-dark.micropatches-inline-code-copy
   .cm-s-obsidian
   span:where(
@@ -1085,7 +1088,7 @@
 .theme-dark.micropatches-inline-code-copy
   .markdown-rendered
   :not(pre)
-  > code.is-micropatches-copy-confirmed,
+  > code.is-micropatches-copy-confirmed:not(.mb-button-group),
 .theme-dark.micropatches-inline-code-copy
   .cm-s-obsidian
   span.cm-inline-code.is-micropatches-copy-confirmed {
@@ -5313,6 +5316,67 @@ body .another-quick-switcher__status__count-input {
   padding: 2px 4px;
   border-radius: 2px;
   border: none;
+}
+
+/* ===== 50-plugins/quickadd.css ===== */
+
+/* QUICKADD
+   QuickAdd deliberately makes row actions, folder toggles and compact
+   utility controls borderless. They live inside an already bounded row, so
+   applying the theme's standalone-button frame to each one produces nested
+   boxes and makes the settings tree read like a control matrix.
+
+   Keep the global button contract for actual actions such as New folder and
+   New choice. Only the plugin's explicit chrome-less vocabulary is restored
+   here. This also preserves native keyboard focus: the plugin's outline is
+   independent of border and box-shadow. */
+.theme-dark.theme-dark
+  button:where(
+    .qa-icon-button,
+    .qa-rename-title-button,
+    .qa-onepage-file-picker__remove,
+    .multiChoiceListItemName,
+    .qaFilterClearButton,
+    .qa-import-file-toggle
+  ),
+.theme-dark .qaAddChoiceControls.compact button {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  color: inherit;
+}
+
+.theme-dark.theme-dark
+  button:where(
+    .qa-icon-button,
+    .qa-rename-title-button,
+    .qa-onepage-file-picker__remove,
+    .multiChoiceListItemName,
+    .qaFilterClearButton,
+    .qa-import-file-toggle
+  ):is(:hover, :focus-visible, :active, .is-active, .is-selected, [aria-pressed='true']),
+.theme-dark
+  .qaAddChoiceControls.compact
+  button:is(:hover, :focus-visible, :active, .is-active, .is-selected, [aria-pressed='true']) {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  color: inherit;
+}
+
+/* Icon actions use colour, not a box, to expose interaction and state. The
+   selected command-palette toggle therefore remains unmistakably blue while
+   occupying exactly the same quiet geometry as its neighbours. */
+.theme-dark.theme-dark button.qa-icon-button {
+  color: var(--b16-text-muted);
+}
+
+.theme-dark.theme-dark button.qa-icon-button:is(:hover, :focus-visible) {
+  color: var(--b16-text-normal);
+}
+
+.theme-dark.theme-dark button.qa-icon-button.is-pressed {
+  color: var(--b16-accent-link);
 }
 
 /* ===== 50-plugins/tasks.css ===== */
