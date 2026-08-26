@@ -102,7 +102,7 @@
      This cool steel endpoint sits close to the neutral code-block header
      without becoming the same grey: the tinted band reads as technical
      chrome, while the rail still identifies a callout at a glance. */
-  --b16-callout-code: #a7afb2;
+  --b16-callout-code: #afb8bb;
   --b16-callout-neutral: #989898;
   --b16-callout-toc: #a0a0a0;
 
@@ -5039,6 +5039,35 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
 /* Properties of the virtual link when hovered */
 .virtual-link.glossary-entry a:hover {
   color: var(--link-color);
+}
+
+/* Fake Link's colour-only mode deliberately restores a yellow background
+   when a virtual link appears inside ==highlight==. In Live Preview the
+   plugin also gives that nested span `.cm-highlight`, so its 50% yellow fill
+   and brown link colour stack on top of the theme's existing 25% semantic
+   band. The result is a second, overexposed rectangle inside one highlight.
+
+   The highlight already owns both meaning and colour here. Make the virtual
+   link compose with that parent: it remains interactive, but contributes no
+   second fill, filter, padding or foreground. Reading mode uses <mark> while
+   Live Preview uses span.cm-highlight, hence both contexts are explicit. */
+body.theme-dark.virtual-link-color-only :is(mark, span.cm-highlight) .virtual-link-span {
+  padding: 0;
+  color: inherit;
+  background-color: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  filter: none;
+  opacity: 1;
+}
+
+body.theme-dark.virtual-link-color-only
+  :is(mark, span.cm-highlight)
+  .virtual-link-span
+  :is(a, .internal-link) {
+  color: inherit;
+  filter: none;
+  opacity: 1;
 }
 /* META BIND */
 .mb-button-group {

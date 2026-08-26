@@ -44,6 +44,7 @@ const CALLOUT_ROLES = [
   'callout-guidance',
   'callout-inquiry',
   'callout-structural',
+  'callout-code',
   'callout-neutral',
   'callout-toc',
 ];
@@ -116,6 +117,14 @@ for (const token of CALLOUT_ROLES) {
 
   if (labelRatio < 4.5) {
     console.error(`FAIL ${token} label/band ${labelRatio.toFixed(2)} < 4.5`);
+    failed++;
+  }
+  // A minimum alone guarantees legibility but not hierarchy. Labels above
+  // this ceiling become nearly as prominent as body text, and repeated
+  // collapsed callouts turn into a wall of bright chrome. The limit sits
+  // just above the audited caution/guidance roles (~7.03:1).
+  if (labelRatio > 7.1) {
+    console.error(`FAIL ${token} label/band ${labelRatio.toFixed(2)} > 7.10`);
     failed++;
   }
   if (bandRatio < 1.15 || bandRatio > 1.27) {
