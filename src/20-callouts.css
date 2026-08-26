@@ -159,7 +159,6 @@
 .theme-dark .callout[data-callout='summary'],
 .theme-dark .callout[data-callout='tldr'],
 .theme-dark .callout[data-callout*='config'],
-.theme-dark .callout[data-callout='code'],
 .theme-dark .callout[data-callout='activity'],
 .theme-dark .callout[data-callout='calendar'],
 .theme-dark .callout[data-callout='briefing'],
@@ -223,6 +222,7 @@
 }
 .theme-dark .callout[data-callout='code'] {
   --callout-icon: lucide-code;
+  --b16-callout-color: var(--b16-callout-code);
 }
 .theme-dark .callout[data-callout='ai'],
 .theme-dark .callout[data-callout='bot'] {
