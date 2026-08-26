@@ -1719,18 +1719,19 @@ ul > li::marker,
    colour as any other paragraph, so bold and italic compose normally here
    too, same as everywhere else. No override needed. */
 
-/* Callouts — one shell shared by every type, "classic" model: the type's
-   hue lives on the rail and on a tinted title band, and the body carries no
-   fill at all.
+/* Callouts — one shell shared by every type: the type's hue lives on the
+   rail, icon and compact label; the title band is neutral and the body
+   carries no fill at all.
 
    The body is deliberately transparent rather than a surface step. A filled
    body is what made the previous shell pull harder than the prose it
    annotates: it put a second background under text that already sits on the
    page, so a link, an inline-code chip or a highlight inside a callout had
-   to work against two competing fills at once and read as muddy. With the
-   body on the page itself, everything inside a callout looks exactly like
-   it does outside one, and the block is bounded by the rail and the band —
-   the only two parts that actually carry meaning.
+   to work against two competing fills at once and read as muddy. Tinting
+   the title band had the same problem at a smaller scale: blue became
+   grey-cyan, red became brown and orange became ochre. Keeping both
+   surfaces neutral lets the compact accent marks identify the type without
+   turning the whole component into a coloured object.
 
    Obsidian's own callout rules already read `--callout-color` for the icon
    fill and for `.callout-title`, so the type table below only needs to set
@@ -1753,10 +1754,9 @@ ul > li::marker,
   overflow: hidden;
 }
 
-/* The title band is the only tinted surface. color-mix against the type's
-   own hue rather than a fixed grey, so the band and the rail are visibly
-   the same colour at two strengths; 12% is the point where the band still
-   reads as tinted on base00 without the label losing contrast against it. */
+/* One neutral band keeps every callout in the same structural system. Type
+   colour already appears three times (rail, icon, label); repeating it in a
+   large fill adds visual weight but no information. */
 .theme-dark .callout-title {
   display: flex;
   align-items: center;
@@ -1764,7 +1764,7 @@ ul > li::marker,
   min-height: var(--b16-block-header-height);
   margin: 0;
   padding: 0 0.9em;
-  background-color: color-mix(in srgb, var(--callout-color) 12%, transparent);
+  background-color: var(--b16-surface-2);
   color: var(--callout-color);
   font-size: var(--b16-label-size);
   font-weight: 700 !important;
@@ -1937,10 +1937,10 @@ ul > li::marker,
 }
 .theme-dark .callout[data-callout='toc'] {
   --callout-icon: lucide-list-tree;
-  /* A table of contents is navigation, not low-priority metadata. Matching
-     the internal-link hue ties the shell to the links it contains and makes
-     the block's purpose legible before the reader starts scanning it. */
-  --callout-color: var(--b16-accent-link);
+  /* TOC is structural chrome around links, not a link itself. A neutral
+     midpoint makes the shell explicit without spreading the link hue over
+     the whole block; the entries inside retain the navigation accent. */
+  --callout-color: color-mix(in srgb, var(--b16-text-muted) 65%, var(--b16-text-faint));
 }
 
 /* Config callout task list styling */
