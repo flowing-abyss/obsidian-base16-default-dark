@@ -112,7 +112,11 @@
 .theme-dark .callout[data-callout='failure'],
 .theme-dark .callout[data-callout='fail'],
 .theme-dark .callout[data-callout='missing'] {
-  --callout-color: var(--b16-status-error);
+  /* Canonical base08 is intentionally deep, which works for compact status
+     marks but becomes muddy when it colours an entire title label. Lift
+     lightness only here; the hue/chroma and the global error token stay
+     untouched. */
+  --callout-color: oklch(from var(--b16-status-error) 64% c h);
 }
 
 .theme-dark .callout[data-callout='warning'],
@@ -152,13 +156,13 @@
   --callout-color: var(--b16-accent-code);
 }
 
-/* Neutral types take the faint step, not the muted one. --b16-text-muted is
-   sized for glyphs that must stay readable as prose; spent on a rail and a
-   tinted band it is simply bright, which is why the TOC callout stood out
-   more than the coloured ones next to it. */
+/* Quotes remain neutral, but `--b16-text-faint` is too weak for a component
+   accent: after the rail's alpha and the title band's tint are applied it
+   nearly disappears into surface-0. A midpoint between faint and muted
+   preserves the quotation's quiet role while keeping its shell explicit. */
 .theme-dark .callout[data-callout='quote'],
 .theme-dark .callout[data-callout='cite'] {
-  --callout-color: var(--b16-text-faint);
+  --callout-color: color-mix(in srgb, var(--b16-text-muted) 45%, var(--b16-text-faint));
 }
 
 /* Custom callout types (not part of Obsidian's built-in set). Icon glyphs
@@ -179,7 +183,7 @@
 }
 .theme-dark .callout[data-callout*='config'] {
   --callout-icon: settings;
-  --callout-color: var(--b16-text-faint);
+  --callout-color: var(--b16-accent-code);
 }
 .theme-dark .callout[data-callout^='attachment'],
 .theme-dark .callout[data-callout^='file'] {
@@ -217,10 +221,12 @@
   --callout-icon: lucide-bot;
   --callout-color: var(--b16-accent-link-ext);
 }
-.theme-dark .callout[data-callout='TOC'],
 .theme-dark .callout[data-callout='toc'] {
   --callout-icon: lucide-list-tree;
-  --callout-color: var(--b16-text-faint);
+  /* A table of contents is navigation, not low-priority metadata. Matching
+     the internal-link hue ties the shell to the links it contains and makes
+     the block's purpose legible before the reader starts scanning it. */
+  --callout-color: var(--b16-accent-link);
 }
 
 /* Config callout task list styling */
