@@ -18,11 +18,13 @@
    it does outside one, and the block is bounded by the rail and the band —
    the only two parts that actually carry meaning.
 
-   Obsidian's own callout rules already read `--callout-color` for the icon
-   fill and for `.callout-title`, so the type table below only needs to set
-   that one input per type — setting the input beats overriding each
-   output. */
+   The internal colour bridge keeps theme-owned full colours separate from
+   Obsidian's portable callout input. This matters for annotation snippets:
+   legacy themes expect an RGB triplet while current Obsidian builds may
+   expose a ready-to-use colour on custom types. */
 .theme-dark .callout {
+  --b16-callout-color: var(--callout-color);
+
   background-color: transparent;
   border: none;
   /* The rail is a marker, not the loudest thing on the page. At full
@@ -31,7 +33,7 @@
      as a bright stripe down the note. Softening it to a mix keeps the type
      legible from the rail while the title band, the icon and the label
      carry the identification. */
-  border-left: 3px solid color-mix(in srgb, var(--callout-color) 65%, transparent);
+  border-left: 3px solid color-mix(in srgb, var(--b16-callout-color) 65%, transparent);
   border-radius: var(--b16-radius-s);
   mix-blend-mode: normal;
   padding: 0;
@@ -50,8 +52,8 @@
   min-height: var(--b16-block-header-height);
   margin: 0;
   padding: 0 0.9em;
-  background-color: color-mix(in srgb, var(--callout-color) 12%, transparent);
-  color: var(--callout-color);
+  background-color: color-mix(in srgb, var(--b16-callout-color) 12%, transparent);
+  color: var(--b16-callout-color);
   font-size: var(--b16-label-size);
   font-weight: 700 !important;
   line-height: var(--b16-label-line-height);
@@ -59,14 +61,11 @@
   letter-spacing: 0.05em;
 }
 
-/* Obsidian paints the icon from `--callout-color` already, but several
-   builds route it through `rgb(var(--callout-color))`, which is invalid
-   against the full colour values this theme assigns. Setting `color` on the
-   icon directly makes the rail, the label and the glyph agree in every
-   build rather than in some of them. */
+/* Use the normalized colour directly so native RGB callouts and theme-owned
+   full-colour callouts render identically. */
 .theme-dark .callout-icon,
 .theme-dark .callout-icon .svg-icon {
-  color: var(--callout-color);
+  color: var(--b16-callout-color);
   display: flex;
   align-items: center;
   flex-shrink: 0;
@@ -116,44 +115,44 @@
      marks but becomes muddy when it colours an entire title label. Lift
      lightness only here; the hue/chroma and the global error token stay
      untouched. */
-  --callout-color: oklch(from var(--b16-status-error) 64% c h);
+  --b16-callout-color: oklch(from var(--b16-status-error) 64% c h);
 }
 
 .theme-dark .callout[data-callout='warning'],
 .theme-dark .callout[data-callout='caution'],
 .theme-dark .callout[data-callout='attention'] {
-  --callout-color: var(--b16-status-warn);
+  --b16-callout-color: var(--b16-status-warn);
 }
 
 .theme-dark .callout[data-callout='success'],
 .theme-dark .callout[data-callout='check'],
 .theme-dark .callout[data-callout='done'] {
-  --callout-color: var(--b16-status-ok);
+  --b16-callout-color: var(--b16-status-ok);
 }
 
 .theme-dark .callout[data-callout='note'],
 .theme-dark .callout[data-callout='info'],
 .theme-dark .callout[data-callout='todo'] {
-  --callout-color: var(--b16-accent-link);
+  --b16-callout-color: var(--b16-accent-link);
 }
 
 .theme-dark .callout[data-callout='tip'],
 .theme-dark .callout[data-callout='hint'],
 .theme-dark .callout[data-callout='important'] {
-  --callout-color: var(--b16-accent-tag);
+  --b16-callout-color: var(--b16-accent-tag);
 }
 
 .theme-dark .callout[data-callout='question'],
 .theme-dark .callout[data-callout='help'],
 .theme-dark .callout[data-callout='faq'],
 .theme-dark .callout[data-callout='example'] {
-  --callout-color: var(--b16-accent-link-ext);
+  --b16-callout-color: var(--b16-accent-link-ext);
 }
 
 .theme-dark .callout[data-callout='abstract'],
 .theme-dark .callout[data-callout='summary'],
 .theme-dark .callout[data-callout='tldr'] {
-  --callout-color: var(--b16-accent-code);
+  --b16-callout-color: var(--b16-accent-code);
 }
 
 /* Quotes remain neutral, but `--b16-text-faint` is too weak for a component
@@ -162,7 +161,14 @@
    preserves the quotation's quiet role while keeping its shell explicit. */
 .theme-dark .callout[data-callout='quote'],
 .theme-dark .callout[data-callout='cite'] {
-  --callout-color: color-mix(in srgb, var(--b16-text-muted) 45%, var(--b16-text-faint));
+  --b16-callout-color: color-mix(in srgb, var(--b16-text-muted) 45%, var(--b16-text-faint));
+}
+
+/* A hex metadata value is an external annotation colour (for example from
+   Zotero). Let the portable snippet's native RGB value replace the generic
+   quote colour so the icon, rail, label and band tell one story. */
+.theme-dark .callout[data-callout-metadata^='#'] {
+  --b16-callout-color: var(--zotero-annotation-color, var(--callout-color));
 }
 
 /* Custom callout types (not part of Obsidian's built-in set). Icon glyphs
@@ -170,63 +176,63 @@
    table above rather than inventing new meanings. */
 .theme-dark .callout[data-callout='my'] {
   --callout-icon: gem;
-  --callout-color: var(--b16-accent-link-ext);
+  --b16-callout-color: var(--b16-accent-link-ext);
 }
 .theme-dark .callout[data-callout='link'] {
   --callout-icon: link;
-  --callout-color: var(--b16-accent-link);
+  --b16-callout-color: var(--b16-accent-link);
 }
 .theme-dark .callout[data-callout='mind'],
 .theme-dark .callout[data-callout='mindmap'] {
   --callout-icon: brain;
-  --callout-color: var(--b16-accent-code);
+  --b16-callout-color: var(--b16-accent-code);
 }
 .theme-dark .callout[data-callout*='config'] {
   --callout-icon: settings;
-  --callout-color: var(--b16-accent-code);
+  --b16-callout-color: var(--b16-accent-code);
 }
 .theme-dark .callout[data-callout^='attachment'],
 .theme-dark .callout[data-callout^='file'] {
   --callout-icon: paperclip;
-  --callout-color: var(--b16-accent-tag);
+  --b16-callout-color: var(--b16-accent-tag);
 }
 .theme-dark .callout[data-callout^='URL' i] {
   --callout-icon: link;
-  --callout-color: var(--b16-accent-link);
+  --b16-callout-color: var(--b16-accent-link);
 }
 .theme-dark .callout[data-callout='contacts'] {
   --callout-icon: lucide-users;
-  --callout-color: var(--b16-status-ok);
+  --b16-callout-color: var(--b16-status-ok);
 }
 .theme-dark .callout[data-callout='documentation'] {
   --callout-icon: lucide-scroll;
-  --callout-color: var(--b16-accent-link);
+  --b16-callout-color: var(--b16-accent-link);
 }
 .theme-dark .callout[data-callout='idea'] {
   --callout-icon: lucide-lightbulb;
-  --callout-color: var(--b16-status-warn);
+  --b16-callout-color: var(--b16-status-warn);
 }
 .theme-dark .callout[data-callout='image'],
 .theme-dark .callout[data-callout='img'],
 .theme-dark .callout[data-callout='picture'] {
   --callout-icon: lucide-image;
-  --callout-color: var(--b16-accent-link-ext);
+  --b16-callout-color: var(--b16-accent-link-ext);
 }
 .theme-dark .callout[data-callout='code'] {
   --callout-icon: lucide-code;
-  --callout-color: var(--b16-accent-tag);
+  --b16-callout-color: var(--b16-accent-tag);
 }
 .theme-dark .callout[data-callout='ai'],
 .theme-dark .callout[data-callout='bot'] {
   --callout-icon: lucide-bot;
-  --callout-color: var(--b16-accent-link-ext);
+  --b16-callout-color: var(--b16-accent-link-ext);
 }
 .theme-dark .callout[data-callout='toc'] {
   --callout-icon: lucide-list-tree;
   /* TOC is structural chrome around links, not a link itself. A neutral
      midpoint makes the shell explicit without spreading the link hue over
      the whole block; the entries inside retain the navigation accent. */
-  --callout-color: color-mix(in srgb, var(--b16-text-muted) 65%, var(--b16-text-faint));
+  --b16-callout-color: color-mix(in srgb, var(--b16-text-muted) 65%, var(--b16-text-faint));
 }
 
 /* Config callout task list styling */

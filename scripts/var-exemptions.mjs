@@ -17,6 +17,16 @@
 //   - reason: why it is legitimate despite not being in either known set.
 export const VAR_EXEMPTIONS = [
   {
+    name: "--callout-color",
+    reason:
+      "Obsidian declares this RGB-triplet input on each rendered .callout; it is scoped to the component rather than present in the captured root-variable snapshot.",
+  },
+  {
+    name: "--zotero-annotation-color",
+    reason:
+      "The portable callouts snippet declares this optional full-colour companion on Zotero annotation callouts; it is scoped to matching metadata values and absent when those callouts are not rendered.",
+  },
+  {
     name: "--zoom-multiplier",
     reason:
       "Obsidian declares this on .canvas-wrapper and Canvas edge labels consume it while zooming; the variable was absent from the captured root-variable snapshot because it is scoped to the Canvas view.",
