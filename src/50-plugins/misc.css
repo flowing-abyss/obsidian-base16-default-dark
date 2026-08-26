@@ -65,14 +65,13 @@ body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
 }
 
 /* LIST CALLOUTS
-   The plugin's 0.15 dark-mode tint turns its deliberately restrained RGB
-   palette into nearly neutral brown/grey fields on surface-0. 0.18 is the
-   first step at which blue, teal, violet, amber, red and green remain
-   distinguishable behind a full paragraph without becoming banners. The
-   actual semantic RGB values stay in the plugin config, so changing themes
-   does not make the vault's marker configuration depend on this theme. */
+   The plugin paints a full-width field, so its tint must be quieter than a
+   compact callout title band. 0.14 keeps every role legible while preventing
+   repeated inline callouts from turning a page into stacked banners. The
+   semantic RGB triplets stay in the plugin config — its required API format —
+   so the vault remains portable to other themes. */
 .theme-dark {
-  --lc-bg-opacity-dark: 0.18;
+  --lc-bg-opacity-dark: 0.14;
 }
 
 /* INLINE AI */

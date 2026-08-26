@@ -1,6 +1,6 @@
-import { readFile } from "node:fs/promises";
-import { contrast } from "./lib/color.mjs";
-import { CONTRAST_WAIVERS } from "./contrast-waivers.mjs";
+import { readFile } from 'node:fs/promises';
+import { contrast } from './lib/color.mjs';
+import { CONTRAST_WAIVERS } from './contrast-waivers.mjs';
 
 // Self-check: these two pairs are the ones that decided the code-block design,
 // so a regression in the maths must fail loudly rather than silently reshape it.
@@ -10,28 +10,54 @@ const expect = (a, b, want) => {
     throw new Error(`contrast(${a},${b}) = ${got.toFixed(3)}, expected ${want}`);
   }
 };
-expect("#ab4642", "#181818", 3.12);
-expect("#ab4642", "#282828", 2.59);
-expect("#585858", "#282828", 2.07);
-expect("#ffffff", "#000000", 21);
+expect('#ab4642', '#181818', 3.12);
+expect('#ab4642', '#282828', 2.59);
+expect('#585858', '#282828', 2.07);
+expect('#ffffff', '#000000', 21);
 
-const SURFACES = ["surface-0", "surface-2", "surface-3"];
+const SURFACES = ['surface-0', 'surface-2', 'surface-3'];
 
 const ROLES = [
-  { token: "text-strong",    min: 4.5, on: ["surface-0", "surface-2", "surface-3"] },
-  { token: "text-normal",    min: 4.5, on: ["surface-0", "surface-2", "surface-3"] },
-  { token: "text-muted",     min: 4.5, on: ["surface-0", "surface-2", "surface-3"] },
-  { token: "text-faint",     min: 3,   on: ["surface-0", "surface-2"] },
-  { token: "accent-link",    min: 3,   on: ["surface-0", "surface-2"] },
-  { token: "accent-link-ext",min: 3,   on: ["surface-0", "surface-2"] },
-  { token: "accent-tag",     min: 3,   on: ["surface-0", "surface-2"] },
-  { token: "accent-code",    min: 3,   on: ["surface-0", "surface-2"] },
-  { token: "status-error",   min: 3,   on: ["surface-0", "surface-2"] },
-  { token: "status-ok",      min: 3,   on: ["surface-0", "surface-2"] },
-  { token: "status-warn",    min: 3,   on: ["surface-0", "surface-2"] },
+  { token: 'text-strong', min: 4.5, on: ['surface-0', 'surface-2', 'surface-3'] },
+  { token: 'text-normal', min: 4.5, on: ['surface-0', 'surface-2', 'surface-3'] },
+  { token: 'text-muted', min: 4.5, on: ['surface-0', 'surface-2', 'surface-3'] },
+  { token: 'text-faint', min: 3, on: ['surface-0', 'surface-2'] },
+  { token: 'accent-link', min: 3, on: ['surface-0', 'surface-2'] },
+  { token: 'accent-link-ext', min: 3, on: ['surface-0', 'surface-2'] },
+  { token: 'accent-tag', min: 3, on: ['surface-0', 'surface-2'] },
+  { token: 'accent-code', min: 3, on: ['surface-0', 'surface-2'] },
+  { token: 'status-error', min: 3, on: ['surface-0', 'surface-2'] },
+  { token: 'status-ok', min: 3, on: ['surface-0', 'surface-2'] },
+  { token: 'status-warn', min: 3, on: ['surface-0', 'surface-2'] },
 ];
 
-const tokens = await readFile("src/01-tokens.css", "utf8");
+// Callout labels sit on a 12% tint of their own colour over surface-0.
+// Checking against the bare page would miss the actual pairing, while a
+// plain token-vs-surface check would allow a hue whose band dominates the
+// page. Keep both relationships inside the narrow visual envelope audited
+// for this component.
+const CALLOUT_ROLES = [
+  'callout-critical',
+  'callout-caution',
+  'callout-positive',
+  'callout-information',
+  'callout-guidance',
+  'callout-inquiry',
+  'callout-structural',
+  'callout-neutral',
+  'callout-toc',
+];
+
+const hexToRgb = (hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+const rgbToHex = (rgb) =>
+  `#${rgb.map((v) => Math.round(v).toString(16).padStart(2, '0')).join('')}`;
+const mix = (foreground, background, alpha) => {
+  const fg = hexToRgb(foreground);
+  const bg = hexToRgb(background);
+  return rgbToHex(fg.map((v, i) => v * alpha + bg[i] * (1 - alpha)));
+};
+
+const tokens = await readFile('src/01-tokens.css', 'utf8');
 const hexOf = (name) => {
   const m = tokens.match(new RegExp(`--b16-${name}:\\s*(#[0-9a-fA-F]{6})`));
   if (!m) throw new Error(`token --b16-${name} is not defined in src/01-tokens.css`);
@@ -65,7 +91,7 @@ for (const role of ROLES) {
       // diff — an unused exception is a hole nobody remembers opening.
       if (waived.has(key)) {
         console.error(
-          `FAIL ${key} ${ratio.toFixed(2)} >= ${role.min} but is still waived — remove the stale waiver from scripts/contrast-waivers.mjs`
+          `FAIL ${key} ${ratio.toFixed(2)} >= ${role.min} but is still waived — remove the stale waiver from scripts/contrast-waivers.mjs`,
         );
         failed++;
       }
@@ -80,6 +106,23 @@ for (const role of ROLES) {
     }
   }
 }
+
+for (const token of CALLOUT_ROLES) {
+  const colour = hexOf(token);
+  const page = surfaceHex['surface-0'];
+  const band = mix(colour, page, 0.12);
+  const labelRatio = contrast(colour, band);
+  const bandRatio = contrast(band, page);
+
+  if (labelRatio < 4.5) {
+    console.error(`FAIL ${token} label/band ${labelRatio.toFixed(2)} < 4.5`);
+    failed++;
+  }
+  if (bandRatio < 1.15 || bandRatio > 1.27) {
+    console.error(`FAIL ${token} band/page ${bandRatio.toFixed(2)} outside 1.15–1.27`);
+    failed++;
+  }
+}
 // A waiver that never matches any (role, surface) pair guards nothing --
 // it reads like a considered decision but was never actually consulted.
 // Distinct wording from the stale-waiver message on purpose: "stale" means
@@ -89,11 +132,11 @@ for (const w of waivers) {
   const key = `${w.token}@${w.surface}`;
   if (!seenPairs.has(key)) {
     console.error(
-      `FAIL waiver ${key} is dangling — matches no known token/surface combination in ROLES, remove it from scripts/contrast-waivers.mjs`
+      `FAIL waiver ${key} is dangling — matches no known token/surface combination in ROLES, remove it from scripts/contrast-waivers.mjs`,
     );
     failed++;
   }
 }
 
-console.log(failed === 0 ? "contrast OK" : `${failed} contrast failure(s)`);
+console.log(failed === 0 ? 'contrast OK' : `${failed} contrast failure(s)`);
 process.exit(failed === 0 ? 0 : 1);

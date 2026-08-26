@@ -89,79 +89,89 @@
   margin-bottom: 0;
 }
 
-/* Type → colour table. The palette is closed to seven hues plus the
-   neutrals, and there are far more callout types than hues, so types are
-   grouped by what the reader needs to do, not by vocabulary:
-   - error hue: danger/error/bug/failure/fail/missing all mean "something is
-     wrong" — no reason to tell them apart by colour.
-   - warning hue: warning/caution/attention are all "be careful".
-   - success hue: success/check/done are all "this worked".
-   - blue (link hue): note/info/todo — the highest-frequency, lowest-urgency
-     "FYI" types get the most legible hue.
-   - cyan (tag hue): tip/hint/important — advice, one step up from FYI.
-   - magenta (external-link hue): question/help/faq/example — the rarer
-     aside types share, since they seldom appear next to each other.
-   - orange (code hue): abstract/summary/tldr — structural/meta content,
-     paired with the hue already used for inline code elsewhere.
-   - quote/cite stay neutral grey, matching the blockquote rail elsewhere in
-     the theme, which was deliberately left uncoloured for the same reason. */
+/* Type → colour table. The palette is closed to seven semantic roles plus
+   two clean neutrals. Types are grouped by what the reader needs to do, not
+   by vocabulary; aliases therefore remain visually identical.
+
+   The component consumes only the fixed hex endpoints from 01-tokens.css.
+   Runtime colour operations below are reserved for the 12% band and 65%
+   rail, so changing browser colour spaces cannot silently move a label. */
 .theme-dark .callout[data-callout='danger'],
 .theme-dark .callout[data-callout='error'],
 .theme-dark .callout[data-callout='bug'],
 .theme-dark .callout[data-callout='failure'],
 .theme-dark .callout[data-callout='fail'],
 .theme-dark .callout[data-callout='missing'] {
-  /* Canonical base08 is intentionally deep, which works for compact status
-     marks but becomes muddy when it colours an entire title label. Lift
-     lightness only here; the hue/chroma and the global error token stay
-     untouched. */
-  --b16-callout-color: oklch(from var(--b16-status-error) 64% c h);
+  --b16-callout-color: var(--b16-callout-critical);
 }
 
 .theme-dark .callout[data-callout='warning'],
 .theme-dark .callout[data-callout='caution'],
 .theme-dark .callout[data-callout='attention'] {
-  --b16-callout-color: var(--b16-status-warn);
+  --b16-callout-color: var(--b16-callout-caution);
 }
 
 .theme-dark .callout[data-callout='success'],
 .theme-dark .callout[data-callout='check'],
-.theme-dark .callout[data-callout='done'] {
-  --b16-callout-color: var(--b16-status-ok);
+.theme-dark .callout[data-callout='done'],
+.theme-dark .callout[data-callout='goal'],
+.theme-dark .callout[data-callout='target'],
+.theme-dark .callout[data-callout='contacts'],
+.theme-dark .callout[data-callout='contact'] {
+  --b16-callout-color: var(--b16-callout-positive);
 }
 
 .theme-dark .callout[data-callout='note'],
+.theme-dark .callout[data-callout='notes'],
+.theme-dark .callout[data-callout='sidenote'],
 .theme-dark .callout[data-callout='info'],
-.theme-dark .callout[data-callout='todo'] {
-  --b16-callout-color: var(--b16-accent-link);
+.theme-dark .callout[data-callout='todo'],
+.theme-dark .callout[data-callout='link'],
+.theme-dark .callout[data-callout^='URL' i],
+.theme-dark .callout[data-callout='documentation'],
+.theme-dark .callout[data-callout='definition'],
+.theme-dark .callout[data-callout='map'] {
+  --b16-callout-color: var(--b16-callout-information);
 }
 
 .theme-dark .callout[data-callout='tip'],
 .theme-dark .callout[data-callout='hint'],
 .theme-dark .callout[data-callout='important'] {
-  --b16-callout-color: var(--b16-accent-tag);
+  --b16-callout-color: var(--b16-callout-guidance);
 }
 
 .theme-dark .callout[data-callout='question'],
 .theme-dark .callout[data-callout='help'],
 .theme-dark .callout[data-callout='faq'],
-.theme-dark .callout[data-callout='example'] {
-  --b16-callout-color: var(--b16-accent-link-ext);
+.theme-dark .callout[data-callout='example'],
+.theme-dark .callout[data-callout='my'],
+.theme-dark .callout[data-callout='mind'],
+.theme-dark .callout[data-callout='mindmap'],
+.theme-dark .callout[data-callout='image'],
+.theme-dark .callout[data-callout='img'],
+.theme-dark .callout[data-callout='picture'],
+.theme-dark .callout[data-callout='ai'],
+.theme-dark .callout[data-callout='bot'] {
+  --b16-callout-color: var(--b16-callout-inquiry);
 }
 
 .theme-dark .callout[data-callout='abstract'],
 .theme-dark .callout[data-callout='summary'],
-.theme-dark .callout[data-callout='tldr'] {
-  --b16-callout-color: var(--b16-accent-code);
+.theme-dark .callout[data-callout='tldr'],
+.theme-dark .callout[data-callout*='config'],
+.theme-dark .callout[data-callout='code'],
+.theme-dark .callout[data-callout='activity'],
+.theme-dark .callout[data-callout='calendar'],
+.theme-dark .callout[data-callout='briefing'],
+.theme-dark .callout[data-callout='weekly-review'] {
+  --b16-callout-color: var(--b16-callout-structural);
 }
 
-/* Quotes remain neutral, but `--b16-text-faint` is too weak for a component
-   accent: after the rail's alpha and the title band's tint are applied it
-   nearly disappears into surface-0. A midpoint between faint and muted
-   preserves the quotation's quiet role while keeping its shell explicit. */
+/* Generic quotations stay neutral. A clean fixed grey avoids both the dirty
+   green cast of legacy annotation greys and a browser-dependent midpoint. */
 .theme-dark .callout[data-callout='quote'],
 .theme-dark .callout[data-callout='cite'] {
-  --b16-callout-color: color-mix(in srgb, var(--b16-text-muted) 45%, var(--b16-text-faint));
+  --b16-callout-color: var(--b16-callout-neutral);
 }
 
 /* A hex metadata value is an external annotation colour (for example from
@@ -176,63 +186,81 @@
    table above rather than inventing new meanings. */
 .theme-dark .callout[data-callout='my'] {
   --callout-icon: gem;
-  --b16-callout-color: var(--b16-accent-link-ext);
 }
 .theme-dark .callout[data-callout='link'] {
   --callout-icon: link;
-  --b16-callout-color: var(--b16-accent-link);
 }
 .theme-dark .callout[data-callout='mind'],
 .theme-dark .callout[data-callout='mindmap'] {
   --callout-icon: brain;
-  --b16-callout-color: var(--b16-accent-code);
 }
 .theme-dark .callout[data-callout*='config'] {
   --callout-icon: settings;
-  --b16-callout-color: var(--b16-accent-code);
 }
 .theme-dark .callout[data-callout^='attachment'],
 .theme-dark .callout[data-callout^='file'] {
   --callout-icon: paperclip;
-  --b16-callout-color: var(--b16-accent-tag);
+  --b16-callout-color: var(--b16-callout-guidance);
 }
 .theme-dark .callout[data-callout^='URL' i] {
   --callout-icon: link;
-  --b16-callout-color: var(--b16-accent-link);
 }
-.theme-dark .callout[data-callout='contacts'] {
+.theme-dark .callout[data-callout='contacts'],
+.theme-dark .callout[data-callout='contact'] {
   --callout-icon: lucide-users;
-  --b16-callout-color: var(--b16-status-ok);
 }
 .theme-dark .callout[data-callout='documentation'] {
   --callout-icon: lucide-scroll;
-  --b16-callout-color: var(--b16-accent-link);
 }
 .theme-dark .callout[data-callout='idea'] {
   --callout-icon: lucide-lightbulb;
-  --b16-callout-color: var(--b16-status-warn);
+  --b16-callout-color: var(--b16-callout-caution);
 }
 .theme-dark .callout[data-callout='image'],
 .theme-dark .callout[data-callout='img'],
 .theme-dark .callout[data-callout='picture'] {
   --callout-icon: lucide-image;
-  --b16-callout-color: var(--b16-accent-link-ext);
 }
 .theme-dark .callout[data-callout='code'] {
   --callout-icon: lucide-code;
-  --b16-callout-color: var(--b16-accent-tag);
 }
 .theme-dark .callout[data-callout='ai'],
 .theme-dark .callout[data-callout='bot'] {
   --callout-icon: lucide-bot;
-  --b16-callout-color: var(--b16-accent-link-ext);
 }
 .theme-dark .callout[data-callout='toc'] {
   --callout-icon: lucide-list-tree;
-  /* TOC is structural chrome around links, not a link itself. A neutral
-     midpoint makes the shell explicit without spreading the link hue over
-     the whole block; the entries inside retain the navigation accent. */
-  --b16-callout-color: color-mix(in srgb, var(--b16-text-muted) 65%, var(--b16-text-faint));
+  /* TOC is structural chrome around links, not a link itself. Its clean
+     neutral is slightly stronger than quote so the container remains
+     explicit while the entries retain the navigation hue. */
+  --b16-callout-color: var(--b16-callout-toc);
+}
+
+/* Custom vocabulary gets deliberate icons instead of silently inheriting
+   the generic pencil. This adds semantic precision without adding colour. */
+.theme-dark .callout[data-callout='goal'] {
+  --callout-icon: lucide-flag;
+}
+.theme-dark .callout[data-callout='target'] {
+  --callout-icon: lucide-target;
+}
+.theme-dark .callout[data-callout='activity'] {
+  --callout-icon: lucide-activity;
+}
+.theme-dark .callout[data-callout='calendar'] {
+  --callout-icon: lucide-calendar-days;
+}
+.theme-dark .callout[data-callout='definition'] {
+  --callout-icon: lucide-book-open;
+}
+.theme-dark .callout[data-callout='map'] {
+  --callout-icon: lucide-map;
+}
+.theme-dark .callout[data-callout='briefing'] {
+  --callout-icon: lucide-clipboard-list;
+}
+.theme-dark .callout[data-callout='weekly-review'] {
+  --callout-icon: lucide-calendar-check;
 }
 
 /* Config callout task list styling */

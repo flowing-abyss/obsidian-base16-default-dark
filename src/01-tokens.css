@@ -40,6 +40,25 @@
   --b16-status-ok: #a1b56c; /* green */
   --b16-status-warn: #f7ca88; /* yellow */
 
+  /* Callouts are larger and more persistent than compact status marks, so
+     they need their own perceptually balanced component palette. Every
+     authored endpoint is a lower-case six-digit hex value; 20-callouts.css
+     only derives the translucent rail and title band from these tokens.
+
+     Critical and caution are deliberately calmer than the raw Base16 status
+     colours while still clearing 4.5:1 against their own 12% title bands.
+     The remaining roles reuse the canonical Base16 hues so block callouts,
+     inline List Callouts and the surrounding document read as one system. */
+  --b16-callout-critical: #d86e68;
+  --b16-callout-caution: #dbaf6e;
+  --b16-callout-positive: #a1b56c;
+  --b16-callout-information: #7cafc2;
+  --b16-callout-guidance: #86c1b9;
+  --b16-callout-inquiry: #ba8baf;
+  --b16-callout-structural: #dc9656;
+  --b16-callout-neutral: #989898;
+  --b16-callout-toc: #a0a0a0;
+
   /* Canvas palette — preserve the Base16 hues and chroma, but equalise
      perceptual lightness. The canonical colours range from OKLCH 0.53
      (red) to 0.86 (yellow), so the native picker made one colour disappear
