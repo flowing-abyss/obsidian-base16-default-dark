@@ -27,8 +27,8 @@ async function walk(dir) {
 const files = await walk("src");
 
 // Every custom property the theme declares anywhere in src/ — a var(--x)
-// reference is fine as long as SOME rule sets --x, regardless of which file,
-// since 21-source-file concatenation order is a cascade question, not a
+// reference is fine as long as SOME rule sets --x, regardless of which source
+// file owns it. Concatenation order is a cascade question, not a
 // definition-visibility one.
 const declared = new Set();
 // Every var(--x) reference, with enough detail to report where it lives.

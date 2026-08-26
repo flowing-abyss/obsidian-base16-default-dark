@@ -18,12 +18,13 @@
    it does outside one, and the block is bounded by the rail and the band —
    the only two parts that actually carry meaning.
 
-   The internal colour bridge keeps theme-owned full colours separate from
-   Obsidian's portable callout input. This matters for annotation snippets:
-   legacy themes expect an RGB triplet while current Obsidian builds may
-   expose a ready-to-use colour on custom types. */
+   The internal alias lets the closed theme palette override Obsidian's
+   ready-to-use colour without duplicating the component declarations.
+   Integrations that store RGB triplets normalize them in their own portable
+   snippet, where that input schema is known. */
 .theme-dark .callout {
   --b16-callout-color: var(--callout-color);
+  --callout-title-weight: 700;
 
   background-color: transparent;
   border: none;
@@ -55,14 +56,14 @@
   background-color: color-mix(in srgb, var(--b16-callout-color) 12%, transparent);
   color: var(--b16-callout-color);
   font-size: var(--b16-label-size);
-  font-weight: 700 !important;
+  font-weight: var(--callout-title-weight);
   line-height: var(--b16-label-line-height);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-/* Use the normalized colour directly so native RGB callouts and theme-owned
-   full-colour callouts render identically. */
+/* Use the resolved colour directly so the icon, rail and title stay one
+   semantic signal. */
 .theme-dark .callout-icon,
 .theme-dark .callout-icon .svg-icon {
   color: var(--b16-callout-color);
@@ -234,6 +235,24 @@
      neutral is slightly stronger than quote so the container remains
      explicit while the entries retain the navigation hue. */
   --b16-callout-color: var(--b16-callout-toc);
+}
+
+/* Multi-column callouts are layout containers, not semantic annotations.
+   Their rail and band may stay quiet, but the section label must read like
+   document UI rather than like a subdued category colour. Keep the icon and
+   fold affordance one step below the title so the hierarchy remains strict. */
+.theme-dark .callout[data-callout^='col'] {
+  --b16-callout-color: var(--b16-callout-neutral);
+}
+
+.theme-dark .callout[data-callout^='col'] .callout-title {
+  color: var(--b16-text-normal);
+}
+
+.theme-dark
+  .callout[data-callout^='col']
+  :is(.callout-icon, .callout-icon .svg-icon, .callout-fold) {
+  color: var(--b16-text-muted);
 }
 
 /* Custom vocabulary gets deliberate icons instead of silently inheriting

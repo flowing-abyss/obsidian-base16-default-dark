@@ -35,10 +35,24 @@
   --accent-s: 36.46% !important;
   --accent-l: 62.35% !important;
 
-  /* Status — reserved, not reused for decoration elsewhere. */
+  /* Status fills and text have different contrast requirements. The
+     canonical red remains the compact rail/icon/fill endpoint; readable
+     error text gets a lighter endpoint that clears 4.5:1 through surface-2
+     without turning every destructive control into a bright banner. */
   --b16-status-error: #ab4642; /* red */
+  --b16-status-error-text: #da7069;
   --b16-status-ok: #a1b56c; /* green */
   --b16-status-warn: #f7ca88; /* yellow */
+
+  /* Binary controls are peers, not an alert hierarchy. These rails are
+     equalised against both the page and the pale thumb: each is 5.24:1 on
+     surface-0 and 2.38:1 against text-normal. */
+  --b16-toggle-off: #d66c66;
+  --b16-toggle-on: #80934b;
+
+  /* Code comments are subordinate syntax, but still text. This neutral
+     clears 4.5:1 on surface-2; opacity is never used to weaken it later. */
+  --b16-code-comment: #8f8f8f;
 
   /* Callouts are larger and more persistent than compact status marks, so
      they need their own perceptually balanced component palette. Every
@@ -297,7 +311,7 @@
   --text-normal: var(--b16-text-normal);
   --text-muted: var(--b16-text-muted);
   --text-faint: var(--b16-text-faint);
-  --text-error: var(--b16-status-error);
+  --text-error: var(--b16-status-error-text);
   --text-accent: var(--b16-accent-link);
   --text-accent-hover: var(--b16-accent-tag);
   --text-on-accent: var(--b16-surface-0);
@@ -319,11 +333,11 @@
   /* Syntax highlighting */
   --code-normal: var(--b16-text-normal);
   --code-background: var(--b16-surface-1);
-  --code-comment: var(--b16-text-faint);
+  --code-comment: var(--b16-code-comment);
   --code-function: var(--b16-accent-link);
   --code-keyword: var(--b16-accent-link-ext);
   --code-string: var(--b16-status-ok);
-  --code-tag: var(--b16-status-error);
+  --code-tag: var(--b16-status-error-text);
   --code-important: var(--b16-status-warn);
   --code-operator: var(--b16-accent-tag);
   --code-property: var(--b16-status-warn);

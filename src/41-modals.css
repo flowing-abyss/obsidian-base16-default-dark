@@ -76,12 +76,7 @@
   font-size: var(--font-text-size);
 }
 
-/* .modal.task-search-modal is foreign (the Task Search plugin's own
-   modal — verified via app.plugins.manifests["task-search"], not the
-   Tasks plugin / obsidian-tasks-plugin despite the name similarity),
-   kept here because it shares this exact declaration block with the
-   modal selectors. */
-.theme-dark:not(.is-mobile) :is(.prompt, .float-search-modal, .modal.task-search-modal) {
+.theme-dark:not(.is-mobile) .prompt {
   position: absolute;
   top: calc(var(--header-height) + 10px) !important;
   left: 10px !important;
@@ -95,20 +90,12 @@
 .modal-container.mod-dim .modal {
   box-shadow: none;
 }
-.theme-dark:not(.is-mobile) .float-search-modal {
-  min-height: 96%;
-}
 /* Search mode is metadata for the query, not result content. */
 .theme-dark .prompt .hybrid-search-mode-badge {
   font-size: var(--b16-font-ui-s);
 }
 
-.float-search-modal-instructions {
-  display: none;
-}
-
-.prompt .suggestion-item,
-.float-search-modal {
+.prompt .suggestion-item {
   font-size: 100%;
   padding: 3px;
 }
@@ -123,7 +110,8 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
   background-color: transparent;
 }
 
-/* fix modal */
+/* Modal headings align with the content edge instead of inheriting document
+   section spacing. */
 .modal-content h1 {
   margin-top: 0;
 }

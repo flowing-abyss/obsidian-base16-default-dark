@@ -1,37 +1,57 @@
+/* Vim Motions reserves a sign column even when it contains no marks. The theme
+   already owns the document locator gutter, so keep the plugin's motions while
+   suppressing its duplicate visual column. */
+.theme-dark .markdown-source-view.mod-cm6 .vim-motions-sign-column {
+  /* CodeMirror's gutter extension reapplies its display at runtime. */
+  display: none !important;
+}
+
+/* Obsidian leaves a 24px trailing margin on the gutter wrapper even after its
+   only Vim column is hidden. Remove that reserved space as part of the same
+   suppression; the line-number layout below supplies its own positioning. */
+.theme-dark .markdown-source-view.mod-cm6 .cm-gutters:has(> .vim-motions-sign-column) {
+  margin-inline-end: 0;
+}
+
 /* Optional line numbers are structural metadata, not document content. CM6
-   normally keeps its gutter in the same flex row as the note, narrowing and
-   shifting every line while the inline title stays put. Once the line-number
-   gutter exists, take it out of flow and place it before the heading fold
-   control; the content then keeps exactly the same reading edge as it has
-   when the setting is disabled. The gutter's intrinsic width still adapts to
-   the document's digit count. Mobile and full-width editors keep CM6's native
-   in-flow layout because they do not guarantee a spare column outside the
-   text measure. */
+   normally keeps the gutter in the same flex row as the note, narrowing and
+   shifting every line while the inline title stays put. Take the utility
+   gutter out of flow and place it before the heading fold control; the text
+   keeps exactly the same reading edge whether numbers are enabled or disabled.
+   The gutter's intrinsic width still adapts to its contents. */
 body:not(.is-mobile).theme-dark
   .markdown-source-view.mod-cm6.is-readable-line-width
   .cm-contentContainer:has(> .cm-gutters > .cm-lineNumbers) {
   position: relative;
+}
 
+body:not(.is-mobile).theme-dark
+  .markdown-source-view.mod-cm6.is-readable-line-width
+  .cm-contentContainer:has(> .cm-gutters > .cm-lineNumbers)
   > .cm-gutters {
-    position: absolute;
-    inset-inline-start: auto;
-    inset-inline-end: calc(100% + var(--b16-heading-fold-offset) + 4px);
-    inline-size: max-content;
-    margin-inline-end: 0;
-  }
+  /* CodeMirror writes `position: sticky` as an inline style on this node. */
+  position: absolute !important;
+  inset-inline-start: auto;
+  inset-inline-end: calc(100% + var(--b16-heading-fold-offset) + 4px);
+  inline-size: max-content;
+  margin-inline-end: 0;
+}
 
+body:not(.is-mobile).theme-dark
+  .markdown-source-view.mod-cm6.is-readable-line-width
+  .cm-contentContainer:has(> .cm-gutters > .cm-lineNumbers)
   > .cm-content {
-    inline-size: 100%;
-  }
+  inline-size: 100%;
+}
 
-  /* Do not stack two coordinate systems in the same narrow utility column.
-     With line numbers enabled they are the precise locator; heading depth
-     stays encoded by the type hierarchy and the native fold control. Without
-     that gutter this whole block does not match, so the H1-H6 labels retain
-     their existing hover/persistent behaviour unchanged. */
+/* Do not stack two coordinate systems in the same narrow utility column.
+   Actual line numbers are the precise locator; heading depth stays encoded
+   by the type hierarchy and the native fold control. */
+body:not(.is-mobile).theme-dark
+  .markdown-source-view.mod-cm6.is-readable-line-width
+  .cm-contentContainer:has(> .cm-gutters > .cm-lineNumbers)
   .cm-line.HyperMD-header:not(.HyperMD-quote)::before {
-    display: none;
-  }
+  display: none;
 }
 
 /* Properties */
@@ -117,6 +137,8 @@ body {
 
 .workspace-leaf-content[data-type='markdown'] .metadata-container:hover .metadata-content,
 .workspace-leaf-content[data-type='markdown'] .frontmatter-container:hover .metadata-content,
+.workspace-leaf-content[data-type='markdown'] .metadata-container:focus-within .metadata-content,
+.workspace-leaf-content[data-type='markdown'] .frontmatter-container:focus-within .metadata-content,
 .workspace-leaf-content[data-type='markdown']
   .inline-title:hover
   ~ .metadata-container
@@ -140,7 +162,7 @@ body {
 /* multi select pill fix */
 .multi-select-pill .multi-select-pill-remove-button {
   margin-left: -3px;
-  color: var(--color-red);
+  color: var(--b16-status-error-text);
 }
 .multi-select-pill-remove-button:not(:hover) {
   opacity: 0;

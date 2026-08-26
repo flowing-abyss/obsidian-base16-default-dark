@@ -33,11 +33,11 @@
 }
 
 .theme-dark .modal.mod-settings .checkbox-container:not(.is-enabled, .is-disabled) {
-  background-color: var(--b16-status-error);
+  background-color: var(--b16-toggle-off);
 }
 
 .theme-dark .modal.mod-settings .checkbox-container.is-enabled:not(.is-disabled) {
-  background-color: var(--b16-status-ok);
+  background-color: var(--b16-toggle-on);
 }
 
 /* Installed-plugin rows expose stable data-plugin-id attributes. Strengthen

@@ -7,16 +7,6 @@
   background-color: var(--background-primary) !important;
 }
 
-/* zoom colors */
-.zoom-plugin-title {
-  color: var(--b16-text-faint);
-}
-
-/* datepicker */
-.datepicker-widget {
-  background-color: transparent;
-}
-
 /* gray em text in quickadd */
 .suggestion-item.quickadd-choice-suggestion em {
   color: var(--b16-text-faint);
@@ -52,8 +42,8 @@ body .various-complements__suggestion-item {
   content: ']]';
 }
 
-/* editing toolbar fix */
-body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
+/* Editing Toolbar's top placement owns its right edge. */
+#cMenuToolbarModalBar.top {
   margin-right: 0;
 }
 
@@ -299,7 +289,7 @@ body.theme-dark.virtual-link-color-only
 
 .theme-dark
   :is(.embedded-backlinks, .embedded-similar-notes)
-  :is(.tree-item-flair, .search-result-count, .hybrid-search-score) {
+  :is(.tree-item-flair, .hybrid-search-score) {
   /* The label size is for a block's title bar. A relevance score is neither
      a title nor content — it annotates the row it sits on, and at 17px it
      read as loud as the note title beside it. Bottom of the UI ramp. */

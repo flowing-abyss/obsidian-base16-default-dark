@@ -627,7 +627,6 @@
 .theme-dark .token.doctype,
 .theme-dark .token.cdata {
   color: var(--code-comment);
-  opacity: 0.6;
 }
 
 .theme-dark .token.punctuation {

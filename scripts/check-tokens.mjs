@@ -15,32 +15,12 @@ const FORBIDDEN = [
   '#969896',
 ];
 const COLOUR_FILES = new Set(['00-palette.css', '01-tokens.css']);
-// Raised 95 -> 107 when src/25-mermaid.css was added. Mermaid writes a
-// <style> block inside each generated SVG whose rules are scoped by the
-// SVG's element id, so every one of them carries an ID in its selector.
-// Specificity compares ID count before class count, which means no author
-// selector without an important flag can override them at any length. The
-// twelve flags in that file are the whole of the increase; the ratchet is
-// otherwise unchanged.
-//
-// Raised again 107 -> 108 for one more flag in the same file: Mermaid colours
-// an edge label's <p> from its own id-scoped rule, so the colour set on the
-// .edgeLabel ancestor never reaches the glyphs and the text renders at
-// Mermaid's near-black default. Same root cause as the other twelve — an ID
-// in the selector, which no author rule can outrank without a flag.
-// 108 -> 109: the connector rule gained `stroke-width`, which Mermaid also
-// sets from an id-scoped selector. Same unavoidable-flag category as the
-// others in that file.
-// 109 -> 111: two flags restoring monochrome tab titles. Supercharged Links
-// writes its per-note colour as an inline style on the tab title, and an
-// inline value beats any author rule without a flag. The pre-split theme
-// carried the same flag for the same reason (c007469:theme.css:2001); this
-// version keeps the active/inactive distinction the legacy rule flattened.
-// 111 -> 112: one flag on the Claudian active-session fill. The Calendar
-// plugin ships a bare, unscoped `.active { background: transparent
-// !important }` that lands on every element in the app with that class, so
-// no author rule can set the fill without a flag of its own.
-const IMPORTANT_BASELINE = 112;
+// Exact ratchet for the current reviewed set. Most flags compensate for
+// foreign inline styles or ID-scoped SVG/plugin CSS (Mermaid, ECharts,
+// Supercharged Links and Claudian). Any new flag needs its own evidence;
+// removing one lowers this number immediately so old headroom cannot hide a
+// regression.
+const IMPORTANT_BASELINE = 110;
 
 // Matches #hex literals and authored colour-function literals.
 // Outside the colour-definition files, every colour must come from a
@@ -142,6 +122,15 @@ for (const f of files) {
         `FAIL ${rel}: ${literals.length} raw colour literal(s), first ${literals[0]} — use a token`,
       );
       failed++;
+    }
+  } else {
+    for (const literal of bare.match(/#[0-9a-fA-F]{3,8}\b/g) ?? []) {
+      if (!/^#[0-9a-f]{6}$/.test(literal)) {
+        console.error(
+          `FAIL ${rel}: authored endpoint ${literal} must use lower-case six-digit hex`,
+        );
+        failed++;
+      }
     }
   }
 }

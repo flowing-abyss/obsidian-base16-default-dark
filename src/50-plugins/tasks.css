@@ -73,7 +73,7 @@
       border-color: color-mix(in srgb, var(--b16-status-error) 35%, transparent);
 
       .task-description {
-        color: color-mix(in srgb, var(--b16-status-error) 80%, transparent);
+        color: var(--b16-status-error-text);
       }
     }
 

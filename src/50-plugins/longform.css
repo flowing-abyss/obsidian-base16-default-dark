@@ -173,7 +173,7 @@
 
 .workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER']
   .longform-remove-step-button:hover {
-  color: var(--b16-status-error);
+  color: var(--b16-status-error-text);
   background-color: var(--b16-surface-2);
 }
 
@@ -207,5 +207,5 @@
 .workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER']
   button.longform-remove-step-button:hover {
   background: var(--b16-surface-2);
-  color: var(--b16-status-error);
+  color: var(--b16-status-error-text);
 }

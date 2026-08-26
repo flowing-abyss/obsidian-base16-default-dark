@@ -77,10 +77,24 @@
   --accent-s: 36.46% !important;
   --accent-l: 62.35% !important;
 
-  /* Status — reserved, not reused for decoration elsewhere. */
+  /* Status fills and text have different contrast requirements. The
+     canonical red remains the compact rail/icon/fill endpoint; readable
+     error text gets a lighter endpoint that clears 4.5:1 through surface-2
+     without turning every destructive control into a bright banner. */
   --b16-status-error: #ab4642; /* red */
+  --b16-status-error-text: #da7069;
   --b16-status-ok: #a1b56c; /* green */
   --b16-status-warn: #f7ca88; /* yellow */
+
+  /* Binary controls are peers, not an alert hierarchy. These rails are
+     equalised against both the page and the pale thumb: each is 5.24:1 on
+     surface-0 and 2.38:1 against text-normal. */
+  --b16-toggle-off: #d66c66;
+  --b16-toggle-on: #80934b;
+
+  /* Code comments are subordinate syntax, but still text. This neutral
+     clears 4.5:1 on surface-2; opacity is never used to weaken it later. */
+  --b16-code-comment: #8f8f8f;
 
   /* Callouts are larger and more persistent than compact status marks, so
      they need their own perceptually balanced component palette. Every
@@ -339,7 +353,7 @@
   --text-normal: var(--b16-text-normal);
   --text-muted: var(--b16-text-muted);
   --text-faint: var(--b16-text-faint);
-  --text-error: var(--b16-status-error);
+  --text-error: var(--b16-status-error-text);
   --text-accent: var(--b16-accent-link);
   --text-accent-hover: var(--b16-accent-tag);
   --text-on-accent: var(--b16-surface-0);
@@ -361,11 +375,11 @@
   /* Syntax highlighting */
   --code-normal: var(--b16-text-normal);
   --code-background: var(--b16-surface-1);
-  --code-comment: var(--b16-text-faint);
+  --code-comment: var(--b16-code-comment);
   --code-function: var(--b16-accent-link);
   --code-keyword: var(--b16-accent-link-ext);
   --code-string: var(--b16-status-ok);
-  --code-tag: var(--b16-status-error);
+  --code-tag: var(--b16-status-error-text);
   --code-important: var(--b16-status-warn);
   --code-operator: var(--b16-accent-tag);
   --code-property: var(--b16-status-warn);
@@ -1759,12 +1773,13 @@ ul > li::marker,
    it does outside one, and the block is bounded by the rail and the band —
    the only two parts that actually carry meaning.
 
-   The internal colour bridge keeps theme-owned full colours separate from
-   Obsidian's portable callout input. This matters for annotation snippets:
-   legacy themes expect an RGB triplet while current Obsidian builds may
-   expose a ready-to-use colour on custom types. */
+   The internal alias lets the closed theme palette override Obsidian's
+   ready-to-use colour without duplicating the component declarations.
+   Integrations that store RGB triplets normalize them in their own portable
+   snippet, where that input schema is known. */
 .theme-dark .callout {
   --b16-callout-color: var(--callout-color);
+  --callout-title-weight: 700;
 
   background-color: transparent;
   border: none;
@@ -1796,14 +1811,14 @@ ul > li::marker,
   background-color: color-mix(in srgb, var(--b16-callout-color) 12%, transparent);
   color: var(--b16-callout-color);
   font-size: var(--b16-label-size);
-  font-weight: 700 !important;
+  font-weight: var(--callout-title-weight);
   line-height: var(--b16-label-line-height);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-/* Use the normalized colour directly so native RGB callouts and theme-owned
-   full-colour callouts render identically. */
+/* Use the resolved colour directly so the icon, rail and title stay one
+   semantic signal. */
 .theme-dark .callout-icon,
 .theme-dark .callout-icon .svg-icon {
   color: var(--b16-callout-color);
@@ -1975,6 +1990,24 @@ ul > li::marker,
      neutral is slightly stronger than quote so the container remains
      explicit while the entries retain the navigation hue. */
   --b16-callout-color: var(--b16-callout-toc);
+}
+
+/* Multi-column callouts are layout containers, not semantic annotations.
+   Their rail and band may stay quiet, but the section label must read like
+   document UI rather than like a subdued category colour. Keep the icon and
+   fold affordance one step below the title so the hierarchy remains strict. */
+.theme-dark .callout[data-callout^='col'] {
+  --b16-callout-color: var(--b16-callout-neutral);
+}
+
+.theme-dark .callout[data-callout^='col'] .callout-title {
+  color: var(--b16-text-normal);
+}
+
+.theme-dark
+  .callout[data-callout^='col']
+  :is(.callout-icon, .callout-icon .svg-icon, .callout-fold) {
+  color: var(--b16-text-muted);
 }
 
 /* Custom vocabulary gets deliberate icons instead of silently inheriting
@@ -2777,7 +2810,6 @@ ul > li::marker,
 .theme-dark .token.doctype,
 .theme-dark .token.cdata {
   color: var(--code-comment);
-  opacity: 0.6;
 }
 
 .theme-dark .token.punctuation {
@@ -3340,40 +3372,60 @@ ul > li::marker,
 
 /* ===== 30-editor.css ===== */
 
+/* Vim Motions reserves a sign column even when it contains no marks. The theme
+   already owns the document locator gutter, so keep the plugin's motions while
+   suppressing its duplicate visual column. */
+.theme-dark .markdown-source-view.mod-cm6 .vim-motions-sign-column {
+  /* CodeMirror's gutter extension reapplies its display at runtime. */
+  display: none !important;
+}
+
+/* Obsidian leaves a 24px trailing margin on the gutter wrapper even after its
+   only Vim column is hidden. Remove that reserved space as part of the same
+   suppression; the line-number layout below supplies its own positioning. */
+.theme-dark .markdown-source-view.mod-cm6 .cm-gutters:has(> .vim-motions-sign-column) {
+  margin-inline-end: 0;
+}
+
 /* Optional line numbers are structural metadata, not document content. CM6
-   normally keeps its gutter in the same flex row as the note, narrowing and
-   shifting every line while the inline title stays put. Once the line-number
-   gutter exists, take it out of flow and place it before the heading fold
-   control; the content then keeps exactly the same reading edge as it has
-   when the setting is disabled. The gutter's intrinsic width still adapts to
-   the document's digit count. Mobile and full-width editors keep CM6's native
-   in-flow layout because they do not guarantee a spare column outside the
-   text measure. */
+   normally keeps the gutter in the same flex row as the note, narrowing and
+   shifting every line while the inline title stays put. Take the utility
+   gutter out of flow and place it before the heading fold control; the text
+   keeps exactly the same reading edge whether numbers are enabled or disabled.
+   The gutter's intrinsic width still adapts to its contents. */
 body:not(.is-mobile).theme-dark
   .markdown-source-view.mod-cm6.is-readable-line-width
   .cm-contentContainer:has(> .cm-gutters > .cm-lineNumbers) {
   position: relative;
+}
 
+body:not(.is-mobile).theme-dark
+  .markdown-source-view.mod-cm6.is-readable-line-width
+  .cm-contentContainer:has(> .cm-gutters > .cm-lineNumbers)
   > .cm-gutters {
-    position: absolute;
-    inset-inline-start: auto;
-    inset-inline-end: calc(100% + var(--b16-heading-fold-offset) + 4px);
-    inline-size: max-content;
-    margin-inline-end: 0;
-  }
+  /* CodeMirror writes `position: sticky` as an inline style on this node. */
+  position: absolute !important;
+  inset-inline-start: auto;
+  inset-inline-end: calc(100% + var(--b16-heading-fold-offset) + 4px);
+  inline-size: max-content;
+  margin-inline-end: 0;
+}
 
+body:not(.is-mobile).theme-dark
+  .markdown-source-view.mod-cm6.is-readable-line-width
+  .cm-contentContainer:has(> .cm-gutters > .cm-lineNumbers)
   > .cm-content {
-    inline-size: 100%;
-  }
+  inline-size: 100%;
+}
 
-  /* Do not stack two coordinate systems in the same narrow utility column.
-     With line numbers enabled they are the precise locator; heading depth
-     stays encoded by the type hierarchy and the native fold control. Without
-     that gutter this whole block does not match, so the H1-H6 labels retain
-     their existing hover/persistent behaviour unchanged. */
+/* Do not stack two coordinate systems in the same narrow utility column.
+   Actual line numbers are the precise locator; heading depth stays encoded
+   by the type hierarchy and the native fold control. */
+body:not(.is-mobile).theme-dark
+  .markdown-source-view.mod-cm6.is-readable-line-width
+  .cm-contentContainer:has(> .cm-gutters > .cm-lineNumbers)
   .cm-line.HyperMD-header:not(.HyperMD-quote)::before {
-    display: none;
-  }
+  display: none;
 }
 
 /* Properties */
@@ -3459,6 +3511,8 @@ body {
 
 .workspace-leaf-content[data-type='markdown'] .metadata-container:hover .metadata-content,
 .workspace-leaf-content[data-type='markdown'] .frontmatter-container:hover .metadata-content,
+.workspace-leaf-content[data-type='markdown'] .metadata-container:focus-within .metadata-content,
+.workspace-leaf-content[data-type='markdown'] .frontmatter-container:focus-within .metadata-content,
 .workspace-leaf-content[data-type='markdown']
   .inline-title:hover
   ~ .metadata-container
@@ -3482,7 +3536,7 @@ body {
 /* multi select pill fix */
 .multi-select-pill .multi-select-pill-remove-button {
   margin-left: -3px;
-  color: var(--color-red);
+  color: var(--b16-status-error-text);
 }
 .multi-select-pill-remove-button:not(:hover) {
   opacity: 0;
@@ -4020,12 +4074,7 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
   font-size: var(--font-text-size);
 }
 
-/* .modal.task-search-modal is foreign (the Task Search plugin's own
-   modal — verified via app.plugins.manifests["task-search"], not the
-   Tasks plugin / obsidian-tasks-plugin despite the name similarity),
-   kept here because it shares this exact declaration block with the
-   modal selectors. */
-.theme-dark:not(.is-mobile) :is(.prompt, .float-search-modal, .modal.task-search-modal) {
+.theme-dark:not(.is-mobile) .prompt {
   position: absolute;
   top: calc(var(--header-height) + 10px) !important;
   left: 10px !important;
@@ -4039,20 +4088,12 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
 .modal-container.mod-dim .modal {
   box-shadow: none;
 }
-.theme-dark:not(.is-mobile) .float-search-modal {
-  min-height: 96%;
-}
 /* Search mode is metadata for the query, not result content. */
 .theme-dark .prompt .hybrid-search-mode-badge {
   font-size: var(--b16-font-ui-s);
 }
 
-.float-search-modal-instructions {
-  display: none;
-}
-
-.prompt .suggestion-item,
-.float-search-modal {
+.prompt .suggestion-item {
   font-size: 100%;
   padding: 3px;
 }
@@ -4067,7 +4108,8 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
   background-color: transparent;
 }
 
-/* fix modal */
+/* Modal headings align with the content edge instead of inheriting document
+   section spacing. */
 .modal-content h1 {
   margin-top: 0;
 }
@@ -4109,11 +4151,11 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
 }
 
 .theme-dark .modal.mod-settings .checkbox-container:not(.is-enabled, .is-disabled) {
-  background-color: var(--b16-status-error);
+  background-color: var(--b16-toggle-off);
 }
 
 .theme-dark .modal.mod-settings .checkbox-container.is-enabled:not(.is-disabled) {
-  background-color: var(--b16-status-ok);
+  background-color: var(--b16-toggle-on);
 }
 
 /* Installed-plugin rows expose stable data-plugin-id attributes. Strengthen
@@ -4405,6 +4447,31 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
 }
 .board-row-title {
   font-size: var(--b16-font-ui-s);
+}
+
+/* Board group labels and card IDs are text affordances implemented as
+   <button> elements. The global button frame makes them look like form
+   controls and adds a false box around priority and ID metadata. Keep them
+   borderless at rest; the plugin's hover colour/background and its explicit
+   :focus-visible outline still communicate mouse and keyboard interaction. */
+.theme-dark .board-view :is(.board-header-menu, .board-row-collapse, .card-id) {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.theme-dark .board-view :is(.board-row-collapse, .card-id) {
+  min-height: 0;
+  padding-block: 0;
+}
+
+.theme-dark .board-view .board-row-collapse {
+  padding-inline: 0;
+  transition: color 0.12s ease;
+}
+
+.theme-dark .board-view .board-row-collapse:hover {
+  color: var(--b16-text-strong);
 }
 /* Cells — no background, no border */
 .board-cell {
@@ -4909,7 +4976,7 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
 
 .workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER']
   .longform-remove-step-button:hover {
-  color: var(--b16-status-error);
+  color: var(--b16-status-error-text);
   background-color: var(--b16-surface-2);
 }
 
@@ -4943,7 +5010,7 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
 .workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER']
   button.longform-remove-step-button:hover {
   background: var(--b16-surface-2);
-  color: var(--b16-status-error);
+  color: var(--b16-status-error-text);
 }
 
 /* ===== 50-plugins/misc.css ===== */
@@ -4955,16 +5022,6 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
 /* Web Viewer change background color of website */
 .webviewer-content webview {
   background-color: var(--background-primary) !important;
-}
-
-/* zoom colors */
-.zoom-plugin-title {
-  color: var(--b16-text-faint);
-}
-
-/* datepicker */
-.datepicker-widget {
-  background-color: transparent;
 }
 
 /* gray em text in quickadd */
@@ -5002,8 +5059,8 @@ body .various-complements__suggestion-item {
   content: ']]';
 }
 
-/* editing toolbar fix */
-body:not(.normal-header-bar) #cMenuToolbarModalBar.top {
+/* Editing Toolbar's top placement owns its right edge. */
+#cMenuToolbarModalBar.top {
   margin-right: 0;
 }
 
@@ -5249,7 +5306,7 @@ body.theme-dark.virtual-link-color-only
 
 .theme-dark
   :is(.embedded-backlinks, .embedded-similar-notes)
-  :is(.tree-item-flair, .search-result-count, .hybrid-search-score) {
+  :is(.tree-item-flair, .hybrid-search-score) {
   /* The label size is for a block's title bar. A relevance score is neither
      a title nor content — it annotates the row it sits on, and at 17px it
      read as loud as the note title beside it. Bottom of the UI ramp. */
@@ -5490,7 +5547,7 @@ body .another-quick-switcher__status__count-input {
       border-color: color-mix(in srgb, var(--b16-status-error) 35%, transparent);
 
       .task-description {
-        color: color-mix(in srgb, var(--b16-status-error) 80%, transparent);
+        color: var(--b16-status-error-text);
       }
     }
 

@@ -11,14 +11,15 @@ one file per concern, and the filename sort order IS the cascade order:
 src/00-palette.css  01-tokens.css  02-base.css
     10-headings.css 11-text.css 12-lists.css 13-blockquote.css
     20-callouts.css 21-tables.css 22-code.css 23-math.css 24-embeds.css
-    30-editor.css   40-chrome.css 41-modals.css 41-settings.css
-    50-plugins/*.css
+    25-mermaid.css 26-canvas.css 27-graph.css 30-editor.css
+    40-chrome.css 41-modals.css 41-settings.css 42-mobile.css
+    50-plugins/{bases,calendar,longform,misc,quick-switcher,quickadd,tasks}.css
 ```
 
 `npm run build` concatenates them into the readable development artifact `theme.css`.
 `npm run build:dist` additionally produces the minified release artifact
 `dist/theme.css`; never edit or commit that ignored directory. `npm run check` builds and
-then runs every gate (lint, normalize test, tokens, contrast, scale, vars, minified
+then runs every gate (lint, tokens, contrast, scale, vars, minified semantic
 structure). The pre-commit hook runs `npm run check` and refuses the commit if it fails.
 
 Edit `src/`, run `npm run check`, commit the sources **and** the regenerated `theme.css`
