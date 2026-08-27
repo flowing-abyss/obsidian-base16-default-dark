@@ -1,0 +1,44 @@
+/* ABYSS TASKS */
+/* Abyss Tasks renders the mutually exclusive Day / Week / Month buttons
+   inside a filled, padded capsule. The buttons themselves already follow the
+   theme's flat control contract, so that extra material reads as a second,
+   unrelated control behind them. Keep the tight gap that communicates one
+   view switcher, but let every button use the same height and surface as the
+   adjacent Today action. */
+.theme-dark .abyss-cal-view-switcher {
+  padding: 0;
+  background: transparent;
+  border-radius: var(--b16-radius-control);
+}
+
+/* Priority is semantic data in this popover, not ordinary button chrome.
+   The shared button contract deliberately owns the neutral foreground of
+   generic controls; these plugin-scoped variables restore the hue carried by
+   each flag without changing the contract's geometry or interaction states.
+
+   `body.theme-dark` gives this late plugin layer exactly enough specificity
+   to beat the generic button rule in every state, including the active flag,
+   without `!important` and without reaching any other plugin button. */
+body.theme-dark .abyss-status-popover-flag[data-abyss-priority] {
+  color: var(--b16-abyss-priority-color, var(--text-muted));
+}
+
+body.theme-dark .abyss-status-popover-flag[data-abyss-priority='A'] {
+  --b16-abyss-priority-color: var(--color-red);
+}
+
+body.theme-dark .abyss-status-popover-flag[data-abyss-priority='B'] {
+  --b16-abyss-priority-color: var(--color-orange);
+}
+
+body.theme-dark .abyss-status-popover-flag[data-abyss-priority='C'] {
+  --b16-abyss-priority-color: var(--color-yellow);
+}
+
+body.theme-dark .abyss-status-popover-flag[data-abyss-priority='E'] {
+  --b16-abyss-priority-color: var(--color-blue);
+}
+
+body.theme-dark .abyss-status-popover-flag[data-abyss-priority='F'] {
+  --b16-abyss-priority-color: var(--color-purple);
+}
