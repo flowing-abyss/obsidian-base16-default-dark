@@ -24,6 +24,8 @@
    snippet, where that input schema is known. */
 .theme-dark .callout {
   --b16-callout-color: var(--callout-color);
+  --b16-callout-title-color: var(--b16-callout-color);
+  --b16-callout-icon-color: var(--b16-callout-color);
   --callout-title-weight: 700;
 
   background-color: transparent;
@@ -54,7 +56,7 @@
   margin: 0;
   padding: 0 0.9em;
   background-color: color-mix(in srgb, var(--b16-callout-color) 12%, transparent);
-  color: var(--b16-callout-color);
+  color: var(--b16-callout-title-color);
   font-size: var(--b16-label-size);
   font-weight: var(--callout-title-weight);
   line-height: var(--b16-label-line-height);
@@ -65,8 +67,9 @@
 /* Use the resolved colour directly so the icon, rail and title stay one
    semantic signal. */
 .theme-dark .callout-icon,
-.theme-dark .callout-icon .svg-icon {
-  color: var(--b16-callout-color);
+.theme-dark .callout-icon .svg-icon,
+.theme-dark .callout-fold {
+  color: var(--b16-callout-icon-color);
   display: flex;
   align-items: center;
   flex-shrink: 0;
@@ -231,28 +234,29 @@
 }
 .theme-dark .callout[data-callout='toc'] {
   --callout-icon: lucide-list-tree;
-  /* TOC is structural chrome around links, not a link itself. Its clean
-     neutral is slightly stronger than quote so the container remains
-     explicit while the entries retain the navigation hue. */
-  --b16-callout-color: var(--b16-callout-toc);
-}
-
-/* Multi-column callouts are layout containers, not semantic annotations.
-   Their rail and band may stay quiet, but the section label must read like
-   document UI rather than like a subdued category colour. Keep the icon and
-   fold affordance one step below the title so the hierarchy remains strict. */
-.theme-dark .callout[data-callout^='col'] {
   --b16-callout-color: var(--b16-callout-neutral);
 }
 
-.theme-dark .callout[data-callout^='col'] .callout-title {
-  color: var(--b16-text-normal);
+/* Neutral callouts use the exact Col 2 hierarchy. Their rail and 12% band
+   identify a bounded block; neither is asked to carry text. The label uses
+   normal prose contrast and the icon/fold control sits one step below it.
+   Default quotes participate only when they have no external annotation
+   metadata, so Zotero colours continue to own their full shell. */
+.theme-dark
+  .callout:is(
+    [data-callout='quote']:not([data-callout-metadata^='#']),
+    [data-callout='cite']:not([data-callout-metadata^='#']),
+    [data-callout='toc'],
+    [data-callout^='col']
+  ) {
+  --b16-callout-color: var(--b16-callout-neutral);
+  --b16-callout-title-color: var(--b16-text-normal);
+  --b16-callout-icon-color: var(--b16-text-muted);
 }
 
-.theme-dark
-  .callout[data-callout^='col']
-  :is(.callout-icon, .callout-icon .svg-icon, .callout-fold) {
-  color: var(--b16-text-muted);
+/* Multi-column callouts are layout containers, not semantic annotations. */
+.theme-dark .callout[data-callout^='col'] {
+  --b16-callout-color: var(--b16-callout-neutral);
 }
 
 /* Custom vocabulary gets deliberate icons instead of silently inheriting

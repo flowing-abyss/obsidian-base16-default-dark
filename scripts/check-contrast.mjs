@@ -48,7 +48,6 @@ const CALLOUT_ROLES = [
   'callout-structural',
   'callout-code',
   'callout-neutral',
-  'callout-toc',
 ];
 
 const hexToRgb = (hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
@@ -231,14 +230,47 @@ if (tagTextRatio < 5.5 || tagTextRatio > 8) {
   failed++;
 }
 
-// A multi-column callout is structural UI rather than a semantic warning.
-// Its neutral band remains quiet, while its title uses normal text so labels
-// such as "Statistics" never collapse into low-emphasis chrome.
-const layoutBand = mix(hexOf('callout-neutral'), hexOf('surface-0'), 0.12);
-const layoutTitleRatio = contrast(hexOf('text-normal'), layoutBand);
-if (layoutTitleRatio < 9 || layoutTitleRatio > 12) {
+// Quotes without annotation metadata, TOC and layout callouts share one
+// neutral hierarchy: a quiet band, normal title text and a muted icon. This
+// is intentionally tested as a component relationship rather than as three
+// nearly identical grey endpoints.
+const neutralBand = mix(hexOf('callout-neutral'), hexOf('surface-0'), 0.12);
+const neutralTitleRatio = contrast(hexOf('text-normal'), neutralBand);
+const neutralIconRatio = contrast(hexOf('text-muted'), neutralBand);
+if (neutralTitleRatio < 9 || neutralTitleRatio > 12) {
   console.error(
-    `FAIL layout-callout title/band ${layoutTitleRatio.toFixed(2)} outside 9.00–12.00`,
+    `FAIL neutral-callout title/band ${neutralTitleRatio.toFixed(2)} outside 9.00–12.00`,
+  );
+  failed++;
+}
+if (neutralIconRatio < 6.5 || neutralIconRatio > 9) {
+  console.error(
+    `FAIL neutral-callout icon/band ${neutralIconRatio.toFixed(2)} outside 6.50–9.00`,
+  );
+  failed++;
+}
+
+// Tabbed deliberately adds no surface of its own. Inactive labels must remain
+// effortless to scan on the page, while the shared hover/focus/active button
+// rail is allowed one stronger step without becoming a banner.
+const tabbedIdleRatio = contrast(hexOf('text-muted'), hexOf('surface-0'));
+const tabbedActiveRatio = contrast(hexOf('text-normal'), hexOf('surface-0'));
+const tabbedRailRatio = contrast(hexOf('accent-link'), hexOf('surface-0'));
+if (tabbedIdleRatio < 6.5 || tabbedIdleRatio > 9) {
+  console.error(
+    `FAIL tabbed inactive-label/page ${tabbedIdleRatio.toFixed(2)} outside 6.50–9.00`,
+  );
+  failed++;
+}
+if (tabbedActiveRatio < 10 || tabbedActiveRatio > 13) {
+  console.error(
+    `FAIL tabbed active-label/panel ${tabbedActiveRatio.toFixed(2)} outside 10.00–13.00`,
+  );
+  failed++;
+}
+if (tabbedRailRatio < 5.5 || tabbedRailRatio > 8) {
+  console.error(
+    `FAIL tabbed active-rail/panel ${tabbedRailRatio.toFixed(2)} outside 5.50–8.00`,
   );
   failed++;
 }

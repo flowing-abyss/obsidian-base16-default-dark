@@ -76,7 +76,6 @@
      chrome, while the rail still identifies a callout at a glance. */
   --b16-callout-code: #afb8bb;
   --b16-callout-neutral: #989898;
-  --b16-callout-toc: #a0a0a0;
 
   /* Canvas palette — preserve the Base16 hues and chroma, but equalise
      perceptual lightness. The canonical colours range from OKLCH 0.53

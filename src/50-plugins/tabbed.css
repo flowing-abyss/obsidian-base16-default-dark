@@ -1,0 +1,89 @@
+/* TABBED
+   Tabs inside a note are document structure, not a row of standalone action
+   buttons. Keep both the list and panel on the page surface, then spend the
+   interactive accent only on the shared button-state rail. Embedded prose,
+   Bases and callouts therefore preserve their normal contrast, and switching
+   context does not require the eye to parse a second background plane. */
+.theme-dark .tabbed {
+  color: var(--b16-text-normal);
+  background: transparent;
+  border-radius: var(--b16-radius-s);
+  box-shadow: none;
+}
+
+.theme-dark .tabbed.tabbed--border-none {
+  border-width: 0;
+}
+
+.theme-dark .tabbed > .tabbed__list {
+  gap: calc(var(--font-text-size) * 0.3);
+  padding: 0;
+  background: transparent;
+  border: 0;
+  scrollbar-width: thin;
+}
+
+/* Tabs are navigation labels, not five equally prominent commands. Keep the
+   hit area of a compact button but reveal its frame only when it carries
+   interaction or selection. This leaves the panel content as the page's
+   primary visual layer while the single left rail preserves orientation. */
+.theme-dark.theme-dark .tabbed > .tabbed__list > :is(button.tabbed__tab, button.tabbed__action) {
+  min-width: calc(var(--font-text-size) * 1.5);
+  min-height: calc(var(--font-text-size) * 1.5);
+  padding: 0 0.75em;
+  color: var(--b16-text-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--b16-radius-control);
+  box-shadow: none;
+  font-size: var(--b16-label-size);
+  font-weight: 550;
+  line-height: var(--b16-label-line-height);
+  transition:
+    color 0.1s ease,
+    border-color 0.1s ease,
+    box-shadow 0.1s ease;
+}
+
+.theme-dark.theme-dark
+  .tabbed
+  > .tabbed__list
+  > :is(button.tabbed__tab, button.tabbed__action):hover {
+  color: var(--b16-text-normal);
+  background: transparent;
+  border-color: var(--b16-border-normal);
+}
+
+.theme-dark.theme-dark
+  .tabbed
+  > .tabbed__list
+  > :is(button.tabbed__tab, button.tabbed__action):is(
+    :focus-visible,
+    .is-active,
+    [aria-selected='true']
+  ) {
+  color: var(--b16-text-normal);
+  background: transparent;
+  border-color: var(--b16-border-normal);
+  box-shadow: inset 1px 0 0 var(--b16-accent-link);
+  outline: none;
+}
+
+.theme-dark.theme-dark
+  .tabbed
+  > .tabbed__list
+  > :is(button.tabbed__tab, button.tabbed__action):focus-visible {
+  border-color: var(--b16-border-strong);
+}
+
+.theme-dark .tabbed > .tabbed__panel {
+  color: var(--b16-text-normal);
+  background: transparent;
+}
+
+/* A nested tab list is a second navigation level, not a continuation of the
+   parent row. A small type-relative step separates the two without adding a
+   surface or making the hierarchy feel like a separate card. */
+.theme-dark .tabbed > .tabbed__panel .tabbed {
+  padding-block-start: calc(var(--font-text-size) * 0.4);
+}
