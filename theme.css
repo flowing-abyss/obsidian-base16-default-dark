@@ -995,7 +995,10 @@
   border-right: var(--b16-fold-marker-stroke) solid currentcolor;
   border-bottom: var(--b16-fold-marker-stroke) solid currentcolor;
   content: '';
-  transform: rotate(45deg);
+  /* The two visible borders occupy the lower half of the rotated square.
+     Lift the open V by a quarter of its own size so its painted bounds, not
+     the invisible construction box, are vertically centred. */
+  transform: translateY(-25%) rotate(45deg);
   transform-origin: center;
 }
 
