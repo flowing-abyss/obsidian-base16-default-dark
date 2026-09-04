@@ -1687,89 +1687,125 @@ ul > li::marker,
   background: var(--background-primary);
 }
 
-/* LEVEL 1 */
-.markdown-reading-view ul > li > .list-bullet::after,
-.markdown-source-view.mod-cm6 .HyperMD-list-line-1 .list-bullet::after {
-  /* Solid Square */
-  height: 6px;
-  width: 6px;
-  border-radius: 0;
+/* Org/Roam-inspired list nodes. Indentation and guide rails already encode
+   absolute depth, so the marker only needs a short, repeatable rhythm:
+   node → ring → micro-node. Circles deliberately distinguish structural
+   prose from the theme's square task controls. Plugin-owned List Callouts
+   keep their own semantic marker instead of inheriting this grammar. */
+.theme-dark
+  .markdown-reading-view
+  :where(li:not(.task-list-item, .lc-list-callout))
+  > .list-bullet::after,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-list-line:not(.HyperMD-task-line, .lc-list-callout)
+  .list-bullet::after {
+  width: 5px;
+  height: 5px;
   background-color: var(--bullet-new-color);
+  border: 0;
+  border-radius: 50%;
   contain: paint;
 }
 
-/* .HyperMD-list-line-1:not(.HyperMD-task-line[data-task]):has(.cm-hmd-internal-link) { */
-/* LEVEL 2 */
-.markdown-reading-view ul > li > ul > li > .list-bullet::after,
-.markdown-source-view.mod-cm6 .HyperMD-list-line-2 .list-bullet::after {
-  /* Bar */
-  height: 2px;
-  width: 8px;
-  border-radius: 0;
-  background-color: var(--bullet-new-color);
-}
-
-/* LEVEL 3 */
-.markdown-reading-view ul > li > ul > li > ul > li > .list-bullet::after,
-.markdown-source-view.mod-cm6 .HyperMD-list-line-3 .list-bullet::after {
-  /* Hollow Square */
-  height: 5px;
+/* Levels 4 and 7 restart the cycle. Their explicit depth selectors reset
+   the more specific nested rules inherited from the preceding levels. */
+.theme-dark .markdown-reading-view ul > li > ul > li > ul > li > ul > li > .list-bullet::after,
+.theme-dark
+  .markdown-reading-view
+  ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > .list-bullet::after,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  :is(.HyperMD-list-line-4, .HyperMD-list-line-7):not(.HyperMD-task-line, .lc-list-callout)
+  .list-bullet::after {
   width: 5px;
-  background-color: transparent;
-  border-color: var(--bullet-new-color);
-  border-style: solid;
-  border-radius: 0;
-  border-width: 1px;
-}
-
-/* LEVEL 4 */
-.markdown-reading-view ul > li > ul > li > ul > li > ul > li > .list-bullet::after,
-.markdown-source-view.mod-cm6 .HyperMD-list-line-4 .list-bullet::after {
-  /* Solid Square small */
-  height: 4px;
-  width: 4px;
-  border-radius: 0;
+  height: 5px;
   background-color: var(--bullet-new-color);
+  border: 0;
 }
 
-/* LEVEL 5 */
-.markdown-reading-view ul > li > ul > li > ul > li > ul > li > ul > li > .list-bullet::after,
-.markdown-source-view.mod-cm6 .HyperMD-list-line-5 .list-bullet::after {
-  /* Bar thin */
-  height: 1px;
+/* Levels 2, 5 and 8: an open node keeps adjacent levels distinct without
+   introducing a second colour or a decorative glyph. */
+.theme-dark .markdown-reading-view ul > li > ul > li > .list-bullet::after,
+.theme-dark
+  .markdown-reading-view
+  ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > .list-bullet::after,
+.theme-dark
+  .markdown-reading-view
+  ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > .list-bullet::after,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  :is(.HyperMD-list-line-2, .HyperMD-list-line-5, .HyperMD-list-line-8):not(
+    .HyperMD-task-line,
+    .lc-list-callout
+  )
+  .list-bullet::after {
   width: 6px;
-  border-radius: 0;
-  background-color: var(--bullet-new-color);
-}
-
-/* LEVEL 6 */
-.markdown-reading-view
-  ul
-  > li
-  > ul
-  > li
-  > ul
-  > li
-  > ul
-  > li
-  > ul
-  > li
-  > ul
-  > li
-  > .list-bullet::after,
-.markdown-source-view.mod-cm6 .HyperMD-list-line-6 .list-bullet::after {
-  /* Hollow Square small */
-  height: 3px;
-  width: 3px;
+  height: 6px;
   background-color: transparent;
-  border-color: var(--bullet-new-color);
-  border-style: solid;
-  border-radius: 0;
-  border-width: 1px;
+  border: 1px solid var(--bullet-new-color);
+  box-sizing: border-box;
 }
 
-/* LEVEL 7 */
-.markdown-reading-view
+/* Levels 3, 6 and 9: the smallest filled node closes the cycle. */
+.theme-dark .markdown-reading-view ul > li > ul > li > ul > li > .list-bullet::after,
+.theme-dark
+  .markdown-reading-view
+  ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > .list-bullet::after,
+.theme-dark
+  .markdown-reading-view
   ul
   > li
   > ul
@@ -1784,13 +1820,22 @@ ul > li::marker,
   > li
   > ul
   > li
+  > ul
+  > li
+  > ul
+  > li
   > .list-bullet::after,
-.markdown-source-view.mod-cm6 .HyperMD-list-line-7 .list-bullet::after {
-  /* Micro dot */
-  height: 2px;
-  width: 2px;
-  border-radius: 0;
+.theme-dark
+  .markdown-source-view.mod-cm6
+  :is(.HyperMD-list-line-3, .HyperMD-list-line-6, .HyperMD-list-line-9):not(
+    .HyperMD-task-line,
+    .lc-list-callout
+  )
+  .list-bullet::after {
+  width: 3px;
+  height: 3px;
   background-color: var(--bullet-new-color);
+  border: 0;
 }
 
 /* fix task checkbox */
