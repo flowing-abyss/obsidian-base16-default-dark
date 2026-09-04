@@ -255,8 +255,9 @@
 
 /* The bare fence's native flair is only a copy action, not a language label:
    remove the synthetic code glyph and return the control to the quiet
-   top-right placement used by Reading mode. It appears when the first content
-   row is hovered, so the resting block remains visually identical. */
+   top-right placement used by Reading mode. Keep it present at rest, matching
+   language blocks: hiding it behind a sibling-row :hover made the control
+   disappear as the pointer crossed from that row onto the control itself. */
 .theme-dark
   .markdown-source-view.mod-cm6
   .HyperMD-codeblock-begin[data-code-plain]
@@ -266,8 +267,11 @@
   top: calc(var(--font-text-size) * 0.65);
   bottom: auto;
   gap: 0;
-  opacity: 0;
-  pointer-events: none;
+  color: var(--b16-text-faint);
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 .theme-dark
@@ -279,10 +283,26 @@
 
 .theme-dark
   .markdown-source-view.mod-cm6
-  .HyperMD-codeblock-begin[data-code-plain]:has(+ .HyperMD-codeblock[data-code-plain]:hover)
-  .code-block-flair {
+  .HyperMD-codeblock-begin[data-code-plain]
+  .code-block-flair:hover {
+  color: var(--b16-text-muted);
+}
+
+/* Reading mode follows the same persistent-copy contract. Obsidian's native
+   rule fades the action on an unlabelled <pre>; overriding only visibility
+   leaves its tested placement and hit target intact while eliminating the
+   mode-dependent appearance described above. */
+.theme-dark .markdown-rendered pre:not([class]) > .copy-code-button,
+.theme-dark .markdown-rendered pre[data-code-plain] > .copy-code-button {
+  color: var(--b16-text-faint);
   opacity: 1;
+  visibility: visible;
   pointer-events: auto;
+}
+
+.theme-dark .markdown-rendered pre:not([class]) > .copy-code-button:hover,
+.theme-dark .markdown-rendered pre[data-code-plain] > .copy-code-button:hover {
+  color: var(--b16-text-muted);
 }
 
 /* Header band, both modes.
