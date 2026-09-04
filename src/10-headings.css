@@ -344,13 +344,13 @@
 }
 
 /* Heading folding. Obsidian gives Live Preview a full-line flex container but
-   Reading view a fixed 20px square pinned to the line's top; it also renders
-   their SVGs at 10px and 8x10px respectively. One control geometry makes the
+   Reading view a fixed 20px square pinned to the line's top; its native icon
+   also differs in size between the two modes. One control geometry makes the
    affordance mode-independent: `1lh` centres it on the heading's first line,
-   including a wrapped heading, while the icon remains a constant UI size
-   rather than growing from H6 to H1. Padding has to be reset explicitly —
-   Live Preview reserves 5px on the right and otherwise shifts the SVG off the
-   container's mathematical centre. */
+   including a wrapped heading, while the custom marker below remains a
+   constant UI size rather than growing from H6 to H1. Padding has to be reset
+   explicitly — Live Preview reserves 5px on the right and otherwise shifts
+   the mark off the container's mathematical centre. */
 .theme-dark .markdown-preview-view :is(h1, h2, h3, h4, h5, h6) {
   /* Reading view normally positions the absolute indicator from its static
      inline position. A wrapped heading can move that position to line two;
@@ -377,11 +377,77 @@
   left: calc(-1 * var(--b16-heading-fold-offset));
 }
 
-.theme-dark .markdown-preview-view .heading-collapse-indicator svg,
-.theme-dark .markdown-source-view.mod-cm6 .cm-line.HyperMD-header .collapse-indicator svg {
+/* Document folding. Headings, nested lists and callouts expose different DOM
+   wrappers for the same action. Keep their native hit targets and state
+   classes, but replace the rounded Lucide chevron with one square-ended
+   corner: down means open, right means collapsed. The mark borrows the
+   checkbox's 1.5px construction without borrowing its box or checked fill,
+   so the two controls feel related without becoming ambiguous. */
+.theme-dark
+  .markdown-rendered
+  :is(.heading-collapse-indicator, .list-collapse-indicator, .callout-fold)
+  > svg,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .cm-line:is(.HyperMD-header, .HyperMD-list-line)
+  .cm-fold-indicator
+  > .collapse-indicator
+  > svg {
+  display: none;
+}
+
+.theme-dark
+  .markdown-rendered
+  :is(.heading-collapse-indicator, .list-collapse-indicator, .callout-fold)::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .cm-line:is(.HyperMD-header, .HyperMD-list-line)
+  .cm-fold-indicator
+  > .collapse-indicator::before {
+  box-sizing: border-box;
   flex: none;
-  width: var(--b16-heading-fold-icon-size);
-  height: var(--b16-heading-fold-icon-size);
+  width: var(--b16-fold-marker-size);
+  height: var(--b16-fold-marker-size);
+  border-right: var(--b16-fold-marker-stroke) solid currentcolor;
+  border-bottom: var(--b16-fold-marker-stroke) solid currentcolor;
+  content: '';
+  transform: rotate(45deg);
+  transform-origin: center;
+}
+
+/* Native Obsidian colours the SVG itself, not the surrounding hit target.
+   The SVG is hidden above, so route the neutral structural hierarchy onto
+   the custom mark explicitly. Callout folds are intentionally excluded:
+   their current colour identifies the callout type. */
+.theme-dark .markdown-rendered :is(.heading-collapse-indicator, .list-collapse-indicator),
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .cm-line:is(.HyperMD-header, .HyperMD-list-line)
+  .cm-fold-indicator
+  > .collapse-indicator {
+  color: var(--b16-text-faint);
+}
+
+.theme-dark
+  .markdown-rendered
+  :is(.heading-collapse-indicator, .list-collapse-indicator):is(:hover, .is-collapsed),
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .cm-line:is(.HyperMD-header, .HyperMD-list-line)
+  .cm-fold-indicator
+  > .collapse-indicator:is(:hover, .is-collapsed) {
+  color: var(--b16-text-muted);
+}
+
+.theme-dark
+  .markdown-rendered
+  :is(.heading-collapse-indicator, .list-collapse-indicator, .callout-fold).is-collapsed::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .cm-line:is(.HyperMD-header, .HyperMD-list-line)
+  .cm-fold-indicator
+  > .collapse-indicator.is-collapsed::before {
+  transform: rotate(-45deg);
 }
 
 /* A heading inside a callout keeps the callout's own surface — painting
