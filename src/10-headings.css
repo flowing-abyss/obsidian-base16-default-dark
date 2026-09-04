@@ -46,7 +46,10 @@
   margin-top: 38px;
 }
 
-.hover-popover .inline-title {
+/* Obsidian gives footnote previews data-type="footnote" and intentionally
+   hides their empty inline title. Preserve that compact contract while
+   retaining the document title in every ordinary note/heading preview. */
+.hover-popover .markdown-embed:not([data-type='footnote']) .inline-title {
   margin-top: 0;
   display: block;
   text-align: left;

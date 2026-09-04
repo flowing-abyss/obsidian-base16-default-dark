@@ -252,6 +252,7 @@
   /* A footnote reference is a compact document index, not body copy and not
      UI chrome. Keep it readable while leaving a clear step below prose. */
   --b16-footnote-index-size: calc(var(--font-text-size) * 0.7);
+  --b16-footnote-rule: color-mix(in srgb, var(--b16-accent-link) 64%, transparent);
   /* h5/h6 are sans by design (labels, not prose) — set the input Obsidian
      already reads (--h5-font/--h6-font) instead of overriding the computed
      font-family on the heading rule itself. .theme-dark (0,1,0) also has to

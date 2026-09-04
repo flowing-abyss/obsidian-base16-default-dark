@@ -294,6 +294,7 @@
   /* A footnote reference is a compact document index, not body copy and not
      UI chrome. Keep it readable while leaving a clear step below prose. */
   --b16-footnote-index-size: calc(var(--font-text-size) * 0.7);
+  --b16-footnote-rule: color-mix(in srgb, var(--b16-accent-link) 64%, transparent);
   /* h5/h6 are sans by design (labels, not prose) — set the input Obsidian
      already reads (--h5-font/--h6-font) instead of overriding the computed
      font-family on the heading rule itself. .theme-dark (0,1,0) also has to
@@ -576,9 +577,9 @@
   letter-spacing: 0.02em;
   line-height: 1;
   text-decoration-line: underline;
-  text-decoration-color: var(--b16-border-strong);
+  text-decoration-color: var(--b16-footnote-rule);
   text-decoration-thickness: 1px;
-  text-underline-offset: 0.18em;
+  text-underline-offset: 0.25em;
   text-decoration-skip-ink: none;
 }
 
@@ -604,9 +605,9 @@
   letter-spacing: 0.02em;
   line-height: 1;
   text-decoration-line: underline;
-  text-decoration-color: var(--b16-border-strong);
+  text-decoration-color: var(--b16-footnote-rule);
   text-decoration-thickness: 1px;
-  text-underline-offset: 0.18em;
+  text-underline-offset: 0.25em;
   text-decoration-skip-ink: none;
 }
 
@@ -668,7 +669,10 @@
   margin-top: 38px;
 }
 
-.hover-popover .inline-title {
+/* Obsidian gives footnote previews data-type="footnote" and intentionally
+   hides their empty inline title. Preserve that compact contract while
+   retaining the document title in every ordinary note/heading preview. */
+.hover-popover .markdown-embed:not([data-type='footnote']) .inline-title {
   margin-top: 0;
   display: block;
   text-align: left;

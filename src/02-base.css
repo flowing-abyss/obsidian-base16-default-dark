@@ -87,9 +87,9 @@
   letter-spacing: 0.02em;
   line-height: 1;
   text-decoration-line: underline;
-  text-decoration-color: var(--b16-border-strong);
+  text-decoration-color: var(--b16-footnote-rule);
   text-decoration-thickness: 1px;
-  text-underline-offset: 0.18em;
+  text-underline-offset: 0.25em;
   text-decoration-skip-ink: none;
 }
 
@@ -115,9 +115,9 @@
   letter-spacing: 0.02em;
   line-height: 1;
   text-decoration-line: underline;
-  text-decoration-color: var(--b16-border-strong);
+  text-decoration-color: var(--b16-footnote-rule);
   text-decoration-thickness: 1px;
-  text-underline-offset: 0.18em;
+  text-underline-offset: 0.25em;
   text-decoration-skip-ink: none;
 }
 
