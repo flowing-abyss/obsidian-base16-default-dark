@@ -25,30 +25,29 @@
 }
 
 /* A transcluded note must remain visually lighter than a callout, but it
-   should not be mistaken for prose authored in the current file. A narrow
-   open bracket marks the borrowed range without restoring a filled card or
-   full border. Its square terminals continue the theme's technical line
-   language; the stronger state appears only when the embed is actionable. */
+   should not be mistaken for prose authored in the current file. A short
+   entry rail marks where borrowed content begins without enclosing it: this
+   stays compatible with callouts, images, and other framed content nested in
+   the embed. The stronger state appears only when the embed is actionable. */
 .theme-dark .internal-embed.markdown-embed {
   box-sizing: border-box;
-  padding-inline-start: var(--size-4-4);
+  padding-inline-start: var(--size-4-3);
 }
 
 .theme-dark .internal-embed.markdown-embed::before {
   position: absolute;
-  inset-block: var(--size-4-2);
+  inset-block-start: var(--b16-flow-gap);
   inset-inline-start: 0;
-  width: var(--size-4-2);
-  box-sizing: border-box;
-  border-block: 1px solid var(--b16-embed-marker);
-  border-inline-start: 1px solid var(--b16-embed-marker);
+  width: 2px;
+  height: var(--size-4-6);
+  background: var(--b16-embed-marker);
   content: '';
   pointer-events: none;
-  transition: border-color 120ms ease-out;
+  transition: background-color 120ms ease-out;
 }
 
 .theme-dark .internal-embed.markdown-embed:is(:hover, :focus-within)::before {
-  border-color: var(--b16-embed-marker-active);
+  background-color: var(--b16-embed-marker-active);
 }
 
 /* full width external embed */
