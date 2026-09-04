@@ -430,10 +430,13 @@ body:not(.classic-inline-backlinks) .embedded-backlinks .tree-item-inner {
    Highlights (mark / .cm-highlight) are semantic bands too: their visible
    `==` markers must inherit the band's readable foreground instead of staying
    cyan and disappearing into the yellow fill while the source is active.
-   Tags (.tag / .cm-hashtag) are included explicitly rather than relying on
-   the bare `a` reading-mode rule to catch `a.tag` by accident — without it
-   a tag's `#` sigil is micro-punct while the word is accent-tag, a two-tone
-   object in live preview. Code (.HyperMD-codeblock, .cm-inline-code, code,
+   Footnote references (.cm-footref) are document navigation too: their
+   delimiters stay faint and their index stays link blue instead of taking
+   the plugin's punctuation/digit hues. Tags (.tag / .cm-hashtag) are
+   included explicitly rather than relying on the bare `a` reading-mode rule
+   to catch `a.tag` by accident — without it a tag's `#` sigil is micro-punct
+   while the word is accent-tag, a two-tone object in live preview. Code
+   (.HyperMD-codeblock, .cm-inline-code, code,
    pre) is included for the same reason as the Prism `:not(.token)` guard
    above: syntax highlighting is already a complete colour system, and
    micro-syntax painting a digit or punctuation mark orange/cyan inside it
@@ -472,6 +475,7 @@ body:not(.classic-inline-backlinks) .embedded-backlinks .tree-item-inner {
     .cm-link,
     mark,
     .cm-highlight,
+    .cm-footref,
     strong,
     .cm-strong,
     .tag,

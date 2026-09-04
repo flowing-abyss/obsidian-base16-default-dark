@@ -72,24 +72,59 @@
   background-color: var(--text-selection);
 }
 
-/* Footnotes — a reference is a wayfinding mark, not content: small, in the
-   link accent so it reads as navigable. The back-reference arrow is quieter
-   still, because you only look for it once you are already down there. */
+/* Footnotes — a reference is a wayfinding index, not body copy. Monospace,
+   tabular numerals and one quiet underline give [1], [2] ... a technical
+   document rhythm without turning every citation into a filled chip. The
+   blue remains navigation rather than decoration; hover strengthens only
+   the underline. */
 .theme-dark .footnote-ref a {
+  display: inline-block;
   color: var(--b16-accent-link);
-  font-size: 0.75em;
+  font-family: var(--font-monospace);
+  font-size: var(--b16-footnote-index-size);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-decoration-line: underline;
+  text-decoration-color: var(--b16-border-strong);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  text-decoration-skip-ink: none;
+}
+
+.theme-dark .footnote-ref a:is(:hover, :focus-visible) {
+  text-decoration-color: var(--b16-accent-link);
 }
 
 .theme-dark .footnote-backref {
   color: var(--b16-text-faint);
 }
 
-/* Live preview never turns [^1] into reading mode's <sup class="footnote-
-   ref"><a>: CM6 keeps the raw syntax as span.cm-footref.cm-hmd-barelink
-   (colour var(--text-muted) by Obsidian's own rule) for the digit, and a
-   separate .cm-formatting span for the [^ / ] brackets, which stays faint
-   on its own and is deliberately left alone here. Only the digit gets the
-   same link-accent treatment as the reading-mode reference. */
+/* Live Preview keeps [^1] as three adjacent spans and syntax-highlighting
+   plugins may wrap ^ / the digit again. Give all fragments one typographic
+   rhythm, keep structural brackets faint, and reserve link blue for the
+   navigable number. Nested punctuation inherits so plugins cannot split the
+   reference into unrelated cyan and orange pieces. Inline footnotes lack
+   .cm-hmd-barelink and deliberately retain their editable prose style. */
+.theme-dark span.cm-footref.cm-hmd-barelink {
+  font-family: var(--font-monospace);
+  font-size: var(--b16-footnote-index-size);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-decoration-line: underline;
+  text-decoration-color: var(--b16-border-strong);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  text-decoration-skip-ink: none;
+}
+
+.theme-dark span.cm-footref.cm-hmd-barelink.cm-formatting {
+  color: var(--b16-text-faint);
+}
+
 .theme-dark span.cm-footref.cm-hmd-barelink:not(.cm-formatting) {
   color: var(--b16-accent-link);
 }
