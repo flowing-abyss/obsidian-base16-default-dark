@@ -49,6 +49,9 @@ together.
   components require the full screenshot suite.
 - Before removing a selector, verify that its Obsidian/plugin DOM no longer exists or
   provide runtime-coverage evidence.
+- Keep plugin-owned semantics in the plugin's supported configuration when possible.
+  Do not replace a plugin's intentional state, highlight, or color contract with a
+  theme-side selector merely to fix one composition.
 
 ## Obsidian CLI
 
@@ -77,6 +80,10 @@ Reload a community plugin only after rebuilding that plugin. The Micropatches pl
 ```shell
 obsidian vault="Obsidian" plugin:reload id=micropatches
 ```
+
+When a plugin configuration change affects rendered Markdown, do not restart Obsidian.
+Close the affected note, reload the plugin, then reopen the note so both CodeMirror
+decorations and Reading View post-processors are rebuilt from the new configuration.
 
 ## Releasing a new version
 
