@@ -528,6 +528,21 @@
   margin-block-start: 0;
 }
 
+/* A footnote hover-preview is already inset by Obsidian's compact
+   --file-margins. Its first rendered block follows either the preview pusher
+   directly or the hidden .mod-header; applying the document flow gap there
+   creates a false blank row above a one-line note. Remove only that first
+   gap — later blocks keep the normal reading rhythm, and ordinary note
+   previews never match data-type="footnote". */
+.theme-dark
+  .hover-popover
+  .markdown-embed[data-type='footnote']
+  .markdown-preview-section
+  > :is(.markdown-preview-pusher, .mod-header)
+  + :is(.el-p, .el-table, .el-pre, .el-blockquote, .el-ul, .el-ol, .el-div) {
+  margin-block-start: 0;
+}
+
 .theme-dark .markdown-preview-section > .el-p > p,
 .theme-dark .markdown-preview-section > .el-table > table,
 .theme-dark .markdown-preview-section > .el-pre > pre,
