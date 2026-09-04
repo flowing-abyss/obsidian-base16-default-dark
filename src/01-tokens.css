@@ -132,6 +132,10 @@
   --b16-highlight-bg-hover: rgba(210, 185, 60, 0.28);
   --b16-highlight-bg-confirmed: rgba(210, 185, 60, 0.34);
   --b16-tag-bg: rgba(134, 193, 185, 0.15);
+  /* Image captions sit over media rather than a predictable document
+     surface, so keep their veil translucent while naming the component role
+     here instead of recomputing a colour in the embed stylesheet. */
+  --b16-image-caption-bg: color-mix(in srgb, var(--b16-surface-0) 90%, transparent);
 
   /* Micro-syntax: the same hues as the accents, deliberately quieter. It
      marks what can be scanned, not what matters, so it must lose to a real

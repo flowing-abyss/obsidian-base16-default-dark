@@ -107,14 +107,14 @@
     inset-block-end: 1px;
     box-sizing: border-box;
     padding: var(--size-2-2) var(--size-4-3);
-    color: var(--text-muted);
+    color: var(--b16-text-muted);
     font-family: var(--font-interface);
     font-size: var(--font-ui-small);
     line-height: var(--line-height-tight);
     text-align: start;
     overflow-wrap: anywhere;
     pointer-events: none;
-    background-color: color-mix(in srgb, var(--background-primary) 90%, transparent);
+    background-color: var(--b16-image-caption-bg);
     border-block-start: 1px solid var(--b16-border-strong);
     border-end-start-radius: calc(var(--b16-radius-s) - 1px);
     border-end-end-radius: calc(var(--b16-radius-s) - 1px);
