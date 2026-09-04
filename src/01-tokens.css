@@ -54,6 +54,11 @@
      clears 4.5:1 on surface-2; opacity is never used to weaken it later. */
   --b16-code-comment: #8f8f8f;
 
+  /* List markers sit between indentation guides and prose. Giving them a
+     dedicated neutral keeps deep outlines traceable without promoting the
+     marker to text weight or borrowing a semantic accent hue. */
+  --b16-list-marker: #8f8f8f;
+
   /* Callouts are larger and more persistent than compact status marks, so
      they need their own perceptually balanced component palette. Every
      authored endpoint is a lower-case six-digit hex value; 20-callouts.css

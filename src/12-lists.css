@@ -16,7 +16,7 @@
    This drives every level's bullet/number colour below, in both reading
    and live preview, so the two modes cannot drift apart. */
 .theme-dark {
-  --bullet-new-color: var(--b16-text-faint);
+  --bullet-new-color: var(--b16-list-marker);
 }
 
 /* Change color for all types of markers
@@ -93,6 +93,10 @@ ul > li::marker,
   border: 0;
   border-radius: 50%;
   contain: paint;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 /* Level 2 — primary branch. */
