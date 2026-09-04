@@ -1499,6 +1499,37 @@
   margin-block: 2em;
 }
 
+/* A thematic break is a section boundary, not another full-width frame. Its
+   short strong stroke marks the change; the quiet continuation preserves the
+   document axis, and the empty beat between them makes the hierarchy legible
+   without adding another glyph. Keep this scoped to rendered Markdown: the
+   app also uses bare <hr> elements as pane resize handles. */
+.theme-dark :is(.markdown-rendered hr, .markdown-source-view.mod-cm6 .hr.cm-line > hr) {
+  position: relative;
+  height: 1px;
+  border: 0;
+  overflow: visible;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    height: 1px;
+  }
+
+  &::before {
+    inset-inline-start: 0;
+    width: var(--size-4-6);
+    background-color: var(--b16-border-strong);
+  }
+
+  &::after {
+    inset-inline: calc(var(--size-4-6) + var(--size-2-3)) 0;
+    background-color: var(--b16-border-faint);
+  }
+}
+
 /* remove underline from internal links */
 .cm-hmd-internal-link .cm-underline.cm-underline,
 .markdown-preview-view .internal-link:not(.multi-select-pill, .metadata-link-inner),
