@@ -21,6 +21,27 @@ body.theme-dark {
   font-weight: var(--b16-chrome-weight);
 }
 
+/* File-header breadcrumbs are structural micro-syntax: ancestors explain
+   location, while the note title remains the destination. Replace the
+   generic slash with a compact double chevron, using the same quiet
+   punctuation colour as other structural marks. Keep Obsidian's current
+   alignment and interaction model intact. */
+.theme-dark .view-header-breadcrumb-separator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 0.9rem;
+  color: var(--b16-micro-punct);
+  font-size: 0;
+}
+
+.theme-dark .view-header-breadcrumb-separator::after {
+  content: '»';
+  font-size: var(--file-header-font-size);
+  font-weight: var(--b16-chrome-weight);
+  line-height: 1;
+}
+
 /* Radii. This theme draws hard edges everywhere — code blocks, callouts,
    quotes, tables, checkboxes — and Obsidian's own chrome does not: the
    search field carries a hardcoded `border-radius: 100px` (measured), which
