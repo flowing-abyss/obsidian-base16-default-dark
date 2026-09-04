@@ -1693,6 +1693,22 @@ ul > li::marker,
   display: none;
 }
 
+/* Reading View's native bullet has zero width and sits a full 1em before the
+   text. Give prose markers the same quiet 8px gutter used after task controls,
+   while keeping the text and indentation-guide columns in place. The fixed
+   marker slot also keeps the different hierarchy shapes on one axis. */
+.theme-dark .markdown-reading-view li:not(.task-list-item, .lc-list-callout) > .list-bullet {
+  inline-size: 9px;
+  margin-inline-start: -17px;
+  margin-inline-end: 8px;
+}
+
+.theme-dark .markdown-reading-view li:not(.task-list-item, .lc-list-callout) > .list-bullet::after {
+  right: 0;
+  left: auto;
+  transform: translateY(-50%);
+}
+
 .theme-dark .markdown-rendered li.task-list-item.is-checked {
   color: var(--b16-text-faint);
   text-decoration: line-through;
@@ -1746,6 +1762,18 @@ ul > li::marker,
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+/* Source markers for -, * and + have different intrinsic widths. Anchor the
+   rendered shape from the token's trailing edge so every variant keeps the
+   same 8px distance from its text as task controls do. */
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-list-line:not(.HyperMD-task-line, .lc-list-callout)
+  .list-bullet::after {
+  right: 3.25px;
+  left: auto;
+  transform: translateY(-50%);
 }
 
 /* Level 2 — primary branch. */
