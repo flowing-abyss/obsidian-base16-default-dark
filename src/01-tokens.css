@@ -253,6 +253,10 @@
      UI chrome. Keep it readable while leaving a clear step below prose. */
   --b16-footnote-index-size: calc(var(--font-text-size) * 0.7);
   --b16-footnote-rule: color-mix(in srgb, var(--b16-accent-link) 64%, transparent);
+  /* Transclusion is an internal relationship, so its marker uses the same
+     hue as internal navigation at a deliberately lower visual weight. */
+  --b16-embed-marker: color-mix(in srgb, var(--b16-accent-link) 48%, transparent);
+  --b16-embed-marker-active: color-mix(in srgb, var(--b16-accent-link) 78%, transparent);
   /* h5/h6 are sans by design (labels, not prose) — set the input Obsidian
      already reads (--h5-font/--h6-font) instead of overriding the computed
      font-family on the heading rule itself. .theme-dark (0,1,0) also has to

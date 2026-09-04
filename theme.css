@@ -295,6 +295,10 @@
      UI chrome. Keep it readable while leaving a clear step below prose. */
   --b16-footnote-index-size: calc(var(--font-text-size) * 0.7);
   --b16-footnote-rule: color-mix(in srgb, var(--b16-accent-link) 64%, transparent);
+  /* Transclusion is an internal relationship, so its marker uses the same
+     hue as internal navigation at a deliberately lower visual weight. */
+  --b16-embed-marker: color-mix(in srgb, var(--b16-accent-link) 48%, transparent);
+  --b16-embed-marker-active: color-mix(in srgb, var(--b16-accent-link) 78%, transparent);
   /* h5/h6 are sans by design (labels, not prose) — set the input Obsidian
      already reads (--h5-font/--h6-font) instead of overriding the computed
      font-family on the heading rule itself. .theme-dark (0,1,0) also has to
@@ -3186,6 +3190,33 @@ body.theme-dark .markdown-preview-view.markdown-rendered pre > button.copy-code-
 .markdown-embed:hover .file-embed-link svg,
 .markdown-embed:hover .markdown-embed-link svg {
   opacity: 1;
+}
+
+/* A transcluded note must remain visually lighter than a callout, but it
+   should not be mistaken for prose authored in the current file. A narrow
+   open bracket marks the borrowed range without restoring a filled card or
+   full border. Its square terminals continue the theme's technical line
+   language; the stronger state appears only when the embed is actionable. */
+.theme-dark .internal-embed.markdown-embed {
+  box-sizing: border-box;
+  padding-inline-start: var(--size-4-4);
+}
+
+.theme-dark .internal-embed.markdown-embed::before {
+  position: absolute;
+  inset-block: var(--size-4-2);
+  inset-inline-start: 0;
+  width: var(--size-4-2);
+  box-sizing: border-box;
+  border-block: 1px solid var(--b16-embed-marker);
+  border-inline-start: 1px solid var(--b16-embed-marker);
+  content: '';
+  pointer-events: none;
+  transition: border-color 120ms ease-out;
+}
+
+.theme-dark .internal-embed.markdown-embed:is(:hover, :focus-within)::before {
+  border-color: var(--b16-embed-marker-active);
 }
 
 /* full width external embed */
