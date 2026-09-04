@@ -1920,6 +1920,16 @@ ul > li::marker,
   box-shadow: inset 0 0 0 2px var(--background-primary) !important;
 }
 
+/* The same 20px checkbox lands on different fractional x coordinates in the
+   two renderers (584.73px in Live Preview versus 584.38px in Reading View at
+   the verified zoom). Chromium consequently rasterizes the masked tick one
+   device pixel farther right in Live Preview. Move only that glyph by half a
+   CSS pixel; the control box, hit area and already-correct reading view stay
+   untouched. */
+.theme-dark .markdown-source-view.mod-cm6 .task-list-item-checkbox:checked::after {
+  transform: translateX(-0.5px);
+}
+
 /* ===== 13-blockquote.css ===== */
 
 /* Blockquotes */
