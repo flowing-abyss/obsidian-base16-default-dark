@@ -57,7 +57,7 @@
   /* List markers sit between indentation guides and prose. Giving them a
      dedicated neutral keeps deep outlines traceable without promoting the
      marker to text weight or borrowing a semantic accent hue. */
-  --b16-list-marker: #8f8f8f;
+  --b16-list-marker: #a6a6a6;
 
   /* Callouts are larger and more persistent than compact status marks, so
      they need their own perceptually balanced component palette. Every

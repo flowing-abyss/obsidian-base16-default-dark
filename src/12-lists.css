@@ -87,8 +87,8 @@ ul > li::marker,
   .markdown-source-view.mod-cm6
   .HyperMD-list-line:not(.HyperMD-task-line, .lc-list-callout)
   .list-bullet::after {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   background-color: var(--bullet-new-color);
   border: 0;
   border-radius: 50%;
@@ -105,7 +105,7 @@ ul > li::marker,
   .markdown-source-view.mod-cm6
   .HyperMD-list-line-2:not(.HyperMD-task-line, .lc-list-callout)
   .list-bullet::after {
-  width: 8px;
+  width: 9px;
   height: 2px;
   background-color: var(--bullet-new-color);
   border: 0;
@@ -118,10 +118,10 @@ ul > li::marker,
   .markdown-source-view.mod-cm6
   .HyperMD-list-line-3:not(.HyperMD-task-line, .lc-list-callout)
   .list-bullet::after {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   background-color: transparent;
-  border: 1px solid var(--bullet-new-color);
+  border: 1.5px solid var(--bullet-new-color);
   border-radius: 50%;
   box-sizing: border-box;
 }
@@ -132,8 +132,8 @@ ul > li::marker,
   .markdown-source-view.mod-cm6
   .HyperMD-list-line-4:not(.HyperMD-task-line, .lc-list-callout)
   .list-bullet::after {
-  width: 4px;
-  height: 4px;
+  width: 5px;
+  height: 5px;
   background-color: var(--bullet-new-color);
   border: 0;
   border-radius: 50%;
@@ -157,8 +157,8 @@ ul > li::marker,
   .markdown-source-view.mod-cm6
   .HyperMD-list-line-5:not(.HyperMD-task-line, .lc-list-callout)
   .list-bullet::after {
-  width: 6px;
-  height: 1px;
+  width: 8px;
+  height: 2px;
   background-color: var(--bullet-new-color);
   border: 0;
   border-radius: 0;
@@ -184,10 +184,10 @@ ul > li::marker,
   .markdown-source-view.mod-cm6
   .HyperMD-list-line-6:not(.HyperMD-task-line, .lc-list-callout)
   .list-bullet::after {
-  width: 4px;
-  height: 4px;
+  width: 5px;
+  height: 5px;
   background-color: transparent;
-  border: 1px solid var(--bullet-new-color);
+  border: 1.5px solid var(--bullet-new-color);
   border-radius: 50%;
   box-sizing: border-box;
 }
@@ -223,11 +223,31 @@ ul > li::marker,
     .HyperMD-list-line-12
   ):not(.HyperMD-task-line, .lc-list-callout)
   .list-bullet::after {
-  width: 3px;
-  height: 3px;
+  width: 4px;
+  height: 4px;
   background-color: var(--bullet-new-color);
   border: 0;
   border-radius: 50%;
+}
+
+/* Hover traces the branch immediately containing the pointed item. Live
+   Preview exposes each ancestor guide inside the line, so the last segment is
+   the nearest parent. Reading View draws one continuous guide on the parent
+   list; :has() is required there because that guide precedes its hovered item
+   in the DOM. The nested-list exclusion prevents hover bubbling from lighting
+   every ancestor. Keep the response neutral: this is navigation, not emphasis. */
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-list-line:hover
+  .cm-hmd-list-indent
+  > .cm-indent:last-child::before {
+  border-inline-end-color: var(--indentation-guide-color-active);
+}
+
+.theme-dark
+  .markdown-reading-view
+  :is(ul, ol):has(> li:hover):not(:has(> li > :is(ul, ol):hover))::before {
+  border-inline-end-color: var(--indentation-guide-color-active);
 }
 
 /* fix task checkbox */
