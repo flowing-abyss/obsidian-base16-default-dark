@@ -295,10 +295,12 @@
      UI chrome. Keep it readable while leaving a clear step below prose. */
   --b16-footnote-index-size: calc(var(--font-text-size) * 0.7);
   --b16-footnote-rule: color-mix(in srgb, var(--b16-accent-link) 64%, transparent);
-  /* Transclusion is an internal relationship, so its marker uses the same
-     hue as internal navigation at a deliberately lower visual weight. */
-  --b16-embed-marker: color-mix(in srgb, var(--b16-accent-link) 48%, transparent);
-  --b16-embed-marker-active: color-mix(in srgb, var(--b16-accent-link) 78%, transparent);
+  /* Transclusion is structural provenance, not navigation. Its rail shares
+     the neutral callout grammar instead of spending the link accent on a
+     non-text element. The resting mix is exactly the neutral callout rail;
+     interaction raises only its lightness. */
+  --b16-embed-marker: color-mix(in srgb, var(--b16-callout-neutral) 65%, transparent);
+  --b16-embed-marker-active: color-mix(in srgb, var(--b16-callout-neutral) 85%, transparent);
   /* h5/h6 are sans by design (labels, not prose) — set the input Obsidian
      already reads (--h5-font/--h6-font) instead of overriding the computed
      font-family on the heading rule itself. .theme-dark (0,1,0) also has to
@@ -3193,29 +3195,31 @@ body.theme-dark .markdown-preview-view.markdown-rendered pre > button.copy-code-
 }
 
 /* A transcluded note must remain visually lighter than a callout, but it
-   should not be mistaken for prose authored in the current file. A short
-   entry rail marks where borrowed content begins without enclosing it: this
-   stays compatible with callouts, images, and other framed content nested in
-   the embed. The stronger state appears only when the embed is actionable. */
+   should not be mistaken for prose authored in the current file. Reuse the
+   neutral callout rail as a continuous scope marker: unlike a short tick it
+   does not drift relative to headings of different sizes, and unlike a
+   bracket it does not introduce a second framing language around nested
+   callouts. Obsidian gives the first rendered block one flow-gap above and
+   none below, so matching end padding makes the rail optically symmetrical. */
 .theme-dark .internal-embed.markdown-embed {
   box-sizing: border-box;
+  border-inline-start: 3px solid var(--b16-embed-marker);
+  border-radius: var(--b16-radius-s);
   padding-inline-start: var(--size-4-3);
+  padding-block-end: var(--b16-flow-gap);
+  transition: border-color 120ms ease-out;
 }
 
-.theme-dark .internal-embed.markdown-embed::before {
-  position: absolute;
-  inset-block-start: var(--b16-flow-gap);
-  inset-inline-start: 0;
-  width: 2px;
-  height: var(--size-4-6);
-  background: var(--b16-embed-marker);
-  content: '';
-  pointer-events: none;
-  transition: background-color 120ms ease-out;
+/* Heading transclusions are the sole native variant whose renderer removes
+   the leading flow gap. Restore it on the outer shell so note, heading, and
+   block transclusions all place their first and last visible content exactly
+   one flow step from the rail's ends. */
+.theme-dark .internal-embed.markdown-embed[data-type='heading'] {
+  padding-block-start: var(--b16-flow-gap);
 }
 
-.theme-dark .internal-embed.markdown-embed:is(:hover, :focus-within)::before {
-  background-color: var(--b16-embed-marker-active);
+.theme-dark .internal-embed.markdown-embed:is(:hover, :focus-within) {
+  border-inline-start-color: var(--b16-embed-marker-active);
 }
 
 /* full width external embed */
