@@ -1,0 +1,30 @@
+/* List Callouts — Zotero author comments
+ *
+ * A Zotero callout's hue identifies the imported annotation. A diamond list
+ * callout inside it identifies the reader's own comment, so its glyph stays
+ * stable while the large surface quietly acknowledges the surrounding
+ * annotation colour. This prevents the plugin's fixed cyan wash from
+ * clashing with green, yellow, red, or purple Zotero callouts without making
+ * the two semantic layers indistinguishable. */
+.theme-dark .callout[data-callout-metadata^='#'] .lc-list-callout[data-callout='💎'] {
+  --b16-zotero-comment-surface: color-mix(
+    in srgb,
+    var(--b16-callout-color) 6%,
+    var(--b16-surface-1)
+  );
+}
+
+/* Live Preview draws .lc-list-bg; Reading View draws .lc-li-wrapper. Keep
+   their result identical rather than relying on the plugin's two opacity
+   settings to happen to agree. */
+.theme-dark
+  .callout[data-callout-metadata^='#']
+  .lc-list-callout[data-callout='💎']
+  > .lc-list-bg::after,
+.theme-dark
+  .callout[data-callout-metadata^='#']
+  .lc-list-callout[data-callout='💎']
+  > .lc-li-wrapper::after {
+  background-color: var(--b16-zotero-comment-surface);
+  border-radius: var(--b16-radius-s);
+}
