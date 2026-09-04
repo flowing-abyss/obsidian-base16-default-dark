@@ -74,11 +74,11 @@ ul > li::marker,
   background: var(--background-primary);
 }
 
-/* Org/Roam-inspired list nodes. Indentation and guide rails already encode
-   absolute depth, so the marker only needs a short, repeatable rhythm:
-   node → ring → micro-node. Circles deliberately distinguish structural
-   prose from the theme's square task controls. Plugin-owned List Callouts
-   keep their own semantic marker instead of inheriting this grammar. */
+/* Org-inspired outline grammar. Indentation and guide rails show the path;
+   marker geometry makes adjacent levels immediately distinguishable:
+   node → branch → group, repeated once at a smaller optical scale, then a
+   terminal dot. Circles keep prose structure distinct from square task
+   controls. Plugin-owned List Callouts retain their semantic markers. */
 .theme-dark
   .markdown-reading-view
   :where(li:not(.task-list-item, .lc-list-callout))
@@ -87,95 +87,80 @@ ul > li::marker,
   .markdown-source-view.mod-cm6
   .HyperMD-list-line:not(.HyperMD-task-line, .lc-list-callout)
   .list-bullet::after {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
   background-color: var(--bullet-new-color);
   border: 0;
   border-radius: 50%;
   contain: paint;
 }
 
-/* Levels 4 and 7 restart the cycle. Their explicit depth selectors reset
-   the more specific nested rules inherited from the preceding levels. */
-.theme-dark .markdown-reading-view ul > li > ul > li > ul > li > ul > li > .list-bullet::after,
-.theme-dark
-  .markdown-reading-view
-  ul
-  > li
-  > ul
-  > li
-  > ul
-  > li
-  > ul
-  > li
-  > ul
-  > li
-  > ul
-  > li
-  > ul
-  > li
-  > .list-bullet::after,
-.theme-dark
-  .markdown-source-view.mod-cm6
-  :is(.HyperMD-list-line-4, .HyperMD-list-line-7):not(.HyperMD-task-line, .lc-list-callout)
-  .list-bullet::after {
-  width: 5px;
-  height: 5px;
-  background-color: var(--bullet-new-color);
-  border: 0;
-}
-
-/* Levels 2, 5 and 8: an open node keeps adjacent levels distinct without
-   introducing a second colour or a decorative glyph. */
+/* Level 2 — primary branch. */
 .theme-dark .markdown-reading-view ul > li > ul > li > .list-bullet::after,
 .theme-dark
-  .markdown-reading-view
-  ul
-  > li
-  > ul
-  > li
-  > ul
-  > li
-  > ul
-  > li
-  > ul
-  > li
-  > .list-bullet::after,
-.theme-dark
-  .markdown-reading-view
-  ul
-  > li
-  > ul
-  > li
-  > ul
-  > li
-  > ul
-  > li
-  > ul
-  > li
-  > ul
-  > li
-  > ul
-  > li
-  > ul
-  > li
-  > .list-bullet::after,
+  .markdown-source-view.mod-cm6
+  .HyperMD-list-line-2:not(.HyperMD-task-line, .lc-list-callout)
+  .list-bullet::after {
+  width: 8px;
+  height: 2px;
+  background-color: var(--bullet-new-color);
+  border: 0;
+  border-radius: 0;
+}
+
+/* Level 3 — open group. */
+.theme-dark .markdown-reading-view ul > li > ul > li > ul > li > .list-bullet::after,
 .theme-dark
   .markdown-source-view.mod-cm6
-  :is(.HyperMD-list-line-2, .HyperMD-list-line-5, .HyperMD-list-line-8):not(
-    .HyperMD-task-line,
-    .lc-list-callout
-  )
+  .HyperMD-list-line-3:not(.HyperMD-task-line, .lc-list-callout)
   .list-bullet::after {
   width: 6px;
   height: 6px;
   background-color: transparent;
   border: 1px solid var(--bullet-new-color);
+  border-radius: 50%;
   box-sizing: border-box;
 }
 
-/* Levels 3, 6 and 9: the smallest filled node closes the cycle. */
-.theme-dark .markdown-reading-view ul > li > ul > li > ul > li > .list-bullet::after,
+/* Level 4 — secondary node. */
+.theme-dark .markdown-reading-view ul > li > ul > li > ul > li > ul > li > .list-bullet::after,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-list-line-4:not(.HyperMD-task-line, .lc-list-callout)
+  .list-bullet::after {
+  width: 4px;
+  height: 4px;
+  background-color: var(--bullet-new-color);
+  border: 0;
+  border-radius: 50%;
+}
+
+/* Level 5 — secondary branch. */
+.theme-dark
+  .markdown-reading-view
+  ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > ul
+  > li
+  > .list-bullet::after,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-list-line-5:not(.HyperMD-task-line, .lc-list-callout)
+  .list-bullet::after {
+  width: 6px;
+  height: 1px;
+  background-color: var(--bullet-new-color);
+  border: 0;
+  border-radius: 0;
+}
+
+/* Level 6 — secondary open group. */
 .theme-dark
   .markdown-reading-view
   ul
@@ -192,12 +177,23 @@ ul > li::marker,
   > li
   > .list-bullet::after,
 .theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-list-line-6:not(.HyperMD-task-line, .lc-list-callout)
+  .list-bullet::after {
+  width: 4px;
+  height: 4px;
+  background-color: transparent;
+  border: 1px solid var(--bullet-new-color);
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+/* Level 7 and deeper — terminal detail. The reading selector naturally
+   continues to match deeper descendants; Live Preview exposes depth in a
+   class, so cover the practical range explicitly. */
+.theme-dark
   .markdown-reading-view
   ul
-  > li
-  > ul
-  > li
-  > ul
   > li
   > ul
   > li
@@ -214,15 +210,20 @@ ul > li::marker,
   > .list-bullet::after,
 .theme-dark
   .markdown-source-view.mod-cm6
-  :is(.HyperMD-list-line-3, .HyperMD-list-line-6, .HyperMD-list-line-9):not(
-    .HyperMD-task-line,
-    .lc-list-callout
-  )
+  :is(
+    .HyperMD-list-line-7,
+    .HyperMD-list-line-8,
+    .HyperMD-list-line-9,
+    .HyperMD-list-line-10,
+    .HyperMD-list-line-11,
+    .HyperMD-list-line-12
+  ):not(.HyperMD-task-line, .lc-list-callout)
   .list-bullet::after {
   width: 3px;
   height: 3px;
   background-color: var(--bullet-new-color);
   border: 0;
+  border-radius: 50%;
 }
 
 /* fix task checkbox */
