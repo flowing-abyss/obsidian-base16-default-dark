@@ -1034,7 +1034,11 @@
   .cm-line:is(.HyperMD-header, .HyperMD-list-line)
   .cm-fold-indicator
   > .collapse-indicator.is-collapsed::before {
-  transform: rotate(-45deg);
+  /* The right-facing corner occupies the right half of its construction
+     box, just as the open V occupies the lower half. Pull it left by the
+     same optical quarter-step so both states begin at the same perceived
+     distance from the preceding label. */
+  transform: translateX(-25%) rotate(-45deg);
 }
 
 /* A heading inside a callout keeps the callout's own surface — painting
