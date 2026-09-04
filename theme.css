@@ -4426,7 +4426,7 @@ body.theme-dark .abyss-status-popover-flag[data-abyss-priority='F'] {
 
 /* bases cell hover full content */
 .bases-td {
-  container: base-cell / inline-size;
+  container-type: inline-size;
   text-overflow: clip;
   margin: 0;
 

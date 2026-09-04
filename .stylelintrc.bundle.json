@@ -1,0 +1,9 @@
+{
+  "plugins": ["@projectwallace/stylelint-plugin"],
+  "rules": {
+    "projectwallace/no-unused-keyframes": true,
+    "projectwallace/no-unused-container-names": true,
+    "projectwallace/no-invalid-z-index": true,
+    "projectwallace/no-duplicate-keyframes": true
+  }
+}

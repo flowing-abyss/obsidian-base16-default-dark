@@ -1,5 +1,6 @@
 {
   "extends": ["stylelint-config-standard"],
+  "plugins": ["stylelint-declaration-block-no-ignored-properties"],
   "rules": {
     "alpha-value-notation": "number",
     "color-function-notation": "legacy",
@@ -14,7 +15,8 @@
     "custom-property-pattern": null,
     "no-descending-specificity": null,
     "declaration-block-no-redundant-longhand-properties": null,
-    "declaration-block-no-shorthand-property-overrides": null,
+    "declaration-block-no-shorthand-property-overrides": true,
+    "plugin/declaration-block-no-ignored-properties": true,
     "rule-empty-line-before": null,
     "comment-empty-line-before": null
   }
