@@ -253,12 +253,11 @@
      UI chrome. Keep it readable while leaving a clear step below prose. */
   --b16-footnote-index-size: calc(var(--font-text-size) * 0.7);
   --b16-footnote-rule: color-mix(in srgb, var(--b16-accent-link) 64%, transparent);
-  /* Transclusion is structural provenance, not navigation. Its rail shares
-     the neutral callout grammar instead of spending the link accent on a
-     non-text element. The resting mix is exactly the neutral callout rail;
-     interaction raises only its lightness. */
+  /* Transclusion is structural provenance, not navigation. Its hairline
+     shares the neutral callout colour without spending the link accent on a
+     non-text element; geometry, rather than another shade, gives it a lower
+     rank than the 3px semantic rail of a callout. */
   --b16-embed-marker: color-mix(in srgb, var(--b16-callout-neutral) 65%, transparent);
-  --b16-embed-marker-active: color-mix(in srgb, var(--b16-callout-neutral) 85%, transparent);
   /* h5/h6 are sans by design (labels, not prose) — set the input Obsidian
      already reads (--h5-font/--h6-font) instead of overriding the computed
      font-family on the heading rule itself. .theme-dark (0,1,0) also has to

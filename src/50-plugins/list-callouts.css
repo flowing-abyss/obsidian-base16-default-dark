@@ -1,23 +1,18 @@
 /* List Callouts — Zotero author comments
  *
  * A Zotero callout's hue identifies the imported annotation. A diamond list
- * callout inside it identifies the reader's own comment. Keep its large
- * surface hue-free: mixing every annotation colour into grey produced muddy
- * intermediate tones, while a clean surface step composes with the complete
- * Zotero palette. Colour remains only where it carries meaning — on the
- * annotation shell and on the diamond itself. */
+ * callout inside it identifies the reader's own comment. A second large
+ * surface inside the already bounded annotation gave that comment the weight
+ * of a card even when its colour was mathematically neutral. Remove the
+ * plugin wash entirely: colour remains only where it carries meaning — on
+ * the annotation shell and on the diamond itself. */
 
-/* Live Preview draws .lc-list-bg; Reading View draws .lc-li-wrapper. Keep
-   their result identical rather than relying on the plugin's two opacity
-   settings to happen to agree. */
+/* List Callouts uses .lc-list-bg for its editor decoration and
+   .lc-li-wrapper for rendered list items. Cover both plugin contracts so an
+   author comment cannot regain the wash while its Markdown is being edited. */
 .theme-dark
   .callout[data-callout-metadata^='#']
-  .lc-list-callout[data-callout='💎']
-  > .lc-list-bg::after,
-.theme-dark
-  .callout[data-callout-metadata^='#']
-  .lc-list-callout[data-callout='💎']
-  > .lc-li-wrapper::after {
-  background-color: var(--b16-surface-2);
-  border-radius: var(--b16-radius-s);
+  :where(.lc-list-callout[data-callout='💎'] > :is(.lc-list-bg, .lc-li-wrapper))::after {
+  background-color: transparent;
+  border-radius: 0;
 }

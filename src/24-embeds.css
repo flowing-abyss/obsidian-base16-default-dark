@@ -29,15 +29,15 @@
    neutral callout rail as a continuous scope marker: unlike a short tick it
    does not drift relative to headings of different sizes, and unlike a
    bracket it does not introduce a second framing language around nested
-   callouts. Obsidian gives the first rendered block one flow-gap above and
-   none below, so matching end padding makes the rail optically symmetrical. */
+   callouts. The 1px square-ended hairline deliberately ranks below their 3px
+   semantic rail. Obsidian gives the first rendered block one flow-gap above
+   and none below, so matching end padding makes it optically symmetrical. */
 .theme-dark .internal-embed.markdown-embed {
   box-sizing: border-box;
-  border-inline-start: 3px solid var(--b16-embed-marker);
-  border-radius: var(--b16-radius-s);
-  padding-inline-start: var(--size-4-3);
+  border-inline-start: 1px solid var(--b16-embed-marker);
+  border-radius: 0;
+  padding-inline-start: var(--size-4-4);
   padding-block-end: var(--b16-flow-gap);
-  transition: border-color 120ms ease-out;
 }
 
 /* Heading transclusions are the sole native variant whose renderer removes
@@ -46,10 +46,6 @@
    one flow step from the rail's ends. */
 .theme-dark .internal-embed.markdown-embed[data-type='heading'] {
   padding-block-start: var(--b16-flow-gap);
-}
-
-.theme-dark .internal-embed.markdown-embed:is(:hover, :focus-within) {
-  border-inline-start-color: var(--b16-embed-marker-active);
 }
 
 /* full width external embed */

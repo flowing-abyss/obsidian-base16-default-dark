@@ -295,12 +295,11 @@
      UI chrome. Keep it readable while leaving a clear step below prose. */
   --b16-footnote-index-size: calc(var(--font-text-size) * 0.7);
   --b16-footnote-rule: color-mix(in srgb, var(--b16-accent-link) 64%, transparent);
-  /* Transclusion is structural provenance, not navigation. Its rail shares
-     the neutral callout grammar instead of spending the link accent on a
-     non-text element. The resting mix is exactly the neutral callout rail;
-     interaction raises only its lightness. */
+  /* Transclusion is structural provenance, not navigation. Its hairline
+     shares the neutral callout colour without spending the link accent on a
+     non-text element; geometry, rather than another shade, gives it a lower
+     rank than the 3px semantic rail of a callout. */
   --b16-embed-marker: color-mix(in srgb, var(--b16-callout-neutral) 65%, transparent);
-  --b16-embed-marker-active: color-mix(in srgb, var(--b16-callout-neutral) 85%, transparent);
   /* h5/h6 are sans by design (labels, not prose) — set the input Obsidian
      already reads (--h5-font/--h6-font) instead of overriding the computed
      font-family on the heading rule itself. .theme-dark (0,1,0) also has to
@@ -3199,15 +3198,15 @@ body.theme-dark .markdown-preview-view.markdown-rendered pre > button.copy-code-
    neutral callout rail as a continuous scope marker: unlike a short tick it
    does not drift relative to headings of different sizes, and unlike a
    bracket it does not introduce a second framing language around nested
-   callouts. Obsidian gives the first rendered block one flow-gap above and
-   none below, so matching end padding makes the rail optically symmetrical. */
+   callouts. The 1px square-ended hairline deliberately ranks below their 3px
+   semantic rail. Obsidian gives the first rendered block one flow-gap above
+   and none below, so matching end padding makes it optically symmetrical. */
 .theme-dark .internal-embed.markdown-embed {
   box-sizing: border-box;
-  border-inline-start: 3px solid var(--b16-embed-marker);
-  border-radius: var(--b16-radius-s);
-  padding-inline-start: var(--size-4-3);
+  border-inline-start: 1px solid var(--b16-embed-marker);
+  border-radius: 0;
+  padding-inline-start: var(--size-4-4);
   padding-block-end: var(--b16-flow-gap);
-  transition: border-color 120ms ease-out;
 }
 
 /* Heading transclusions are the sole native variant whose renderer removes
@@ -3216,10 +3215,6 @@ body.theme-dark .markdown-preview-view.markdown-rendered pre > button.copy-code-
    one flow step from the rail's ends. */
 .theme-dark .internal-embed.markdown-embed[data-type='heading'] {
   padding-block-start: var(--b16-flow-gap);
-}
-
-.theme-dark .internal-embed.markdown-embed:is(:hover, :focus-within) {
-  border-inline-start-color: var(--b16-embed-marker-active);
 }
 
 /* full width external embed */
@@ -5063,25 +5058,20 @@ body.theme-dark .abyss-status-popover-flag[data-abyss-priority='F'] {
 /* List Callouts — Zotero author comments
  *
  * A Zotero callout's hue identifies the imported annotation. A diamond list
- * callout inside it identifies the reader's own comment. Keep its large
- * surface hue-free: mixing every annotation colour into grey produced muddy
- * intermediate tones, while a clean surface step composes with the complete
- * Zotero palette. Colour remains only where it carries meaning — on the
- * annotation shell and on the diamond itself. */
+ * callout inside it identifies the reader's own comment. A second large
+ * surface inside the already bounded annotation gave that comment the weight
+ * of a card even when its colour was mathematically neutral. Remove the
+ * plugin wash entirely: colour remains only where it carries meaning — on
+ * the annotation shell and on the diamond itself. */
 
-/* Live Preview draws .lc-list-bg; Reading View draws .lc-li-wrapper. Keep
-   their result identical rather than relying on the plugin's two opacity
-   settings to happen to agree. */
+/* List Callouts uses .lc-list-bg for its editor decoration and
+   .lc-li-wrapper for rendered list items. Cover both plugin contracts so an
+   author comment cannot regain the wash while its Markdown is being edited. */
 .theme-dark
   .callout[data-callout-metadata^='#']
-  .lc-list-callout[data-callout='💎']
-  > .lc-list-bg::after,
-.theme-dark
-  .callout[data-callout-metadata^='#']
-  .lc-list-callout[data-callout='💎']
-  > .lc-li-wrapper::after {
-  background-color: var(--b16-surface-2);
-  border-radius: var(--b16-radius-s);
+  :where(.lc-list-callout[data-callout='💎'] > :is(.lc-list-bg, .lc-li-wrapper))::after {
+  background-color: transparent;
+  border-radius: 0;
 }
 
 /* ===== 50-plugins/longform.css ===== */
