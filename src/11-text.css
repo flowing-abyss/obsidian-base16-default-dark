@@ -402,7 +402,7 @@
 
   &::after {
     inset-inline: calc(var(--size-4-6) + var(--size-2-3)) 0;
-    background-color: var(--b16-border-faint);
+    background-color: var(--b16-border-normal);
   }
 }
 
