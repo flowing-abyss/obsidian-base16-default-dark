@@ -62,3 +62,90 @@
   border: 1px solid var(--b16-border-strong);
   border-radius: var(--b16-radius-s);
 }
+
+/* Descriptive image aliases are useful content, but permanently visible
+   captions would compete with the image and disturb document rhythm. Reveal
+   them on deliberate hover as a quiet lower annotation. Obsidian falls back
+   to the filename when no alias was authored, so file-extension endings are
+   excluded instead of presenting implementation detail as a caption. */
+@media (hover: hover) and (pointer: fine) {
+  .theme-dark
+    .markdown-preview-view
+    .internal-embed.image-embed[alt]:not(
+      [alt=''],
+      [alt$='.avif' i],
+      [alt$='.gif' i],
+      [alt$='.jpeg' i],
+      [alt$='.jpg' i],
+      [alt$='.png' i],
+      [alt$='.svg' i],
+      [alt$='.webp' i]
+    ) {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+    line-height: 0;
+    vertical-align: middle;
+  }
+
+  .theme-dark
+    :is(.markdown-source-view.mod-cm6, .markdown-preview-view)
+    .internal-embed.image-embed[alt]:not(
+      [alt=''],
+      [alt$='.avif' i],
+      [alt$='.gif' i],
+      [alt$='.jpeg' i],
+      [alt$='.jpg' i],
+      [alt$='.png' i],
+      [alt$='.svg' i],
+      [alt$='.webp' i]
+    )::after {
+    content: attr(alt);
+    position: absolute;
+    z-index: 1;
+    inset-inline: 1px;
+    inset-block-end: 1px;
+    box-sizing: border-box;
+    padding: var(--size-2-2) var(--size-4-3);
+    color: var(--text-muted);
+    font-family: var(--font-interface);
+    font-size: var(--font-ui-small);
+    line-height: var(--line-height-tight);
+    text-align: start;
+    overflow-wrap: anywhere;
+    pointer-events: none;
+    background-color: color-mix(in srgb, var(--background-primary) 90%, transparent);
+    border-block-start: 1px solid var(--b16-border-strong);
+    border-end-start-radius: calc(var(--b16-radius-s) - 1px);
+    border-end-end-radius: calc(var(--b16-radius-s) - 1px);
+    opacity: 0;
+    transform: translateY(2px);
+    transition:
+      opacity 80ms ease-out,
+      transform 80ms ease-out;
+  }
+
+  .theme-dark
+    :is(.markdown-source-view.mod-cm6, .markdown-preview-view)
+    .internal-embed.image-embed[alt]:not(
+      [alt=''],
+      [alt$='.avif' i],
+      [alt$='.gif' i],
+      [alt$='.jpeg' i],
+      [alt$='.jpg' i],
+      [alt$='.png' i],
+      [alt$='.svg' i],
+      [alt$='.webp' i]
+    ):hover::after {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-dark
+    :is(.markdown-source-view.mod-cm6, .markdown-preview-view)
+    .internal-embed.image-embed[alt]::after {
+    transition: none;
+  }
+}
