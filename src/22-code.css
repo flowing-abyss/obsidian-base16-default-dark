@@ -253,58 +253,6 @@
   line-height: var(--line-height-normal);
 }
 
-/* The bare fence's native flair is only a copy action, not a language label:
-   remove the synthetic code glyph and return the control to the quiet
-   top-right placement used by Reading mode. Keep it present at rest, matching
-   language blocks: hiding it behind a sibling-row :hover made the control
-   disappear as the pointer crossed from that row onto the control itself. */
-.theme-dark
-  .markdown-source-view.mod-cm6
-  .HyperMD-codeblock-begin[data-code-plain]
-  .code-block-flair {
-  right: calc(var(--font-text-size) * 0.85);
-  left: auto;
-  top: calc(var(--font-text-size) * 0.65);
-  bottom: auto;
-  gap: 0;
-  color: var(--b16-text-faint);
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  cursor: pointer;
-}
-
-.theme-dark
-  .markdown-source-view.mod-cm6
-  .HyperMD-codeblock-begin[data-code-plain]
-  .code-block-flair::before {
-  content: none;
-}
-
-.theme-dark
-  .markdown-source-view.mod-cm6
-  .HyperMD-codeblock-begin[data-code-plain]
-  .code-block-flair:hover {
-  color: var(--b16-text-muted);
-}
-
-/* Reading mode follows the same persistent-copy contract. Obsidian's native
-   rule fades the action on an unlabelled <pre>; overriding only visibility
-   leaves its tested placement and hit target intact while eliminating the
-   mode-dependent appearance described above. */
-.theme-dark .markdown-rendered pre:not([class]) > .copy-code-button,
-.theme-dark .markdown-rendered pre[data-code-plain] > .copy-code-button {
-  color: var(--b16-text-faint);
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-}
-
-.theme-dark .markdown-rendered pre:not([class]) > .copy-code-button:hover,
-.theme-dark .markdown-rendered pre[data-code-plain] > .copy-code-button:hover {
-  color: var(--b16-text-muted);
-}
-
 /* Header band, both modes.
 
    Obsidian renders a language label only in live preview, as an absolutely
@@ -374,44 +322,6 @@
   pointer-events: none;
 }
 
-/* Obsidian's copy button is sized for an unlabelled pre and therefore uses a
-   6px margin plus 6px vertical padding. Inside our 36px header that puts the
-   icon below the band's centre and partly into the code body. Give the action
-   the header's exact height and the same 17px inline inset as the body. The
-   24px target remains easy to hit, while the glyph itself steps down to the
-   shared 16px small-icon size and text-faint until the title band is hovered. */
-.theme-dark .markdown-rendered pre[data-code-language] > .copy-code-button {
-  top: 0;
-  right: calc(var(--font-text-size) * 0.85);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: calc(var(--b16-block-header-height) - 1px);
-  margin: 0;
-  padding: 0;
-  background: transparent;
-  border: 0;
-  border-radius: 0;
-  color: var(--b16-text-faint);
-}
-
-.theme-dark .markdown-rendered pre[data-code-language] > .copy-code-button > svg {
-  width: var(--icon-s);
-  height: var(--icon-s);
-}
-
-/* The header is a pseudo-element in Reading mode, so `pre:hover` alone cannot
-   distinguish it from the body. The code child owns the whole body region:
-   if it is not hovered, the pointer is in the title band (or on its action).
-   This preserves the requested band-level affordance without adding DOM. */
-.theme-dark
-  .markdown-rendered
-  pre[data-code-language]:hover:not(:has(> code:hover))
-  > .copy-code-button {
-  color: var(--b16-text-muted);
-}
-
 /* The body's padding moves onto the code element, since the pre now owns
    the band. 0.7em block matches the live-preview block's top pad. */
 .theme-dark .markdown-rendered pre[data-code-language] > code {
@@ -439,53 +349,160 @@
   font-weight: 600;
 }
 
+/* One copy-action component in both rendering modes. Obsidian's bare block
+   exposes a native SVG while the labelled Live Preview block exposes text;
+   styling those separately produced visibly different sizes and strokes.
+   Preserve the native click targets, hide only their visual contents, and
+   paint one 16px Lucide mask everywhere. The action stays present at rest so
+   moving the pointer onto it can never invalidate the hover condition that
+   made the previous plain-block button blink or disappear. */
+.theme-dark .markdown-rendered pre > .copy-code-button,
 .theme-dark
   .markdown-source-view.mod-cm6
   .HyperMD-codeblock-begin[data-code-language]
-  .code-block-flair {
+  .code-block-flair,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-plain]
+  .code-block-flair,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin:has(> .code-block-flair > svg)
+  > .code-block-flair {
+  --b16-code-copy-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='8' y='8' width='14' height='14' rx='2' ry='2'/%3E%3Cpath d='M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2'/%3E%3C/svg%3E");
+
   right: calc(var(--font-text-size) * 0.85);
   left: auto;
-  top: 0;
-  bottom: 0;
+  display: flex;
+  align-items: center;
   justify-content: center;
   width: 24px;
-  gap: 0;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
   color: var(--b16-text-faint);
   font-size: 0;
+  opacity: 1;
   visibility: visible;
+  pointer-events: auto;
   cursor: pointer;
 }
 
-/* Reuse Obsidian's native clickable flair rather than drawing a decorative
-   lookalike with no behaviour. The mask is the same Lucide `copy` geometry
-   used by Reading mode; currentColor supplies the theme token at paint time. */
+/* Core hides the plain-fence action with a more specific non-hover selector.
+   Match the Reading View shell explicitly so the shared action remains
+   present at rest without resorting to !important. */
+body.theme-dark .markdown-preview-view.markdown-rendered pre > button.copy-code-button {
+  display: flex;
+}
+
+/* Plain blocks have no header band, so their compact 24px target sits inside
+   the same inset as the code body. */
+.theme-dark .markdown-rendered pre:not([data-code-language]) > .copy-code-button,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin[data-code-plain]
+  .code-block-flair,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin:has(> .code-block-flair > svg)
+  > .code-block-flair {
+  top: calc(var(--font-text-size) * 0.65);
+  bottom: auto;
+  height: 24px;
+}
+
+/* Labelled blocks centre that same glyph across the header band. The click
+   target may use the band's height, but no visible fill or focus box exposes
+   that implementation difference. */
+.theme-dark .markdown-rendered pre[data-code-language] > .copy-code-button,
 .theme-dark
   .markdown-source-view.mod-cm6
   .HyperMD-codeblock-begin[data-code-language]
-  .code-block-flair::before {
+  .code-block-flair {
+  top: 0;
+  bottom: auto;
+  height: calc(var(--b16-block-header-height) - 1px);
+}
+
+.theme-dark .markdown-rendered pre > .copy-code-button::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin:is([data-code-language], [data-code-plain])
+  .code-block-flair::before,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin:has(> .code-block-flair > svg)
+  > .code-block-flair::before {
   content: '';
+  flex: 0 0 auto;
   width: var(--icon-s);
   height: var(--icon-s);
-  color: inherit;
   background-color: currentcolor;
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='8' y='8' width='14' height='14' rx='2' ry='2'/%3E%3Cpath d='M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2'/%3E%3C/svg%3E")
-    center / contain no-repeat;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='8' y='8' width='14' height='14' rx='2' ry='2'/%3E%3Cpath d='M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2'/%3E%3C/svg%3E")
-    center / contain no-repeat;
+  -webkit-mask: var(--b16-code-copy-mask) center / contain no-repeat;
+  mask: var(--b16-code-copy-mask) center / contain no-repeat;
+}
+
+/* Obsidian and Micropatches both expose copied feedback through the button's
+   accessible label. Swap only the shared glyph, so success never changes the
+   control's geometry or causes the surrounding code to move. */
+.theme-dark .markdown-rendered pre > .copy-code-button[aria-label='Copied'] {
+  --b16-code-copy-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+}
+
+.theme-dark .markdown-rendered pre > .copy-code-button > svg,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin:is([data-code-language], [data-code-plain])
+  .code-block-flair
+  > svg,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin:has(> .code-block-flair > svg)
+  > .code-block-flair
+  > svg {
+  display: none;
 }
 
 .theme-dark
   .markdown-source-view.mod-cm6
-  .HyperMD-codeblock-begin[data-code-language]:hover
-  .code-block-flair {
+  .HyperMD-codeblock-begin:is([data-code-language], [data-code-plain])
+  .code-block-flair::after,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin:has(> .code-block-flair > svg)
+  > .code-block-flair::after {
+  content: none;
+  display: none;
+}
+
+.theme-dark .markdown-rendered pre > .copy-code-button:is(:hover, :active, :focus-visible),
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin:is([data-code-language], [data-code-plain])
+  .code-block-flair:hover,
+.theme-dark
+  .markdown-source-view.mod-cm6
+  .HyperMD-codeblock-begin:has(> .code-block-flair > svg)
+  > .code-block-flair:hover {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
   color: var(--b16-text-muted);
 }
 
-.theme-dark
-  .markdown-source-view.mod-cm6
-  .HyperMD-codeblock-begin[data-code-language]
-  .code-block-flair::after {
-  content: none;
+/* Keyboard focus belongs to the glyph, not to a differently sized native
+   button shell. This quiet keyline remains visible without recreating the
+   oversized box and cyan rail from the global button contract. */
+.theme-dark .markdown-rendered pre > .copy-code-button:focus-visible {
+  outline: 0;
+}
+
+.theme-dark .markdown-rendered pre > .copy-code-button:focus-visible::before {
+  outline: 1px solid var(--b16-border-strong);
+  outline-offset: 2px;
 }
 
 .theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin[data-code-language]::before {
