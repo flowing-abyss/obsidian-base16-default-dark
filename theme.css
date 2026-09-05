@@ -6071,10 +6071,9 @@ body .another-quick-switcher__status__count-input {
   border-color: var(--b16-border-strong);
 }
 
-/* Tabbed 1.4 introduced .tabbed__panels so cached panels can remain mounted.
-   Keep the direct-child branch for older plugin versions while following the
-   new public class structure without reaching into implementation details. */
-.theme-dark .tabbed > .tabbed__panel,
+/* Tabbed keeps cached panels mounted inside its public .tabbed__panels
+   container. Follow that current structure without reaching into its
+   implementation details. */
 .theme-dark .tabbed > .tabbed__panels > .tabbed__panel {
   color: var(--b16-text-normal);
   background: transparent;
@@ -6083,7 +6082,6 @@ body .another-quick-switcher__status__count-input {
 /* A nested tab list is a second navigation level, not a continuation of the
    parent row. A small type-relative step separates the two without adding a
    surface or making the hierarchy feel like a separate card. */
-.theme-dark .tabbed > .tabbed__panel .tabbed,
 .theme-dark .tabbed > .tabbed__panels > .tabbed__panel .tabbed {
   padding-block-start: calc(var(--font-text-size) * 0.4);
 }
