@@ -571,12 +571,17 @@
    inherited 1.62 line-height made it 32.4px at the reference size — almost
    exactly the same doubled gap as Reading mode. Only plain blank rows are
    compacted: fenced code, quotes, lists, frontmatter and other HyperMD rows
-   keep the geometry required by their own renderers. The row stays compact
-   while active as well: CodeMirror centres its full-height caret across the
-   smaller line box, so moving the cursor never changes document geometry.
-   :where() deliberately keeps this selector weak so the heading-specific
-   20px row in 10-headings.css wins later in the cascade. */
-.theme-dark .markdown-source-view.mod-cm6 :where(.cm-line:not([class*='HyperMD']):has(> br)) {
+   keep the geometry required by their own renderers. The direct br must be
+   the line's only child: editor widgets can append a br to a populated line
+   (Micropatches sidenotes do this after a footnote reference), and treating
+   that line as blank collapses its leading from 32.4px to 17px. The row stays
+   compact while active as well: CodeMirror centres its full-height caret
+   across the smaller line box, so moving the cursor never changes document
+   geometry. :where() deliberately keeps this selector weak so the heading-
+   specific 20px row in 10-headings.css wins later in the cascade. */
+.theme-dark
+  .markdown-source-view.mod-cm6
+  :where(.cm-line:not([class*='HyperMD']):has(> br:only-child)) {
   min-height: var(--b16-flow-gap);
   line-height: var(--b16-flow-gap);
 }
@@ -595,7 +600,16 @@
    tabular numerals and one quiet underline give [1], [2] ... a technical
    document rhythm without turning every citation into a filled chip. The
    blue remains navigation rather than decoration; hover strengthens only
-   the underline. */
+   the underline. Obsidian's native vertical-align: super enlarges the line
+   box; a relative lift preserves the superscript position without changing
+   the paragraph's leading. */
+.theme-dark .footnote-ref {
+  position: relative;
+  inset-block-start: -0.25em;
+  line-height: 0;
+  vertical-align: baseline;
+}
+
 .theme-dark .footnote-ref a {
   display: inline-block;
   color: var(--b16-accent-link);
