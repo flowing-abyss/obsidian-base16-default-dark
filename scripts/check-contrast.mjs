@@ -83,6 +83,21 @@ const composite = ({ rgb, alpha }, background) => {
 // so a later change to a surface colour can't silently escape this check.
 const surfaceHex = Object.fromEntries(SURFACES.map((s) => [s, hexOf(s)]));
 
+// Abyss Tasks: inspect the real resting/hover materials, not just the page.
+// User-configured status/tag colours are plugin-owned and are not fixed theme
+// endpoints. Flags are symbols (3:1); names and metadata are text (4.5:1).
+const ABYSS_PAIRS = [
+  ['text-normal', 'surface-2', 4.5], // card title
+  ['text-muted', 'surface-2', 4.5], // card metadata
+  ['text-muted', 'surface-3', 4.5], // hovered inspector chip
+  ['callout-code', 'surface-2', 4.5], // silver column/header label
+  ['status-error-text', 'surface-2', 4.5], // overdue / highest priority
+  ...['status-error-text', 'accent-code', 'callout-caution', 'accent-link', 'accent-link-ext']
+    .flatMap((token) => ['surface-1', 'surface-2'].map((surface) => [token, surface, 3])),
+  ...['callout-critical', 'callout-caution', 'callout-information', 'callout-positive']
+    .map((token) => [token, 'surface-2', 3]), // progress segments
+];
+
 const waivers = CONTRAST_WAIVERS;
 const waived = new Set(waivers.map((w) => `${w.token}@${w.surface}`));
 // Every (role, surface) pair the main loop actually visits, so a dangling
@@ -92,6 +107,13 @@ const waived = new Set(waivers.map((w) => `${w.token}@${w.surface}`));
 const seenPairs = new Set();
 
 let failed = 0;
+for (const [token, surface, min] of ABYSS_PAIRS) {
+  const ratio = contrast(hexOf(token), hexOf(surface));
+  if (ratio < min) {
+    console.error(`FAIL Abyss Tasks ${token}/${surface} ${ratio.toFixed(2)} < ${min}`);
+    failed++;
+  }
+}
 for (const role of ROLES) {
   for (const s of role.on) {
     seenPairs.add(`${role.token}@${s}`);

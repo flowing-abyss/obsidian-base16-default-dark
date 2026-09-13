@@ -4798,49 +4798,330 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
 
 /* ===== 50-plugins/abyss-tasks.css ===== */
 
-/* ABYSS TASKS */
-/* Abyss Tasks renders the mutually exclusive Day / Week / Month buttons
-   inside a filled, padded capsule. The buttons themselves already follow the
-   theme's flat control contract, so that extra material reads as a second,
-   unrelated control behind them. Keep the tight gap that communicates one
-   view switcher, but let every button use the same height and surface as the
-   adjacent Today action. */
+/* ABYSS TASKS
+   Runtime audit: .docs/abyss-tasks-audit.md. The plugin owns status/tag
+   colours, badge/text/dot presentation, calendar fills and selection. This
+   layer restores material hierarchy and exempts content controls from the
+   generic button frame in 40-chrome.css; it does not recolour user data. */
+.theme-dark .abyss-panel-view {
+  --background-secondary: var(--b16-surface-1);
+  --background-secondary-alt: var(--b16-surface-2);
+  --abyss-priority-a: var(--b16-status-error-text);
+  --abyss-priority-c: var(--b16-callout-caution);
+  --abyss-date-overdue: var(--b16-status-error-text);
+}
+
+/* Names and group labels are buttons for interaction, not framed actions.
+   body + panel + semantic class beats the verified generic button selector
+   including its hover/active rules (0,3,1), without !important. */
+body.theme-dark
+  .abyss-panel-view
+  button:is(
+    .abyss-project-table-name,
+    .abyss-project-table-column-button,
+    .abyss-project-table-group-toggle,
+    .abyss-project-kanban-group-header,
+    .abyss-project-timeline-group-header,
+    .abyss-project-back,
+    .abyss-project-open-btn,
+    .abyss-dep-badge-body,
+    .abyss-dep-badge-add,
+    .abyss-chip-remove,
+    .abyss-right-action-btn,
+    .abyss-task-delete-btn
+  ) {
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  color: inherit;
+}
+
+body.theme-dark .abyss-panel-view button.abyss-project-table-name:hover {
+  color: var(--b16-accent-link);
+}
+
+/* Navigation uses one quiet filled state. A selected mode must remain
+   distinguishable from a hover, and an icon is not a tiny outlined card. */
+body.theme-dark
+  .abyss-panel-view
+  button:is(
+    .abyss-rail-btn,
+    .abyss-cal-nav-btn,
+    .abyss-cal-nav-month,
+    .abyss-cal-nav-year,
+    .abyss-cal-nav-today,
+    .abyss-cal-view-btn,
+    .abyss-project-overview-mode,
+    .abyss-view-state-btn,
+    .abyss-projects-new,
+    .abyss-mg-week-btn
+  ) {
+  border-color: transparent;
+  box-shadow: none;
+  background: transparent;
+  color: var(--b16-text-muted);
+
+  &:hover {
+    background: var(--b16-surface-2);
+    color: var(--b16-text-normal);
+  }
+
+  &.is-active {
+    background: var(--b16-surface-3);
+    color: var(--b16-text-strong);
+  }
+}
+
+body.theme-dark .abyss-panel-view button.abyss-view-state-btn--active {
+  color: var(--b16-accent-link);
+}
+
+/* Keep the keyboard cue separate from pointer hover on frameless controls.
+   This also covers dynamically mounted editors without changing their fill. */
+body.theme-dark .abyss-panel-view button:focus-visible {
+  outline: 2px solid var(--b16-accent-link);
+  outline-offset: 2px;
+}
+
+/* Respect all three configured status presentations. The native dot/text
+   filters have no frames; badge filters retain their own semantic tint.
+   Inactive filters keep the plugin's opacity cue. */
+body.theme-dark .abyss-panel-view button.abyss-project-table-status-pill {
+  box-shadow: none;
+  border-color: transparent;
+  background: transparent;
+  color: var(--b16-text-normal);
+  padding-inline: 6px;
+
+  &:hover {
+    background: var(--b16-surface-2);
+  }
+}
+
+body.theme-dark .abyss-panel-view button.abyss-project-table-status-pill.is-text {
+  color: var(--abyss-project-status-color, var(--b16-text-normal));
+}
+
+body.theme-dark .abyss-panel-view button.abyss-project-table-status-pill:not(.is-dot, .is-text) {
+  border-color: color-mix(in srgb, var(--abyss-project-status-color) 40%, transparent);
+  background: color-mix(in srgb, var(--abyss-project-status-color) 18%, transparent);
+}
+
+/* Graphite lanes, raised cards, silver headings: position and lightness
+   carry structure, leaving the small status dots free to carry meaning. */
+.theme-dark .abyss-project-kanban-column {
+  border-radius: var(--b16-radius-s);
+}
+
+.theme-dark .abyss-project-kanban-column:not(.is-drop-target, .is-drop-disabled) {
+  background: var(--b16-surface-1);
+  border-color: var(--b16-border-faint);
+}
+
+.theme-dark .abyss-project-kanban-column-header {
+  background: var(--b16-surface-2);
+}
+
+.theme-dark .abyss-project-kanban-card {
+  background: var(--b16-surface-2);
+  border-radius: var(--b16-radius-s);
+}
+
+.theme-dark .abyss-project-kanban-card:not(.is-selected) {
+  border-color: var(--b16-border-normal);
+}
+
+.theme-dark .abyss-project-kanban-card:not(.is-selected):hover {
+  border-color: var(--b16-border-strong);
+}
+
+.theme-dark .abyss-project-kanban-column-label {
+  color: var(--b16-callout-code);
+}
+
+.theme-dark
+  :is(
+    .abyss-project-kanban-field-label,
+    .abyss-project-timeline-field-label,
+    .abyss-project-kanban-column-count,
+    .abyss-projects-group-count,
+    .abyss-project-table-count
+  ) {
+  color: var(--b16-text-muted);
+}
+
+/* A group is a full-width band, never a box around its name. Preserve the
+   plugin's drop-target fills by restricting the normal material to rest. */
+.theme-dark .abyss-project-table-group-row:not(.is-drop-target, .is-drop-disabled) td {
+  background: var(--b16-surface-2);
+}
+
+body.theme-dark .abyss-panel-view button.abyss-project-timeline-group-header {
+  background: var(--b16-surface-2);
+}
+
+.theme-dark .abyss-project-table th {
+  background: var(--b16-surface-1);
+  color: var(--b16-callout-code);
+}
+
+/* Progress retains the plugin's four stages, using the same restrained
+   semantic endpoints as the theme's callouts. */
+.theme-dark :is(.abyss-projects-table-session, .abyss-projects-table) {
+  --abyss-project-progress-low: var(--b16-callout-critical);
+  --abyss-project-progress-quarter: var(--b16-callout-caution);
+  --abyss-project-progress-half: var(--b16-callout-information);
+  --abyss-project-progress-high: var(--b16-callout-positive);
+}
+
+/* Interface headings share the surrounding UI face rather than inheriting
+   the document's serif heading family. Keep the user's UI size ramp. */
+.theme-dark :is(.abyss-projects-title, .abyss-center-title, .abyss-project-dashboard-title) {
+  font-family: var(--font-interface);
+  font-size: var(--b16-font-ui-l);
+  font-weight: var(--font-semibold);
+  color: var(--b16-text-normal);
+}
+
+.theme-dark .abyss-group-header {
+  font-size: var(--b16-font-ui-s);
+  color: var(--b16-callout-code);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* Metadata chips retain a modest surface; nested remove/dependency buttons
+   do not acquire a second frame. Empty/add actions have no filled material. */
+body.theme-dark .abyss-panel-view .abyss-chip {
+  border-color: transparent;
+  border-radius: var(--b16-radius-control);
+  box-shadow: none;
+  background: var(--b16-surface-2);
+
+  &:hover {
+    background: var(--b16-surface-3);
+  }
+
+  &.abyss-chip-empty,
+  &.abyss-chip-add {
+    background: transparent;
+    color: var(--b16-text-muted);
+  }
+}
+
 .theme-dark .abyss-cal-view-switcher {
   padding: 0;
   background: transparent;
   border-radius: var(--b16-radius-control);
 }
 
-/* Priority is semantic data in this popover, not ordinary button chrome.
-   The shared button contract deliberately owns the neutral foreground of
-   generic controls; these plugin-scoped variables restore the hue carried by
-   each flag without changing the contract's geometry or interaction states.
+/* Popovers are portals outside the panel. The priority flags need the same
+   colours here and in the inspector, including the brighter readable red. */
+.theme-dark .abyss-status-popover {
+  background: var(--b16-surface-1);
+  border-color: var(--b16-border-strong);
+  border-radius: var(--b16-radius-s);
+  box-shadow: none;
+}
 
-   `body.theme-dark` gives this late plugin layer exactly enough specificity
-   to beat the generic button rule in every state, including the active flag,
-   without `!important` and without reaching any other plugin button. */
 body.theme-dark .abyss-status-popover-flag[data-abyss-priority] {
-  color: var(--b16-abyss-priority-color, var(--text-muted));
+  border-color: transparent;
+  box-shadow: none;
+  background: transparent;
+  color: var(--b16-abyss-priority-color, var(--b16-text-muted));
+
+  &:hover {
+    background: var(--b16-surface-2);
+  }
+
+  &.is-active {
+    background: var(--b16-surface-2);
+    border-color: var(--b16-border-strong);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--b16-accent-link);
+    outline-offset: 2px;
+  }
 }
 
-body.theme-dark .abyss-status-popover-flag[data-abyss-priority='A'] {
-  --b16-abyss-priority-color: var(--color-red);
+body.theme-dark .abyss-status-popover-flag[data-abyss-priority='A'],
+body.theme-dark .abyss-priority-chip[data-priority='A'] {
+  --b16-abyss-priority-color: var(--b16-status-error-text);
 }
 
-body.theme-dark .abyss-status-popover-flag[data-abyss-priority='B'] {
-  --b16-abyss-priority-color: var(--color-orange);
+body.theme-dark .abyss-status-popover-flag[data-abyss-priority='B'],
+body.theme-dark .abyss-priority-chip[data-priority='B'] {
+  --b16-abyss-priority-color: var(--b16-accent-code);
 }
 
-body.theme-dark .abyss-status-popover-flag[data-abyss-priority='C'] {
-  --b16-abyss-priority-color: var(--color-yellow);
+body.theme-dark .abyss-status-popover-flag[data-abyss-priority='C'],
+body.theme-dark .abyss-priority-chip[data-priority='C'] {
+  --b16-abyss-priority-color: var(--b16-callout-caution);
 }
 
-body.theme-dark .abyss-status-popover-flag[data-abyss-priority='E'] {
-  --b16-abyss-priority-color: var(--color-blue);
+body.theme-dark .abyss-status-popover-flag[data-abyss-priority='E'],
+body.theme-dark .abyss-priority-chip[data-priority='E'] {
+  --b16-abyss-priority-color: var(--b16-accent-link);
 }
 
-body.theme-dark .abyss-status-popover-flag[data-abyss-priority='F'] {
-  --b16-abyss-priority-color: var(--color-purple);
+body.theme-dark .abyss-status-popover-flag[data-abyss-priority='F'],
+body.theme-dark .abyss-priority-chip[data-priority='F'] {
+  --b16-abyss-priority-color: var(--b16-accent-link-ext);
+}
+
+/* Sort/group options are menu rows, not a stack of outlined buttons. Their
+   check glyphs remain plugin-owned; a neutral hover reveals the hit area. */
+body.theme-dark
+  .abyss-view-state-popover
+  button:is(
+    .abyss-view-state-row-main,
+    .abyss-view-state-option,
+    .abyss-view-state-option-move,
+    .abyss-view-state-option-action
+  ) {
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  color: var(--b16-text-normal);
+
+  &:hover {
+    background: var(--b16-surface-2);
+  }
+}
+
+.theme-dark :is(.abyss-popover, .abyss-view-state-popover) {
+  background: var(--b16-surface-1);
+  border-color: var(--b16-border-strong);
+  border-radius: var(--b16-radius-s);
+  box-shadow: none;
+}
+
+body.theme-dark .abyss-popover button.abyss-popover-clear-icon-btn {
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  color: var(--b16-text-muted);
+}
+
+body.theme-dark :is(.abyss-popover, .abyss-status-popover) button:focus-visible {
+  outline: 2px solid var(--b16-accent-link);
+  outline-offset: 1px;
+}
+
+body.theme-dark .abyss-priority-chip[data-priority] {
+  color: var(--b16-abyss-priority-color, var(--b16-text-muted));
+}
+
+body.theme-dark .abyss-dep-search button.abyss-dep-search-option {
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  color: var(--b16-text-normal);
+
+  &:is(:hover, .is-active) {
+    background: var(--b16-surface-2);
+  }
 }
 
 /* ===== 50-plugins/bases.css ===== */

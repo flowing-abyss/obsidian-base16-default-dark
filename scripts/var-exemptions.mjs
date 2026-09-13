@@ -17,6 +17,11 @@
 //   - reason: why it is legitimate despite not being in either known set.
 export const VAR_EXEMPTIONS = [
   {
+    name: "--abyss-project-status-color",
+    reason:
+      "Abyss Tasks projectStatusPresentation.ts sets this per status from the user's configured colour. Verified inline on live .abyss-project-status-filter elements; preserve the plugin's badge/text/dot contract rather than replacing its palette.",
+  },
+  {
     name: "--callout-color",
     reason:
       "Obsidian declares this RGB-triplet input on each rendered .callout; it is scoped to the component rather than present in the captured root-variable snapshot.",
