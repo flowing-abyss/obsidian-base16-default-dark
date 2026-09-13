@@ -87,10 +87,15 @@ const surfaceHex = Object.fromEntries(SURFACES.map((s) => [s, hexOf(s)]));
 // User-configured status/tag colours are plugin-owned and are not fixed theme
 // endpoints. Flags are symbols (3:1); names and metadata are text (4.5:1).
 const ABYSS_PAIRS = [
-  ['text-normal', 'surface-2', 4.5], // card title
-  ['text-muted', 'surface-2', 4.5], // card metadata
+  ['text-normal', 'surface-1', 4.5], // card title
+  ['text-muted', 'surface-1', 4.5], // card metadata / inspector labels
+  ['code-comment', 'surface-1', 4.5], // subordinate card field labels
+  ['code-comment', 'surface-0', 4.5], // open column counts
+  ['text-normal', 'surface-2', 4.5], // selected navigation / table groups
+  ['text-muted', 'surface-2', 4.5], // resting inspector chip
   ['text-muted', 'surface-3', 4.5], // hovered inspector chip
-  ['callout-code', 'surface-2', 4.5], // silver column/header label
+  ['callout-code', 'surface-0', 4.5], // silver open-column label
+  ['callout-code', 'surface-1', 4.5], // silver table header label
   ['status-error-text', 'surface-2', 4.5], // overdue / highest priority
   ...['status-error-text', 'accent-code', 'callout-caution', 'accent-link', 'accent-link-ext']
     .flatMap((token) => ['surface-1', 'surface-2'].map((surface) => [token, surface, 3])),
