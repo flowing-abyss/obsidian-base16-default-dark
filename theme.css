@@ -4901,6 +4901,24 @@ body.theme-dark .abyss-panel-view button.abyss-view-state-btn--active {
   color: var(--b16-accent-link);
 }
 
+/* Project sort/group is a framed toolbar action, matching the adjacent
+   segmented control. This follows the equal-specificity navigation reset. */
+body.theme-dark .abyss-project-table-controls button.abyss-view-state-btn {
+  border: 1px solid var(--b16-border-normal);
+  border-radius: var(--b16-radius-control);
+}
+
+/* The plugin owns the non-default-state class. Give its small dot a clean
+   knockout so it stays distinct from the glyph and hover material. */
+body.theme-dark .abyss-project-table-controls button.abyss-view-state-btn--active::after {
+  top: 3px;
+  right: 3px;
+  width: 5px;
+  height: 5px;
+  background: var(--b16-accent-link);
+  box-shadow: 0 0 0 2px var(--b16-surface-0);
+}
+
 /* Keep the keyboard cue separate from pointer hover on frameless controls.
    This also covers dynamically mounted editors without changing their fill. */
 body.theme-dark .abyss-panel-view button:focus-visible {
@@ -5041,6 +5059,12 @@ body.theme-dark .abyss-panel-view .abyss-chip {
 
   &:is(.abyss-chip-empty, .abyss-chip-add):hover {
     background: var(--b16-surface-2);
+  }
+
+  /* Native .abyss-dep-badge.abyss-chip has no resting material. Counts and
+     direction carry its state; the nested actions provide hover feedback. */
+  &.abyss-dep-badge {
+    background: transparent;
   }
 }
 
