@@ -457,3 +457,10 @@
   /* Misc */
   --list-indent: 1.6em;
 }
+
+/* Abyss batch selection needs a neutral edge, distinct from the open task.
+   Scoped to the plugin: 45% of the existing neutral endpoint gives 3.29:1
+   on its surface-2 selection fill, without changing other app controls. */
+.theme-dark .abyss-panel-view {
+  --b16-abyss-selection-border: rgba(216, 216, 216, 0.45);
+}

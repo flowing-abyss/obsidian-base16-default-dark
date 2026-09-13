@@ -1,7 +1,7 @@
 /* ABYSS TASKS
    Runtime audits: .docs/abyss-tasks-audit.md and abyss-coherence-review.md.
    The plugin owns status/tag
-   colours, badge/text/dot presentation, calendar fills and selection. This
+   colours, badge/text/dot presentation and calendar fills. This
    layer restores material hierarchy and exempts content controls from the
    generic button frame in 40-chrome.css; it does not recolour user data. */
 .theme-dark .abyss-panel-view {
@@ -10,6 +10,23 @@
   --abyss-priority-a: var(--b16-status-error-text);
   --abyss-priority-c: var(--b16-callout-caution);
   --abyss-date-overdue: var(--b16-status-error-text);
+}
+
+/* Match Obsidian's collapsed ribbon: the rail remains a navigation edge,
+   while the adjacent task browser has its own context surface. */
+.theme-dark .abyss-rail {
+  background: var(--b16-surface-0);
+}
+
+/* The plugin uses active-hover for both the open task and batch selection.
+   Use a solid neutral material; retain the separate batch marker and the
+   native keyboard outline instead of tinting every selected row blue. */
+.theme-dark .abyss-task-card {
+  --background-modifier-active-hover: var(--b16-surface-2);
+}
+
+.theme-dark .abyss-task-card.abyss-multi-selected {
+  box-shadow: inset 2px 0 0 var(--b16-abyss-selection-border);
 }
 
 /* Names and group labels are buttons for interaction, not framed actions.
@@ -220,13 +237,32 @@ body.theme-dark .abyss-panel-view .abyss-chip {
   }
 }
 
-/* The two mode groups are the same control. The native project wrapper
-   also had a padded border-colour fill (styles.css, shared switcher rule),
-   lifting the entire group above the neighbouring 30px toolbar controls. */
+/* A joined segmented control, flush with the 30px toolbar line. Each
+   divider is drawn once; no overflow clip can hide keyboard focus. */
 .theme-dark :is(.abyss-cal-view-switcher, .abyss-project-overview-switcher) {
   padding: 0;
+  gap: 0;
   background: transparent;
   border-radius: var(--b16-radius-control);
+}
+
+/* The generic button rule above removes frames on standalone tools. These
+   adjacent mode buttons instead share one outer frame and single dividers. */
+body.theme-dark .abyss-panel-view button:is(.abyss-cal-view-btn, .abyss-project-overview-mode) {
+  border: 1px solid var(--b16-border-normal);
+  border-inline-end-width: 0;
+  border-radius: 0;
+
+  &:first-child {
+    border-start-start-radius: var(--b16-radius-control);
+    border-end-start-radius: var(--b16-radius-control);
+  }
+
+  &:last-child {
+    border-start-end-radius: var(--b16-radius-control);
+    border-end-end-radius: var(--b16-radius-control);
+    border-inline-end-width: 1px;
+  }
 }
 
 /* Popovers are portals outside the panel. The priority flags need the same

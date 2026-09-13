@@ -94,6 +94,7 @@ const ABYSS_PAIRS = [
   ['text-normal', 'surface-2', 4.5], // selected navigation / table groups
   ['text-muted', 'surface-2', 4.5], // resting inspector chip
   ['text-muted', 'surface-3', 4.5], // hovered inspector chip
+  ['accent-tag', 'surface-2', 4.5], // configured tag groups on selected tasks
   ['callout-code', 'surface-0', 4.5], // silver open-column label
   ['callout-code', 'surface-1', 4.5], // silver table header label
   ['status-error-text', 'surface-2', 4.5], // overdue / highest priority
@@ -112,6 +113,16 @@ const waived = new Set(waivers.map((w) => `${w.token}@${w.surface}`));
 const seenPairs = new Set();
 
 let failed = 0;
+// This inset is the independent batch-selection cue, composited over the
+// same solid fill as the open task. A decorative border token was too faint.
+const abyssSelectionRatio = contrast(
+  composite(rgbaOf('abyss-selection-border'), hexOf('surface-2')),
+  hexOf('surface-2'),
+);
+if (abyssSelectionRatio < 3) {
+  console.error(`FAIL Abyss Tasks batch selection edge ${abyssSelectionRatio.toFixed(2)} < 3`);
+  failed++;
+}
 for (const [token, surface, min] of ABYSS_PAIRS) {
   const ratio = contrast(hexOf(token), hexOf(surface));
   if (ratio < min) {
