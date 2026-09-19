@@ -6551,6 +6551,9 @@ body .another-quick-switcher__status__count-input {
    Bases and callouts therefore preserve their normal contrast, and switching
    context does not require the eye to parse a second background plane. */
 .theme-dark .tabbed {
+  /* The same separation follows the flex axis for every tab orientation.
+     Nested tabsets no longer add a second, top-only padding step. */
+  gap: calc(var(--font-text-size) * 0.6);
   color: var(--b16-text-normal);
   background: transparent;
   border-radius: var(--b16-radius-s);
@@ -6579,7 +6582,7 @@ body .another-quick-switcher__status__count-input {
   color: var(--b16-text-muted);
   background: transparent;
   border: 1px solid transparent;
-  border-radius: var(--b16-radius-control);
+  border-radius: 0;
   box-shadow: none;
   font-size: var(--b16-label-size);
   font-weight: 550;
@@ -6597,6 +6600,16 @@ body .another-quick-switcher__status__count-input {
   color: var(--b16-text-normal);
   background: var(--b16-surface-1);
   border-color: transparent;
+}
+
+/* Core buttons center their flex content; vertical navigation needs a
+   shared leading edge even when labels have different lengths. */
+.theme-dark
+  .tabbed:is(.tabbed--left, .tabbed--right)
+  > .tabbed__list
+  > :is(button.tabbed__tab, button.tabbed__action) {
+  justify-content: flex-start;
+  text-align: start;
 }
 
 .theme-dark.theme-dark
@@ -6656,11 +6669,16 @@ body .another-quick-switcher__status__count-input {
   background: transparent;
 }
 
-/* A nested tab list is a second navigation level, not a continuation of the
-   parent row. A small type-relative step separates the two without adding a
-   surface or making the hierarchy feel like a separate card. */
-.theme-dark .tabbed > .tabbed__panels > .tabbed__panel .tabbed {
-  padding-block-start: calc(var(--font-text-size) * 0.4);
+/* Rendered Markdown wraps Bases embeds in paragraphs. Their outer margins
+   added 17px above the table but nothing beside it (live category audit).
+   Trim only the content edges; internal paragraph spacing and the plugin's
+   configured --tabbed-content-padding remain intact, in tabs and columns. */
+.theme-dark :is(.tabbed__panel, .tabbed-columns__content) > :first-child {
+  margin-block-start: 0;
+}
+
+.theme-dark :is(.tabbed__panel, .tabbed-columns__content) > :last-child {
+  margin-block-end: 0;
 }
 
 /* ===== 50-plugins/tasks.css ===== */
