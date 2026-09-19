@@ -58,8 +58,8 @@ body.theme-dark .abyss-panel-view button.abyss-project-table-name:hover {
   color: var(--b16-accent-link);
 }
 
-/* Navigation uses one quiet filled state. A selected mode must remain
-   distinguishable from a hover, and an icon is not a tiny outlined card. */
+/* Navigation and secondary footer actions use quiet hover feedback. A
+   selected mode remains distinguishable from a hover. */
 body.theme-dark
   .abyss-panel-view
   button:is(
@@ -71,6 +71,7 @@ body.theme-dark
     .abyss-cal-view-btn,
     .abyss-project-overview-mode,
     .abyss-view-state-btn,
+    .abyss-projects-new,
     .abyss-mg-week-btn
   ) {
   border-color: transparent;
@@ -87,6 +88,14 @@ body.theme-dark
     background: var(--b16-surface-2);
     color: var(--b16-text-normal);
   }
+}
+
+/* The project footer continues the canvas instead of forming a filled
+   toolbar beneath it. Only the creation button responds to hover; the
+   count stays supporting text. Runtime review: .docs/abyss-footer-review.md. */
+.theme-dark .abyss-project-table-footer {
+  background: transparent;
+  border-top: 0;
 }
 
 body.theme-dark .abyss-panel-view button.abyss-view-state-btn--active {
