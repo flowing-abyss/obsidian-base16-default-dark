@@ -4902,7 +4902,6 @@ body.theme-dark
     .abyss-cal-view-btn,
     .abyss-project-overview-mode,
     .abyss-view-state-btn,
-    .abyss-projects-new,
     .abyss-mg-week-btn
   ) {
   border-color: transparent;
@@ -4989,6 +4988,28 @@ body.theme-dark .abyss-panel-view button.abyss-project-table-status-pill:not(.is
 .theme-dark .abyss-project-kanban-column-header {
   background: var(--b16-surface-0);
   border-bottom-color: var(--b16-border-normal);
+}
+
+/* Compact empty and manually collapsed statuses remain visible lanes.
+   Their neutral frame replaces the missing cards; status dots and drop
+   feedback remain plugin-owned. Verified in .docs/abyss-collapsed-review.md. */
+.theme-dark .abyss-project-kanban-column:is(.is-collapsed, .is-compact-empty) {
+  border-radius: var(--b16-radius-s);
+}
+
+.theme-dark
+  .abyss-project-kanban-column:is(.is-collapsed, .is-compact-empty):not(
+    .is-drop-target,
+    .is-drop-disabled
+  ) {
+  background: var(--b16-surface-1);
+  border-color: var(--b16-border-normal);
+}
+
+.theme-dark
+  .abyss-project-kanban-column:is(.is-collapsed, .is-compact-empty)
+  .abyss-project-kanban-column-header {
+  background: transparent;
 }
 
 .theme-dark .abyss-project-kanban-card {
