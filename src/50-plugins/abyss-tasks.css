@@ -4,7 +4,7 @@
    colours, badge/text/dot presentation and calendar fills. This
    layer restores material hierarchy and exempts content controls from the
    generic button frame in 40-chrome.css; it does not recolour user data. */
-.theme-dark .abyss-panel-view {
+.theme-dark :is(.abyss-panel-view, .abyss-modal) {
   --background-secondary: var(--b16-surface-1);
   --background-secondary-alt: var(--b16-surface-2);
   --abyss-priority-a: var(--b16-status-error-text);
@@ -33,7 +33,7 @@
    body + panel + semantic class beats the verified generic button selector
    including its hover/active rules (0,3,1), without !important. */
 body.theme-dark
-  .abyss-panel-view
+  :is(.abyss-panel-view, .abyss-modal)
   button:is(
     .abyss-project-table-name,
     .abyss-project-table-column-button,
@@ -232,33 +232,74 @@ body.theme-dark .abyss-panel-view button.abyss-project-timeline-group-header {
   letter-spacing: normal;
 }
 
-/* Metadata chips retain a modest surface; nested remove/dependency buttons
-   do not acquire a second frame. Empty/add actions have no filled material. */
-body.theme-dark .abyss-panel-view .abyss-chip {
+/* Inspector metadata in both the panel and TaskModal portal. Tags, priority
+   and dates keep plugin-owned foregrounds; only materials are shared.
+   Dependency has one hover surface, with a local highlight on the plus. */
+body.theme-dark :is(.abyss-panel-view, .abyss-modal) .abyss-chip {
   border-color: transparent;
   border-radius: var(--b16-radius-control);
   box-shadow: none;
   background: var(--b16-surface-2);
+}
 
-  &:hover {
-    background: var(--b16-surface-3);
-  }
+body.theme-dark :is(.abyss-panel-view, .abyss-modal) .abyss-chip:hover {
+  border-color: transparent;
+  box-shadow: none;
+  background: var(--b16-surface-3);
+}
 
-  &.abyss-chip-empty,
-  &.abyss-chip-add {
-    background: transparent;
-    color: var(--b16-text-muted);
-  }
+body.theme-dark
+  :is(.abyss-panel-view, .abyss-modal)
+  .abyss-chip:is(.abyss-chip-empty, .abyss-chip-add) {
+  background: transparent;
+  color: var(--b16-text-muted);
+}
 
-  &:is(.abyss-chip-empty, .abyss-chip-add):hover {
-    background: var(--b16-surface-2);
-  }
+body.theme-dark
+  :is(.abyss-panel-view, .abyss-modal)
+  .abyss-chip:is(.abyss-chip-empty, .abyss-chip-add):hover {
+  background: var(--b16-surface-2);
+}
 
-  /* Native .abyss-dep-badge.abyss-chip has no resting material. Counts and
-     direction carry its state; the nested actions provide hover feedback. */
-  &.abyss-dep-badge {
-    background: transparent;
-  }
+body.theme-dark
+  :is(.abyss-panel-view, .abyss-modal)
+  button:is(.abyss-right-action-btn, .abyss-chip-remove):hover {
+  background: var(--b16-surface-2);
+}
+
+body.theme-dark :is(.abyss-panel-view, .abyss-modal) .abyss-chip.abyss-dep-badge {
+  background: transparent;
+  border: 0;
+}
+
+body.theme-dark :is(.abyss-panel-view, .abyss-modal) .abyss-chip.abyss-dep-badge:hover {
+  background: var(--b16-surface-2);
+}
+
+body.theme-dark
+  :is(.abyss-panel-view, .abyss-modal)
+  .abyss-dep-badge
+  > button.abyss-dep-badge-body:hover {
+  background: transparent;
+}
+
+body.theme-dark
+  :is(.abyss-panel-view, .abyss-modal)
+  .abyss-dep-badge
+  > button.abyss-dep-badge-add:hover {
+  background: var(--b16-surface-3);
+}
+
+body.theme-dark
+  :is(.abyss-panel-view, .abyss-modal)
+  button:is(
+    .abyss-right-action-btn,
+    .abyss-chip-remove,
+    .abyss-dep-badge-body,
+    .abyss-dep-badge-add
+  ):focus-visible {
+  outline: 1px solid var(--b16-accent-link);
+  outline-offset: -2px;
 }
 
 /* A joined segmented control, flush with the 30px toolbar line. Each
@@ -441,16 +482,7 @@ body.theme-dark .abyss-dep-search button.abyss-dep-search-option {
   font-weight: var(--font-semibold);
 }
 
-/* Frameless content buttons still need pointer feedback. Their compact
-   areas use material only during interaction, as native Bases controls do. */
-body.theme-dark
-  .abyss-panel-view
-  button:is(
-    .abyss-chip-remove,
-    .abyss-right-action-btn,
-    .abyss-dep-badge-body,
-    .abyss-dep-badge-add
-  ):hover,
+/* Clear controls in popovers use the same neutral interaction material. */
 body.theme-dark .abyss-popover button.abyss-popover-clear-icon-btn:hover {
   background: var(--b16-surface-2);
   color: var(--b16-text-normal);

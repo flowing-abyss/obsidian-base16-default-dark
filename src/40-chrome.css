@@ -64,51 +64,46 @@ body.theme-dark {
   border-radius: var(--b16-radius-s);
 }
 
-/* Text controls use the same flat house style as Meta Bind and Task
-   Calendar: chrome stays transparent, meaning remains in the label/icon,
-   and interaction is carried by a stronger edge plus a narrow inset rail.
-   Icon-only toolbar controls are deliberately excluded; boxing every glyph
-   would turn the app chrome into a noisy grid instead of a control system.
-
-   The foreground is part of that contract. Plugins commonly pair an accent
-   fill with `text-on-accent`; once the theme deliberately removes that fill,
-   it must replace the foreground too or the control becomes dark-on-dark.
-   Cover both Obsidian's active vocabulary and selected option buttons. */
+/* Action controls use neutral pointer feedback. Keyboard focus has its own
+   outline; selection and press use surface-2. Semantic plugin controls keep
+   their stronger scoped rules and foreground/color contracts. */
 .theme-dark button:not(.clickable-icon, .menu-item, [class*='editingToolbar']) {
   background: transparent;
   border: 1px solid var(--b16-border-normal);
   border-radius: var(--b16-radius-control);
   box-shadow: none;
   color: var(--b16-text-normal);
-
-  &:is(:hover, :focus-visible) {
-    background: transparent;
-    border-color: var(--b16-border-strong);
-    box-shadow: inset 2px 0 0 var(--b16-accent-link);
-    color: var(--b16-text-normal);
-  }
-
-  &:active {
-    background: transparent;
-    border-color: var(--b16-surface-4);
-    box-shadow: inset 2px 0 0 var(--b16-accent-tag);
-    color: var(--b16-text-normal);
-  }
-
-  &:is(.is-active, .is-selected, [aria-pressed='true']) {
-    background: transparent;
-    border-color: var(--b16-border-strong);
-    box-shadow: inset 2px 0 0 var(--b16-accent-link);
-    color: var(--b16-text-normal);
-  }
-
-  &:disabled {
-    box-shadow: none;
-  }
 }
 
-/* Destructive controls retain the same geometry but spend their rail on the
-   error hue, so the shared house style never erases the action's meaning. */
+.theme-dark
+  button:not(.clickable-icon, .menu-item, [class*='editingToolbar']):is(
+    :hover,
+    :focus-visible,
+    :active,
+    .is-active,
+    .is-selected,
+    [aria-pressed='true']
+  ) {
+  background: var(--b16-surface-1);
+  border-color: var(--b16-border-strong);
+  box-shadow: none;
+}
+
+.theme-dark
+  button:not(.clickable-icon, .menu-item, [class*='editingToolbar']):is(
+    :active,
+    .is-active,
+    .is-selected,
+    [aria-pressed='true']
+  ) {
+  background: var(--b16-surface-2);
+}
+
+.theme-dark button:not(.clickable-icon, .menu-item, [class*='editingToolbar']):focus-visible {
+  outline: 1px solid var(--b16-accent-link);
+  outline-offset: -2px;
+}
+
 .theme-dark
   button.mod-warning:not(.clickable-icon, .menu-item, [class*='editingToolbar']):is(
     :hover,
@@ -117,7 +112,18 @@ body.theme-dark {
     .is-active,
     [aria-pressed='true']
   ) {
-  box-shadow: inset 2px 0 0 var(--b16-status-error);
+  box-shadow: none;
+  color: var(--b16-status-error-text);
+}
+
+.theme-dark
+  button:not(.clickable-icon, .menu-item, [class*='editingToolbar']):is(
+    :disabled,
+    [aria-disabled='true']
+  ) {
+  background: transparent;
+  border-color: var(--b16-border-normal);
+  box-shadow: none;
 }
 
 /* Transient chrome. Notices and tooltips are both short-lived information
@@ -467,4 +473,22 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
 .workspace-split.mod-root .workspace-tab-header.is-active::before,
 .workspace-split.mod-root .workspace-tab-header.is-active::after {
   box-shadow: none !important;
+}
+
+/* Settings actions sit beside form fields and use their surface step. */
+.theme-dark
+  .setting-item-control
+  > button:not(.clickable-icon, :disabled, [aria-disabled='true']):is(
+    :hover,
+    :focus-visible,
+    :active
+  ) {
+  background: var(--b16-surface-2);
+  border-color: var(--b16-border-strong);
+  box-shadow: none;
+}
+
+.theme-dark .setting-item-control > button:not(.clickable-icon):focus-visible {
+  outline: 1px solid var(--b16-accent-link);
+  outline-offset: 2px;
 }

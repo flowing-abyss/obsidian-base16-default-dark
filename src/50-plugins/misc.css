@@ -111,7 +111,7 @@ body.theme-dark.virtual-link-color-only
 }
 /* META BIND */
 .mb-button-group {
-  --mb-border-radius: 0;
+  --mb-border-radius: var(--b16-radius-control);
 
   gap: 0;
 
@@ -127,24 +127,6 @@ body.theme-dark.virtual-link-color-only
         background 0.1s ease,
         border-color 0.1s ease,
         color 0.1s ease;
-
-      &:hover,
-      &:focus {
-        background: transparent !important;
-        border-color: var(--b16-border-strong) !important;
-        color: var(--b16-text-strong) !important;
-        box-shadow: inset 2px 0 0 var(--b16-accent-link) !important;
-      }
-
-      /* One border step lighter than :hover's border-strong, matching the
-         original design (#585858 active vs #484848 hover) rather than the
-         accidental extra lift a text token's revised value would add. */
-      &:active {
-        background: transparent !important;
-        border-color: var(--b16-surface-4) !important;
-        color: var(--b16-text-strong) !important;
-        box-shadow: inset 2px 0 0 var(--b16-accent-tag) !important;
-      }
     }
 
     /* collapse adjacent borders */
@@ -158,6 +140,53 @@ body.theme-dark.virtual-link-color-only
       border: 1px solid var(--b16-border-normal);
     }
   }
+}
+
+/* Standalone actions and joined groups share geometry. Background colour,
+   rather than the shorthand, preserves configured button images on hover.
+   The old important rails lived here; removing them makes ordinary scoped
+   states sufficient against the verified Meta Bind plugin stylesheet. */
+body.theme-dark .mb-button-inner {
+  min-height: 30px;
+  padding: 0 10px;
+  font-size: var(--b16-font-ui-m);
+  border-radius: var(--b16-radius-control);
+  box-shadow: none;
+}
+
+.theme-dark .mb-button-group > .mb-button > .mb-button-inner:is(:hover, :focus, :active) {
+  background-color: var(--b16-surface-1);
+  border-color: var(--b16-border-strong);
+  color: var(--b16-text-normal);
+  box-shadow: none;
+}
+
+.theme-dark .mb-button-group > .mb-button > .mb-button-inner:active {
+  background-color: var(--b16-surface-2);
+}
+
+body.theme-dark .mb-button-inner:focus-visible {
+  outline: 1px solid var(--b16-accent-link);
+  outline-offset: -2px;
+}
+
+body.theme-dark .mb-button-inner.mod-plain {
+  border: 0;
+}
+
+.theme-dark
+  .mb-button-group
+  > .mb-button
+  > .mb-button-inner.mod-warning:is(:hover, :focus, :active) {
+  color: var(--b16-status-error-text);
+}
+
+/* Meta Bind can represent disabled controls with a class or an attribute. */
+.theme-dark .mb-button-group > .mb-button > .mb-button-inner:is(.disabled, :disabled) {
+  background-color: transparent;
+  border-color: var(--b16-border-normal);
+  color: var(--b16-text-muted);
+  box-shadow: none;
 }
 
 /* METADATA VALIDATOR */
@@ -181,24 +210,19 @@ body.theme-dark.virtual-link-color-only
     color 0.1s ease;
 }
 
-.mv-sidebar-actions .mv-sidebar-action-btn:hover,
-.mv-sidebar-actions .mv-sidebar-action-btn:focus-visible,
-.mv-vault-note-header .mv-vault-note-link:hover,
-.mv-vault-note-header .mv-vault-note-link:focus-visible {
-  background: transparent !important;
-  border-color: var(--b16-border-strong) !important;
-  color: var(--b16-text-strong) !important;
-  box-shadow: inset 2px 0 0 var(--b16-accent-link) !important;
-}
-
-/* One border step lighter than :hover's border-strong; see .mb-button-inner
-   :active above. */
-.mv-sidebar-actions .mv-sidebar-action-btn:active,
-.mv-vault-note-header .mv-vault-note-link:active {
-  background: transparent !important;
-  border-color: var(--b16-surface-4) !important;
-  color: var(--b16-text-strong) !important;
-  box-shadow: inset 2px 0 0 var(--b16-accent-tag) !important;
+/* These controls retain their stronger interaction text but use the same
+   neutral material as other actions. No competing important plugin rule
+   exists in the installed Metadata Validator stylesheet. */
+body.theme-dark
+  :is(.mv-sidebar-action-btn, .mv-vault-note-link):not(:disabled, [aria-disabled='true']):is(
+    :hover,
+    :focus-visible,
+    :active
+  ) {
+  background: var(--b16-surface-1);
+  border-color: var(--b16-border-strong);
+  color: var(--b16-text-strong);
+  box-shadow: none;
 }
 
 .mv-sidebar-actions .mv-sidebar-action-btn:first-child {

@@ -40,16 +40,9 @@
     transition: translate 2s linear 0s;
   }
 }
-/* Sizing. A Bases view is content, not chrome: its rows are note titles and
-   property values, the same material a table in a note holds, and it is
-   read the same way. So the rows take the reading size and only the
-   surrounding controls — the toolbar, the view tabs, the column header —
-   step down. Previously the whole view sat at 0.85 of the reading size,
-   which made a pinned Bases panel read smaller than the prose beside it
-   for no reason the reader could infer.
-
-   The header row takes the shared label size, the same one a callout's type
-   label and a code block's language band use. */
+/* Bases tables share the task application's compact type scale. Other view
+   types retain document sizing; context-specific table/sidedock rules below
+   supply the UI hierarchy verified in .docs/interface-v2-review.md. */
 .view-content .bases-header {
   font-family: var(--font-interface-theme);
   font-size: var(--b16-font-ui-l);
@@ -64,19 +57,7 @@
   font-size: var(--b16-label-size);
 }
 
-/* Bases' own inputs. Two of these ship values that only work against
-   Obsidian's default sizing and default surfaces, and both were visible
-   defects in this vault:
-
-   --bases-group-heading-property-size resolved to 0.72 of the reading size
-   (14.4px against 20px prose), which is the theme's UI *floor* — a size
-   meant for a status bar, not for the heading that names a group of rows.
-
-   --bases-table-group-background resolved to --background-primary, i.e. the
-   page itself, so a group heading row had no surface at all and the bands
-   it is supposed to separate ran together. Surface-2 rather than surface-1:
-   the group row sits inside a table that already uses surface-1 for its own
-   fills, so it needs the next step up to read as a divider above them. */
+/* Defaults for view types outside the central table and sidebar contexts. */
 .theme-dark {
   --bases-group-heading-property-size: var(--b16-font-ui-l);
   --bases-table-group-background: var(--b16-surface-2);
@@ -272,4 +253,74 @@
 /* Replace hardcoded rgba(128,128,128,0.15) hover */
 .theme-dark .bases-chart-tooltip-file:hover {
   background: var(--b16-surface-2);
+}
+
+/* Central data tables and boards, with a quieter navigation variant in
+   sidedocks. Verified on native Bases 1.13.7 and the installed Board view.
+   Group headings are siblings of .bases-tbody; the native group-background
+   variable does not paint them, so target the verified heading class. */
+.theme-dark .workspace-split.mod-root .bases-view[data-view-type='table'] {
+  --bases-table-header-background: var(--b16-surface-1);
+  --bases-table-font-size: var(--b16-font-ui-m);
+  --bases-table-row-height: 34px;
+  --bases-table-header-weight: var(--font-semibold);
+  --bases-table-header-color: var(--b16-callout-code);
+  --bases-group-heading-property-size: var(--b16-font-ui-s);
+  --bases-group-heading-value-size: var(--b16-font-ui-s);
+}
+
+.theme-dark .workspace-split.mod-root .bases-view[data-view-type='table'] .bases-group-heading {
+  background: var(--b16-surface-2);
+}
+
+.theme-dark .workspace-split.mod-sidedock .view-content .bases-view {
+  font-size: var(--b16-font-ui-m);
+
+  --bases-table-header-background: var(--b16-surface-0);
+  --bases-table-header-color: var(--b16-text-muted);
+  --bases-group-heading-value-size: var(--b16-font-ui-m);
+  --bases-group-heading-property-size: var(--b16-font-ui-s);
+}
+
+.theme-dark
+  .workspace-split.mod-sidedock
+  .view-content
+  :is(.bases-header, .bases-thead, .bases-th) {
+  font-size: var(--b16-font-ui-s);
+}
+
+.theme-dark .workspace-split.mod-root .board-column-header,
+.theme-dark .workspace-split.mod-root .board-row-header-bar {
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.theme-dark .workspace-split.mod-root .board-card {
+  background: var(--b16-surface-1);
+  border-top: 1px solid var(--b16-border-faint);
+  border-right: 1px solid var(--b16-border-faint);
+  border-radius: var(--b16-radius-s);
+  margin-bottom: 6px;
+  padding: 8px;
+}
+
+.theme-dark .workspace-split.mod-root .board-card:hover {
+  background: var(--b16-surface-2);
+}
+
+.theme-dark .workspace-split.mod-root .board-card .card-prop {
+  font-size: var(--b16-font-ui-m);
+}
+
+.theme-dark .workspace-split.mod-root .board-card .file-name {
+  font-size: var(--b16-font-ui-l);
+  line-height: 1.35;
+}
+
+.theme-dark
+  .workspace-split.mod-root
+  .view-content
+  .bases-view[data-view-type='table']
+  .bases-thead {
+  font-size: var(--b16-font-ui-s);
 }

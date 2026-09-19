@@ -1,7 +1,7 @@
 /* TABBED
    Tabs inside a note are document structure, not a row of standalone action
    buttons. Keep both the list and panel on the page surface, then spend the
-   interactive accent only on the shared button-state rail. Embedded prose,
+   interactive accent only on the active tab's panel-facing edge. Embedded prose,
    Bases and callouts therefore preserve their normal contrast, and switching
    context does not require the eye to parse a second background plane. */
 .theme-dark .tabbed {
@@ -23,10 +23,9 @@
   scrollbar-width: thin;
 }
 
-/* Tabs are navigation labels, not five equally prominent commands. Keep the
-   hit area of a compact button but reveal its frame only when it carries
-   interaction or selection. This leaves the panel content as the page's
-   primary visual layer while the single left rail preserves orientation. */
+/* Navigation labels keep a compact hit area without an action-button frame.
+   Neutral hover material is separate from the selected tab's edge and the
+   keyboard outline. The existing specificity overrides generic button states. */
 .theme-dark.theme-dark .tabbed > .tabbed__list > :is(button.tabbed__tab, button.tabbed__action) {
   min-width: calc(var(--font-text-size) * 1.5);
   min-height: calc(var(--font-text-size) * 1.5);
@@ -50,30 +49,57 @@
   > .tabbed__list
   > :is(button.tabbed__tab, button.tabbed__action):hover {
   color: var(--b16-text-normal);
-  background: transparent;
-  border-color: var(--b16-border-normal);
+  background: var(--b16-surface-1);
+  border-color: transparent;
 }
 
 .theme-dark.theme-dark
   .tabbed
   > .tabbed__list
-  > :is(button.tabbed__tab, button.tabbed__action):is(
-    :focus-visible,
-    .is-active,
-    [aria-selected='true']
-  ) {
+  > button.tabbed__tab:is(.is-active, [aria-selected='true']) {
   color: var(--b16-text-normal);
   background: transparent;
-  border-color: var(--b16-border-normal);
-  box-shadow: inset 1px 0 0 var(--b16-accent-link);
-  outline: none;
+  border-color: transparent;
+  box-shadow: inset 0 -2px 0 var(--b16-accent-link);
+}
+
+.theme-dark.theme-dark
+  .tabbed.tabbed--bottom
+  > .tabbed__list
+  > button.tabbed__tab:is(.is-active, [aria-selected='true']) {
+  box-shadow: inset 0 2px 0 var(--b16-accent-link);
+}
+
+.theme-dark.theme-dark
+  .tabbed.tabbed--left
+  > .tabbed__list
+  > button.tabbed__tab:is(.is-active, [aria-selected='true']) {
+  box-shadow: inset -2px 0 0 var(--b16-accent-link);
+}
+
+.theme-dark.theme-dark
+  .tabbed.tabbed--right
+  > .tabbed__list
+  > button.tabbed__tab:is(.is-active, [aria-selected='true']) {
+  box-shadow: inset 2px 0 0 var(--b16-accent-link);
 }
 
 .theme-dark.theme-dark
   .tabbed
   > .tabbed__list
   > :is(button.tabbed__tab, button.tabbed__action):focus-visible {
-  border-color: var(--b16-border-strong);
+  color: var(--b16-text-normal);
+  border-color: transparent;
+  outline: 1px solid var(--b16-accent-link);
+  outline-offset: -3px;
+}
+
+.theme-dark.theme-dark
+  .tabbed
+  > .tabbed__list
+  > button.tabbed__tab:focus-visible:not(.is-active, [aria-selected='true']) {
+  background: transparent;
+  box-shadow: none;
 }
 
 /* Tabbed keeps cached panels mounted inside its public .tabbed__panels
