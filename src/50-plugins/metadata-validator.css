@@ -1,0 +1,145 @@
+/* METADATA VALIDATOR
+   The property editor and its value picker expose semantic content classes,
+   but their parent .modal has no plugin class. :has() is needed to scope
+   window geometry without changing other Obsidian dialogs. Live DOM and
+   picker states verified in .docs/metadata-validator-review.md. */
+.theme-dark .modal:has(> .mv-context-modal, > .mv-picker-modal) {
+  width: min(640px, calc(100vw - 32px));
+  border-radius: var(--b16-radius-m);
+}
+
+.theme-dark .modal-content:is(.mv-context-modal, .mv-picker-modal) {
+  padding: 8px;
+  font-size: var(--b16-font-ui-m);
+}
+
+.theme-dark .mv-context-modal .mv-field-row {
+  grid-template-columns: min(150px, 30%) 20px minmax(0, 1fr) 22px;
+  min-height: 38px;
+  padding-block: 6px;
+  border-bottom-color: var(--b16-border-faint);
+}
+
+.theme-dark .mv-context-modal :is(.mv-context-section-header, .mv-collapsible-title) {
+  font-size: var(--b16-font-ui-m);
+  font-weight: var(--font-semibold);
+  color: var(--b16-text-normal);
+}
+
+.theme-dark .mv-context-modal .mv-context-section-header {
+  margin: 0 0 8px;
+}
+
+.theme-dark .mv-context-modal .mv-field-label {
+  font-size: var(--b16-font-ui-s);
+  color: var(--b16-text-muted);
+}
+
+.theme-dark .mv-context-modal .mv-field-type-icon {
+  opacity: 1;
+}
+
+.theme-dark .mv-context-modal .mv-field-type-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.theme-dark .mv-context-modal .mv-field-value :is(.mv-chip, button.mv-chip) {
+  font-size: var(--b16-font-ui-m);
+  line-height: 1.4;
+  padding: 3px 8px;
+  border-color: transparent;
+  border-radius: var(--b16-radius-control);
+  background: var(--b16-surface-1);
+  box-shadow: none;
+}
+
+.theme-dark .mv-context-modal .mv-field-value :is(.mv-chip, button.mv-chip):hover {
+  border-color: transparent;
+  background: var(--b16-surface-2);
+}
+
+/* Foregrounds (including tag and Supercharged Links colors) remain owned
+   by the plugin. Description labels and schema links stay frameless. */
+.theme-dark .mv-context-modal .mv-field-value input:not([type='checkbox']) {
+  font-size: var(--b16-font-ui-m);
+  border-radius: var(--b16-radius-control);
+  max-width: 100%;
+}
+
+.theme-dark .mv-context-modal :is(.mv-wikilink, .mv-chip-link, .mv-url-link) {
+  font-size: var(--b16-font-ui-m);
+}
+
+.theme-dark .mv-context-modal button.mv-list-add-btn {
+  width: 26px;
+  height: 26px;
+  border-color: transparent;
+  background: transparent;
+}
+
+.theme-dark .mv-context-modal button.mv-list-add-btn:hover {
+  background: var(--b16-surface-1);
+}
+
+.theme-dark .mv-context-modal :is(.mv-context-footer, .mv-field-fixed, .mv-field-range-hint) {
+  font-size: var(--b16-font-ui-s);
+  color: var(--b16-text-muted);
+}
+
+.theme-dark .mv-context-modal .mv-context-footer {
+  margin-top: 16px;
+  padding-top: 12px;
+  line-height: 1.45;
+  border-color: var(--b16-border-faint);
+}
+
+.theme-dark .mv-context-modal .mv-footer-filepath {
+  opacity: 1;
+  color: var(--b16-text-faint);
+}
+
+.theme-dark .mv-context-modal .mv-footer-errors {
+  color: var(--b16-status-error-text);
+}
+
+.theme-dark .mv-picker-modal :is(.mv-picker-meta, .mv-picker-value-hint, .mv-picker-footer) {
+  font-size: var(--b16-font-ui-s);
+  color: var(--b16-text-muted);
+  opacity: 1;
+}
+
+.theme-dark .mv-picker-modal .mv-picker-group-title {
+  font-size: var(--b16-font-ui-s);
+}
+
+.theme-dark .mv-picker-modal .mv-picker-group-type {
+  border: 0;
+  padding: 0;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.theme-dark .mv-picker-modal .mv-picker-selected {
+  height: auto;
+  min-height: 36px;
+  border-color: var(--b16-border-faint);
+}
+
+.theme-dark .mv-picker-modal .mv-picker-selected button.mv-picker-selected-chip {
+  font-size: var(--b16-font-ui-s);
+  border-color: transparent;
+  border-radius: var(--b16-radius-control);
+  background: var(--b16-surface-1);
+}
+
+/* Selection keeps the plugin's intentional left marker. Neutral focus and
+   hover material stay distinct from the persistent selected surface. */
+.theme-dark .mv-picker-modal .mv-picker-options button.mv-picker-choice:hover,
+.theme-dark .mv-picker-modal .mv-picker-list button.mv-picker-option.is-focused {
+  background: var(--b16-surface-1);
+}
+
+.theme-dark .mv-picker-modal .mv-picker-list button.mv-picker-option.is-selected {
+  background: var(--b16-surface-2);
+}
