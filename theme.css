@@ -5337,6 +5337,21 @@ body.theme-dark .abyss-popover button.abyss-popover-clear-icon-btn:hover {
 /* Keep native cell sizing and truncation. Per-cell query containers and
    hover translation previously made long values scroll under the pointer;
    they add unnecessary work to dense, virtualized tables. */
+
+/* Native single-line, unfocused multi-select containers shrink to content.
+   The pill's max-width: calc(100% - gap - 1ch) then subtracts input space
+   again, clipping even short labels inside wide cells (Ahrens: 68px for
+   74px of content in a 256px cell). Let pills keep their intrinsic width;
+   the cell still clips overflow. Editing and multiline layouts retain
+   Obsidian's pill sizing. Verified in .docs/bases-pill-width-review.md. */
+.theme-dark
+  .bases-table-container:not(.mod-multiline)
+  .multi-select-container:not(:focus-within)
+  > .multi-select-pill {
+  max-width: none;
+  flex-shrink: 0;
+}
+
 /* Bases tables share the task application's compact type scale. Other view
    types retain document sizing; context-specific table/sidedock rules below
    supply the UI hierarchy verified in .docs/interface-v2-review.md. */
