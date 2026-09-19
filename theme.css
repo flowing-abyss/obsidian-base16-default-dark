@@ -6547,7 +6547,8 @@ body .another-quick-switcher__status__count-input {
 /* TABBED
    Tabs inside a note are document structure, not a row of standalone action
    buttons. Keep both the list and panel on the page surface, then spend the
-   interactive accent only on the active tab's panel-facing edge. Embedded prose,
+   interactive accent on the active tab's edge: below horizontal labels,
+   beside the start of vertical labels. Embedded prose,
    Bases and callouts therefore preserve their normal contrast, and switching
    context does not require the eye to parse a second background plane. */
 .theme-dark .tabbed {
@@ -6633,7 +6634,7 @@ body .another-quick-switcher__status__count-input {
   .tabbed.tabbed--left
   > .tabbed__list
   > button.tabbed__tab:is(.is-active, [aria-selected='true']) {
-  box-shadow: inset -2px 0 0 var(--b16-accent-link);
+  box-shadow: inset 2px 0 0 var(--b16-accent-link);
 }
 
 .theme-dark.theme-dark
