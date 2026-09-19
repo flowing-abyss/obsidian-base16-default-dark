@@ -11,35 +11,9 @@
   --bases-embed-border-color: var(--background-modifier-border);
 }
 
-/* bases cell hover full content */
-.bases-td {
-  container-type: inline-size;
-  text-overflow: clip;
-  margin: 0;
-
-  & :is(.bases-rendered-value, .bases-metadata-value) {
-    min-width: fit-content;
-    width: auto;
-    white-space: nowrap;
-    display: flex;
-    gap: 4px;
-  }
-
-  & .multi-select-pill {
-    flex-shrink: 0;
-    max-width: none !important;
-  }
-
-  & .multi-select-pill-content {
-    text-overflow: clip !important;
-    overflow: visible !important;
-  }
-
-  &:hover :is(.bases-rendered-value, .bases-metadata-value) {
-    translate: min(calc(100cqw - 100%), 0%) 0%;
-    transition: translate 2s linear 0s;
-  }
-}
+/* Keep native cell sizing and truncation. Per-cell query containers and
+   hover translation previously made long values scroll under the pointer;
+   they add unnecessary work to dense, virtualized tables. */
 /* Bases tables share the task application's compact type scale. Other view
    types retain document sizing; context-specific table/sidedock rules below
    supply the UI hierarchy verified in .docs/interface-v2-review.md. */
