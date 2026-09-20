@@ -135,3 +135,15 @@
 .theme-dark :is(.tabbed__panel, .tabbed-columns__content) > :last-child {
   margin-block-end: 0;
 }
+
+/* Automatic Table of Contents wraps its list in a code-block renderer.
+   Live Preview and Reading View both retained 17px list margins inside that
+   wrapper, on top of the tab gap and the next heading's normal spacing.
+   Trim only the panel edges; nested lists keep their document rhythm. */
+.theme-dark .tabbed__panel > .block-language-table-of-contents:first-child > ul {
+  margin-block-start: 0;
+}
+
+.theme-dark .tabbed__panel > .block-language-table-of-contents:last-child > ul {
+  margin-block-end: 0;
+}
