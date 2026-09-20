@@ -367,6 +367,64 @@ body.theme-dark
   outline-offset: -2px;
 }
 
+/* Tracking controls are list content and rail tools, not framed actions.
+   The generic button rule in 40-chrome.css otherwise frames the day label,
+   task name and pause separately. Keep the plugin's hit areas and row layout;
+   inherit running/stale colours from the owning row or rail widget. */
+body.theme-dark
+  :is(.abyss-rail-tracking, .abyss-time-tracking-popover)
+  button:is(
+    .abyss-rail-tracking-toggle,
+    .abyss-rail-tracking-task,
+    .abyss-tracked-day-header,
+    .abyss-tracked-row-open,
+    .abyss-tracked-row-toggle,
+    .abyss-time-row-remove
+  ) {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: inherit;
+
+  &:focus-visible {
+    outline: 1px solid var(--b16-accent-link);
+    outline-offset: -2px;
+  }
+}
+
+body.theme-dark
+  .abyss-rail-tracking
+  button:is(.abyss-rail-tracking-toggle, .abyss-rail-tracking-task):not(:disabled):hover {
+  background: var(--b16-surface-1);
+}
+
+body.theme-dark .abyss-rail-tracking button.abyss-rail-tracking-toggle:disabled {
+  color: var(--b16-text-faint);
+}
+
+/* Long totals nearly fill the narrow rail. Keep their focus inside it. */
+body.theme-dark .abyss-rail-tracking button.abyss-rail-tracking-task:focus-visible {
+  outline-offset: -1px;
+}
+
+/* The task title shares its row's hover; only the day header and the small
+   timer/remove actions need a local surface. Idle glyphs stay secondary. */
+body.theme-dark
+  .abyss-time-tracking-popover
+  .abyss-tracked-row:not(.is-tracking, .is-stale)
+  > button.abyss-tracked-row-toggle,
+body.theme-dark .abyss-time-tracking-popover button.abyss-time-row-remove {
+  color: var(--b16-text-muted);
+}
+
+body.theme-dark
+  .abyss-time-tracking-popover
+  button:is(.abyss-tracked-day-header, .abyss-tracked-row-toggle, .abyss-time-row-remove):not(
+    :disabled
+  ):hover {
+  background: var(--b16-surface-2);
+}
+
 /* A joined segmented control, flush with the 30px toolbar line. Each
    divider is drawn once; no overflow clip can hide keyboard focus. */
 .theme-dark :is(.abyss-cal-view-switcher, .abyss-project-overview-switcher) {

@@ -131,6 +131,8 @@
   --b16-highlight-bg: rgba(210, 185, 60, 0.25);
   --b16-highlight-bg-hover: rgba(210, 185, 60, 0.28);
   --b16-highlight-bg-confirmed: rgba(210, 185, 60, 0.34);
+  --b16-diff-added-bg: color-mix(in srgb, var(--b16-status-ok) 12%, var(--b16-surface-0));
+  --b16-diff-removed-bg: color-mix(in srgb, var(--b16-status-error) 12%, var(--b16-surface-0));
   --b16-tag-bg: rgba(134, 193, 185, 0.15);
   /* Image captions sit over media rather than a predictable document
      surface, so keep their veil translucent while naming the component role

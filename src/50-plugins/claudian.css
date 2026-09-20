@@ -1,0 +1,136 @@
+/* Claudian */
+.view-content.claudian-container {
+  font-size: var(--b16-font-ui-l) !important;
+}
+
+/* The active session in the history list. The plugin outlines it with a
+   partial box — 1px on top and right, 2px on the left, and the list's own
+   divider underneath — so the marker reads as a rendering glitch rather
+   than as a selection. This theme already has one marker for "you are
+   here", used for the active Longform scene and the active file elsewhere:
+   an inset rail in the link hue over the inset-block surface. Same marker
+   here, and the list's bottom divider is left alone. */
+/* The flag is not avoidable here, and the reason is worth recording: the
+   Calendar plugin ships a bare, unscoped
+
+       .active { background: transparent !important;
+                 color: var(--text-accent) !important;
+                 border: 1px solid var(--text-accent) }
+
+   which lands on EVERY element in the app carrying an `active` class. That
+   is where the odd part-drawn cyan outline on this row came from, and why
+   the fill below cannot win without a flag of its own. The border widths
+   above do win normally, so only the fill is flagged.
+
+   The second selector matches the plugin's own
+   `.claudian-session-sidebar .claudian-history-item.active`, which sets
+   `background: transparent` at the same (0,3,0) this rule would otherwise
+   have — measured, the fill lost while the rail landed. */
+.theme-dark .claudian-history-item.active,
+.theme-dark .claudian-session-sidebar .claudian-history-item.active {
+  border-top-width: 0;
+  border-right-width: 0;
+  border-left-width: 0;
+  background-color: var(--b16-surface-1) !important;
+  box-shadow: inset 2px 0 0 var(--b16-accent-link);
+}
+
+/* The user's own message. The plugin fills it with `rgba(0, 0, 0, 0.3)`,
+   which on this theme's page lands at roughly #111 — DARKER than the
+   surface behind it, so the reader's turn read as a hole rather than as a
+   block, and barely separated from the assistant's turn beside it.
+
+   A chat turn is an inset block: the same kind of object as a quote, a
+   callout body or a code block, all of which sit on surface-1, one step
+   LIGHTER than the page. Same fill and the same small radius here, so the
+   panel belongs to the same system as the note beside it. */
+/* Current plugin puts the bubble on the content child; the parent also
+   contains a transparent actions row. Do not stack both backgrounds. */
+.theme-dark .claudian-message-user {
+  background: transparent;
+}
+
+.theme-dark .claudian-message-user > .claudian-message-content {
+  background: var(--b16-surface-1);
+  border-radius: var(--b16-radius-s);
+}
+
+/* These controls already have a containing chip, disclosure or toolbar.
+   Live DOM: general button chrome from 40-chrome.css adds nested frames. */
+body.theme-dark
+  .claudian-container
+  button:is(
+    .claudian-input-nav-btn,
+    .claudian-context-chip-main,
+    .claudian-context-chip-remove,
+    .claudian-work-header,
+    .claudian-user-msg-copy-btn,
+    .claudian-message-fork-btn,
+    .claudian-text-copy-btn,
+    .claudian-model-btn,
+    .claudian-service-tier-button
+  ) {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  border-radius: var(--b16-radius-control);
+  color: var(--b16-text-muted);
+}
+
+body.theme-dark
+  .claudian-container
+  button:is(
+    .claudian-input-nav-btn,
+    .claudian-context-chip-main,
+    .claudian-context-chip-remove,
+    .claudian-work-header,
+    .claudian-user-msg-copy-btn,
+    .claudian-message-fork-btn,
+    .claudian-text-copy-btn,
+    .claudian-model-btn
+  ):not(:disabled, [aria-disabled='true']):is(:hover, :focus-visible) {
+  background: var(--b16-surface-2);
+  color: var(--b16-text-normal);
+}
+
+/* Keep the provider-owned service-tier state and disabled affordances. */
+body.theme-dark .claudian-container button.claudian-service-tier-button.active {
+  color: var(--claudian-brand);
+}
+
+body.theme-dark .claudian-container button.claudian-service-tier-button:hover {
+  background: var(--b16-surface-2);
+}
+
+body.theme-dark
+  .claudian-container
+  button.claudian-input-nav-btn:is(:disabled, [aria-disabled='true']) {
+  color: var(--b16-text-faint);
+  background: transparent;
+}
+
+/* Horizontal scrolling belongs to a wide table, not the whole conversation.
+   The messages viewport clips overflow, so its wide cells were unreachable. */
+.theme-dark .claudian-message-content table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.theme-dark .claudian-message-content th {
+  background: var(--b16-surface-1);
+}
+
+/* Preserve insert/delete meaning with the palette's restrained diff fills.
+   Real expanded Edit output uses these line and prefix classes. */
+.theme-dark .claudian-diff-insert {
+  background: var(--b16-diff-added-bg);
+}
+
+.theme-dark .claudian-diff-delete {
+  background: var(--b16-diff-removed-bg);
+}
+
+.theme-dark .claudian-diff-delete .claudian-diff-prefix {
+  color: var(--b16-status-error-text);
+}

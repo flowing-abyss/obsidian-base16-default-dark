@@ -17,6 +17,11 @@
 //   - reason: why it is legitimate despite not being in either known set.
 export const VAR_EXEMPTIONS = [
   {
+    name: "--claudian-brand",
+    reason:
+      "Claudian declares this on .claudian-container per data-provider. Its active service-tier control consumes that provider-owned color; verified on the live control and in the plugin's base/variables.css.",
+  },
+  {
     name: "--abyss-project-status-color",
     reason:
       "Abyss Tasks projectStatusPresentation.ts sets this per status from the user's configured colour. Verified inline on live .abyss-project-status-filter elements; preserve the plugin's badge/text/dot contract rather than replacing its palette.",

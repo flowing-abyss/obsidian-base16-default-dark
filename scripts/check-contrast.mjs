@@ -113,6 +113,26 @@ const waived = new Set(waivers.map((w) => `${w.token}@${w.surface}`));
 const seenPairs = new Set();
 
 let failed = 0;
+// Diff fills carry semantic kind; their text and +/- markers must remain
+// readable. Read the authored mix rather than hardcoding its percentage.
+for (const [fill, marker] of [
+  ['diff-added-bg', 'status-ok'],
+  ['diff-removed-bg', 'status-error-text'],
+]) {
+  const spec = tokens.match(new RegExp(
+    `--b16-${fill}:\\s*color-mix\\(in srgb, var\\(--b16-([a-z0-9-]+)\\) ([0-9.]+)%, var\\(--b16-([a-z0-9-]+)\\)\\)`,
+  ));
+  if (!spec) throw new Error(`Cannot resolve ${fill}`);
+  const bg = mix(hexOf(spec[1]), hexOf(spec[3]), Number(spec[2]) / 100);
+  for (const fg of ['text-normal', marker]) {
+    const ratio = contrast(hexOf(fg), bg);
+    if (ratio < 4.5) {
+      console.error(`FAIL diff ${fg}/${fill} ${ratio.toFixed(2)} < 4.5`);
+      failed++;
+    }
+  }
+}
+
 // This inset is the independent batch-selection cue, composited over the
 // same solid fill as the open task. A decorative border token was too faint.
 const abyssSelectionRatio = contrast(

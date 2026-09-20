@@ -394,11 +394,17 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
 }
 
 /* STATUS BAR
-   Keep the desktop status bar available without letting persistent counters
-   compete with the document. Its unchanged box remains the hover target, so
-   revealing it causes no layout shift; keyboard focus reveals it as well.
-   Touch interfaces retain Obsidian's visible default because they have no
-   reliable hover state. */
+   A fixed invisible bar still intercepts input over sidebar composers.
+   Give it its own flex row in the existing column app-container: its actual
+   height is reserved, including plugin counters, with no measuring script.
+   Hover/focus may reveal counters without covering any workspace controls. */
+.theme-dark:not(.is-mobile) .status-bar {
+  position: static;
+  flex: 0 0 auto;
+  align-self: flex-end;
+  max-width: 100%;
+}
+
 @media (hover: hover) and (pointer: fine) {
   .theme-dark .status-bar {
     opacity: 0;

@@ -173,6 +173,8 @@
   --b16-highlight-bg: rgba(210, 185, 60, 0.25);
   --b16-highlight-bg-hover: rgba(210, 185, 60, 0.28);
   --b16-highlight-bg-confirmed: rgba(210, 185, 60, 0.34);
+  --b16-diff-added-bg: color-mix(in srgb, var(--b16-status-ok) 12%, var(--b16-surface-0));
+  --b16-diff-removed-bg: color-mix(in srgb, var(--b16-status-error) 12%, var(--b16-surface-0));
   --b16-tag-bg: rgba(134, 193, 185, 0.15);
   /* Image captions sit over media rather than a predictable document
      surface, so keep their veil translucent while naming the component role
@@ -4400,11 +4402,17 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
 }
 
 /* STATUS BAR
-   Keep the desktop status bar available without letting persistent counters
-   compete with the document. Its unchanged box remains the hover target, so
-   revealing it causes no layout shift; keyboard focus reveals it as well.
-   Touch interfaces retain Obsidian's visible default because they have no
-   reliable hover state. */
+   A fixed invisible bar still intercepts input over sidebar composers.
+   Give it its own flex row in the existing column app-container: its actual
+   height is reserved, including plugin counters, with no measuring script.
+   Hover/focus may reveal counters without covering any workspace controls. */
+.theme-dark:not(.is-mobile) .status-bar {
+  position: static;
+  flex: 0 0 auto;
+  align-self: flex-end;
+  max-width: 100%;
+}
+
 @media (hover: hover) and (pointer: fine) {
   .theme-dark .status-bar {
     opacity: 0;
@@ -5201,6 +5209,64 @@ body.theme-dark
   outline-offset: -2px;
 }
 
+/* Tracking controls are list content and rail tools, not framed actions.
+   The generic button rule in 40-chrome.css otherwise frames the day label,
+   task name and pause separately. Keep the plugin's hit areas and row layout;
+   inherit running/stale colours from the owning row or rail widget. */
+body.theme-dark
+  :is(.abyss-rail-tracking, .abyss-time-tracking-popover)
+  button:is(
+    .abyss-rail-tracking-toggle,
+    .abyss-rail-tracking-task,
+    .abyss-tracked-day-header,
+    .abyss-tracked-row-open,
+    .abyss-tracked-row-toggle,
+    .abyss-time-row-remove
+  ) {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: inherit;
+
+  &:focus-visible {
+    outline: 1px solid var(--b16-accent-link);
+    outline-offset: -2px;
+  }
+}
+
+body.theme-dark
+  .abyss-rail-tracking
+  button:is(.abyss-rail-tracking-toggle, .abyss-rail-tracking-task):not(:disabled):hover {
+  background: var(--b16-surface-1);
+}
+
+body.theme-dark .abyss-rail-tracking button.abyss-rail-tracking-toggle:disabled {
+  color: var(--b16-text-faint);
+}
+
+/* Long totals nearly fill the narrow rail. Keep their focus inside it. */
+body.theme-dark .abyss-rail-tracking button.abyss-rail-tracking-task:focus-visible {
+  outline-offset: -1px;
+}
+
+/* The task title shares its row's hover; only the day header and the small
+   timer/remove actions need a local surface. Idle glyphs stay secondary. */
+body.theme-dark
+  .abyss-time-tracking-popover
+  .abyss-tracked-row:not(.is-tracking, .is-stale)
+  > button.abyss-tracked-row-toggle,
+body.theme-dark .abyss-time-tracking-popover button.abyss-time-row-remove {
+  color: var(--b16-text-muted);
+}
+
+body.theme-dark
+  .abyss-time-tracking-popover
+  button:is(.abyss-tracked-day-header, .abyss-tracked-row-toggle, .abyss-time-row-remove):not(
+    :disabled
+  ):hover {
+  background: var(--b16-surface-2);
+}
+
 /* A joined segmented control, flush with the 30px toolbar line. Each
    divider is drawn once; no overflow clip can hide keyboard focus. */
 .theme-dark :is(.abyss-cal-view-switcher, .abyss-project-overview-switcher) {
@@ -5904,6 +5970,145 @@ body.theme-dark .abyss-popover button.abyss-popover-clear-icon-btn:hover {
   color: var(--text-normal) !important;
 }
 
+/* ===== 50-plugins/claudian.css ===== */
+
+/* Claudian */
+.view-content.claudian-container {
+  font-size: var(--b16-font-ui-l) !important;
+}
+
+/* The active session in the history list. The plugin outlines it with a
+   partial box — 1px on top and right, 2px on the left, and the list's own
+   divider underneath — so the marker reads as a rendering glitch rather
+   than as a selection. This theme already has one marker for "you are
+   here", used for the active Longform scene and the active file elsewhere:
+   an inset rail in the link hue over the inset-block surface. Same marker
+   here, and the list's bottom divider is left alone. */
+/* The flag is not avoidable here, and the reason is worth recording: the
+   Calendar plugin ships a bare, unscoped
+
+       .active { background: transparent !important;
+                 color: var(--text-accent) !important;
+                 border: 1px solid var(--text-accent) }
+
+   which lands on EVERY element in the app carrying an `active` class. That
+   is where the odd part-drawn cyan outline on this row came from, and why
+   the fill below cannot win without a flag of its own. The border widths
+   above do win normally, so only the fill is flagged.
+
+   The second selector matches the plugin's own
+   `.claudian-session-sidebar .claudian-history-item.active`, which sets
+   `background: transparent` at the same (0,3,0) this rule would otherwise
+   have — measured, the fill lost while the rail landed. */
+.theme-dark .claudian-history-item.active,
+.theme-dark .claudian-session-sidebar .claudian-history-item.active {
+  border-top-width: 0;
+  border-right-width: 0;
+  border-left-width: 0;
+  background-color: var(--b16-surface-1) !important;
+  box-shadow: inset 2px 0 0 var(--b16-accent-link);
+}
+
+/* The user's own message. The plugin fills it with `rgba(0, 0, 0, 0.3)`,
+   which on this theme's page lands at roughly #111 — DARKER than the
+   surface behind it, so the reader's turn read as a hole rather than as a
+   block, and barely separated from the assistant's turn beside it.
+
+   A chat turn is an inset block: the same kind of object as a quote, a
+   callout body or a code block, all of which sit on surface-1, one step
+   LIGHTER than the page. Same fill and the same small radius here, so the
+   panel belongs to the same system as the note beside it. */
+/* Current plugin puts the bubble on the content child; the parent also
+   contains a transparent actions row. Do not stack both backgrounds. */
+.theme-dark .claudian-message-user {
+  background: transparent;
+}
+
+.theme-dark .claudian-message-user > .claudian-message-content {
+  background: var(--b16-surface-1);
+  border-radius: var(--b16-radius-s);
+}
+
+/* These controls already have a containing chip, disclosure or toolbar.
+   Live DOM: general button chrome from 40-chrome.css adds nested frames. */
+body.theme-dark
+  .claudian-container
+  button:is(
+    .claudian-input-nav-btn,
+    .claudian-context-chip-main,
+    .claudian-context-chip-remove,
+    .claudian-work-header,
+    .claudian-user-msg-copy-btn,
+    .claudian-message-fork-btn,
+    .claudian-text-copy-btn,
+    .claudian-model-btn,
+    .claudian-service-tier-button
+  ) {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  border-radius: var(--b16-radius-control);
+  color: var(--b16-text-muted);
+}
+
+body.theme-dark
+  .claudian-container
+  button:is(
+    .claudian-input-nav-btn,
+    .claudian-context-chip-main,
+    .claudian-context-chip-remove,
+    .claudian-work-header,
+    .claudian-user-msg-copy-btn,
+    .claudian-message-fork-btn,
+    .claudian-text-copy-btn,
+    .claudian-model-btn
+  ):not(:disabled, [aria-disabled='true']):is(:hover, :focus-visible) {
+  background: var(--b16-surface-2);
+  color: var(--b16-text-normal);
+}
+
+/* Keep the provider-owned service-tier state and disabled affordances. */
+body.theme-dark .claudian-container button.claudian-service-tier-button.active {
+  color: var(--claudian-brand);
+}
+
+body.theme-dark .claudian-container button.claudian-service-tier-button:hover {
+  background: var(--b16-surface-2);
+}
+
+body.theme-dark
+  .claudian-container
+  button.claudian-input-nav-btn:is(:disabled, [aria-disabled='true']) {
+  color: var(--b16-text-faint);
+  background: transparent;
+}
+
+/* Horizontal scrolling belongs to a wide table, not the whole conversation.
+   The messages viewport clips overflow, so its wide cells were unreachable. */
+.theme-dark .claudian-message-content table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.theme-dark .claudian-message-content th {
+  background: var(--b16-surface-1);
+}
+
+/* Preserve insert/delete meaning with the palette's restrained diff fills.
+   Real expanded Edit output uses these line and prefix classes. */
+.theme-dark .claudian-diff-insert {
+  background: var(--b16-diff-added-bg);
+}
+
+.theme-dark .claudian-diff-delete {
+  background: var(--b16-diff-removed-bg);
+}
+
+.theme-dark .claudian-diff-delete .claudian-diff-prefix {
+  color: var(--b16-status-error-text);
+}
+
 /* ===== 50-plugins/longform.css ===== */
 
 /* Longform.
@@ -6523,57 +6728,6 @@ body.theme-dark
 
 .mv-sidebar-actions .mv-sidebar-action-btn:not(:first-child) {
   border-top: none;
-}
-
-/* Claudian */
-.view-content.claudian-container {
-  font-size: var(--b16-font-ui-l) !important;
-}
-
-/* The active session in the history list. The plugin outlines it with a
-   partial box — 1px on top and right, 2px on the left, and the list's own
-   divider underneath — so the marker reads as a rendering glitch rather
-   than as a selection. This theme already has one marker for "you are
-   here", used for the active Longform scene and the active file elsewhere:
-   an inset rail in the link hue over the inset-block surface. Same marker
-   here, and the list's bottom divider is left alone. */
-/* The flag is not avoidable here, and the reason is worth recording: the
-   Calendar plugin ships a bare, unscoped
-
-       .active { background: transparent !important;
-                 color: var(--text-accent) !important;
-                 border: 1px solid var(--text-accent) }
-
-   which lands on EVERY element in the app carrying an `active` class. That
-   is where the odd part-drawn cyan outline on this row came from, and why
-   the fill below cannot win without a flag of its own. The border widths
-   above do win normally, so only the fill is flagged.
-
-   The second selector matches the plugin's own
-   `.claudian-session-sidebar .claudian-history-item.active`, which sets
-   `background: transparent` at the same (0,3,0) this rule would otherwise
-   have — measured, the fill lost while the rail landed. */
-.theme-dark .claudian-history-item.active,
-.theme-dark .claudian-session-sidebar .claudian-history-item.active {
-  border-top-width: 0;
-  border-right-width: 0;
-  border-left-width: 0;
-  background-color: var(--b16-surface-1) !important;
-  box-shadow: inset 2px 0 0 var(--b16-accent-link);
-}
-
-/* The user's own message. The plugin fills it with `rgba(0, 0, 0, 0.3)`,
-   which on this theme's page lands at roughly #111 — DARKER than the
-   surface behind it, so the reader's turn read as a hole rather than as a
-   block, and barely separated from the assistant's turn beside it.
-
-   A chat turn is an inset block: the same kind of object as a quote, a
-   callout body or a code block, all of which sit on surface-1, one step
-   LIGHTER than the page. Same fill and the same small radius here, so the
-   panel belongs to the same system as the note beside it. */
-.theme-dark .claudian-message-user {
-  background-color: var(--b16-surface-1);
-  border-radius: var(--b16-radius-s);
 }
 
 /* The panes at the foot of a note — backlinks, and the Hybrid Search
