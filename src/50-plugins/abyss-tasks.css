@@ -270,6 +270,28 @@ body.theme-dark .abyss-panel-view button.abyss-project-timeline-group-header {
   letter-spacing: normal;
 }
 
+/* Dependency creation is the same inline list action as Add sub-task.
+   It is a button (the subtask action is a div), so 40-chrome.css otherwise
+   adds a full-width frame and brighter text. Keep the shared plugin padding
+   and section spacing; only remove that accidental button material.
+   Scope to inspector sections: the search popover also uses .abyss-dep-add. */
+body.theme-dark :is(.abyss-panel-view, .abyss-modal) .abyss-dep-section > button.abyss-dep-add {
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  color: var(--b16-text-muted);
+  border-radius: var(--b16-radius-control);
+
+  &:hover {
+    color: var(--b16-text-normal);
+  }
+
+  &:focus-visible {
+    outline: 1px solid var(--b16-accent-link);
+    outline-offset: -2px;
+  }
+}
+
 /* Inspector metadata in both the panel and TaskModal portal. Tags, priority
    and dates keep plugin-owned foregrounds; only materials are shared.
    Dependency has one hover surface, with a local highlight on the plus. */
