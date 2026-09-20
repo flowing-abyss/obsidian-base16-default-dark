@@ -80,9 +80,12 @@
   position: absolute;
   top: calc(var(--header-height) + 10px) !important;
   left: 10px !important;
-  min-width: 480px;
-  max-width: 480px;
-  max-height: 96%;
+  /* Keep the same viewport inset when a desktop window is narrow or short.
+     A percentage height ignored the 50px top offset and clipped results. */
+  width: min(480px, calc(100vw - 20px));
+  min-width: 0;
+  max-width: calc(100vw - 20px);
+  max-height: calc(100vh - var(--header-height) - 20px);
   box-shadow: none;
   border-radius: 0;
   border: 1px solid var(--background-modifier-border);

@@ -4583,9 +4583,12 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
   position: absolute;
   top: calc(var(--header-height) + 10px) !important;
   left: 10px !important;
-  min-width: 480px;
-  max-width: 480px;
-  max-height: 96%;
+  /* Keep the same viewport inset when a desktop window is narrow or short.
+     A percentage height ignored the 50px top offset and clipped results. */
+  width: min(480px, calc(100vw - 20px));
+  min-width: 0;
+  max-width: calc(100vw - 20px);
+  max-height: calc(100vh - var(--header-height) - 20px);
   box-shadow: none;
   border-radius: 0;
   border: 1px solid var(--background-modifier-border);
@@ -4875,6 +4878,8 @@ body.theme-dark
     .abyss-project-open-btn,
     .abyss-dep-badge-body,
     .abyss-dep-badge-add,
+    .abyss-time-badge-body,
+    .abyss-time-badge-toggle,
     .abyss-chip-remove,
     .abyss-right-action-btn,
     .abyss-task-delete-btn
@@ -4887,6 +4892,12 @@ body.theme-dark
 
 body.theme-dark .abyss-panel-view button.abyss-project-table-name:hover {
   color: var(--b16-accent-link);
+}
+
+/* The content-control reset above must not erase destructive feedback. */
+body.theme-dark :is(.abyss-panel-view, .abyss-modal) button.abyss-task-delete-btn:hover {
+  color: var(--b16-status-error-text);
+  background: var(--b16-surface-1);
 }
 
 /* Navigation and secondary footer actions use quiet hover feedback. A
@@ -5128,12 +5139,16 @@ body.theme-dark
   background: var(--b16-surface-2);
 }
 
-body.theme-dark :is(.abyss-panel-view, .abyss-modal) .abyss-chip.abyss-dep-badge {
+body.theme-dark
+  :is(.abyss-panel-view, .abyss-modal)
+  .abyss-chip:is(.abyss-dep-badge, .abyss-time-badge) {
   background: transparent;
   border: 0;
 }
 
-body.theme-dark :is(.abyss-panel-view, .abyss-modal) .abyss-chip.abyss-dep-badge:hover {
+body.theme-dark
+  :is(.abyss-panel-view, .abyss-modal)
+  .abyss-chip:is(.abyss-dep-badge, .abyss-time-badge):hover {
   background: var(--b16-surface-2);
 }
 
@@ -5151,13 +5166,36 @@ body.theme-dark
   background: var(--b16-surface-3);
 }
 
+/* Tracking is one compound badge, like dependencies. The plugin owns the
+   running/stale color; only its idle play glyph stays muted. Live inspector
+   and TaskModal controls verified in .docs/coherence-2026-09-20.md. */
+body.theme-dark :is(.abyss-panel-view, .abyss-modal) button.abyss-time-badge-toggle {
+  color: var(--b16-text-muted);
+}
+
+body.theme-dark
+  :is(.abyss-panel-view, .abyss-modal)
+  .abyss-time-badge:is(.is-tracking, .is-stale)
+  > button.abyss-time-badge-toggle {
+  color: inherit;
+}
+
+body.theme-dark
+  :is(.abyss-panel-view, .abyss-modal)
+  button.abyss-time-badge-toggle:not(:disabled):is(:hover, :focus-visible) {
+  color: inherit;
+  background: var(--b16-surface-3);
+}
+
 body.theme-dark
   :is(.abyss-panel-view, .abyss-modal)
   button:is(
     .abyss-right-action-btn,
     .abyss-chip-remove,
     .abyss-dep-badge-body,
-    .abyss-dep-badge-add
+    .abyss-dep-badge-add,
+    .abyss-time-badge-body,
+    .abyss-time-badge-toggle
   ):focus-visible {
   outline: 1px solid var(--b16-accent-link);
   outline-offset: -2px;
@@ -5886,7 +5924,9 @@ body.theme-dark .abyss-popover button.abyss-popover-clear-icon-btn:hover {
 
 /* Project picker and workflow picker. Both are bare <select>s the plugin
    never sized, so they inherited the reading size. */
-.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] select,
+/* Svelte's select.svelte-*.svelte-* arrives after the theme at (0,2,1).
+   The theme class keeps the compact picker size from losing that tie. */
+.theme-dark .workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] select,
 /* `input` is deliberately narrowed below: a checkbox is an input too, and
    `width: 100%` on one stretched it across the whole panel (measured 260px)
    and pushed its label off the right edge. Only text-like controls want the
@@ -5902,6 +5942,13 @@ body.theme-dark .abyss-popover button.abyss-popover-clear-icon-btn:hover {
   width: 100%;
 }
 
+/* Reserve the native dropdown arrow's space even for long project names. */
+.theme-dark
+  .workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER']
+  select[name='projects'] {
+  padding-inline-end: 2em;
+}
+
 /* The draft path is replaced with a single word: the full path is long,
    already visible in the picker above it, and the only thing the reader
    wants from this line is a way into the folder. Zeroing the font size and
@@ -5909,9 +5956,12 @@ body.theme-dark .abyss-popover button.abyss-popover-clear-icon-btn:hover {
    plugin renders itself. Sized and coloured as the affordance it is —
    previously it printed at full reading size in body grey, which read as a
    stray lowercase word floating under the dropdown. */
-.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .current-draft-path {
+.theme-dark .workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .current-draft-path {
   font-size: 0 !important;
-  margin: 0.35em 0 0.6em;
+  /* em margins resolve to zero on this hidden-text wrapper. Align the
+     replacement label with the picker text using its actual UI size. */
+  margin: 4px 0 8px;
+  padding: 0 calc(var(--b16-font-ui-m) * 0.6);
   cursor: pointer;
 }
 

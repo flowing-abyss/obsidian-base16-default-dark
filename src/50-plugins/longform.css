@@ -16,7 +16,9 @@
 
 /* Project picker and workflow picker. Both are bare <select>s the plugin
    never sized, so they inherited the reading size. */
-.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] select,
+/* Svelte's select.svelte-*.svelte-* arrives after the theme at (0,2,1).
+   The theme class keeps the compact picker size from losing that tie. */
+.theme-dark .workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] select,
 /* `input` is deliberately narrowed below: a checkbox is an input too, and
    `width: 100%` on one stretched it across the whole panel (measured 260px)
    and pushed its label off the right edge. Only text-like controls want the
@@ -32,6 +34,13 @@
   width: 100%;
 }
 
+/* Reserve the native dropdown arrow's space even for long project names. */
+.theme-dark
+  .workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER']
+  select[name='projects'] {
+  padding-inline-end: 2em;
+}
+
 /* The draft path is replaced with a single word: the full path is long,
    already visible in the picker above it, and the only thing the reader
    wants from this line is a way into the folder. Zeroing the font size and
@@ -39,9 +48,12 @@
    plugin renders itself. Sized and coloured as the affordance it is —
    previously it printed at full reading size in body grey, which read as a
    stray lowercase word floating under the dropdown. */
-.workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .current-draft-path {
+.theme-dark .workspace-leaf-content[data-type='VIEW_TYPE_LONGFORM_EXPLORER'] .current-draft-path {
   font-size: 0 !important;
-  margin: 0.35em 0 0.6em;
+  /* em margins resolve to zero on this hidden-text wrapper. Align the
+     replacement label with the picker text using its actual UI size. */
+  margin: 4px 0 8px;
+  padding: 0 calc(var(--b16-font-ui-m) * 0.6);
   cursor: pointer;
 }
 

@@ -44,6 +44,8 @@ body.theme-dark
     .abyss-project-open-btn,
     .abyss-dep-badge-body,
     .abyss-dep-badge-add,
+    .abyss-time-badge-body,
+    .abyss-time-badge-toggle,
     .abyss-chip-remove,
     .abyss-right-action-btn,
     .abyss-task-delete-btn
@@ -56,6 +58,12 @@ body.theme-dark
 
 body.theme-dark .abyss-panel-view button.abyss-project-table-name:hover {
   color: var(--b16-accent-link);
+}
+
+/* The content-control reset above must not erase destructive feedback. */
+body.theme-dark :is(.abyss-panel-view, .abyss-modal) button.abyss-task-delete-btn:hover {
+  color: var(--b16-status-error-text);
+  background: var(--b16-surface-1);
 }
 
 /* Navigation and secondary footer actions use quiet hover feedback. A
@@ -297,12 +305,16 @@ body.theme-dark
   background: var(--b16-surface-2);
 }
 
-body.theme-dark :is(.abyss-panel-view, .abyss-modal) .abyss-chip.abyss-dep-badge {
+body.theme-dark
+  :is(.abyss-panel-view, .abyss-modal)
+  .abyss-chip:is(.abyss-dep-badge, .abyss-time-badge) {
   background: transparent;
   border: 0;
 }
 
-body.theme-dark :is(.abyss-panel-view, .abyss-modal) .abyss-chip.abyss-dep-badge:hover {
+body.theme-dark
+  :is(.abyss-panel-view, .abyss-modal)
+  .abyss-chip:is(.abyss-dep-badge, .abyss-time-badge):hover {
   background: var(--b16-surface-2);
 }
 
@@ -320,13 +332,36 @@ body.theme-dark
   background: var(--b16-surface-3);
 }
 
+/* Tracking is one compound badge, like dependencies. The plugin owns the
+   running/stale color; only its idle play glyph stays muted. Live inspector
+   and TaskModal controls verified in .docs/coherence-2026-09-20.md. */
+body.theme-dark :is(.abyss-panel-view, .abyss-modal) button.abyss-time-badge-toggle {
+  color: var(--b16-text-muted);
+}
+
+body.theme-dark
+  :is(.abyss-panel-view, .abyss-modal)
+  .abyss-time-badge:is(.is-tracking, .is-stale)
+  > button.abyss-time-badge-toggle {
+  color: inherit;
+}
+
+body.theme-dark
+  :is(.abyss-panel-view, .abyss-modal)
+  button.abyss-time-badge-toggle:not(:disabled):is(:hover, :focus-visible) {
+  color: inherit;
+  background: var(--b16-surface-3);
+}
+
 body.theme-dark
   :is(.abyss-panel-view, .abyss-modal)
   button:is(
     .abyss-right-action-btn,
     .abyss-chip-remove,
     .abyss-dep-badge-body,
-    .abyss-dep-badge-add
+    .abyss-dep-badge-add,
+    .abyss-time-badge-body,
+    .abyss-time-badge-toggle
   ):focus-visible {
   outline: 1px solid var(--b16-accent-link);
   outline-offset: -2px;
