@@ -4402,30 +4402,32 @@ body:is(.mod-windows, .mod-linux).is-hidden-frameless:not(.is-fullscreen)
 }
 
 /* STATUS BAR
-   A fixed invisible bar still intercepts input over sidebar composers.
-   Give it its own flex row in the existing column app-container: its actual
-   height is reserved, including plugin counters, with no measuring script.
-   Hover/focus may reveal counters without covering any workspace controls. */
+   Keep rare counters out of the workspace layout. Opacity alone leaves an
+   invisible hit target over sidebar composers, so move the hidden bar below
+   the viewport, leaving only a 3px hover strip at the bottom-right edge.
+   Moving onto that strip or focusing a counter reveals the whole bar. */
 .theme-dark:not(.is-mobile) .status-bar {
-  position: static;
-  flex: 0 0 auto;
-  align-self: flex-end;
+  position: fixed;
   max-width: 100%;
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .theme-dark .status-bar {
+  .theme-dark:not(.is-mobile) .status-bar {
     opacity: 0;
-    transition: opacity 120ms ease-out;
+    transform: translateY(calc(100% - 3px));
+    transition:
+      opacity 120ms ease-out,
+      transform 120ms ease-out;
   }
 
-  .theme-dark .status-bar:is(:hover, :focus-within) {
+  .theme-dark:not(.is-mobile) .status-bar:is(:hover, :focus-within) {
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .theme-dark .status-bar {
+  .theme-dark:not(.is-mobile) .status-bar {
     transition: none;
   }
 }
