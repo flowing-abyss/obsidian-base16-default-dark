@@ -8,6 +8,9 @@
 # npm
 node_modules
 
+# Local Obsidian vault configuration and installed plugins
+/.obsidian/
+
 # Generated release artifact
 /dist/
 
