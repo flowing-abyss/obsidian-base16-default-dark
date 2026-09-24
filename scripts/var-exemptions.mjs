@@ -37,6 +37,11 @@ export const VAR_EXEMPTIONS = [
       "The portable callouts snippet declares this optional full-colour companion on Zotero annotation callouts; it is scoped to matching metadata values and absent when those callouts are not rendered.",
   },
   {
+    name: "--board-card-inset",
+    reason:
+      "Bases Board 1.1 declares this on .board-card as the inset shared by every card row; it is scoped to the board view, so the root-variable snapshot never contained it. The var() fallback keeps the old 4px pill inset for earlier plugin versions.",
+  },
+  {
     name: "--zoom-multiplier",
     reason:
       "Obsidian declares this on .canvas-wrapper and Canvas edge labels consume it while zooming; the variable was absent from the captured root-variable snapshot because it is scoped to the Canvas view.",

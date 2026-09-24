@@ -159,6 +159,13 @@
 .board-card .file-name {
   padding-bottom: 4px;
 }
+/* Bases Board 1.1 draws titles bold and without an underline, like native
+   Bases cards (`.board-card .card-prop.clickable`, 0-3-0). Keep this theme's
+   underlined semibold titles; equal specificity lets the later theme win. */
+.board-card .card-prop.file-name {
+  font-weight: 600;
+  text-decoration: underline;
+}
 /* New note button — invisible until hover on cell */
 .board-new-note-button {
   border-radius: 0;
@@ -197,9 +204,21 @@
 /* Restore metadata padding inside board cards (overrides global --metadata-padding: 0) */
 .board-card {
   --metadata-padding: 2px 0;
+  /* Bases Board 1.1 sets rows to the height of Bases card lines (24px).
+     Inherit Obsidian's input height instead to keep this theme's roomier rows. */
+  --input-height: inherit;
 }
+/* Bases Board 1.1 insets every value by --board-card-inset; line pills up with them */
 .board-card .multi-select-container {
-  padding: 0 4px !important;
+  padding: 0 var(--board-card-inset, 4px) !important;
+}
+/* Bases Board 1.1 removes pill remove buttons from rows that are not hovered
+   (0-4-0, `.board-card .board-card-property-editor:not(:hover, :focus-within)`).
+   This theme zeroes pill padding and gaps (30-editor.css), so the invisible
+   button is the only space between pills; keep it in the layout. The pill
+   class matches the plugin's specificity so the later theme rule wins. */
+.board-card .board-card-property-editor .multi-select-pill .multi-select-pill-remove-button {
+  display: flex;
 }
 .board-card .multi-select-input {
   padding-left: 2px !important;
