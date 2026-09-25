@@ -8,6 +8,10 @@
 # npm
 node_modules
 
+# This project uses npm; stray pnpm install artifacts stay local
+pnpm-lock.yaml
+pnpm-workspace.yaml
+
 # Local Obsidian vault configuration and installed plugins
 /.obsidian/
 
