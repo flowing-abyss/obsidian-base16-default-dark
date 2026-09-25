@@ -334,8 +334,11 @@
    is on. Hover leaves the semantic yellow almost still and adds a neutral,
    one-pixel boundary. That reads as an available action without promoting a
    short annotation into a button. The sibling rules keep a multi-span Live
-   Preview highlight visually whole. */
-.theme-dark.micropatches-highlight-copy mark:hover,
+   Preview highlight visually whole. Reading-mode marks are scoped to
+   .markdown-rendered, the only <mark> Micropatches copies: plugin UIs also
+   render <mark> (K-Plex search matches) and must not promise a copy action.
+   :where() keeps the specificity this rule had before the scope. */
+.theme-dark.micropatches-highlight-copy :where(.markdown-rendered) mark:hover,
 .theme-dark.micropatches-highlight-copy
   span:where(
     .cm-highlight:hover,
