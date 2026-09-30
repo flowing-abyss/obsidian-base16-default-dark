@@ -92,6 +92,21 @@
   line-height: 6px;
 }
 
+/* Word-count and task markers can arrive after a note is created. Wrapping
+   them adds another line to the week, so keep the native marker strip on one
+   line and let its SVGs shrink to the available cell width instead. Their
+   circles already have inset space; external margins would still overflow
+   a narrow week-number column when all markers are present. */
+#calendar-container .dot-container {
+  flex-wrap: nowrap;
+}
+
+#calendar-container .dot-container .dot,
+#calendar-container .dot-container .hollow {
+  min-width: 0;
+  margin-inline: 0;
+}
+
 /* The last two columns are the weekend in this Monday-first calendar. A
    single divider establishes the group; stronger neutral labels identify it
    without introducing another accent meaning. */
@@ -149,6 +164,19 @@
   align-items: center;
   margin: 0;
   padding: 0;
+}
+
+/* Calendar's active border adds 2px to the selected row in the live DOM,
+   moving every week below it when a note opens or is created. Draw the same
+   one-pixel ring in the cell's surrounding padding without changing its size,
+   keeping the inset today/review rings visible. currentColor
+   follows the plugin's selected text colour; its state and fill stay owned
+   by Calendar. This also applies when week numbers are shown on either side. */
+#calendar-container .day.active,
+#calendar-container .week-num.active {
+  border-width: 0;
+  outline: 1px solid currentcolor;
+  outline-offset: 0;
 }
 
 /* The current day is the calendar's primary state. An inset ring does not
