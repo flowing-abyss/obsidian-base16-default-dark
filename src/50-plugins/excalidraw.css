@@ -1,0 +1,68 @@
+/* Excalidraw chrome. Use the plugin's Dynamic styling = None setting for
+   this palette: Colorful/Gray intentionally supply inline colours derived
+   from the drawing, and retain precedence. Scene colours and the dark-mode
+   canvas filter belong to Excalidraw, just as K-Plex owns its node palette.
+   Variables and selectors verified in Excalidraw 2.28.1's live DOM. */
+.theme-dark .excalidraw.theme--dark {
+  --ui-font: var(--font-interface);
+  --border-radius-md: var(--b16-radius-control);
+  --border-radius-lg: var(--b16-radius-s);
+  --color-surface-lowest: var(--b16-surface-0);
+  --color-surface-low: var(--b16-surface-1);
+  --color-surface-mid: var(--b16-surface-0);
+  --color-surface-high: var(--b16-surface-2);
+  --color-on-surface: var(--b16-text-normal);
+  --color-primary: var(--b16-accent-link);
+  --color-primary-darker: var(--b16-accent-link);
+  --color-primary-darkest: var(--b16-accent-link);
+  --color-primary-light: var(--b16-surface-2);
+  --color-primary-light-darker: var(--b16-surface-3);
+  --color-brand-hover: var(--b16-accent-link);
+  --color-brand-active: var(--b16-accent-link);
+  --color-surface-primary-container: var(--b16-surface-2);
+  --color-on-primary-container: var(--b16-text-strong);
+  --island-bg-color: var(--b16-surface-1);
+  --island-bg-color-alt: var(--b16-surface-0);
+  --popup-bg-color: var(--b16-surface-1);
+  --popup-secondary-bg-color: var(--b16-surface-0);
+  --popup-text-color: var(--b16-text-normal);
+  --input-bg-color: var(--b16-surface-0);
+  --input-hover-bg-color: var(--b16-surface-2);
+  --input-border-color: var(--b16-border-normal);
+  --input-label-color: var(--b16-text-muted);
+  --icon-fill-color: var(--b16-text-normal);
+  --text-primary-color: var(--b16-text-normal);
+  --default-border-color: var(--b16-border-normal);
+  --sidebar-bg-color: var(--b16-surface-1);
+  --sidebar-border-color: var(--b16-border-normal);
+  --button-hover-bg: var(--b16-surface-2);
+  --button-active-bg: var(--b16-surface-2);
+  --button-active-border: var(--b16-accent-link);
+  --button-selected-border: var(--b16-accent-link);
+  --color-outline: var(--b16-border-strong);
+  --focus-highlight-color: var(--b16-accent-link);
+  --color-slider-track: var(--b16-surface-3);
+  --color-slider-thumb: var(--b16-text-normal);
+  /* A hairline replaces the floating panels' drop shadows. */
+  --shadow-island: 0 0 0 1px var(--b16-border-normal);
+  --shadow-island-stronger: 0 0 0 1px var(--b16-border-strong);
+  --sidebar-shadow: none;
+}
+
+/* The global button background hid every swatch. The live vault also has
+   an unscoped `.active { background: transparent !important }` plugin rule,
+   so restoring the plugin's own inline --swatch-color needs this flag.
+   Keep the same colour on hover, press and selection; Excalidraw draws
+   those states with its own outline, including transparent swatches. */
+.theme-dark .excalidraw button.color-picker__button {
+  background-color: var(--swatch-color) !important;
+  border: 0;
+}
+
+/* The global button :hover shorthand and the same plugin .active rule
+   also erase Excalidraw's checkerboard. Keep transparency identifiable
+   in both states; the important shorthand preserves its image and size. */
+.theme-dark .excalidraw button.color-picker__button.is-transparent {
+  background: repeating-conic-gradient(var(--b16-surface-3) 0% 25%, var(--b16-surface-1) 0% 50%) 0
+    0 / 8px 8px !important;
+}

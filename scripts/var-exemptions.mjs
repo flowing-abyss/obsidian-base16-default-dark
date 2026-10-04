@@ -17,6 +17,11 @@
 //   - reason: why it is legitimate despite not being in either known set.
 export const VAR_EXEMPTIONS = [
   {
+    name: "--swatch-color",
+    reason:
+      "Excalidraw 2.28.1 supplies each color-picker__button's actual colour inline, including dark-mode conversion and transparent swatches. Verified on the live top picks and colour-picker popup; the theme must preserve this drawing-owned value.",
+  },
+  {
     name: "--claudian-brand",
     reason:
       "Claudian declares this on .claudian-container per data-provider. Its active service-tier control consumes that provider-owned color; verified on the live control and in the plugin's base/variables.css.",
