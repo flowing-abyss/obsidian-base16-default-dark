@@ -91,6 +91,15 @@
   width: calc(var(--input-height) + 6px);
 }
 
+/* The plugin's .tray-zoom keeps a 2rem height and .05rem vertical padding
+   after its buttons shrink. Let the content set the height, and use the
+   same outer Island frame and 4px inset as the adjacent toolbar. */
+.theme-dark .excalidraw .tray-zoom {
+  height: auto;
+  padding: 0;
+  box-shadow: none;
+}
+
 /* Give the framed controls some breathing room in both toolbars,
    including the undo / redo wrapper (unclassed in the verified DOM). */
 .theme-dark .excalidraw .App-toolbar > .Stack_horizontal,
