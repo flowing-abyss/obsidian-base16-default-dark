@@ -17,6 +17,11 @@
 //   - reason: why it is legitimate despite not being in either known set.
 export const VAR_EXEMPTIONS = [
   {
+    name: "--default-button-size",
+    reason:
+      "Excalidraw defines this on .excalidraw as the shared tool-button size (2rem in 2.28.1). Verified in its live toolbar and footer; scope both button boxes and menu triggers to this plugin-owned size.",
+  },
+  {
     name: "--swatch-color",
     reason:
       "Excalidraw 2.28.1 supplies each color-picker__button's actual colour inline, including dark-mode conversion and transparent swatches. Verified on the live top picks and colour-picker popup; the theme must preserve this drawing-owned value.",

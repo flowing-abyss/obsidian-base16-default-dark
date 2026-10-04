@@ -6318,6 +6318,31 @@ body.theme-dark
   --sidebar-shadow: none;
 }
 
+/* Obsidian's button height (30px here) clipped Excalidraw's 36–40px icon
+   containers, while dropdown triggers kept their own square dimensions.
+   Size the outer controls together and keep the selected icon fill inside
+   the border. This also removes the footer toggle's extra 2px padding. */
+.theme-dark .excalidraw .App-toolbar :is(button.ToolIcon, button.dropdown-menu-button) {
+  width: var(--default-button-size);
+  height: var(--default-button-size);
+  padding: 0;
+  flex-shrink: 0;
+  justify-content: center;
+}
+
+.theme-dark .excalidraw .App-toolbar .ToolIcon__icon {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+}
+
+/* Match the top Stack's quarter-rem spacing, including the nested undo /
+   redo group. Its wrapper has no class in the verified plugin DOM. */
+.theme-dark .excalidraw .App-toolbar-content,
+.theme-dark .excalidraw .App-toolbar-content > div {
+  gap: 0.25rem;
+}
+
 /* The global button background hid every swatch. The live vault also has
    an unscoped `.active { background: transparent !important }` plugin rule,
    so restoring the plugin's own inline --swatch-color needs this flag.
