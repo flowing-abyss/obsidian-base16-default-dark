@@ -51,11 +51,14 @@
 
 /* Obsidian's button height (30px here) clipped Excalidraw's 36–40px icon
    containers, while dropdown triggers kept their own square dimensions.
-   Size the outer controls together and keep the selected icon fill inside
-   the border. This also removes the footer toggle's extra 2px padding. */
+   Keep that compact input height for every outer control and fit the icon
+   fill inside its border. Remove the footer toggle's extra 2px padding. */
 .theme-dark .excalidraw .App-toolbar :is(button.ToolIcon, button.dropdown-menu-button) {
-  width: var(--default-button-size);
-  height: var(--default-button-size);
+  --default-icon-size: var(--icon-s);
+  --lg-icon-size: var(--icon-s);
+
+  width: var(--input-height);
+  height: var(--input-height);
   padding: 0;
   flex-shrink: 0;
   justify-content: center;
@@ -65,6 +68,18 @@
   width: 100%;
   height: 100%;
   border-radius: inherit;
+}
+
+/* The adjacent zoom group uses the same height; its percentage label
+   retains the plugin's content-sized width. */
+.theme-dark .excalidraw button.zoom-button {
+  --lg-icon-size: var(--icon-s);
+
+  height: var(--input-height);
+}
+
+.theme-dark .excalidraw button.zoom-button:not(.reset-zoom-button) {
+  width: var(--input-height);
 }
 
 /* Match the top Stack's quarter-rem spacing, including the nested undo /
