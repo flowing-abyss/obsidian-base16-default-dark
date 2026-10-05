@@ -6377,6 +6377,37 @@ body.theme-dark
   gap: 0.3rem;
 }
 
+/* The sidebar's search/library tabs use .excalidraw-button, not ToolIcon.
+   Its .625rem padding squeezed their SVGs to 11px wide in 36px buttons. */
+.theme-dark .excalidraw .sidebar-triggers {
+  background-color: var(--b16-surface-1);
+  border-radius: var(--b16-radius-s);
+  gap: 0.3rem;
+}
+
+/* Preserve Excalidraw's active-tab and pointer-state colours over the
+   generic theme button background. SVGs follow the same foreground. */
+.theme-dark .excalidraw button.sidebar-tab-trigger {
+  --icon-fill-color: currentcolor;
+
+  padding: 0;
+  background-color: var(--button-bg);
+}
+
+.theme-dark .excalidraw button.sidebar-tab-trigger:hover {
+  background-color: var(--button-hover-bg);
+}
+
+.theme-dark .excalidraw button.sidebar-tab-trigger:active {
+  background-color: var(--button-active-bg);
+}
+
+.theme-dark .excalidraw .sidebar-tab-trigger svg {
+  width: var(--icon-m);
+  height: var(--icon-m);
+  flex-shrink: 0;
+}
+
 /* The global button background hid every swatch. The live vault also has
    an unscoped `.active { background: transparent !important }` plugin rule,
    so restoring the plugin's own inline --swatch-color needs this flag.

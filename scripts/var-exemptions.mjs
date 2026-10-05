@@ -17,6 +17,11 @@
 //   - reason: why it is legitimate despite not being in either known set.
 export const VAR_EXEMPTIONS = [
   {
+    name: "--button-bg",
+    reason:
+      "Excalidraw 2.28.1 sets this on sidebar-tab-trigger: transparent for inactive tabs, its primary colour for the active tab. Verified in the live sidebar; preserve that state contract over the theme's generic button background.",
+  },
+  {
     name: "--swatch-color",
     reason:
       "Excalidraw 2.28.1 supplies each color-picker__button's actual colour inline, including dark-mode conversion and transparent swatches. Verified on the live top picks and colour-picker popup; the theme must preserve this drawing-owned value.",
