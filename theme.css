@@ -5159,6 +5159,16 @@ body.theme-dark .abyss-panel-view button.abyss-project-timeline-group-header {
   letter-spacing: normal;
 }
 
+/* Dependency titles use buttons where subtask titles use plain labels.
+   The generic button rule in 40-chrome.css overrides the plugin's reset
+   and adds a 1px frame. Match its hover specificity (0,3,1) to keep the
+   title frameless in both dependency lists; retain native keyboard focus. */
+.theme-dark .abyss-dep-row button.abyss-dep-title {
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
 /* Dependency creation is the same inline list action as Add sub-task.
    It is a button (the subtask action is a div), so 40-chrome.css otherwise
    adds a full-width frame and brighter text. Keep the shared plugin padding
