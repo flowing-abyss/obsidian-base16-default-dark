@@ -241,19 +241,17 @@
   color: var(--b16-accent-tag);
 }
 
-/* Highlight. Two separate fixes, both required: Obsidian's own CM6 rule
-   (.cm-s-obsidian span.cm-highlight) reads --text-highlight-bg directly, so
-   01-tokens.css points that var at --b16-highlight-bg to fix the background;
-   that same built-in rule also sets color: var(--text-normal) at a
-   specificity `.theme-dark .cm-highlight` alone cannot beat, so `span.cm-
-   highlight` (not just `.cm-highlight`) matches its specificity here to win
-   the text colour on source order. Removing either half regresses one of
-   the two live-preview properties. */
+/* Obsidian 1.14 resolves each highlight's colour through
+   --highlight-background on mark[data-highlight] and .cm-highlight-<colour>.
+   Keep that per-run value: a fixed yellow background erased all six colours
+   in both modes. The fallback preserves the 1.13 highlight, which only has
+   --text-highlight-bg. span.cm-highlight still matches the native CM6
+   foreground rule's specificity without an !important override. */
 .theme-dark :is(mark, span.cm-highlight) {
   --b16-highlight-keyline-current: transparent;
 
   color: var(--b16-text-strong);
-  background-color: var(--b16-highlight-bg);
+  background-color: var(--highlight-background, var(--b16-highlight-bg));
   border: none;
 }
 
@@ -331,9 +329,10 @@
 }
 
 /* This class exists only while Micropatches' optional highlight-copy setting
-   is on. Hover leaves the semantic yellow almost still and adds a neutral,
-   one-pixel boundary. That reads as an available action without promoting a
-   short annotation into a button. The sibling rules keep a multi-span Live
+   is on. Hover preserves the author's colour and adds a neutral, one-pixel
+   boundary. Older Obsidian retains the slightly stronger yellow fallback.
+   That reads as an available action without promoting a short annotation
+   into a button. The sibling rules keep a multi-span Live
    Preview highlight visually whole. Reading-mode marks are scoped to
    .markdown-rendered, the only <mark> Micropatches copies: plugin UIs also
    render <mark> (K-Plex search matches) and must not promise a copy action.
@@ -347,17 +346,18 @@
   ) {
   --b16-highlight-keyline-current: var(--b16-border-strong);
 
-  background-color: var(--b16-highlight-bg-hover);
+  background-color: var(--highlight-background, var(--b16-highlight-bg-hover));
   cursor: copy;
 }
 
-/* Successful copying briefly strengthens the same neutral boundary and takes
-   one small fill step. No hue inversion or animation is needed. */
+/* Successful copying strengthens the neutral boundary without replacing a
+   coloured highlight with yellow. The older single-colour renderer keeps
+   its small fill step through the fallback. */
 .theme-dark.micropatches-highlight-copy
   :is(mark, span.cm-highlight).is-micropatches-copy-confirmed {
   --b16-highlight-keyline-current: var(--b16-text-faint);
 
-  background-color: var(--b16-highlight-bg-confirmed);
+  background-color: var(--highlight-background, var(--b16-highlight-bg-confirmed));
 }
 
 /* Horizontal rules */

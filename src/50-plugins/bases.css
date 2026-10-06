@@ -42,6 +42,13 @@
   font-size: var(--font-text-size);
 }
 
+/* Native Kanban inherits the view's font for values but uses the medium UI
+   size for titles. On 1.14.4 that produced 20px metadata under 17px titles.
+   Match the Board/table hierarchy without changing measured card geometry. */
+.theme-dark .view-content .bases-view[data-view-type='kanban'] {
+  font-size: var(--b16-font-ui-m);
+}
+
 .view-content .bases-view :is(.bases-thead, .bases-th) {
   font-size: var(--b16-label-size);
 }

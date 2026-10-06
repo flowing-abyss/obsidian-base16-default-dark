@@ -463,6 +463,9 @@ export const OBSIDIAN_VARS = [
   "--header-height",
   "--heading-formatting",
   "--heading-spacing",
+  // Verified in 1.14.4 on mark[data-highlight] and .cm-highlight-<colour>.
+  // Consumers retain a fallback for the 1.13.7 snapshot above.
+  "--highlight-background",
   "--highlight-mix-blend-mode",
   "--hr-color",
   "--hr-thickness",

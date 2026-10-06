@@ -382,9 +382,8 @@
 
   /* Text formatting */
   --inline-code-color: var(--b16-accent-code);
-  /* Obsidian's own CM6 rule (.cm-s-obsidian span.cm-highlight) reads this
-     var directly; setting it here means the live-preview highlight
-     background is correct even before 11-text.css's own rule applies. */
+  /* Legacy highlight input; 1.14 also uses it as the default for
+     --highlight-background when the author has not chosen a colour. */
   --text-highlight-bg: var(--b16-highlight-bg);
 
   /* Tags — dedicated cyan, not borrowed from links. */
@@ -424,6 +423,44 @@
 
   /* Prompts */
   --prompt-border-color: var(--b16-border-normal);
+
+  /* Public chrome inputs added in Obsidian 1.14. The matching declarations
+     in 40-chrome.css also consume these on 1.13, whose app.css still uses
+     hardcoded values. Both versions therefore share the same material. */
+  --notice-background: var(--b16-surface-2);
+  --notice-color: var(--b16-text-normal);
+  --notice-font-size: var(--b16-font-ui-m);
+  --notice-font-weight: var(--b16-chrome-weight);
+  --notice-line-height: 1.3;
+  --notice-padding: 8px 11px;
+  --notice-max-width: min(360px, calc(100vw - 24px));
+  --notice-radius: var(--b16-radius-s);
+  --notice-shadow: none;
+  --notice-border: 1px solid var(--b16-border-normal);
+  --tooltip-background: var(--b16-surface-2);
+  --tooltip-color: var(--b16-text-normal);
+  --tooltip-font-size: var(--b16-font-ui-s);
+  --tooltip-font-weight: var(--b16-chrome-weight);
+  --tooltip-line-height: 1.3;
+  --tooltip-padding: 4px 8px;
+  --tooltip-max-width: min(360px, calc(100vw - 16px));
+  --tooltip-radius: var(--b16-radius-s);
+  --tooltip-shadow: none;
+  --hotkey-background: var(--b16-surface-1);
+  --hotkey-font-size: var(--b16-font-ui-s);
+  --hotkey-radius: var(--b16-radius-control);
+
+  /* Native Bases Kanban (1.14) is separate from the community Board view.
+     Use its public inputs so virtualized card sizing and drag states stay
+     under Obsidian's control. */
+  --bases-kanban-column-background: var(--b16-surface-0);
+  --bases-kanban-column-header-background: var(--b16-surface-1);
+  --bases-kanban-column-radius: var(--b16-radius-s);
+  --bases-kanban-card-background: var(--b16-surface-1);
+  --bases-kanban-card-radius: var(--b16-radius-s);
+  --bases-kanban-card-shadow: 0 0 0 1px var(--b16-border-normal);
+  --bases-kanban-card-shadow-hover: 0 0 0 1px var(--b16-border-strong);
+  --bases-kanban-card-shadow-focus: 0 0 0 2px var(--b16-accent-link);
 
   /* File colors */
   --color-red: var(--b16-status-error);

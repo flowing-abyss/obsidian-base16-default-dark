@@ -142,28 +142,30 @@ body.theme-dark {
 }
 
 .theme-dark .notice {
-  max-width: min(360px, calc(100vw - 24px));
+  max-width: var(--notice-max-width);
   margin-bottom: 8px;
-  padding: 8px 11px;
-  color: var(--b16-text-normal);
-  background-color: var(--b16-surface-2);
-  border: 1px solid var(--b16-border-normal);
-  border-radius: var(--b16-radius-s);
-  box-shadow: none;
-  font-size: var(--b16-font-ui-m);
-  line-height: 1.3;
+  padding: var(--notice-padding);
+  color: var(--notice-color);
+  background-color: var(--notice-background);
+  border: var(--notice-border);
+  border-radius: var(--notice-radius);
+  box-shadow: var(--notice-shadow);
+  font-size: var(--notice-font-size);
+  font-weight: var(--notice-font-weight);
+  line-height: var(--notice-line-height);
 }
 
 .theme-dark .tooltip {
-  max-width: min(360px, calc(100vw - 16px));
-  padding: 4px 8px;
-  color: var(--b16-text-normal);
-  background-color: var(--b16-surface-2);
+  max-width: var(--tooltip-max-width);
+  padding: var(--tooltip-padding);
+  color: var(--tooltip-color);
+  background-color: var(--tooltip-background);
   border: 1px solid var(--b16-border-normal);
-  border-radius: var(--b16-radius-s);
-  box-shadow: none;
-  font-size: var(--b16-font-ui-s);
-  line-height: 1.3;
+  border-radius: var(--tooltip-radius);
+  box-shadow: var(--tooltip-shadow);
+  font-size: var(--tooltip-font-size);
+  font-weight: var(--tooltip-font-weight);
+  line-height: var(--tooltip-line-height);
   text-align: left;
   white-space: normal;
   overflow-wrap: anywhere;

@@ -424,9 +424,8 @@
 
   /* Text formatting */
   --inline-code-color: var(--b16-accent-code);
-  /* Obsidian's own CM6 rule (.cm-s-obsidian span.cm-highlight) reads this
-     var directly; setting it here means the live-preview highlight
-     background is correct even before 11-text.css's own rule applies. */
+  /* Legacy highlight input; 1.14 also uses it as the default for
+     --highlight-background when the author has not chosen a colour. */
   --text-highlight-bg: var(--b16-highlight-bg);
 
   /* Tags — dedicated cyan, not borrowed from links. */
@@ -466,6 +465,44 @@
 
   /* Prompts */
   --prompt-border-color: var(--b16-border-normal);
+
+  /* Public chrome inputs added in Obsidian 1.14. The matching declarations
+     in 40-chrome.css also consume these on 1.13, whose app.css still uses
+     hardcoded values. Both versions therefore share the same material. */
+  --notice-background: var(--b16-surface-2);
+  --notice-color: var(--b16-text-normal);
+  --notice-font-size: var(--b16-font-ui-m);
+  --notice-font-weight: var(--b16-chrome-weight);
+  --notice-line-height: 1.3;
+  --notice-padding: 8px 11px;
+  --notice-max-width: min(360px, calc(100vw - 24px));
+  --notice-radius: var(--b16-radius-s);
+  --notice-shadow: none;
+  --notice-border: 1px solid var(--b16-border-normal);
+  --tooltip-background: var(--b16-surface-2);
+  --tooltip-color: var(--b16-text-normal);
+  --tooltip-font-size: var(--b16-font-ui-s);
+  --tooltip-font-weight: var(--b16-chrome-weight);
+  --tooltip-line-height: 1.3;
+  --tooltip-padding: 4px 8px;
+  --tooltip-max-width: min(360px, calc(100vw - 16px));
+  --tooltip-radius: var(--b16-radius-s);
+  --tooltip-shadow: none;
+  --hotkey-background: var(--b16-surface-1);
+  --hotkey-font-size: var(--b16-font-ui-s);
+  --hotkey-radius: var(--b16-radius-control);
+
+  /* Native Bases Kanban (1.14) is separate from the community Board view.
+     Use its public inputs so virtualized card sizing and drag states stay
+     under Obsidian's control. */
+  --bases-kanban-column-background: var(--b16-surface-0);
+  --bases-kanban-column-header-background: var(--b16-surface-1);
+  --bases-kanban-column-radius: var(--b16-radius-s);
+  --bases-kanban-card-background: var(--b16-surface-1);
+  --bases-kanban-card-radius: var(--b16-radius-s);
+  --bases-kanban-card-shadow: 0 0 0 1px var(--b16-border-normal);
+  --bases-kanban-card-shadow-hover: 0 0 0 1px var(--b16-border-strong);
+  --bases-kanban-card-shadow-focus: 0 0 0 2px var(--b16-accent-link);
 
   /* File colors */
   --color-red: var(--b16-status-error);
@@ -1392,19 +1429,17 @@
   color: var(--b16-accent-tag);
 }
 
-/* Highlight. Two separate fixes, both required: Obsidian's own CM6 rule
-   (.cm-s-obsidian span.cm-highlight) reads --text-highlight-bg directly, so
-   01-tokens.css points that var at --b16-highlight-bg to fix the background;
-   that same built-in rule also sets color: var(--text-normal) at a
-   specificity `.theme-dark .cm-highlight` alone cannot beat, so `span.cm-
-   highlight` (not just `.cm-highlight`) matches its specificity here to win
-   the text colour on source order. Removing either half regresses one of
-   the two live-preview properties. */
+/* Obsidian 1.14 resolves each highlight's colour through
+   --highlight-background on mark[data-highlight] and .cm-highlight-<colour>.
+   Keep that per-run value: a fixed yellow background erased all six colours
+   in both modes. The fallback preserves the 1.13 highlight, which only has
+   --text-highlight-bg. span.cm-highlight still matches the native CM6
+   foreground rule's specificity without an !important override. */
 .theme-dark :is(mark, span.cm-highlight) {
   --b16-highlight-keyline-current: transparent;
 
   color: var(--b16-text-strong);
-  background-color: var(--b16-highlight-bg);
+  background-color: var(--highlight-background, var(--b16-highlight-bg));
   border: none;
 }
 
@@ -1482,9 +1517,10 @@
 }
 
 /* This class exists only while Micropatches' optional highlight-copy setting
-   is on. Hover leaves the semantic yellow almost still and adds a neutral,
-   one-pixel boundary. That reads as an available action without promoting a
-   short annotation into a button. The sibling rules keep a multi-span Live
+   is on. Hover preserves the author's colour and adds a neutral, one-pixel
+   boundary. Older Obsidian retains the slightly stronger yellow fallback.
+   That reads as an available action without promoting a short annotation
+   into a button. The sibling rules keep a multi-span Live
    Preview highlight visually whole. Reading-mode marks are scoped to
    .markdown-rendered, the only <mark> Micropatches copies: plugin UIs also
    render <mark> (K-Plex search matches) and must not promise a copy action.
@@ -1498,17 +1534,18 @@
   ) {
   --b16-highlight-keyline-current: var(--b16-border-strong);
 
-  background-color: var(--b16-highlight-bg-hover);
+  background-color: var(--highlight-background, var(--b16-highlight-bg-hover));
   cursor: copy;
 }
 
-/* Successful copying briefly strengthens the same neutral boundary and takes
-   one small fill step. No hue inversion or animation is needed. */
+/* Successful copying strengthens the neutral boundary without replacing a
+   coloured highlight with yellow. The older single-colour renderer keeps
+   its small fill step through the fallback. */
 .theme-dark.micropatches-highlight-copy
   :is(mark, span.cm-highlight).is-micropatches-copy-confirmed {
   --b16-highlight-keyline-current: var(--b16-text-faint);
 
-  background-color: var(--b16-highlight-bg-confirmed);
+  background-color: var(--highlight-background, var(--b16-highlight-bg-confirmed));
 }
 
 /* Horizontal rules */
@@ -4153,28 +4190,30 @@ body.theme-dark {
 }
 
 .theme-dark .notice {
-  max-width: min(360px, calc(100vw - 24px));
+  max-width: var(--notice-max-width);
   margin-bottom: 8px;
-  padding: 8px 11px;
-  color: var(--b16-text-normal);
-  background-color: var(--b16-surface-2);
-  border: 1px solid var(--b16-border-normal);
-  border-radius: var(--b16-radius-s);
-  box-shadow: none;
-  font-size: var(--b16-font-ui-m);
-  line-height: 1.3;
+  padding: var(--notice-padding);
+  color: var(--notice-color);
+  background-color: var(--notice-background);
+  border: var(--notice-border);
+  border-radius: var(--notice-radius);
+  box-shadow: var(--notice-shadow);
+  font-size: var(--notice-font-size);
+  font-weight: var(--notice-font-weight);
+  line-height: var(--notice-line-height);
 }
 
 .theme-dark .tooltip {
-  max-width: min(360px, calc(100vw - 16px));
-  padding: 4px 8px;
-  color: var(--b16-text-normal);
-  background-color: var(--b16-surface-2);
+  max-width: var(--tooltip-max-width);
+  padding: var(--tooltip-padding);
+  color: var(--tooltip-color);
+  background-color: var(--tooltip-background);
   border: 1px solid var(--b16-border-normal);
-  border-radius: var(--b16-radius-s);
-  box-shadow: none;
-  font-size: var(--b16-font-ui-s);
-  line-height: 1.3;
+  border-radius: var(--tooltip-radius);
+  box-shadow: var(--tooltip-shadow);
+  font-size: var(--tooltip-font-size);
+  font-weight: var(--tooltip-font-weight);
+  line-height: var(--tooltip-line-height);
   text-align: left;
   white-space: normal;
   overflow-wrap: anywhere;
@@ -5606,6 +5645,13 @@ body.theme-dark
 .view-content .bases-view {
   font-family: var(--font-interface-theme);
   font-size: var(--font-text-size);
+}
+
+/* Native Kanban inherits the view's font for values but uses the medium UI
+   size for titles. On 1.14.4 that produced 20px metadata under 17px titles.
+   Match the Board/table hierarchy without changing measured card geometry. */
+.theme-dark .view-content .bases-view[data-view-type='kanban'] {
+  font-size: var(--b16-font-ui-m);
 }
 
 .view-content .bases-view :is(.bases-thead, .bases-th) {

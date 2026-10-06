@@ -2,7 +2,7 @@ import { mkdir } from "node:fs/promises";
 import { readFileSync, renameSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { execFileSync } from "node:child_process";
-import { OBSIDIAN, reload } from "./reload.mjs";
+import { OBSIDIAN, VAULT_ARG, reload } from "./reload.mjs";
 
 const NOTE = "base/notes/test syntax.md";
 const BASES_FILE = "home/databases/recent.base";
@@ -115,6 +115,12 @@ const reading = (anchor) => `(async()=>{
   const h=(cache.headings||[]).find(x=>x.heading===${JSON.stringify(anchor)});
   if(!h) throw new Error("reading anchor not found: "+${JSON.stringify(anchor)});
   const contentEl = leaf.view.contentEl;
+  // Clear the previous note position before asking the windowed renderer
+  // for a line. In 1.14.4 a pending restored scroll can otherwise win over
+  // applyScroll repeatedly, leaving the requested heading unmounted.
+  const scroller = contentEl.querySelector(".markdown-preview-view") || contentEl;
+  scroller.scrollTop = 0;
+  await __settle(()=>scroller.scrollTop);
   const findHeading = () => {
     const els = contentEl.querySelectorAll("h1,h2,h3,h4,h5,h6");
     for (const el of els) if (el.textContent.trim()===${JSON.stringify(anchor)}) return el;
@@ -135,7 +141,6 @@ const reading = (anchor) => `(async()=>{
       throw new Error("condition did not become true within 6000ms");
     }
   }
-  const scroller = contentEl.querySelector(".markdown-preview-view") || contentEl;
   await __settle(()=>scroller.scrollTop);
   // Re-find after settling: the windowed renderer can swap DOM nodes out
   // from under a stale reference while the scroll position is still moving.
@@ -220,6 +225,8 @@ const FRAMES = [
   { name: "30-reading-headings", setup: reading("Заголовки") },
   { name: "31-reading-code", setup: reading("Код") },
   { name: "32-reading-callouts", setup: reading("Callouts") },
+  { name: "35-reading-text", setup: reading("Текст") },
+  { name: "36-reading-math", setup: reading("Формулы") },
   { name: "33-bases", setup: bases(BASES_FILE) },
   { name: "34-bases-board", setup: basesBoard(BASES_BOARD_FILE, BASES_BOARD_VIEW) },
   // This vault has the core switcher/global-search/command-palette plugins
@@ -300,12 +307,26 @@ const CLI_TIMEOUT_MS = 30_000;
 const CLI_OPTS = { timeout: CLI_TIMEOUT_MS, killSignal: "SIGKILL" };
 
 function ev(code) {
-  const raw = execFileSync(OBSIDIAN, ["eval", `code=${code}`], { ...CLI_OPTS, encoding: "utf8" });
+  const raw = execFileSync(OBSIDIAN, [VAULT_ARG, "eval", `code=${code}`], { ...CLI_OPTS, encoding: "utf8" });
   return parseEvalOutput(raw);
 }
 
 function screenshot(path) {
-  execFileSync(OBSIDIAN, ["dev:screenshot", `path=${path}`], CLI_OPTS);
+  try {
+    execFileSync(OBSIDIAN, [VAULT_ARG, "dev:screenshot", `path=${path}`], CLI_OPTS);
+  } catch (error) {
+    if (error.code !== "ETIMEDOUT") throw error;
+    // 1.14.4 can save the PNG but leave dev:screenshot running. Capture a
+    // fresh frame through the same window's Electron API; the caller still
+    // requires two identical captures before accepting it.
+    console.error("  dev:screenshot timed out; using window capture");
+    ev(`(async()=>{
+      const contents=require("electron").remote.getCurrentWebContents();
+      const image=await contents.capturePage();
+      require("fs").writeFileSync(${JSON.stringify(path)},image.toPNG());
+      return JSON.stringify("captured");
+    })()`);
+  }
 }
 
 // In-page settle checks (above) cover everything that happens inside the
