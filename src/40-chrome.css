@@ -24,8 +24,8 @@ body.theme-dark {
 /* File-header breadcrumbs are structural micro-syntax: ancestors explain
    location, while the note title remains the destination. Replace the
    generic slash with a compact double chevron, using the same quiet
-   punctuation colour as other structural marks. Keep Obsidian's current
-   alignment and interaction model intact. */
+   punctuation colour as other structural marks. Keep Obsidian's native
+   sizing and interaction model intact. */
 .theme-dark .view-header-breadcrumb-separator {
   display: inline-flex;
   align-items: center;

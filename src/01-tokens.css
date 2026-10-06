@@ -312,6 +312,9 @@
   --input-font-weight: var(--b16-chrome-weight);
   --tab-stacked-font-weight: var(--b16-chrome-weight);
   --slider-value-font-weight: var(--b16-chrome-weight);
+  /* Preserve centered file-header breadcrumbs: Obsidian 1.14 changed
+     the desktop default from center to start. */
+  --file-header-justify: center;
 }
 
 .theme-dark {
