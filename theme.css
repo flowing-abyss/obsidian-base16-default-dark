@@ -5159,6 +5159,18 @@ body.theme-dark .abyss-panel-view button.abyss-project-timeline-group-header {
   letter-spacing: normal;
 }
 
+/* Dates and other task-list groups are context for the rows below them.
+   Keep them below task text and sidebar section headings on the UI ramp.
+   The renderer puts label and count in one text node separated by two
+   spaces; preserve that separation without preventing long labels wrapping. */
+.theme-dark .abyss-group-header {
+  padding-inline: var(--size-4-3);
+  padding-bottom: var(--size-4-1);
+  font-size: var(--font-ui-smallest);
+  font-weight: var(--b16-chrome-weight);
+  white-space: pre-wrap;
+}
+
 /* Dependency titles use buttons where subtask titles use plain labels.
    The generic button rule in 40-chrome.css overrides the plugin's reset
    and adds a 1px frame. Match its hover specificity (0,3,1) to keep the
@@ -5499,6 +5511,22 @@ body.theme-dark .abyss-dep-search button.abyss-dep-search-option {
   background: transparent;
   border-radius: 0;
   padding-inline: 0;
+}
+
+/* Show more / Show less is a text disclosure, like the inspector's inline
+   add actions. Match the generic button hover specificity from 40-chrome.css
+   so its frame and fill stay absent in both the panel and task modal. */
+.theme-dark :is(.abyss-panel-view, .abyss-modal) button.abyss-comment-disclosure {
+  border: 0;
+  border-radius: var(--b16-radius-control);
+  box-shadow: none;
+  background: transparent;
+  color: var(--b16-text-muted);
+  font-size: var(--font-ui-smallest);
+
+  &:is(:hover, :focus-visible) {
+    color: var(--b16-text-normal);
+  }
 }
 
 /* A little more room for editable dates avoids turning every metadata
