@@ -5159,11 +5159,15 @@ body.theme-dark .abyss-panel-view button.abyss-project-timeline-group-header {
   letter-spacing: normal;
 }
 
-/* Dates and other task-list groups are context for the rows below them.
-   Keep them below task text and sidebar section headings on the UI ramp.
+/* Only Upcoming's daily date groups sit below task text on the UI ramp.
+   taskSearchOrganization.ts creates task-daily rows only for Upcoming
+   grouped by date; neither headers nor the list expose that mode directly.
+   :has() is needed to scope via the verified data-row-key on those cards.
    The renderer puts label and count in one text node separated by two
    spaces; preserve that separation without preventing long labels wrapping. */
-.theme-dark .abyss-group-header {
+.theme-dark
+  :where(.abyss-task-list-surface:has(.abyss-task-card[data-row-key^='["task-daily",']))
+  .abyss-group-header {
   padding-inline: var(--size-4-3);
   padding-bottom: var(--size-4-1);
   font-size: var(--font-ui-smallest);
