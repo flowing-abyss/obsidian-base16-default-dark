@@ -6530,59 +6530,75 @@ body.theme-dark
  * graph, and glow rings on nodes, gates and edges. Those become the flat
  * surfaces, hairlines and single selection ring used by Canvas and Graph. */
 
-/* The plugin's own palette inputs. Rebinding the three it reads retints
-   every rule that consumes them (hairlines, search icon, history label). */
-.theme-dark .excalibrain-app {
-  --eb-line: var(--b16-border-normal);
-  --eb-muted: var(--b16-text-muted);
-  --eb-text: var(--b16-text-normal);
+/* Bind the current K-Plex palette inputs to the theme. Node and link
+   colours still come from the plugin's supported style settings. */
+.theme-dark .kplex-app {
+  --kplex-line: var(--b16-border-normal);
+  --kplex-muted: var(--b16-text-muted);
+  --kplex-panel: var(--b16-surface-1);
+  --kplex-panel-2: var(--b16-surface-2);
+  --kplex-accent: var(--b16-accent-link);
 
   background: var(--b16-surface-0);
 }
 
+/* New action controls and the detached Sidecar button share these inputs.
+   The detached button is outside the app and cannot inherit its palette. */
+.theme-dark :is(.kplex-app, .kplex-sidecar-unfold-plex) {
+  --kplex-text: var(--b16-text-normal);
+  --kplex-control-bg: var(--b16-surface-0);
+  --kplex-control-hover: var(--b16-surface-1);
+  --kplex-control-border: var(--b16-border-normal);
+}
+
 /* Toolbar ------------------------------------------------------------------ */
-.theme-dark .excalibrain-top-stack,
-.theme-dark .excalibrain-topbar {
+.theme-dark .kplex-top-stack,
+.theme-dark .kplex-topbar {
   background: var(--b16-surface-0);
   box-shadow: none;
 }
 
-.theme-dark .excalibrain-brand {
+.theme-dark .kplex-brand {
   color: var(--b16-text-normal);
   font-weight: var(--font-semibold);
 }
 
 /* The brand mark borrowed orange (inline code here) and a glow. */
-.theme-dark .excalibrain-brand-mark {
+.theme-dark .kplex-brand-mark {
   color: var(--b16-text-muted);
   filter: none;
   text-shadow: none;
 }
 
 /* Index readiness is status, not decoration: ok is the status green, a
-   rebuild in progress is pending work (warn), not an error. */
-.theme-dark .kplex-index-status {
+   rebuild in progress is pending work (warn), not an error. The new
+   .kplex-topbar button.kplex-index-status rules need the body specificity
+   to preserve the round, glow-free dot at rest and on hover. */
+body.theme-dark .kplex-index-status {
   border: 0;
+  border-radius: 50%;
 }
 
-.theme-dark .kplex-index-status.is-ready {
+body.theme-dark .kplex-index-status.is-ready {
   background: var(--b16-status-ok);
   box-shadow: none;
 }
 
-.theme-dark .kplex-index-status.is-updating {
+body.theme-dark .kplex-index-status.is-updating {
   background: var(--b16-status-warn);
   box-shadow: none;
 }
 
-.theme-dark .excalibrain-toolbar-divider {
+.theme-dark .kplex-toolbar-divider {
   background: var(--b16-border-normal);
 }
 
-/* Toggle buttons (inline labels, section outline, …) and the active filter
-   trigger. The global button rule has no `.is-on` state, and the plugin's
-   own is a translucent blue fill; pressed here is the theme's pressed step. */
-.theme-dark .excalibrain-topbar button.is-on,
+/* Toggle buttons and the active filter trigger share the theme's pressed
+   step. Current Find, layout and Sidecar controls expose aria-pressed. */
+.theme-dark .kplex-topbar button.is-on,
+.theme-dark .kplex-find button[aria-pressed='true'],
+.theme-dark button.kplex-layout-toggle[aria-pressed='true'],
+.theme-dark .kplex-sidecar-controls button[aria-pressed='true'],
 .theme-dark .kplex-filter.is-active .kplex-filter-trigger {
   color: var(--b16-text-strong);
   background: var(--b16-surface-2);
@@ -6594,7 +6610,7 @@ body.theme-dark
 }
 
 /* Search field and its results list. */
-.theme-dark .excalibrain-view-host .excalibrain-search {
+.theme-dark .kplex-view-host .kplex-search {
   color: var(--b16-text-normal);
   background: var(--b16-surface-0);
   border: 1px solid var(--b16-border-normal);
@@ -6602,12 +6618,12 @@ body.theme-dark
   box-shadow: none;
 }
 
-.theme-dark .excalibrain-view-host .excalibrain-search:focus {
+.theme-dark .kplex-view-host .kplex-search:focus {
   border-color: var(--b16-accent-link);
   box-shadow: none;
 }
 
-.theme-dark .excalibrain-search-results {
+.theme-dark .kplex-search-results {
   background: var(--b16-surface-1);
   border-color: var(--b16-border-normal);
   border-radius: var(--b16-radius-s);
@@ -6616,18 +6632,18 @@ body.theme-dark
 
 /* Result rows are <button>s, so the global button rule framed every row;
    the plugin draws them as borderless list items. */
-.theme-dark button.excalibrain-search-result {
+.theme-dark button.kplex-search-result {
   border: 0;
   border-radius: var(--b16-radius-control);
 }
 
-.theme-dark button.excalibrain-search-result:hover {
+.theme-dark button.kplex-search-result:hover {
   background: var(--b16-surface-2);
 }
 
 /* Keyboard selection is "you are here": the link-hue rail used by the
    active Longform scene and Claudian's active session. */
-.theme-dark button.excalibrain-search-result.is-selected {
+.theme-dark button.kplex-search-result.is-selected {
   color: var(--b16-text-strong);
   background: var(--b16-surface-2);
   box-shadow: inset 2px 0 0 var(--b16-accent-link);
@@ -6685,7 +6701,7 @@ body.theme-dark
   color: var(--b16-text-faint);
 }
 
-.theme-dark .excalibrain-view-host .kplex-pinned-remove {
+.theme-dark .kplex-view-host .kplex-pinned-remove {
   color: var(--b16-text-faint);
   border-left: 1px solid var(--b16-border-normal);
 }
@@ -6693,14 +6709,14 @@ body.theme-dark
 /* Graph surface ------------------------------------------------------------ */
 
 /* A radial blue glow plus a vertical sheen sat over the whole Plex. */
-.theme-dark .excalibrain-plex::after {
+.theme-dark .kplex-plex::after {
   background: none;
 }
 
 /* Zone captions (PARENTS, CHILDREN, …) are a watermark, not chrome: the
    rotated side captions are positioned for the plugin's own 9px size, so
    only their colour moves onto the faint text step. */
-.theme-dark .excalibrain-zone-label {
+.theme-dark .kplex-zone-label {
   color: var(--b16-text-faint);
 }
 
@@ -6722,60 +6738,67 @@ body.theme-dark
 /* Nodes. Fill, text and border come inline from the plugin settings; the
    stylesheet adds a drop shadow and an inset highlight that turned every
    card into a floating pill. Canvas cards are flat, so these are too. */
-.theme-dark .excalibrain-thought,
-.theme-dark .excalibrain-thought.is-kplex-section:hover {
+.theme-dark .kplex-thought,
+.theme-dark .kplex-thought.is-kplex-section:hover {
   box-shadow: none;
 }
 
 /* Hovering one node dims every unrelated node, and the plugin did that with
    a saturate/brightness filter per node: the most expensive repaint left in
    a large Plex. Opacity alone already reads as "not related". */
-.theme-dark .excalibrain-thought.is-dimmed,
-.theme-dark .excalibrain-thought.is-connect-blocked {
+.theme-dark .kplex-thought.is-dimmed,
+.theme-dark .kplex-thought.is-connect-blocked {
   filter: none;
 }
 
 /* Related-to-hovered: one neutral contrast step, as a Canvas hover. */
-.theme-dark .excalibrain-thought.is-highlighted,
-.theme-dark .excalibrain-thought.is-highlighted:hover {
+.theme-dark .kplex-thought.is-highlighted,
+.theme-dark .kplex-thought.is-highlighted:hover {
   filter: none;
   box-shadow: 0 0 0 1px var(--b16-border-strong);
 }
 
 /* Selection is one precise link-hue ring (Canvas selection), replacing a
    white ring plus a 34px blue halo. */
-.theme-dark .excalibrain-thought.is-selected,
-.theme-dark .excalibrain-thought.is-selected.is-highlighted,
-.theme-dark .excalibrain-plex.is-section-expanded .excalibrain-thought.is-selected {
+.theme-dark .kplex-thought.is-selected,
+.theme-dark .kplex-thought.is-selected.is-highlighted,
+.theme-dark .kplex-plex.is-section-expanded .kplex-thought.is-selected {
   box-shadow: 0 0 0 1px var(--b16-accent-link);
 }
 
-.theme-dark .excalibrain-thought.is-dragging,
-.theme-dark .excalibrain-thought.is-connect-origin,
-.theme-dark .excalibrain-thought.is-connect-candidate:hover {
+.theme-dark .kplex-thought.is-dragging,
+.theme-dark .kplex-thought.is-connect-origin,
+.theme-dark .kplex-thought.is-connect-candidate:hover {
   filter: none;
   box-shadow: 0 0 0 1px var(--b16-accent-link);
 }
 
 /* Gates: fill and stroke come from the node style settings; drop the halo. */
-.theme-dark .excalibrain-gate {
+.theme-dark .kplex-gate {
   box-shadow: none;
 }
 
-.theme-dark .excalibrain-gate:hover,
-.theme-dark .excalibrain-gate.is-highlighted {
+.theme-dark .kplex-gate:hover,
+.theme-dark .kplex-gate.is-highlighted {
   box-shadow: 0 0 0 1px var(--b16-accent-link);
 }
 
 /* Gate counts sit on the bare graph surface, so the dark text shadow the
    plugin draws behind them is unnecessary; they are micro-syntax. */
-.theme-dark .excalibrain-gate-count {
+.theme-dark .kplex-gate-count {
   color: var(--b16-text-muted);
   text-shadow: none;
 }
 
 .theme-dark .kplex-expanded-mini-thought {
   box-shadow: none;
+}
+
+/* Local Find uses a stronger ring than hover. Keep its 2px accent visible
+   when the ordinary highlighted-hover or selected rules also match. */
+.theme-dark .kplex-plex.is-finding .kplex-thought.is-highlighted,
+.theme-dark .kplex-expanded-mini-thought.is-find-match {
+  box-shadow: 0 0 0 2px var(--b16-accent-link);
 }
 
 /* Same neutral as the gates, which the node style settings set to the
@@ -6788,13 +6811,13 @@ body.theme-dark
 /* Edges. Stroke colour is a presentation attribute from the link style
    settings; a CSS stroke outranks it without !important, so the hovered
    path can take the link hue instead of a glow. */
-.theme-dark .excalibrain-edge-visible,
+.theme-dark .kplex-edge-visible,
 .theme-dark .kplex-expanded-edge,
 .theme-dark .kplex-drag-connector {
   filter: none;
 }
 
-.theme-dark .excalibrain-edge.is-highlighted .excalibrain-edge-visible {
+.theme-dark .kplex-edge.is-highlighted .kplex-edge-visible {
   filter: none;
   stroke: var(--b16-accent-link);
 }
@@ -6818,7 +6841,7 @@ body.theme-dark
   border-color: var(--b16-border-strong);
 }
 
-.theme-dark .excalibrain-view-host .kplex-zone-filter-input {
+.theme-dark .kplex-view-host .kplex-zone-filter-input {
   color: var(--b16-text-normal);
   background: var(--b16-surface-0);
   border-color: var(--b16-accent-link);
@@ -6838,12 +6861,12 @@ body.theme-dark
 
 /* Zoom buttons float over edges, so unlike the global transparent button
    they need an opaque page-coloured fill. */
-.theme-dark .excalibrain-zoom-controls button {
+.theme-dark .kplex-zoom-controls button {
   color: var(--b16-text-muted);
   background: var(--b16-surface-0);
 }
 
-.theme-dark .excalibrain-zoom-controls button:hover {
+.theme-dark .kplex-zoom-controls button:hover {
   color: var(--b16-text-strong);
   background: var(--b16-surface-2);
 }
@@ -6862,12 +6885,22 @@ body.theme-dark
   box-shadow: none;
 }
 
-.theme-dark .kplex-density-heading {
-  grid-template-columns: auto 1fr auto;
-  gap: 6px;
+.theme-dark .kplex-density-heading,
+.theme-dark .kplex-wrap-label-caption {
   font-size: var(--font-ui-smallest);
   letter-spacing: 0;
   text-transform: none;
+}
+
+.theme-dark .kplex-density-heading {
+  grid-template-columns: auto 1fr auto;
+  gap: 6px;
+}
+
+/* The new wrapping toggle shares the slider frame, but needs no rail width. */
+.theme-dark .kplex-wrap-label-control {
+  width: calc(var(--font-text-size) * 4.5);
+  min-width: 0;
 }
 
 .theme-dark .kplex-density-heading output {
@@ -6905,11 +6938,11 @@ body.theme-dark
 }
 
 /* History ------------------------------------------------------------------ */
-.theme-dark .excalibrain-history-bar {
+.theme-dark .kplex-history-bar {
   background: var(--b16-surface-0);
 }
 
-.theme-dark .excalibrain-history-label {
+.theme-dark .kplex-history-label {
   color: var(--b16-text-faint);
   font-size: var(--font-ui-smallest);
   letter-spacing: 0.1em;
@@ -6919,7 +6952,7 @@ body.theme-dark
    not apply to a flex container: long titles were clipped on both sides
    instead of ending in an ellipsis. A block box restores the plugin's own
    left-aligned ellipsis. */
-.theme-dark .excalibrain-history-list button {
+.theme-dark .kplex-history-list button {
   display: block;
   height: auto;
   color: var(--b16-text-muted);
@@ -6927,11 +6960,11 @@ body.theme-dark
   line-height: 1.3;
 }
 
-.theme-dark .excalibrain-history-list button:hover {
+.theme-dark .kplex-history-list button:hover {
   color: var(--b16-text-normal);
 }
 
-.theme-dark .excalibrain-history-list button.is-active {
+.theme-dark .kplex-history-list button.is-active {
   color: var(--b16-text-normal);
   background: var(--b16-surface-1);
   border-color: var(--b16-border-strong);
