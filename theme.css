@@ -5159,7 +5159,8 @@ body.theme-dark .abyss-panel-view button.abyss-project-timeline-group-header {
   letter-spacing: normal;
 }
 
-/* Only Upcoming's daily date groups sit below task text on the UI ramp.
+/* Upcoming dates follow comment timestamps: regular metadata weight with
+   the shared UI size, muted color and casing from the labels above.
    taskSearchOrganization.ts creates task-daily rows only for Upcoming
    grouped by date; neither headers nor the list expose that mode directly.
    :has() is needed to scope via the verified data-row-key on those cards.
@@ -5170,13 +5171,7 @@ body.theme-dark .abyss-panel-view button.abyss-project-timeline-group-header {
   .abyss-group-header {
   padding-inline: var(--size-4-3);
   padding-bottom: var(--size-4-1);
-  /* Retain the plugin's compact uppercase date typography. */
-  font-size: 10px;
-  font-weight: var(--font-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  /* A step below supporting text, with enough contrast for small dates. */
-  color: color-mix(in srgb, var(--b16-text-muted) 50%, var(--b16-text-faint));
+  font-weight: var(--b16-chrome-weight);
   white-space: pre-wrap;
 }
 
