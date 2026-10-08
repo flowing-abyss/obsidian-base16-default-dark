@@ -283,6 +283,8 @@ body.theme-dark .abyss-panel-view button.abyss-project-timeline-group-header {
   padding-bottom: var(--size-4-1);
   font-size: var(--font-ui-smallest);
   font-weight: var(--b16-chrome-weight);
+  /* A step below supporting text, with enough contrast for small dates. */
+  color: color-mix(in srgb, var(--b16-text-muted) 50%, var(--b16-text-faint));
   white-space: pre-wrap;
 }
 
