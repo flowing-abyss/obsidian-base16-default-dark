@@ -4885,6 +4885,204 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
   display: none;
 }
 
+/* ===== 50-plugins/abyss-statistics.css ===== */
+
+/* ABYSS TASKS — STATISTICS / ANALYSIS
+   Verified against task-statistics and the live 11-view interface.
+   Frames belong to filters and paging actions. Navigation, chart keys,
+   captions and evidence are content controls, like the rest of Abyss Tasks.
+   Runtime captures: .docs/abyss-statistics-20261009/. */
+
+/* These navigation entries are buttons, unlike the task browser's divs.
+   Override 40-chrome.css including its hover/active frame (0,3,1). */
+body.theme-dark .abyss-left--statistics button.abyss-left-item {
+  border: 0;
+  border-radius: var(--b16-radius-control);
+  box-shadow: none;
+  background: transparent;
+  color: var(--b16-text-muted);
+
+  &:hover {
+    background: var(--b16-surface-2);
+    color: var(--b16-text-normal);
+  }
+
+  &.is-active {
+    background: var(--b16-surface-3);
+    color: var(--b16-text-normal);
+  }
+}
+
+/* Match the adjacent information tool and the plugin's quiet rail tools. */
+body.theme-dark .abyss-statistics button.abyss-compact-pane-button {
+  border-color: transparent;
+  box-shadow: none;
+  background: transparent;
+  color: var(--b16-text-muted);
+
+  &:hover {
+    background: var(--b16-surface-1);
+    color: var(--b16-text-normal);
+  }
+
+  /* Preserve the plugin's expanded-pane indicator without adding a frame. */
+  &[aria-expanded='true'] {
+    color: var(--b16-accent-link);
+  }
+}
+
+/* The plugin's two-column header squeezes the title to 24px in a 380px
+   pane. Wrap the controls when their measured width no longer fits.
+   CompactPaneAccess observes the header height for its overlay offset. */
+.theme-dark .abyss-statistics > .abyss-center-header {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.theme-dark .abyss-statistics .abyss-center-title {
+  flex: 1 0 auto;
+  max-inline-size: 100%;
+}
+
+.theme-dark .abyss-statistics .abyss-center-controls {
+  flex-wrap: wrap;
+  max-inline-size: 100%;
+  margin-inline-start: auto;
+}
+
+.theme-dark .abyss-statistics-controls select.dropdown {
+  border: 1px solid var(--b16-border-normal);
+  border-radius: var(--b16-radius-control);
+  background-color: transparent;
+  box-shadow: none;
+
+  &:hover {
+    background-color: var(--b16-surface-1);
+    border-color: var(--b16-border-strong);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--b16-accent-link);
+    outline-offset: 2px;
+  }
+}
+
+/* The same regular, muted UI step as comment timestamps and Upcoming dates.
+   Chart marks, series colours, axis measurement and numeric scales remain
+   plugin-owned; only the surrounding reading hierarchy is adjusted. */
+.theme-dark
+  :is(
+    .abyss-statistics-context,
+    .abyss-statistics-metric-label,
+    .abyss-statistics-legend,
+    .abyss-statistics-intensity,
+    .abyss-statistics-evidence-count
+  ) {
+  font-size: var(--b16-font-ui-s);
+  line-height: var(--b16-label-line-height);
+  color: var(--b16-text-muted);
+}
+
+.theme-dark .abyss-statistics-section-heading {
+  margin-block-end: var(--size-4-3);
+}
+
+.theme-dark .abyss-statistics-section-heading h3 {
+  margin-block-end: var(--size-4-1);
+}
+
+/* Evidence is interface content; an unqualified h3 inherited the note's
+   serif heading family in the live drilldown. */
+.theme-dark .abyss-statistics-evidence-header h3 {
+  font-family: var(--font-interface);
+  font-size: var(--b16-font-ui-m);
+  font-weight: var(--font-semibold);
+  color: var(--b16-text-normal);
+}
+
+.theme-dark .abyss-statistics-metrics {
+  align-items: flex-start;
+  column-gap: var(--size-4-6);
+  margin-block-start: var(--size-4-2);
+}
+
+/* Clickable and read-only totals share the same inset and alignment. */
+.theme-dark .abyss-statistics .abyss-statistics-metric {
+  padding: var(--size-2-1);
+  max-inline-size: 100%;
+}
+
+/* Match the specificity of the generic button state rules. The details
+   popover is a portal outside .abyss-panel-view and needs its own scope. */
+body.theme-dark
+  .abyss-statistics
+  button:is(.abyss-statistics-metric, .abyss-statistics-evidence-action),
+body.theme-dark
+  .abyss-statistics
+  :is(.abyss-statistics-legend, .abyss-statistics-chart-caption)
+  > button,
+body.theme-dark .abyss-popover.abyss-statistics-details button {
+  border: 0;
+  border-radius: var(--b16-radius-control);
+  box-shadow: none;
+  background: transparent;
+  color: inherit;
+  max-inline-size: 100%;
+
+  &:not(:disabled):hover {
+    background: var(--b16-surface-1);
+    color: var(--b16-text-normal);
+  }
+
+  &:not(:disabled):active {
+    background: var(--b16-surface-2);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--b16-accent-link);
+    outline-offset: -2px;
+  }
+}
+
+body.theme-dark .abyss-popover.abyss-statistics-details button:not(:disabled):hover {
+  background: var(--b16-surface-2);
+}
+
+.theme-dark .abyss-statistics-details h4 {
+  margin-block-start: var(--size-4-4);
+}
+
+.theme-dark .abyss-statistics-details p {
+  font-size: var(--b16-font-ui-s);
+  color: var(--b16-text-muted);
+}
+
+/* Ranking buttons overlay the SVG. An opaque hover on the entire button
+   hides its bar. Highlight only the two text hit areas and preserve the
+   plugin's 32px pitch and measured label/value widths. */
+body.theme-dark .abyss-statistics button.abyss-statistics-row-button {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+
+  &:is(:hover, :focus-visible) :is(.abyss-statistics-row-label, .abyss-statistics-row-value) {
+    background: var(--b16-surface-1);
+  }
+
+  &:focus-visible {
+    outline-offset: -2px;
+  }
+}
+
+/* The chart library exposes tooltip materials through public properties.
+   Its portal otherwise resolves background-secondary on the document body. */
+.theme-dark .abyss-statistics-tooltip {
+  --ts-chart-tooltip-background: var(--b16-surface-2);
+  --ts-chart-tooltip-border: 1px solid var(--b16-border-strong);
+  --ts-chart-tooltip-border-radius: var(--b16-radius-control);
+}
+
 /* ===== 50-plugins/abyss-tasks.css ===== */
 
 /* ABYSS TASKS
