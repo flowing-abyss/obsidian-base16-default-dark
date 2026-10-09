@@ -6119,37 +6119,52 @@ body.theme-dark
   --bases-charts-accent: var(--interactive-accent);
 }
 
-/* ECharts tooltip outer container (inline styles need !important to override).
-   ECharts injects the tooltip as an unnamed div wrapping .bases-chart-tooltip,
-   always as a direct child of .bases-charts-plot-grid-item — scoping :has()
-   to that rare, chart-only container keeps the selector cheap (not a global
-   div:has() that Chromium must re-check on every DOM mutation app-wide). */
-.theme-dark .bases-charts-plot-grid-item > div:has(> .bases-chart-tooltip) {
-  background-color: var(--b16-surface-1) !important;
-  border-color: var(--b16-border-normal) !important;
-  box-shadow: 0 2px 10px color-mix(in srgb, black 50%, transparent) !important;
-}
-
-/* Tooltip inner container */
+/* Chart Views 0.4.1 portals the tooltip host to body. The named inner
+   container now owns its material; the old grid-child wrapper, divider,
+   and interactive file rows no longer exist (source and live DOM verified). */
 .theme-dark .bases-chart-tooltip {
-  color: var(--text-normal);
+  color: var(--b16-text-normal);
+  background: var(--b16-surface-2);
+  border-color: var(--b16-border-normal);
+  box-shadow: none;
 }
 
-/* Replace hardcoded #999 secondary text with theme muted color */
-.theme-dark .bases-chart-tooltip-value,
 .theme-dark .bases-chart-tooltip-file-value {
-  color: var(--text-muted);
+  color: var(--b16-text-muted);
   font-size: var(--b16-font-ui-s);
 }
 
-/* Replace hardcoded rgba(128,128,128,0.2) divider */
-.theme-dark .bases-chart-tooltip-divider {
-  background: var(--b16-border-normal);
+/* These are toolbar controls and list rows, not standalone action buttons.
+   Native Bases uses div.text-icon-button; Chart Views uses real buttons,
+   so the generic theme button border and state rules otherwise win.
+   The element-qualified scope also wins against their 0-3-1 state rules. */
+body.theme-dark .bases-chart-toolbar button.bases-chart-axis-button,
+body.theme-dark .bases-chart-axis-panel button.bases-chart-property-option,
+body.theme-dark .bases-chart-files-modal button.bases-chart-file-open {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
 }
 
-/* Replace hardcoded rgba(128,128,128,0.15) hover */
-.theme-dark .bases-chart-tooltip-file:hover {
+body.theme-dark .bases-chart-toolbar button.bases-chart-axis-button {
+  color: var(--b16-text-muted);
+  border-radius: var(--b16-radius-s);
+  line-height: var(--line-height-tight);
+}
+
+body.theme-dark
+  .bases-chart-toolbar
+  button.bases-chart-axis-button:is(:hover, :focus-visible, [aria-expanded='true']),
+body.theme-dark
+  .bases-chart-axis-panel
+  button.bases-chart-property-option:is(:hover, :focus-visible, [aria-pressed='true']) {
   background: var(--b16-surface-2);
+}
+
+/* Hover belongs to the whole table row. Keep the filename cell flush with
+   its neighbours; the generic keyboard focus outline remains visible. */
+body.theme-dark .bases-chart-files-modal button.bases-chart-file-open {
+  border-radius: 0;
 }
 
 /* Central data tables and boards, with a quieter navigation variant in
