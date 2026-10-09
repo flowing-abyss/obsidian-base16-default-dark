@@ -4891,7 +4891,8 @@ input[type='text'][type]:not(.metadata-input, .metadata-property-key-input) {
    Verified against task-statistics and the live 11-view interface.
    Frames belong to filters and paging actions. Navigation, chart keys,
    captions and evidence are content controls, like the rest of Abyss Tasks.
-   Runtime captures: .docs/abyss-statistics-20261009/. */
+   Runtime captures: .docs/abyss-statistics-20261009/ and
+   .docs/abyss-statistics-followup-20261009/. */
 
 /* These navigation entries are buttons, unlike the task browser's divs.
    Override 40-chrome.css including its hover/active frame (0,3,1). */
@@ -4950,7 +4951,8 @@ body.theme-dark .abyss-statistics button.abyss-compact-pane-button {
   margin-inline-start: auto;
 }
 
-.theme-dark .abyss-statistics-controls select.dropdown {
+/* Period and project status are the same kind of filter. */
+.theme-dark :is(.abyss-statistics-controls, .abyss-statistics-actions) select.dropdown {
   border: 1px solid var(--b16-border-normal);
   border-radius: var(--b16-radius-control);
   background-color: transparent;
@@ -4964,6 +4966,31 @@ body.theme-dark .abyss-statistics button.abyss-compact-pane-button {
   &:focus-visible {
     outline: 2px solid var(--b16-accent-link);
     outline-offset: 2px;
+  }
+}
+
+/* The native scope picker is a .prompt portal. Its pressed tabs need the
+   same specificity as 40-chrome.css button states to stay frameless. */
+.theme-dark .abyss-statistics-scope-tabs > button[aria-pressed] {
+  border: 0;
+  border-radius: var(--b16-radius-control);
+  box-shadow: none;
+  background: transparent;
+  color: var(--b16-text-muted);
+
+  &:hover {
+    background: var(--b16-surface-2);
+    color: var(--b16-text-normal);
+  }
+
+  &[aria-pressed='true'] {
+    background: var(--b16-surface-3);
+    color: var(--b16-text-normal);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--b16-accent-link);
+    outline-offset: -2px;
   }
 }
 
@@ -4981,14 +5008,6 @@ body.theme-dark .abyss-statistics button.abyss-compact-pane-button {
   font-size: var(--b16-font-ui-s);
   line-height: var(--b16-label-line-height);
   color: var(--b16-text-muted);
-}
-
-.theme-dark .abyss-statistics-section-heading {
-  margin-block-end: var(--size-4-3);
-}
-
-.theme-dark .abyss-statistics-section-heading h3 {
-  margin-block-end: var(--size-4-1);
 }
 
 /* Evidence is interface content; an unqualified h3 inherited the note's
@@ -5012,16 +5031,14 @@ body.theme-dark .abyss-statistics button.abyss-compact-pane-button {
   max-inline-size: 100%;
 }
 
-/* Match the specificity of the generic button state rules. The details
-   popover is a portal outside .abyss-panel-view and needs its own scope. */
+/* Match the specificity of the generic button state rules. */
 body.theme-dark
   .abyss-statistics
   button:is(.abyss-statistics-metric, .abyss-statistics-evidence-action),
 body.theme-dark
   .abyss-statistics
   :is(.abyss-statistics-legend, .abyss-statistics-chart-caption)
-  > button,
-body.theme-dark .abyss-popover.abyss-statistics-details button {
+  > button {
   border: 0;
   border-radius: var(--b16-radius-control);
   box-shadow: none;
@@ -5042,14 +5059,6 @@ body.theme-dark .abyss-popover.abyss-statistics-details button {
     outline: 2px solid var(--b16-accent-link);
     outline-offset: -2px;
   }
-}
-
-body.theme-dark .abyss-popover.abyss-statistics-details button:not(:disabled):hover {
-  background: var(--b16-surface-2);
-}
-
-.theme-dark .abyss-statistics-details h4 {
-  margin-block-start: var(--size-4-4);
 }
 
 .theme-dark .abyss-statistics-details p {
