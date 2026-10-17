@@ -5648,11 +5648,16 @@ body.theme-dark
   border-radius: 0;
 }
 
-.theme-dark
-  .abyss-cal-nav-left
-  button:is(.abyss-cal-nav-btn, .abyss-cal-nav-month, .abyss-cal-nav-year)::before {
-  inset-block: 0;
-  background: var(--b16-border-normal);
+/* The plugin's absolute ::before divider consumes a pixel of the start
+   padding. A real border preserves equal space on both sides of each
+   label, including the plugin's narrower responsive padding. */
+body.theme-dark .abyss-cal-nav-left button:is(.abyss-cal-nav-month, .abyss-cal-nav-year),
+body.theme-dark .abyss-cal-nav-left > button.abyss-cal-nav-btn:last-child {
+  border-inline-start: 1px solid var(--b16-border-normal);
+
+  &::before {
+    content: none;
+  }
 }
 
 body.theme-dark .abyss-panel-view button:is(.abyss-cal-nav-month, .abyss-cal-nav-year) {
