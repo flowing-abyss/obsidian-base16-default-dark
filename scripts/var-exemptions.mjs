@@ -37,6 +37,11 @@ export const VAR_EXEMPTIONS = [
       "Abyss Tasks projectStatusPresentation.ts sets this per status from the user's configured colour. Verified inline on live .abyss-project-status-filter elements; preserve the plugin's badge/text/dot contract rather than replacing its palette.",
   },
   {
+    name: "--abyss-toolbar-control-size",
+    reason:
+      "Abyss Tasks 2.1.2 styles.css declares this on its panel and overrides it in phone toolbars. Verified in desktop and Android WebView computed styles: 30px and 36px respectively. Sharing the plugin's value keeps segmented buttons aligned with its search fields; --input-height is the fallback for earlier versions.",
+  },
+  {
     name: "--callout-color",
     reason:
       "Obsidian declares this RGB-triplet input on each rendered .callout; it is scoped to the component rather than present in the captured root-variable snapshot.",

@@ -5203,24 +5203,44 @@ body.theme-dark
 }
 
 body.theme-dark .abyss-panel-view button.abyss-view-state-btn--active {
-  color: var(--b16-accent-link);
+  color: var(--b16-text-normal);
+  background: var(--b16-surface-1);
 }
 
-/* Project sort/group is a framed toolbar action, matching the adjacent
-   segmented control. This follows the equal-specificity navigation reset. */
-body.theme-dark .abyss-project-table-controls button.abyss-view-state-btn {
+/* Sort/group and compact pane toggles share the search field's frame.
+   The panel + controls scope beats the plugin's phone-only filled-button
+   rule (body.is-phone .abyss-panel-view :is(...), 0,3,2). */
+body.theme-dark
+  .abyss-panel-view
+  .abyss-center-controls
+  button:is(.abyss-view-state-btn, .abyss-compact-pane-button) {
   border: 1px solid var(--b16-border-normal);
   border-radius: var(--b16-radius-control);
+  box-shadow: none;
+  color: var(--b16-text-muted);
+  background: transparent;
+
+  &:is(:hover, .abyss-view-state-btn--active) {
+    background: var(--b16-surface-1);
+    color: var(--b16-text-normal);
+  }
+
+  &[aria-expanded='true'] {
+    border-color: var(--b16-border-strong);
+    background: var(--b16-surface-2);
+    color: var(--b16-text-normal);
+  }
 }
 
 /* The plugin owns the non-default-state class. Give its small dot a clean
-   knockout so it stays distinct from the glyph and hover material. */
-body.theme-dark .abyss-project-table-controls button.abyss-view-state-btn--active::after {
+   knockout so it stays distinct from the glyph and hover material.
+   Silver indicates a view preference; blue remains the keyboard/link cue. */
+body.theme-dark .abyss-panel-view button.abyss-view-state-btn--active::after {
   top: 3px;
   right: 3px;
   width: 5px;
   height: 5px;
-  background: var(--b16-accent-link);
+  background: var(--b16-text-muted);
   box-shadow: 0 0 0 2px var(--b16-surface-0);
 }
 
@@ -5346,7 +5366,13 @@ body.theme-dark .abyss-panel-view button.abyss-project-timeline-group-header {
 
 /* Interface headings share the surrounding UI face rather than inheriting
    the document's serif heading family. Keep the user's UI size ramp. */
-.theme-dark :is(.abyss-projects-title, .abyss-center-title, .abyss-project-dashboard-title) {
+.theme-dark
+  :is(
+    .abyss-projects-title,
+    .abyss-center-title,
+    .abyss-project-dashboard-title,
+    .abyss-calendar-agenda-heading
+  ) {
   font-family: var(--font-interface);
   font-size: var(--b16-font-ui-l);
   font-weight: var(--font-semibold);
@@ -5569,8 +5595,9 @@ body.theme-dark
   background: var(--b16-surface-2);
 }
 
-/* A joined segmented control, flush with the 30px toolbar line. Each
-   divider is drawn once; no overflow clip can hide keyboard focus. */
+/* Joined controls fill the plugin's shared toolbar size (30px desktop,
+   36px phone). Removing the tray padding also requires restoring the
+   buttons' height: the plugin otherwise subtracts 4px from each cell. */
 .theme-dark :is(.abyss-cal-view-switcher, .abyss-project-overview-switcher) {
   padding: 0;
   gap: 0;
@@ -5581,6 +5608,8 @@ body.theme-dark
 /* The generic button rule above removes frames on standalone tools. These
    adjacent mode buttons instead share one outer frame and single dividers. */
 body.theme-dark .abyss-panel-view button:is(.abyss-cal-view-btn, .abyss-project-overview-mode) {
+  box-sizing: border-box;
+  block-size: var(--abyss-toolbar-control-size, var(--input-height));
   border: 1px solid var(--b16-border-normal);
   border-inline-end-width: 0;
   border-radius: 0;
@@ -5594,6 +5623,94 @@ body.theme-dark .abyss-panel-view button:is(.abyss-cal-view-btn, .abyss-project-
     border-start-end-radius: var(--b16-radius-control);
     border-end-end-radius: var(--b16-radius-control);
     border-inline-end-width: 1px;
+  }
+}
+
+/* Project glyph cells are square, including the painted frame. */
+.theme-dark .abyss-projects-table button.abyss-project-overview-mode {
+  inline-size: var(--abyss-toolbar-control-size, var(--input-height));
+}
+
+/* The date stepper has the same quiet outline as the view switcher.
+   Keep the plugin's transparent 44px hit regions and overflow behavior. */
+.theme-dark .abyss-cal-nav-left {
+  padding: 0;
+  border: 1px solid var(--b16-border-normal);
+  border-radius: var(--b16-radius-control);
+  background: transparent;
+}
+
+body.theme-dark
+  .abyss-cal-nav-left
+  button:is(.abyss-cal-nav-btn, .abyss-cal-nav-month, .abyss-cal-nav-year) {
+  block-size: calc(var(--abyss-toolbar-control-size, var(--input-height)) - 2px);
+  border: 0;
+  border-radius: 0;
+}
+
+.theme-dark
+  .abyss-cal-nav-left
+  button:is(.abyss-cal-nav-btn, .abyss-cal-nav-month, .abyss-cal-nav-year)::before {
+  inset-block: 0;
+  background: var(--b16-border-normal);
+}
+
+body.theme-dark .abyss-panel-view button:is(.abyss-cal-nav-month, .abyss-cal-nav-year) {
+  font-size: var(--font-ui-small);
+  font-weight: var(--font-medium);
+  font-variant-numeric: tabular-nums;
+
+  &[aria-expanded='true'] {
+    background: var(--b16-surface-2);
+    color: var(--b16-text-normal);
+  }
+}
+
+body.theme-dark .abyss-panel-view button.abyss-cal-nav-month {
+  color: var(--b16-text-normal);
+}
+
+/* Today uses the same box and baseline as Day/Week/Month. */
+body.theme-dark .abyss-cal-nav button.abyss-cal-nav-today {
+  border: 1px solid var(--b16-border-normal);
+}
+
+/* Picker portals keep light text on neutral selection material. The
+   plugin's active rule pairs an accent fill with --text-on-accent; the
+   generic theme button rule replaces only that fill, leaving black text.
+   Match the verified picker classes and define both sides together. */
+body.theme-dark
+  :is(.abyss-month-picker, .abyss-year-picker)
+  button:is(.abyss-month-picker-btn, .abyss-year-picker-btn) {
+  border: 1px solid var(--b16-border-normal);
+  border-radius: var(--b16-radius-control);
+  background: transparent;
+  color: var(--b16-text-muted);
+  font-variant-numeric: tabular-nums;
+
+  &:hover {
+    background: var(--b16-surface-2);
+    color: var(--b16-text-normal);
+  }
+
+  &.is-active {
+    background: var(--b16-surface-3);
+    border-color: var(--b16-border-strong);
+    color: var(--b16-text-normal);
+    font-weight: var(--font-semibold);
+  }
+}
+
+/* The plugin's phone search rule paints border color as a surface and
+   hardcodes an 8px radius; Obsidian leaves only a bottom border. Restore
+   the desktop field's full frame without changing the shared height. */
+body.theme-dark .abyss-panel-view .abyss-center-controls input.abyss-center-search {
+  border: 1px solid var(--b16-border-normal);
+  border-radius: var(--b16-radius-control);
+  background: var(--b16-surface-0);
+
+  &:focus {
+    border-color: var(--b16-accent-link);
   }
 }
 
