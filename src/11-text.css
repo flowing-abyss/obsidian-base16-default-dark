@@ -41,12 +41,15 @@
    characters create more syntax spans: `#category/knowledge_base` is emitted
    as `#` + `category/knowledge_` + `base`. Styling each span as a complete
    chip makes one tag look like two adjacent tags. Give every standalone span
-   a symmetric chip, then remove only the touching edges from every contiguous
-   run of hashtag spans, regardless of how many fragments CodeMirror creates.
+   a symmetric chip, then remove touching edges only when the next span
+   continues the same tag. CSS sibling combinators ignore whitespace text
+   nodes, so `.cm-hashtag-begin` must stop the join between separate tags.
 
    Off the cursor line the sigil can be swallowed by a widget and the word
    span can be the only `.cm-hashtag` on the line. Because neither adjacency
    rule matches that standalone span, it correctly keeps both outer caps.
+   The :has() look-ahead checks for a following continuation before removing
+   the right cap; :where() keeps the boundary check from adding specificity.
 
    Specificity note: app.css addresses these as `.cm-s-obsidian
    span.cm-hashtag-end` (0,2,1), so a plain `.theme-dark .cm-hashtag`
@@ -58,13 +61,13 @@
   padding: 0.1em 0.4em;
 }
 
-.theme-dark .cm-s-obsidian span.cm-hashtag:has(+ span.cm-hashtag) {
+.theme-dark .cm-s-obsidian span.cm-hashtag:has(+ span.cm-hashtag:where(:not(.cm-hashtag-begin))) {
   padding-right: 0;
   border-start-end-radius: 0;
   border-end-end-radius: 0;
 }
 
-.theme-dark .cm-s-obsidian span.cm-hashtag + span.cm-hashtag {
+.theme-dark .cm-s-obsidian span.cm-hashtag + span.cm-hashtag:where(:not(.cm-hashtag-begin)) {
   padding-left: 0;
   border-start-start-radius: 0;
   border-end-start-radius: 0;
