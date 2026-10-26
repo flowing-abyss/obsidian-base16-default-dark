@@ -107,7 +107,7 @@ body.theme-dark
     .abyss-cal-nav-month,
     .abyss-cal-nav-year,
     .abyss-cal-nav-today,
-    .abyss-cal-view-btn,
+    :where(.abyss-cal-nav) .abyss-cal-view-btn,
     .abyss-view-mode,
     .abyss-view-state-btn,
     .abyss-projects-new,
@@ -327,16 +327,12 @@ body.theme-dark .abyss-panel-view button.abyss-project-timeline-group-header {
   letter-spacing: normal;
 }
 
-/* Upcoming dates follow comment timestamps: regular metadata weight with
-   the shared UI size, muted color and casing from the labels above.
-   taskSearchOrganization.ts creates task-daily rows only for Upcoming
-   grouped by date; neither headers nor the list expose that mode directly.
-   :has() is needed to scope via the verified data-row-key on those cards.
-   The renderer puts label and count in one text node separated by two
-   spaces; preserve that separation without preventing long labels wrapping. */
+/* Upcoming dates follow comment timestamps. Group headers expose the same
+   stable row keys as task cards, so virtualized task mounts do not control
+   header styling. Other grouping modes retain their own presentation. */
 .theme-dark
-  :where(.abyss-task-list-surface:has(.abyss-task-card[data-row-key^='["task-daily",']))
-  .abyss-group-header {
+  :where(.abyss-task-list-surface)
+  .abyss-group-header:where([data-row-key^='["upcoming-date",']) {
   padding-inline: var(--size-4-3);
   padding-bottom: var(--size-4-1);
   font-weight: var(--b16-chrome-weight);
@@ -534,7 +530,7 @@ body.theme-dark
    Joined controls fill the plugin's toolbar size (30px desktop, 36px phone).
    Removing the tray padding also requires restoring the buttons' height:
    the plugin otherwise subtracts 4px from each cell. */
-.theme-dark :is(.abyss-cal-view-switcher, .abyss-view-switcher) {
+.theme-dark :is(:where(.abyss-cal-nav) .abyss-cal-view-switcher, .abyss-view-switcher) {
   padding: 0;
   gap: 0;
   background: transparent;
@@ -543,7 +539,9 @@ body.theme-dark
 
 /* The generic button rule above removes frames on standalone tools. These
    adjacent mode buttons instead share one outer frame and single dividers. */
-body.theme-dark .abyss-panel-view button:is(.abyss-cal-view-btn, .abyss-view-mode) {
+body.theme-dark
+  .abyss-panel-view
+  button:is(:where(.abyss-cal-nav) .abyss-cal-view-btn, .abyss-view-mode) {
   box-sizing: border-box;
   block-size: var(--abyss-toolbar-control-size, var(--input-height));
   border: 1px solid var(--b16-border-normal);
@@ -559,6 +557,35 @@ body.theme-dark .abyss-panel-view button:is(.abyss-cal-view-btn, .abyss-view-mod
     border-start-end-radius: var(--b16-radius-control);
     border-end-end-radius: var(--b16-radius-control);
     border-inline-end-width: 1px;
+  }
+}
+
+/* Timeline periods share the calendar button class but fill a two-tier axis.
+   Keep toolbar sizing scoped above. The generic button rules in 40-chrome.css
+   also erase the plugin's selected-period material and inset top marker;
+   restore those here without changing calendar or task/project view modes. */
+body.theme-dark .abyss-project-timeline-scale-control > button.abyss-cal-view-btn {
+  block-size: 100%;
+  border: 1px solid var(--b16-border-normal);
+  border-inline-end-width: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--b16-text-muted);
+
+  &:last-child {
+    border-inline-end-width: 1px;
+  }
+
+  &:hover {
+    background: var(--b16-surface-2);
+    color: var(--b16-text-normal);
+  }
+
+  &.is-active {
+    background: color-mix(in srgb, var(--b16-text-normal) 12%, var(--b16-surface-1));
+    box-shadow: inset 0 2px 0 var(--b16-accent-link);
+    color: var(--b16-text-normal);
   }
 }
 

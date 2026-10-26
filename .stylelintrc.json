@@ -1,6 +1,14 @@
 {
   "extends": ["stylelint-config-standard"],
   "plugins": ["stylelint-declaration-block-no-ignored-properties"],
+  "overrides": [
+    {
+      "files": ["src/50-plugins/abyss-tasks.css"],
+      "rules": {
+        "selector-pseudo-class-disallowed-list": ["has"]
+      }
+    }
+  ],
   "rules": {
     "alpha-value-notation": "number",
     "color-function-notation": "legacy",
