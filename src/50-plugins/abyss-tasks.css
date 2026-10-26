@@ -77,7 +77,7 @@ body.theme-dark
     .abyss-cal-nav-year,
     .abyss-cal-nav-today,
     .abyss-cal-view-btn,
-    .abyss-project-overview-mode,
+    .abyss-view-mode,
     .abyss-view-state-btn,
     .abyss-projects-new,
     .abyss-mg-week-btn
@@ -499,10 +499,11 @@ body.theme-dark
   background: var(--b16-surface-2);
 }
 
-/* Joined controls fill the plugin's shared toolbar size (30px desktop,
-   36px phone). Removing the tray padding also requires restoring the
-   buttons' height: the plugin otherwise subtracts 4px from each cell. */
-.theme-dark :is(.abyss-cal-view-switcher, .abyss-project-overview-switcher) {
+/* Tasks and projects share ViewModeSwitcher and its abyss-view-* classes.
+   Joined controls fill the plugin's toolbar size (30px desktop, 36px phone).
+   Removing the tray padding also requires restoring the buttons' height:
+   the plugin otherwise subtracts 4px from each cell. */
+.theme-dark :is(.abyss-cal-view-switcher, .abyss-view-switcher) {
   padding: 0;
   gap: 0;
   background: transparent;
@@ -511,7 +512,7 @@ body.theme-dark
 
 /* The generic button rule above removes frames on standalone tools. These
    adjacent mode buttons instead share one outer frame and single dividers. */
-body.theme-dark .abyss-panel-view button:is(.abyss-cal-view-btn, .abyss-project-overview-mode) {
+body.theme-dark .abyss-panel-view button:is(.abyss-cal-view-btn, .abyss-view-mode) {
   box-sizing: border-box;
   block-size: var(--abyss-toolbar-control-size, var(--input-height));
   border: 1px solid var(--b16-border-normal);
@@ -530,8 +531,8 @@ body.theme-dark .abyss-panel-view button:is(.abyss-cal-view-btn, .abyss-project-
   }
 }
 
-/* Project glyph cells are square, including the painted frame. */
-.theme-dark .abyss-projects-table button.abyss-project-overview-mode {
+/* Task and project glyph cells are square, including the painted frame. */
+.theme-dark .abyss-center-controls button.abyss-view-mode {
   inline-size: var(--abyss-toolbar-control-size, var(--input-height));
 }
 
