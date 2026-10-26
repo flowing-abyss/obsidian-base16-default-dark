@@ -42,6 +42,9 @@ body.theme-dark
     .abyss-project-timeline-group-header,
     .abyss-project-back,
     .abyss-project-open-btn,
+    .abyss-project-dashboard-title,
+    .abyss-project-dashboard-date,
+    .abyss-project-dashboard-property-label,
     .abyss-dep-badge-body,
     .abyss-dep-badge-add,
     .abyss-time-badge-body,
@@ -58,6 +61,34 @@ body.theme-dark
 
 body.theme-dark .abyss-panel-view button.abyss-project-table-name:hover {
   color: var(--b16-accent-link);
+}
+
+/* Obsidian's flex button centers the text beyond both edges when narrow.
+   This text-only title needs a block box for the plugin's ellipsis to work.
+   Keep specificity below body.is-phone button.abyss-project-dashboard-title,
+   which hides the duplicate title under the phone's native view header. */
+.theme-dark button.abyss-project-dashboard-title {
+  display: block;
+}
+
+/* Project identity and metadata are inline controls. Keep their hover cue
+   after the content reset; property labels use the whole row's hover. */
+body.theme-dark
+  .abyss-panel-view
+  button:is(.abyss-project-dashboard-title, .abyss-project-dashboard-date):hover {
+  background: var(--b16-surface-1);
+}
+
+body.theme-dark
+  .abyss-panel-view
+  button:is(.abyss-project-dashboard-date, .abyss-project-dashboard-property-label) {
+  color: var(--b16-text-muted);
+}
+
+/* Property-value removal is a small inline action, not a framed button.
+   Keep the plugin's tag/value backgrounds and reveal-on-hover behavior. */
+body.theme-dark .abyss-project-dashboard-properties button.abyss-project-table-value-remove {
+  border: 0;
 }
 
 /* The content-control reset above must not erase destructive feedback. */
