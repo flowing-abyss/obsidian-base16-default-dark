@@ -6325,6 +6325,13 @@ body.theme-dark
   font-size: var(--b16-font-ui-s);
 }
 
+/* Chart Views 1.3.1 uses buttons for group legend labels. Override the
+   generic button frame from 40-chrome.css, including its interaction states;
+   the existing keyboard focus outline and series colors stay intact. */
+.theme-dark .bases-charts-plot-legend button.bases-chart-group-legend-button {
+  border: 0;
+}
+
 /* These are toolbar controls and list rows, not standalone action buttons.
    Native Bases uses div.text-icon-button; Chart Views uses real buttons,
    so the generic theme button border and state rules otherwise win.
