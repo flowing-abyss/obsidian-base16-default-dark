@@ -764,6 +764,13 @@ body.theme-dark
   box-shadow: none;
 }
 
+/* The text-input rule in 41-modals.css replaces only the bottom focus edge
+   with a neutral border. Match its specificity and restore that edge here;
+   the value picker keeps its own field size and overflow behavior. */
+.theme-dark input.abyss-project-value-picker-search:focus {
+  border-bottom-color: var(--b16-accent-link);
+}
+
 body.theme-dark .abyss-popover button.abyss-popover-clear-icon-btn {
   border: 0;
   box-shadow: none;
