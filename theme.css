@@ -6070,12 +6070,11 @@ body.theme-dark
   text-overflow: clip;
 }
 
-/* The invisible edit flair and its gap reserve 26px, shrinking a one-glyph
-   link to zero in a 40px cell. Let the label keep its width; the existing
-   max-width and cell overflow still bound long links. The flair remains
-   available wherever it fits, and native cell editing is unchanged. */
+/* The edit flair and its gap can shrink a one-glyph link to zero in a narrow
+   cell. Reserve one font-relative line box, capped to the content width.
+   Keep native shrinking so long labels still leave room for the edit flair. */
 .bases-table-container:not(.mod-multiline) .metadata-link-inner {
-  flex-shrink: 0;
+  min-width: min(1lh, 100%);
 }
 
 /* Native single-line, unfocused multi-select containers shrink to content.
