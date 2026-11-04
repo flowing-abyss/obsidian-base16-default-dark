@@ -37,6 +37,13 @@
   --kplex-control-border: var(--b16-border-normal);
 }
 
+/* Obsidian's .workspace-leaf-content .view-content adds 12px above the
+   plugin. The toolbar already supplies its own inset; no K-Plex row or
+   control occupies this gap. Keep the host's other insets intact. */
+.theme-dark .kplex-view-host {
+  padding-block-start: 0;
+}
+
 /* Toolbar ------------------------------------------------------------------ */
 .theme-dark .kplex-top-stack,
 .theme-dark .kplex-topbar {

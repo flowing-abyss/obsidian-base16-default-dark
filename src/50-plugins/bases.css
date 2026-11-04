@@ -15,6 +15,21 @@
    hover translation previously made long values scroll under the pointer;
    they add unnecessary work to dense, virtualized tables. */
 
+/* Native Bases hides the empty-text placeholder with a transparent colour,
+   but its single-line text-overflow rule still paints a visible ellipsis in
+   narrow cells. Clip only empty fields; keep their geometry and editing. */
+.theme-dark .bases-table-container .metadata-input-longtext:empty {
+  text-overflow: clip;
+}
+
+/* The invisible edit flair and its gap reserve 26px, shrinking a one-glyph
+   link to zero in a 40px cell. Let the label keep its width; the existing
+   max-width and cell overflow still bound long links. The flair remains
+   available wherever it fits, and native cell editing is unchanged. */
+.bases-table-container:not(.mod-multiline) .metadata-link-inner {
+  flex-shrink: 0;
+}
+
 /* Native single-line, unfocused multi-select containers shrink to content.
    The pill's max-width: calc(100% - gap - 1ch) then subtracts input space
    again, clipping even short labels inside wide cells (Ahrens: 68px for
