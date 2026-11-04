@@ -7067,15 +7067,24 @@ body.theme-dark .kplex-index-status.is-updating {
   background: var(--b16-border-normal);
 }
 
-/* Toggle buttons and the active filter trigger share the theme's pressed
-   step. Current Find, layout and Sidecar controls expose aria-pressed. */
+/* Toggle buttons share the theme's pressed step. Current Find, layout and
+   Sidecar controls expose aria-pressed. */
 .theme-dark .kplex-topbar button.is-on,
 .theme-dark .kplex-find button[aria-pressed='true'],
 .theme-dark button.kplex-layout-toggle[aria-pressed='true'],
-.theme-dark .kplex-sidecar-controls button[aria-pressed='true'],
-.theme-dark .kplex-filter.is-active .kplex-filter-trigger {
+.theme-dark .kplex-sidecar-controls button[aria-pressed='true'] {
   color: var(--b16-text-strong);
   background: var(--b16-surface-2);
+  border-color: var(--b16-border-strong);
+}
+
+/* is-active describes the view/filter settings even with the menu closed.
+   Keep the toolbar's outline treatment, with a brighter border and icon
+   for that state. :where() matches the native active rule's specificity
+   while letting the shared button hover, press and focus rules win. */
+.theme-dark .kplex-filter.is-active :where(.kplex-filter-trigger) {
+  color: var(--b16-text-strong);
+  background: transparent;
   border-color: var(--b16-border-strong);
 }
 
