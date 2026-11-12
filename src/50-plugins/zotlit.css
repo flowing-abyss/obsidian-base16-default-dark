@@ -1,0 +1,94 @@
+/* ZotLit library. Semantic hooks verified against the live library DOM.
+ * Keep tree indentation, responsive panes and plugin state colours intact.
+ * Scope overrides to the library, leaving citations and PDF tools alone. */
+.zt-library-view button:is(.zt-query-toolbar-button, [data-library-card-action]) {
+  min-height: 30px;
+  height: auto;
+  padding: 5px 10px;
+  gap: 6px;
+  border: 1px solid var(--b16-border-normal);
+  border-radius: var(--b16-radius-control);
+  background: var(--b16-surface-1);
+  color: var(--b16-text-normal);
+  box-shadow: none;
+  font-size: var(--font-ui-small);
+  font-weight: var(--font-medium);
+  line-height: 1.4;
+}
+
+.zt-library-view
+  button:is(.zt-query-toolbar-button, [data-library-card-action]):hover:not(
+    :disabled,
+    [aria-disabled='true']
+  ) {
+  background: var(--b16-surface-2);
+  border-color: var(--b16-border-strong);
+}
+
+.zt-library-view button.zt-query-toolbar-button {
+  background: transparent;
+  border-color: transparent;
+  color: var(--b16-text-muted);
+}
+
+.zt-library-view button.zt-query-toolbar-button:is([data-active], [data-open]) {
+  background: var(--b16-surface-2);
+  color: var(--b16-text-strong);
+}
+
+/* These disclosure buttons are text actions, not native framed controls. */
+.zt-library-view button.zt-library-card-toggle {
+  height: auto;
+  min-height: 28px;
+  padding: 4px 6px;
+  gap: 4px;
+  border: 0;
+  border-radius: var(--b16-radius-control);
+  background: transparent;
+  box-shadow: none;
+  color: var(--b16-text-muted);
+  line-height: 1.4;
+}
+
+.zt-library-view button.zt-library-card-toggle:hover {
+  background: var(--b16-surface-2);
+  color: var(--b16-text-normal);
+  text-decoration: none;
+}
+
+.zt-library-view
+  button:is(
+    .zt-query-toolbar-button,
+    .zt-library-card-toggle,
+    [data-library-card-action]
+  ):focus-visible {
+  outline: 2px solid var(--background-modifier-border-focus);
+  outline-offset: 2px;
+}
+
+.zt-library-view [data-library-tree] nav {
+  padding: 12px 8px;
+  gap: 12px;
+}
+
+.zt-library-view [data-library-node] {
+  padding-block: 6px;
+}
+
+.zt-library-view [data-library-search-row] {
+  padding-block: 10px;
+  gap: 8px;
+}
+
+.zt-library-view [data-library-card] {
+  padding: 16px;
+}
+
+.zt-library-view [data-library-card-part='tags'] ul {
+  gap: 6px;
+}
+
+.zt-library-view [data-library-card-tag] {
+  border-radius: var(--b16-radius-control);
+  padding: 3px 7px;
+}
