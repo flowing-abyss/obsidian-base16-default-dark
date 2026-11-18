@@ -180,6 +180,6 @@ body.theme-dark .claudian-history-menu.claudian-nav-dropup-menu {
 }
 
 /* Add space inside the linked-content selector's existing frame. */
-.theme-dark .claudian-linked-content-selector-row button.claudian-linked-content-selector {
+body.theme-dark .claudian-container .claudian-welcome-linked-content .claudian-linked-content-selector-row > button.claudian-linked-content-selector {
   padding-inline: var(--size-4-2);
 }
