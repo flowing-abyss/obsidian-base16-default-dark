@@ -6815,6 +6815,41 @@ body.theme-dark
   color: var(--b16-status-error-text);
 }
 
+/* The global button frame boxes each option and history header control.
+   Keep the popover frame and Claudian's own selection and focus markers. */
+.theme-dark .claudian-model-popover button.claudian-toolbar-popover-option,
+.theme-dark .claudian-history-menu button:is(.claudian-history-section-toggle, .claudian-session-header-btn) {
+  border: 0;
+  box-shadow: none;
+  border-radius: var(--b16-radius-control);
+}
+
+.theme-dark .claudian-toolbar-popover.claudian-model-popover,
+body.theme-dark .claudian-history-menu.claudian-nav-dropup-menu {
+  background: var(--b16-surface-1);
+  border-radius: var(--b16-radius-s);
+}
+
+/* Obsidian buttons inherit nowrap. Allow the plugin's two-line description
+   clamp to work and reserve room for the effort labels and Fast switch. */
+.theme-dark .claudian-model-option .claudian-toolbar-popover-option-detail {
+  white-space: normal;
+}
+
+.theme-dark .claudian-model-parts {
+  flex-basis: min(9rem, 38%);
+}
+
+.theme-dark .claudian-model-popover button.claudian-model-provider-tab {
+  width: var(--claudian-model-provider-tab-size);
+}
+
+/* Size the four-row viewport for a label and two description lines at
+   Claudian's text scale. Its viewport-height cap still applies. */
+.theme-dark .claudian-toolbar-popover.claudian-model-popover {
+  --claudian-model-row-height: calc(44 * var(--claudian-font-px) + 9px);
+}
+
 /* ===== 50-plugins/excalidraw.css ===== */
 
 /* Excalidraw chrome. Use the plugin's Dynamic styling = None setting for
