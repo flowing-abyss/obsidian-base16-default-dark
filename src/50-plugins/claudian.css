@@ -146,8 +146,15 @@ body.theme-dark
 
 .theme-dark .claudian-toolbar-popover.claudian-model-popover,
 body.theme-dark .claudian-history-menu.claudian-nav-dropup-menu {
-  background: var(--b16-surface-1);
+  background: var(--b16-surface-0);
+  border-color: var(--b16-border-strong);
   border-radius: var(--b16-radius-s);
+}
+
+/* Keep small section labels and timestamps legible on the menu surface. */
+.theme-dark .claudian-model-popover .claudian-toolbar-popover-heading,
+.theme-dark .claudian-history-menu :is(.claudian-history-section-label, .claudian-history-item-date) {
+  color: var(--b16-text-muted);
 }
 
 /* Obsidian buttons inherit nowrap. Allow the plugin's two-line description
