@@ -32,6 +32,16 @@ export const VAR_EXEMPTIONS = [
       "Claudian declares this on .claudian-container per data-provider. Its active service-tier control consumes that provider-owned color; verified on the live control and in the plugin's base/variables.css.",
   },
   {
+    name: "--claudian-model-provider-tab-size",
+    reason:
+      "Claudian sets this size on its model popover. The theme uses it for the width of the provider tab to match the plugin's tab height.",
+  },
+  {
+    name: "--claudian-font-px",
+    reason:
+      "Claudian scales its model labels and descriptions with this unit. The model list viewport uses the same scale to fit four rows.",
+  },
+  {
     name: "--abyss-project-status-color",
     reason:
       "Abyss Tasks projectStatusPresentation.ts sets this per status from the user's configured colour. Verified inline on live .abyss-project-status-filter elements; preserve the plugin's badge/text/dot contract rather than replacing its palette.",
