@@ -178,3 +178,8 @@ body.theme-dark .claudian-history-menu.claudian-nav-dropup-menu {
 .theme-dark .claudian-toolbar-popover.claudian-model-popover {
   --claudian-model-row-height: calc(44 * var(--claudian-font-px) + 9px);
 }
+
+/* Add space inside the linked-content selector's existing frame. */
+.theme-dark .claudian-linked-content-selector-row button.claudian-linked-content-selector {
+  padding-inline: var(--size-4-2);
+}
