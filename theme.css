@@ -6864,6 +6864,21 @@ body.theme-dark .claudian-container .claudian-welcome-linked-content .claudian-l
   padding-inline: var(--size-4-2);
 }
 
+/* The global button border disappears on hover. Keep the linked note's
+   geometry constant while giving its icon and label some breathing room. */
+body.theme-dark .claudian-input-info-linked > button.claudian-input-info-linked-main {
+  padding-inline: var(--size-4-2);
+  border: 0;
+  background: transparent;
+  color: var(--b16-text-muted);
+}
+
+body.theme-dark .claudian-input-info-linked > button.claudian-input-info-linked-main:not(:disabled):is(:hover, :focus-visible) {
+  padding-inline: var(--size-4-2);
+  background: var(--b16-surface-2);
+  color: var(--b16-text-normal);
+}
+
 /* ===== 50-plugins/excalidraw.css ===== */
 
 /* Excalidraw chrome. Use the plugin's Dynamic styling = None setting for

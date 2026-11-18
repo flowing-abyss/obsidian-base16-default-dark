@@ -183,3 +183,18 @@ body.theme-dark .claudian-history-menu.claudian-nav-dropup-menu {
 body.theme-dark .claudian-container .claudian-welcome-linked-content .claudian-linked-content-selector-row > button.claudian-linked-content-selector {
   padding-inline: var(--size-4-2);
 }
+
+/* The global button border disappears on hover. Keep the linked note's
+   geometry constant while giving its icon and label some breathing room. */
+body.theme-dark .claudian-input-info-linked > button.claudian-input-info-linked-main {
+  padding-inline: var(--size-4-2);
+  border: 0;
+  background: transparent;
+  color: var(--b16-text-muted);
+}
+
+body.theme-dark .claudian-input-info-linked > button.claudian-input-info-linked-main:not(:disabled):is(:hover, :focus-visible) {
+  padding-inline: var(--size-4-2);
+  background: var(--b16-surface-2);
+  color: var(--b16-text-normal);
+}
