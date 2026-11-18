@@ -6817,7 +6817,8 @@ body.theme-dark
 
 /* The global button frame boxes each option and history header control.
    Keep the popover frame and Claudian's own selection and focus markers. */
-.theme-dark .claudian-model-popover button.claudian-toolbar-popover-option,
+.theme-dark :is(.claudian-model-popover, .claudian-permission-toggle) button.claudian-toolbar-popover-option,
+.theme-dark .claudian-permission-toggle > button.claudian-toolbar-chip,
 .theme-dark .claudian-history-menu button:is(.claudian-history-section-toggle, .claudian-session-header-btn) {
   border: 0;
   box-shadow: none;
@@ -6825,6 +6826,7 @@ body.theme-dark
 }
 
 .theme-dark .claudian-toolbar-popover.claudian-model-popover,
+.theme-dark .claudian-permission-toggle .claudian-toolbar-popover,
 body.theme-dark .claudian-history-menu.claudian-nav-dropup-menu {
   background: var(--b16-surface-0);
   border-color: var(--b16-border-strong);
