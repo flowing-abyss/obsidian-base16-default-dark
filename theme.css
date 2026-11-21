@@ -5886,6 +5886,12 @@ body.theme-dark .abyss-priority-chip[data-priority] {
   color: var(--b16-abyss-priority-color, var(--b16-text-muted));
 }
 
+/* The option's line height and block padding exceed Obsidian's button
+   height. Center the grid track containing the check, flag and label. */
+.theme-dark .abyss-priority-option {
+  align-content: center;
+}
+
 body.theme-dark .abyss-dep-search button.abyss-dep-search-option {
   border: 0;
   box-shadow: none;
