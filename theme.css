@@ -5882,6 +5882,35 @@ body.theme-dark :is(.abyss-popover, .abyss-status-popover) button:focus-visible 
   outline-offset: 1px;
 }
 
+/* The search and history entries share the plugin's two-column layout. */
+.theme-dark .abyss-command-history-popover .abyss-popover-input-row {
+  block-size: auto;
+  min-block-size: var(--input-height);
+}
+
+.theme-dark input.abyss-command-history-search:focus {
+  border-color: var(--b16-accent-link);
+  box-shadow: none;
+}
+
+/* The global button border frames every entry. Highlight the active
+   session using the plugin's aria-current state. */
+.theme-dark .abyss-command-history-popover button.abyss-command-history-select {
+  align-self: stretch;
+  block-size: auto;
+  padding-block: var(--size-4-1);
+  border: 0;
+
+  &:is(:hover, [aria-current='true']) {
+    background: var(--b16-surface-2);
+  }
+}
+
+/* Keep keyboard focus visible at the edges of the scrolling list. */
+body.theme-dark .abyss-command-history-list button:focus-visible {
+  outline-offset: -2px;
+}
+
 body.theme-dark .abyss-priority-chip[data-priority] {
   color: var(--b16-abyss-priority-color, var(--b16-text-muted));
 }
