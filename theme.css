@@ -4240,8 +4240,10 @@ body.theme-dark {
   border-top-color: var(--b16-surface-2);
 }
 
-.theme-dark .tooltip.mod-bottom .tooltip-arrow {
-  border-bottom-color: var(--b16-surface-2);
+/* Below the control, Obsidian renders a plain .tooltip. Match the native
+   arrow rule's specificity so side placements can keep this edge clear. */
+.theme-dark :where(.tooltip) .tooltip-arrow {
+  border-bottom-color: var(--tooltip-background);
 }
 
 /* Context menu (right-click dropdown) */
